@@ -1,4 +1,4 @@
-recursive-include themes *.ico *.js *.css *.png *.html *.eot *.svg *.ttf *.woff *.yml
+recursive-include themes *.ico *.js *.css *.png *.html *.eot *.svg *.ttf *.woff *.woff2 *.xml *.mustache *mkdocs_theme.yml *.mo
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 include  LICENSE
