@@ -29,6 +29,8 @@ setup(
     install_requires=[
         "mkdocs>=1.1",
         "jinja2",
+        "gitpython",
+        "pymdown-extensions",
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",
