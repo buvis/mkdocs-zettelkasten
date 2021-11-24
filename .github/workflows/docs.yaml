@@ -8,6 +8,7 @@ on:
     - main
     paths:
     - '.github/workflows/docs.yaml'
+    - '.github/workflows/requirements.txt'
     - 'mkdocs.yml'
     - 'docs/**'
 
