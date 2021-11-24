@@ -8,7 +8,7 @@ on:
     - main
     paths:
     - '.github/workflows/docs.yaml'
-    - './mkdocs.yml'
+    - '.github/mkdocs/mkdocs.yml'
     - 'docs/**'
 
 jobs:
