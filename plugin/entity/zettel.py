@@ -109,7 +109,7 @@ class Zettel:
         else:
             revision_date = datetime.datetime.fromtimestamp(os.path.getmtime(self.path))
 
-        if revision_date > date:
+        if revision_date.timestamp() > date.timestamp():
             date = revision_date
 
         self.last_update_date = date.strftime("%Y-%m-%d")
