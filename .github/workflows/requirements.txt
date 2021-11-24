@@ -1,2 +1,3 @@
 mkdocs-zettelkasten
+git+https://github.com/jldiaz/mkdocs-plugin-tags.git#egg=tags-macros-plugin
 python-git
