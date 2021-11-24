@@ -1,3 +1,2 @@
 mkdocs-zettelkasten
-pymdown-extensions
 python-git
