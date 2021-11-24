@@ -1,4 +1,4 @@
-from .patterns import WIKI_LINK, MD_LINK
+from plugin.patterns import WIKI_LINK, MD_LINK
 
 
 def fix_page_links_to_zettels(markdown, page, config, files, zettels):

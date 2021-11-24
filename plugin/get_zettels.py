@@ -1,4 +1,4 @@
-from .entity.zettel import Zettel
+from plugin.entity.zettel import Zettel
 
 
 def get_zettels(files, config):

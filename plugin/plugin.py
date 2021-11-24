@@ -1,10 +1,10 @@
 from mkdocs.plugins import BasePlugin
 
-from .fix_page_links_to_zettels import fix_page_links_to_zettels
-from .fix_page_title import fix_page_title
-from .get_page_ref import get_page_ref
-from .get_prev_next_page import get_prev_next_page
-from .get_zettels import get_zettels
+from plugin.fix_page_links_to_zettels import fix_page_links_to_zettels
+from plugin.fix_page_title import fix_page_title
+from plugin.get_page_ref import get_page_ref
+from plugin.get_prev_next_page import get_prev_next_page
+from plugin.get_zettels import get_zettels
 
 
 class ZettelkastenPlugin(BasePlugin):
