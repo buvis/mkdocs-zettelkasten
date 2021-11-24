@@ -8,7 +8,7 @@ on:
     - main
     paths:
     - '.github/workflows/docs.yaml'
-    - 'mkdocs.yaml'
+    - '.github/mkdocs/mkdocs.yaml'
     - 'docs/**'
 
 jobs:
@@ -22,5 +22,5 @@ jobs:
       uses: mhausenblas/mkdocs-deploy-gh-pages@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        CONFIG_FILE: mkdocs.yaml
+        CONFIG_FILE: .github/mkdocs/mkdocs.yaml
         REQUIREMENTS: .github/workflows/requirements.txt
