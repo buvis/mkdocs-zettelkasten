@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pymdown-extensions = "*"
+gitpython = "*"
+
+[dev-packages]
+mkdocs-zettelkasten = {editable = true, path = "."}
+tags-macros-plugin = {git = "https://github.com/jldiaz/mkdocs-plugin-tags.git"}
+
+[requires]
+python_version = "3.8"

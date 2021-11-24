@@ -1,0 +1,68 @@
+  <div class="zettel">
+    {% if page %}
+    <div class="file-header">
+      <div class="row align-items-center">
+        <div class="col-8">
+          {% if page.file.is_zettel %}
+            <div class="row align-items-center">
+              <span>
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-earmark-text" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 0h5.5v1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h1V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
+                  <path d="M9.5 3V0L14 4.5h-3A1.5 1.5 0 0 1 9.5 3z"/>
+                  <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+                <strong><a class="hidden-hyperlink" href="{{page.canonical_url}}">{{page.meta.id}}</a></strong>
+              </span>
+            </div>
+            <div class="row align-items-center">
+              <span>
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-tags" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M3 2v4.586l7 7L14.586 9l-7-7H3zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586V2z"/>
+                  <path fill-rule="evenodd" d="M5.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+                  <path d="M1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1v5.086z"/>
+                </svg>
+                {% for tag in page.meta.tags %}<a href="{{ nav.homepage.url|url }}/tags.html#{{tag}}">#{{tag}}</a> {% endfor %}
+              </span>
+            </div>
+          {% endif %}
+        </div>
+        <div class="col-4 text-right date">
+          {%- if page and page.edit_url %}
+            <a href="{{ page.edit_url }}" class="hidden-hyperlink">
+          {% endif %}
+              <span>
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil clickable" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                </svg>
+              </span>
+          {%- if page and page.edit_url %}
+            </a>
+          {% endif %}
+          {% if page.file.is_zettel %}
+            {{page.file.zettel.last_update_date}}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    <div class="file-body">
+      {{page.content}}
+    </div>
+    {% if page and not page.is_homepage and (page.ref or (page.file.is_zettel and page.file.zettel.backlinks)) %}
+      <hr />
+      <div class="file-references">
+      {% if page.ref %}
+        <h6>References</h6>
+        {{page.ref}}
+      {% endif %}
+      {% if page.file.is_zettel and page.file.zettel.backlinks %}
+        <h6>Backlinks</h6>
+        <ul>
+          {% for link in page.file.zettel.backlinks %}
+            <li><a href="{{link.url|url}}">{{link.zettel.title}}</a></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      </div>
+    {% endif %}
+  </div>
