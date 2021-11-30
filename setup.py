@@ -16,12 +16,12 @@ def read_file(fname):
 
 setup(
     name="mkdocs-zettelkasten",
-    version="0.1.5",
+    version="0.1.6",
     description="Add Zettelkasten features to MkDocs",
     long_description=read_file("README.md"),
     long_description_content_type="text/markdown",
     keywords="mkdocs python markdown zettelkasten",
-    url="https://github.com/tbouska/mkdocs-zettelkasten",
+    url="https://github.com/buvis-net/mkdocs-zettelkasten",
     author="Tomáš Bouška",
     author_email="tomas@buvis.net",
     license="MIT",

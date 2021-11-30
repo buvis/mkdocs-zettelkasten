@@ -2,10 +2,10 @@
 site_name: MkDocs Zettelkasten
 site_description: Theme and plugin to implement Zettelkasten in MkDocs
 site_author: Tomáš Bouška
-site_url: https://tbouska.github.io/mkdocs-zettelkasten/
+site_url: https://buvis-net.github.io/mkdocs-zettelkasten/
 
-repo_name: tbouska/mkdocs-zettelkasten
-repo_url: https://github.com/tbouska/mkdocs-zettelkasten
+repo_name: buvis-net/mkdocs-zettelkasten
+repo_url: https://github.com/buvis-net/mkdocs-zettelkasten
 edit_uri: "edit/main/docs/"
 
 copyright: Copyright &copy; 2021 Tomáš Bouška
