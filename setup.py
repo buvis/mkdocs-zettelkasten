@@ -21,7 +21,7 @@ setup(
     long_description=read_file("README.md"),
     long_description_content_type="text/markdown",
     keywords="mkdocs python markdown zettelkasten",
-    url="https://github.com/buvis-net/mkdocs-zettelkasten",
+    url="https://github.com/buvis/mkdocs-zettelkasten",
     author="Tomáš Bouška",
     author_email="tomas@buvis.net",
     license="MIT",
