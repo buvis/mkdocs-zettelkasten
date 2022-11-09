@@ -16,7 +16,7 @@ def read_file(fname):
 
 setup(
     name="mkdocs-zettelkasten",
-    version="0.1.6",
+    version="0.1.7",
     description="Add Zettelkasten features to MkDocs",
     long_description=read_file("README.md"),
     long_description_content_type="text/markdown",

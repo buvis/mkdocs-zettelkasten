@@ -1,4 +1,4 @@
-.PHONY: install test publish
+.PHONY: install test build check publish
 
 install:
 	pipenv install --dev
@@ -6,7 +6,12 @@ install:
 test:
 	pipenv run mkdocs serve --livereload
 
-publish:
+build:
 	rm -rf dist/*
-	python3 -m build
-	python3 -m twine upload dist/*
+	pipenv run python3 -m build
+
+check:
+	pipenv run twine check dist/*
+
+publish:
+	pipenv run python3 -m twine upload dist/*

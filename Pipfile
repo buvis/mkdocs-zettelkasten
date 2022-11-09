@@ -4,12 +4,15 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pymdown-extensions = "*"
-gitpython = "*"
+pymdown-extensions = "9.8"
+gitpython = "3.1.29"
 
 [dev-packages]
 mkdocs-zettelkasten = {editable = true, path = "."}
 tags-macros-plugin = {git = "https://github.com/jldiaz/mkdocs-plugin-tags.git"}
+setuptools = "*"
+build = "*"
+twine = "*"
 
 [requires]
 python_version = "3.8"
