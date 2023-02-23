@@ -3,6 +3,9 @@
 install:
 	pipenv install --dev
 
+update:
+	pipenv update --dev
+
 test:
 	pipenv run mkdocs serve --livereload
 
