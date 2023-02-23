@@ -5,3 +5,4 @@ mkdocs_zettelkasten.egg-info/
 site/
 *.pyc
 Pipfile.lock
+.DS_Store
