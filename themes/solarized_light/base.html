@@ -23,7 +23,7 @@
         <link href="{{ 'css/codehilite.css'|url }}" rel="stylesheet">
         <link href="{{ 'css/solarized-light.css'|url }}" rel="stylesheet">
         {%- if config.theme.highlightjs %}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/{{ config.theme.hljs_style }}.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.3/styles/{{ config.theme.hljs_style }}.min.css">
         {%- endif %}
         {%- for path in extra_css %}
         <link href="{{ path }}" rel="stylesheet">
@@ -37,7 +37,7 @@
         {%- if config.theme.highlightjs %}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
         {%- for lang in config.theme.hljs_languages %}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/languages/{{lang}}.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.3/languages/{{lang}}.min.js"></script>
         {%- endfor %}
         <script>hljs.initHighlightingOnLoad();</script>
         {%- endif %}
