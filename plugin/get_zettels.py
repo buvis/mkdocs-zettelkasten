@@ -1,4 +1,8 @@
+import logging
+
 from plugin.entity.zettel import Zettel
+
+log = logging.getLogger("mkdocs.plugins.zettelkasten")
 
 
 def get_zettels(files, config):
@@ -10,6 +14,7 @@ def get_zettels(files, config):
             file.zettel = Zettel(file.abs_src_path)
         except ValueError:
             file.is_zettel = False
+            log.warning(f"Ignoring {file.abs_src_path} because of formatting issues.")
         else:
             file.is_zettel = True
 

@@ -55,11 +55,13 @@ class Zettel:
                             self.links.append(m.groupdict()["url"])
             meta = yaml.load("".join(header), Loader=yaml.FullLoader)
         except OSError:
-            raise ValueError("File is not in zettel format")
+            raise ValueError(f"File {self.path} is not in zettel format")
         except ValueError:
-            raise ValueError("File is not in zettel format")
+            raise ValueError(f"File {self.path} is not in zettel format")
         except AttributeError:
-            raise ValueError("File is not in zettel format")
+            raise ValueError(f"File {self.path} is not in zettel format")
+        except yaml.scanner.ScannerError:
+            raise ValueError(f"File {self.path} is not in zettel format")
         self._set_metadata(meta, alternative_title)
 
     def _set_metadata(self, meta, alternative_title):
