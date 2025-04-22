@@ -1,6 +1,21 @@
-[build-system]
-requires = [
-    "setuptools>=65.5.1",
-    "wheel>=0.38.3"
+[project]
+name = "mkdocs-zettelkasten"
+version = "0.1.11"
+description = "Add Zettelkasten features to MkDocs"
+authors = [
+    {name = "Tomáš Bouška",email = "tomas@buvis.net"}
 ]
-build-backend = "setuptools.build_meta"
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "mkdocs (>=1.6.1,<2.0.0)",
+    "jinja2 (>=3.1.6,<4.0.0)",
+    "gitpython (>=3.1.44,<4.0.0)",
+    "pymdown-extensions (>=10.14.3,<11.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
