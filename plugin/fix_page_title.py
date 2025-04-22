@@ -1,5 +1,5 @@
 def fix_page_title(markdown, page, config, files):
-    if not page.file.is_zettel:
+    if not getattr(page.file, "is_zettel", None):
         return markdown
 
     has_h1_title = False

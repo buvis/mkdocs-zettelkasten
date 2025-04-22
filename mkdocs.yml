@@ -8,23 +8,22 @@ repo_name: buvis/mkdocs-zettelkasten
 repo_url: https://github.com/buvis/mkdocs-zettelkasten
 edit_uri: "edit/main/docs/"
 
-copyright: Copyright &copy; 2021 Tomáš Bouška
+copyright: Copyright &copy; 2025 Tomáš Bouška
 
 theme:
   name: zettelkasten-solarized-light
 plugins:
-- search
-- tags
-- zettelkasten
+  - search
+  - zettelkasten
 
 markdown_extensions:
-- admonition
-- meta
-- codehilite:
-- pymdownx.superfences
+  - admonition
+  - meta
+  - codehilite:
+  - pymdownx.superfences
 
 nav:
-- Install: 20211122194827.md
-- Run a demo: 20211122195311.md
-- Requirements: 20211122195910.md
-- Features: features/index.md
+  - Install: 20211122194827.md
+  - Run a demo: 20211122195311.md
+  - Requirements: 20211122195910.md
+  - Features: features/index.md

@@ -1,4 +1,4 @@
-aux/
+.build
 build/
 dist/
 mkdocs_zettelkasten.egg-info/
