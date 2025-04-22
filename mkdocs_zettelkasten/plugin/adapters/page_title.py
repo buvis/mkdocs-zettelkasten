@@ -1,4 +1,7 @@
-def fix_page_title(markdown, page, config, files):
+def adapt_page_title(markdown: str, page, config, files) -> str:
+    """
+    Adapt the page title in the markdown.
+    """
     if not getattr(page.file, "is_zettel", None):
         return markdown
 

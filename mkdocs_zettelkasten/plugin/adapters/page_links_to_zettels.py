@@ -1,7 +1,11 @@
-from mkdocs_zettelkasten.plugin.patterns import WIKI_LINK, MD_LINK
+from mkdocs_zettelkasten.plugin.utils.patterns import WIKI_LINK, MD_LINK
 
 
-def fix_page_links_to_zettels(markdown, page, config, files, zettels):
+def adapt_page_links_to_zettels(markdown: str, page, config, files, zettels) -> str:
+    """
+    Adapt links in the markdown to point to zettels.
+    """
+
     def process_match(m):
         if "url" in m.groupdict().keys():
             url = m.groupdict()["url"]

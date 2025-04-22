@@ -5,8 +5,8 @@ import yaml
 
 from pathlib import Path
 
-from mkdocs_zettelkasten.plugin.patterns import WIKI_LINK, MD_LINK
-from mkdocs_zettelkasten.plugin.gitutil import GitUtil
+from mkdocs_zettelkasten.plugin.utils.patterns import WIKI_LINK, MD_LINK
+from mkdocs_zettelkasten.plugin.utils.git_utils import GitUtil
 
 
 class Zettel:

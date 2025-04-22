@@ -1,4 +1,7 @@
-def get_prev_next_page(markdown, page, config, files, zettels):
+def get_prev_next_page(markdown: str, page, config, files, zettels):
+    """
+    Determine previous and next pages for navigation.
+    """
     # handle special pages
 
     if page.file.src_path == "index.md":
@@ -18,7 +21,6 @@ def get_prev_next_page(markdown, page, config, files, zettels):
     # get previous/next zettel by ID
 
     if page.file.is_zettel:
-
         for index, item in enumerate(zettels):
             if item.zettel.id == page.file.zettel.id:
                 break
