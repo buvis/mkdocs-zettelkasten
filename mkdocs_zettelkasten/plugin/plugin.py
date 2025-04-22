@@ -11,11 +11,13 @@ from mkdocs.structure.nav import Section
 from mkdocs.config.config_options import Type
 from mkdocs.structure.pages import Page
 
-from plugin.fix_page_links_to_zettels import fix_page_links_to_zettels
-from plugin.fix_page_title import fix_page_title
-from plugin.get_page_ref import get_page_ref
-from plugin.get_prev_next_page import get_prev_next_page
-from plugin.get_zettels import get_zettels
+from mkdocs_zettelkasten.plugin.fix_page_links_to_zettels import (
+    fix_page_links_to_zettels,
+)
+from mkdocs_zettelkasten.plugin.fix_page_title import fix_page_title
+from mkdocs_zettelkasten.plugin.get_page_ref import get_page_ref
+from mkdocs_zettelkasten.plugin.get_prev_next_page import get_prev_next_page
+from mkdocs_zettelkasten.plugin.get_zettels import get_zettels
 
 
 class ZettelkastenPlugin(BasePlugin):

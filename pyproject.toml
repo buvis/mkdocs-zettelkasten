@@ -15,6 +15,11 @@ dependencies = [
     "pymdown-extensions (>=10.14.3,<11.0.0)"
 ]
 
+[project.entry-points."mkdocs.plugins"]
+zettelkasten = "mkdocs_zettelkasten.plugin.plugin:ZettelkastenPlugin"
+
+[project.entry-points."mkdocs.themes"]
+zettelkasten-solarized-light = "mkdocs_zettelkasten.themes.solarized_light"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

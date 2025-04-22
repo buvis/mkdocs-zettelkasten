@@ -1,6 +1,6 @@
 import logging
 
-from plugin.entity.zettel import Zettel
+from mkdocs_zettelkasten.plugin.entity.zettel import Zettel
 
 log = logging.getLogger("mkdocs.plugins.zettelkasten")
 
