@@ -7,6 +7,7 @@ from pathlib import Path
 
 from mkdocs_zettelkasten.plugin.utils.patterns import WIKI_LINK, MD_LINK
 from mkdocs_zettelkasten.plugin.utils.git_utils import GitUtil
+from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
 
 
 class Zettel:
@@ -94,13 +95,13 @@ class Zettel:
         date = ""
 
         if "last_update" in meta.keys():
-            date = _get_date_from_string(meta["last_update"])
+            date = convert_string_to_date(meta["last_update"])
 
         if not date and "date" in meta.keys():
-            date = _get_date_from_string(meta["date"])
+            date = convert_string_to_date(meta["date"])
 
         if not date:
-            date = _get_date_from_string(self.id)
+            date = convert_string_to_date(self.id)
 
         if not date:
             date = datetime.datetime.today()
@@ -125,19 +126,3 @@ class Zettel:
             )
 
         self.backlinks = [s for s in sources if is_valid(s)]
-
-
-def _get_date_from_string(string):
-    string = str(string)
-    try:
-        date = datetime.datetime.strptime(string, "%Y-%m-%d %H:%M:%S")
-    except ValueError:
-        try:
-            date = datetime.datetime.strptime(string, "%Y%m%d%H%M%S")
-        except ValueError:
-            try:
-                date = datetime.datetime.fromisoformat(string)
-            except ValueError:
-                date = ""
-
-    return date

@@ -24,3 +24,6 @@ zettelkasten-solarized-light = "mkdocs_zettelkasten.themes.solarized_light"
 [build-system]
 requires = ["poetry-core==2.1.2"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
