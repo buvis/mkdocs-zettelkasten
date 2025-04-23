@@ -96,6 +96,8 @@ class Zettel:
 
         if "last_update" in meta.keys():
             date = convert_string_to_date(meta["last_update"])
+            self.last_update_date = date.strftime("%Y-%m-%d")
+            return
 
         if not date and "date" in meta.keys():
             date = convert_string_to_date(meta["date"])
