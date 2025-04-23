@@ -1,6 +1,6 @@
 [project]
 name = "mkdocs-zettelkasten"
-version = "0.2.2"
+version = "0.2.3-alpha.1"
 description = "Add Zettelkasten features to MkDocs"
 authors = [
     {name = "Tomáš Bouška",email = "tomas@buvis.net"}
