@@ -6,10 +6,11 @@ if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
     from mkdocs.structure.files import Files
 
+    from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
+
 if TYPE_CHECKING:
     from re import Match
 
-from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
 from mkdocs_zettelkasten.plugin.utils.patterns import MD_LINK, WIKI_LINK
 
 
