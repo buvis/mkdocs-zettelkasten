@@ -1,8 +1,16 @@
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+from __future__ import annotations
 
-from mkdocs_zettelkasten.plugin.utils.metadata_utils import extract_file_metadata
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from mkdocs.config.defaults import MkDocsConfig
+    from mkdocs.structure.files import Files
+
+from pathlib import Path
+from typing import Any
+
 from mkdocs_zettelkasten.plugin.utils.jinja_utils import create_jinja_environment
+from mkdocs_zettelkasten.plugin.utils.metadata_utils import extract_file_metadata
 
 
 class TagsService:
@@ -13,10 +21,10 @@ class TagsService:
     def __init__(self) -> None:
         self.tags_filename: Path = Path("tags.md")
         self.tags_folder: Path = Path(".build")
-        self.tags_template: Optional[Path] = None
-        self.metadata: List[Dict[str, Any]] = []
+        self.tags_template: Path | None = None
+        self.metadata: list[dict[str, Any]] = []
 
-    def configure(self, config: Dict[str, Any]) -> None:
+    def configure(self, config: MkDocsConfig) -> None:
         """
         Configure paths and template from MkDocs config.
         """
@@ -29,7 +37,15 @@ class TagsService:
         if not self.tags_folder.exists():
             self.tags_folder.mkdir(parents=True)
 
-    def process_metadata(self, files: List[Any], config: Dict[str, Any]) -> None:
+        # this is just to be safe before rewriting methods using config
+        self.config = config
+
+    def process_files(self, files: Files) -> None:
+        self.process_metadata(files, self.config)
+        self.generate_tags_file()
+        self.add_tags_file_to_build(files, self.config)
+
+    def process_metadata(self, files: Files, config: MkDocsConfig) -> None:
         """
         Extract metadata from Markdown files.
         """
@@ -37,6 +53,8 @@ class TagsService:
         for file in files:
             if file.src_path.endswith(".md"):
                 meta = extract_file_metadata(file.src_path, config["docs_dir"])
+                meta["src_path"] = file.src_path
+
                 if meta:
                     self.metadata.append(meta)
 
@@ -48,7 +66,7 @@ class TagsService:
         rendered = self._render_tags_template(tag_map)
         self._write_tags_file(rendered)
 
-    def add_tags_file_to_build(self, files: List[Any], config: Dict[str, Any]) -> None:
+    def add_tags_file_to_build(self, files: Files, config: MkDocsConfig) -> None:
         """
         Add the generated tags file to the MkDocs build list.
         """
@@ -62,7 +80,7 @@ class TagsService:
         )
         files.append(new_file)
 
-    def _create_tag_map(self) -> Dict[str, List[Dict[str, Any]]]:
+    def _create_tag_map(self) -> dict[str, list[dict[str, Any]]]:
         """
         Create a mapping of tags to metadata entries.
         """
@@ -75,7 +93,7 @@ class TagsService:
                     tag_map[tag].append(meta)
         return dict(tag_map)
 
-    def _render_tags_template(self, tag_map: Dict[str, List[Dict[str, Any]]]) -> str:
+    def _render_tags_template(self, tag_map: dict[str, list[dict[str, Any]]]) -> str:
         """
         Render the tags page using a Jinja2 template.
         """

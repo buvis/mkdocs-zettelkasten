@@ -1,6 +1,7 @@
-.PHONY: install update test run
+.PHONY: install update test run clean
 
 install:
+	poetry lock
 	poetry install
 
 update:
@@ -11,3 +12,8 @@ test:
 
 run:
 	poetry run mkdocs serve --livereload
+
+clean:
+	poetry env remove --all
+	find . -name '*.pyc' -delete
+	find . -type d -name '__pycache__' -exec rm -r {} +

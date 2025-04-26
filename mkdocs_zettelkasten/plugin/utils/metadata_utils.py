@@ -1,8 +1,14 @@
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, TextIO
+
+from yaml.scanner import ScannerError
+
+from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
 
 
-def extract_file_metadata(filename: str, docs_dir: str) -> Dict[str, Any]:
+def extract_file_metadata(filename: str, docs_dir: str) -> dict[str, Any]:
     """
     Extract YAML metadata from a Markdown file.
     """
@@ -11,7 +17,7 @@ def extract_file_metadata(filename: str, docs_dir: str) -> Dict[str, Any]:
         return _read_yaml_frontmatter(f) or {}
 
 
-def _read_yaml_frontmatter(file_handler) -> Optional[Dict[str, Any]]:
+def _read_yaml_frontmatter(file_handler: TextIO) -> dict[str, Any] | None:
     """
     Read YAML frontmatter from a file handler.
     """
@@ -23,7 +29,7 @@ def _read_yaml_frontmatter(file_handler) -> Optional[Dict[str, Any]]:
         stripped = line.strip()
         if stripped == "---":
             delimiter_count += 1
-            if delimiter_count == 2:
+            if delimiter_count == Zettel.COUNT_HEADER_DIVIDERS:
                 break
             continue
         if delimiter_count == 1:
@@ -31,6 +37,6 @@ def _read_yaml_frontmatter(file_handler) -> Optional[Dict[str, Any]]:
     if yaml_lines:
         try:
             return yaml.safe_load("".join(yaml_lines))
-        except yaml.scanner.ScannerError:
+        except ScannerError:
             return None
     return None
