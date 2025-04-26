@@ -1,11 +1,10 @@
 import datetime
-from zoneinfo import ZoneInfo
 
 import tzlocal
 
 from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
 
-local_tz = ZoneInfo(tzlocal.get_localzone_name())
+local_tz = tzlocal.get_localzone()
 
 
 def test_convert_string_to_date_standard_format() -> None:

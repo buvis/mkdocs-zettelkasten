@@ -1,13 +1,12 @@
 import datetime
 from typing import Callable
-from zoneinfo import ZoneInfo
 
 import pytest
 import tzlocal
 
 from mkdocs_zettelkasten.plugin.entities.zettel import Zettel, ZettelFormatError
 
-local_tz = ZoneInfo(tzlocal.get_localzone_name())
+local_tz = tzlocal.get_localzone()
 
 LAST_UPDATE_CONTENT = """---
 id: 2020-05-20

@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from pathlib import Path
-from zoneinfo import ZoneInfo
 
 import tzlocal
 import yaml
@@ -16,7 +15,7 @@ from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
 from mkdocs_zettelkasten.plugin.utils.git_utils import GitUtil
 from mkdocs_zettelkasten.plugin.utils.patterns import MD_LINK, WIKI_LINK
 
-local_tz = ZoneInfo(tzlocal.get_localzone_name())
+local_tz = tzlocal.get_localzone()
 
 
 class ZettelFormatError(ValueError):
