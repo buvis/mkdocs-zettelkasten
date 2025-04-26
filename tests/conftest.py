@@ -1,13 +1,15 @@
-import pytest
-from pathlib import Path
-from unittest.mock import patch
 import datetime
+from pathlib import Path
+from typing import Callable
+from unittest.mock import Mock, patch
+
+import pytest
 
 from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
 
 
 @pytest.fixture
-def zettel_factory(tmp_path):
+def zettel_factory(tmp_path: Path) -> Callable[[str, datetime.datetime], Zettel]:
     """
     Factory fixture to create a Zettel instance with custom file content and mtime.
 
@@ -19,13 +21,13 @@ def zettel_factory(tmp_path):
         Zettel: The initialized Zettel instance.
     """
 
-    def _factory(file_content: str, mtime: datetime.datetime):
+    def _factory(file_content: str, mtime: datetime.datetime) -> Zettel:
         file_path = tmp_path / "test.md"
         file_path.write_text(file_content)
-        with patch(
-            "mkdocs_zettelkasten.plugin.entities.zettel.os.path.getmtime",
-            return_value=mtime.timestamp(),
-        ):
-            return Zettel(str(file_path))
+        mock_stat = Mock()
+        mock_stat.st_mtime = mtime
+
+        with patch.object(Path, "stat", return_value=mock_stat):
+            return Zettel(file_path)
 
     return _factory
