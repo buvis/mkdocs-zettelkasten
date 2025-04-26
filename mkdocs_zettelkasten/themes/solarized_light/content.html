@@ -3,7 +3,7 @@
     <div class="file-header">
       <div class="row align-items-center">
         <div class="col-8">
-          {% if page.file.is_zettel %}
+          {% if page.meta.is_zettel %}
             <div class="row align-items-center">
               <span>
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-earmark-text" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -11,7 +11,7 @@
                   <path d="M9.5 3V0L14 4.5h-3A1.5 1.5 0 0 1 9.5 3z"/>
                   <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
                 </svg>
-                <strong><a class="hidden-hyperlink" href="{{page.canonical_url}}">{{page.meta.id}}</a></strong>
+                <strong><a class="hidden-hyperlink" href="{{page.canonical_url}}">{{page.meta['zettel'].id}}</a></strong>
               </span>
             </div>
             <div class="row align-items-center">
@@ -38,8 +38,8 @@
           {%- if page and page.edit_url %}
             </a>
           {% endif %}
-          {% if page.file.is_zettel %}
-            {{page.file.zettel.last_update_date}}
+          {% if page.meta.is_zettel %}
+            {{page.meta.zettel.last_update_date}}
           {% endif %}
         </div>
       </div>
@@ -48,18 +48,18 @@
     <div class="file-body">
       {{page.content}}
     </div>
-    {% if page and not page.is_homepage and (page.ref or (page.file.is_zettel and page.file.zettel.backlinks)) %}
+    {% if page and not page.is_homepage and (page.meta.ref or (page.meta.is_zettel and page.meta.zettel.backlinks)) %}
       <hr />
       <div class="file-references">
-      {% if page.ref %}
+      {% if page.meta.ref %}
         <h6>References</h6>
-        {{page.ref}}
+        {{page.meta.ref}}
       {% endif %}
-      {% if page.file.is_zettel and page.file.zettel.backlinks %}
+      {% if page.meta.is_zettel and page.meta.zettel.backlinks %}
         <h6>Backlinks</h6>
         <ul>
-          {% for link in page.file.zettel.backlinks %}
-            <li><a href="{{link.url|url}}">{{link.zettel.title}}</a></li>
+          {% for link in page.meta.zettel.backlinks %}
+            <li><a href="{{link.url|url}}">{{link.title}}</a></li>
           {% endfor %}
         </ul>
       {% endif %}
