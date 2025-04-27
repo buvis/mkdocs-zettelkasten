@@ -3,15 +3,24 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from mkdocs.config.defaults import MkDocsConfig
+
 if TYPE_CHECKING:
+    from mkdocs.config.defaults import MkDocsConfig
     from mkdocs.structure.files import Files
     from mkdocs.structure.pages import Page
 
     from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
 
+import logging
+
 from .backlink_processor import BacklinkProcessor
 from .zettel_parser import ZettelParser
 from .zettel_store import ZettelStore
+
+logger = logging.getLogger(
+    __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
+)
 
 
 class ZettelService:
@@ -21,9 +30,12 @@ class ZettelService:
         self.store = ZettelStore()
         self.backlinks: dict[str, list[Zettel]] = {}
 
-    def process_files(self, files: Files) -> None:
+    def process_files(self, files: Files, config: MkDocsConfig) -> None:
         """Main processing pipeline."""
+        docs_dir = config["docs_dir"]
+        logger.info("Scanning `%s` for zettels", docs_dir)
         valid_zettels, _ = ZettelParser.parse_files(files)
+        logger.info("Found %s zettels in `%s`", len(valid_zettels), docs_dir)
         self.store.update(valid_zettels)
         self.backlinks = BacklinkProcessor.process(self.store)
 

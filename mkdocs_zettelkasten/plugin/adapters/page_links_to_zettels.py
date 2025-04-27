@@ -5,17 +5,25 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
     from mkdocs.structure.files import Files
+    from mkdocs.structure.pages import Page
 
     from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
 
 if TYPE_CHECKING:
     from re import Match
 
+import logging
+
 from mkdocs_zettelkasten.plugin.utils.patterns import MD_LINK, WIKI_LINK
+
+logger = logging.getLogger(
+    __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
+)
 
 
 def adapt_page_links_to_zettels(
     markdown: str,
+    page: Page,
     config: MkDocsConfig,
     files: Files,
     zettel_service: ZettelService,
@@ -40,8 +48,24 @@ def adapt_page_links_to_zettels(
                     )
                     title = target_zettel.title if target_zettel else url
                 new_url = config["site_url"] + f.url
+                logger.debug(
+                    "Transformed link %s to [%s](%s) in %s",
+                    m.group(),
+                    title,
+                    new_url,
+                    page.file.src_path,
+                )
 
                 return f"[{title}]({new_url})"
+
+        if f"[{title}]({url})" != m.group():
+            logger.debug(
+                "Transformed link %s to [%s](%s) in %s",
+                m.group(),
+                title,
+                url,
+                page.file.src_path,
+            )
 
         return f"[{title}]({url})"
 

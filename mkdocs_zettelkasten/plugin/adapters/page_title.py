@@ -1,8 +1,13 @@
+import logging
 from pathlib import Path
 
 from mkdocs.structure.pages import Page
 
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
+
+logger = logging.getLogger(
+    __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
+)
 
 
 def adapt_page_title(markdown: str, page: Page, zettel_service: ZettelService) -> str:
@@ -18,13 +23,15 @@ def adapt_page_title(markdown: str, page: Page, zettel_service: ZettelService) -
         return markdown
 
     zettel = zettel_service.get_zettel_by_path(Path(page.file.abs_src_path))
+
     if not zettel:
         return markdown
 
     if has_h1_title(markdown):
         return markdown
 
-    print(f"Adding H1 with title to {page.url}")
+    logger.debug("Adding H1 with title to %s", page.url)
+
     return prepend_h1_title(markdown, zettel.title)
 
 
