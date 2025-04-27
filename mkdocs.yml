@@ -14,7 +14,8 @@ theme:
   name: zettelkasten-solarized-light
 plugins:
   - search
-  - zettelkasten
+  - zettelkasten:
+      log_level: DEBUG
 
 markdown_extensions:
   - admonition

@@ -1,6 +1,12 @@
+import logging
+
 from mkdocs.structure.pages import Page
 
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
+
+logger = logging.getLogger(
+    __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
+)
 
 
 def adapt_backlinks_to_page(page: Page, zettel_service: ZettelService) -> None:
@@ -14,3 +20,9 @@ def adapt_backlinks_to_page(page: Page, zettel_service: ZettelService) -> None:
                         backlink["url"] = page.url
                         backlink["title"] = page.title
                         target_zettel.backlinks.append(backlink)
+                        logger.debug(
+                            "Found link from %s to %s. Adding it to %s's backlinks.",
+                            zettel.rel_path,
+                            target_zettel.rel_path,
+                            target_zettel.rel_path,
+                        )

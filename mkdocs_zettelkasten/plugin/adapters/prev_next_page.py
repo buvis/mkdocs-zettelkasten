@@ -8,7 +8,13 @@ if TYPE_CHECKING:
     from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
 
 
+import logging
+
 from mkdocs.structure.files import File, Files
+
+logger = logging.getLogger(
+    __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
+)
 
 
 def get_prev_next_page(
@@ -26,6 +32,7 @@ def get_prev_next_page(
         return (None, None)
 
     current_index = _find_zettel_index(page, zettels)
+
     if current_index is None:
         return (None, None)
 
@@ -38,7 +45,15 @@ def get_prev_next_page(
     next_page = (
         next_file.page if isinstance(next_file, File) and next_file.page else None
     )
+    log_prev_page = prev_page.file.src_path if prev_page is not None else "none"
+    log_next_page = next_page.file.src_path if next_page is not None else "none"
 
+    logger.debug(
+        "Setting %s as previous and %s as next page for %s",
+        log_prev_page,
+        log_next_page,
+        page.file.src_path,
+    )
     return (prev_page, next_page)
 
 

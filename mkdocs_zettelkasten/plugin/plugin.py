@@ -7,6 +7,10 @@ if TYPE_CHECKING:
     from mkdocs.structure.files import Files
     from mkdocs.structure.pages import Page
 
+import logging
+
+import colorlog
+from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 
 from mkdocs_zettelkasten.plugin.services.page_transformer import PageTransformer
@@ -21,18 +25,38 @@ class ZettelkastenPlugin(BasePlugin):
     Orchestrates tag generation, zettel management, and page adaptation.
     """
 
+    config_scheme = (
+        (
+            "log_level",
+            config_options.Choice(
+                choices=("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"),
+                default="INFO",
+            ),
+        ),
+        (
+            "log_format",
+            config_options.Type(
+                str,
+                default="%(log_color)s%(levelname)-7s%(reset)s -  [%(green)s%(asctime)s.%(msecs)03d%(reset)s] <%(blue)s%(name)s%(reset)s>: %(message_log_color)s%(message)s%(reset)s",
+            ),
+        ),
+    )
+
     def __init__(self) -> None:
         super().__init__()
         self.tags_service = TagsService()
         self.zettel_service = ZettelService()
         self.page_transformer = PageTransformer()
+        self._initialize_logger()
 
     def on_config(self, config: MkDocsConfig) -> None:
+        self.logger.setLevel(self.config["log_level"])
+        self.logger.addHandler(self._create_logging_handler())
         self.tags_service.configure(config)
 
     def on_files(self, files: Files, config: MkDocsConfig) -> None:
         _ = config
-        self.zettel_service.process_files(files)
+        self.zettel_service.process_files(files, config)
         self.tags_service.process_files(files)
 
     def on_page_markdown(
@@ -49,3 +73,32 @@ class ZettelkastenPlugin(BasePlugin):
             files,
             self.zettel_service,
         )
+
+    def _initialize_logger(self) -> None:
+        self.logger = logging.getLogger("mkdocs.plugins.zettelkasten")
+        self.logger.propagate = False
+        self.logger.addHandler(logging.NullHandler())
+
+    def _create_logging_handler(self) -> logging.StreamHandler:
+        handler = colorlog.StreamHandler()
+
+        # Define color scheme for log levels (common practice)
+        log_colors = {
+            "DEBUG": "white",
+            "INFO": "green",
+            "WARNING": "yellow",
+            "ERROR": "red",
+            "CRITICAL": "bold_red",
+        }
+
+        # Create formatter with colors applied to specific parts
+        formatter = colorlog.ColoredFormatter(
+            fmt=self.config["log_format"],
+            datefmt="%Y-%m-%d %H:%M:%S",
+            log_colors=log_colors,
+            secondary_log_colors={"message": log_colors},
+            reset=True,
+        )
+        handler.setFormatter(formatter)
+
+        return handler
