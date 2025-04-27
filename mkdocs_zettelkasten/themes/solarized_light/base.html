@@ -200,10 +200,10 @@
         <script>
             var base_url = {{ base_url | tojson }},
                 shortcuts = {{ config.theme.shortcuts | tojson }};
-        </script>
         <script src="{{ 'js/base.js'|url }}" defer></script>
-        {%- for path in extra_javascript %}
-        <script src="{{ path }}" defer></script>
+        <script src="{{ 'js/copyable.js'|url }}" defer></script>
+        {%- for script in config.extra_javascript %}
+          {{ script | script_tag }}
         {%- endfor %}
       {%- endblock %}
 
