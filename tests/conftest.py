@@ -28,6 +28,6 @@ def zettel_factory(tmp_path: Path) -> Callable[[str, datetime.datetime], Zettel]
         mock_stat.st_mtime = mtime
 
         with patch.object(Path, "stat", return_value=mock_stat):
-            return Zettel(file_path)
+            return Zettel(file_path, str(file_path.relative_to(tmp_path)))
 
     return _factory
