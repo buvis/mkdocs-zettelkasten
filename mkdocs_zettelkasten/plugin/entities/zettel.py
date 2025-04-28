@@ -26,10 +26,11 @@ class Zettel:
     COUNT_HEADER_DIVIDERS = 2
     MARK_DIVIDER = "---"
 
-    def __init__(self, abs_src_path: Path) -> None:
+    def __init__(self, abs_src_path: Path, src_path: str) -> None:
         self.id: int = 0
         self.title: str = ""
         self.path: Path = abs_src_path
+        self.rel_path: str = src_path
         self.backlinks: list[dict[str, str]] = []
         self.links: list[str] = []
         self.last_update_date: str = ""
