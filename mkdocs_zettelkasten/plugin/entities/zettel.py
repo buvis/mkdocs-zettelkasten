@@ -148,8 +148,15 @@ class Zettel:
 
         if "last_update" in meta:
             final_date = candidate_date
+            logger.debug("Using last update date from meta in %s", self.rel_path)
         else:
             final_date = max(candidate_date, revision_date, key=lambda d: d.timestamp())
+            logger.debug(
+                "Using later last update date from meta dates %s vs. modification date %s in %s",
+                candidate_date.strftime("%Y-%m-%d"),
+                revision_date.strftime("%Y-%m-%d"),
+                self.rel_path,
+            )
         self.last_update_date = final_date.strftime("%Y-%m-%d")
 
     def _get_initial_candidate_date(self, meta: dict) -> datetime.datetime:
