@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pathlib import Path
 
+import logging
+
 import tzlocal
 import yaml
 from yaml.scanner import ScannerError
@@ -16,6 +18,11 @@ from mkdocs_zettelkasten.plugin.utils.git_utils import GitUtil
 from mkdocs_zettelkasten.plugin.utils.patterns import MD_LINK, WIKI_LINK
 
 local_tz = tzlocal.get_localzone()
+
+
+logger = logging.getLogger(
+    __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
+)
 
 
 class ZettelFormatError(ValueError):
