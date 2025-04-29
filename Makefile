@@ -5,7 +5,7 @@ install:
 	poetry install
 
 update:
-	poetry updated
+	poetry update
 
 test:
 	poetry run pytest
