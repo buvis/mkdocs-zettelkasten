@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 
 import jinja2
+
+logger = logging.getLogger(
+    __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
+)
 
 
 def create_jinja_environment(template_path: Path | None = None) -> jinja2.Environment:
@@ -14,8 +19,11 @@ def create_jinja_environment(template_path: Path | None = None) -> jinja2.Enviro
             loader=jinja2.FileSystemLoader(str(template_path.parent)),
             autoescape=True,
         )
-    # Fallback to default templates directory
     default_template_path = Path(__file__).parent.parent / "templates"
+    logger.debug(
+        "Falling back to default templates directory: %s",
+        default_template_path,
+    )
 
     return jinja2.Environment(
         loader=jinja2.FileSystemLoader(str(default_template_path)),

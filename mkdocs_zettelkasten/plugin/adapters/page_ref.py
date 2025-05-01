@@ -8,7 +8,13 @@ if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
     from mkdocs.structure.pages import Page
 
+import logging
+
 from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
+
+logger = logging.getLogger(
+    __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
+)
 
 
 def count_dividers_outside_code_blocks(
@@ -47,6 +53,9 @@ def get_page_ref(
     """
     Add or extract a page reference.
     """
+    if not page.meta["is_zettel"]:
+        return (markdown, None)
+
     content_lines = markdown.rstrip().split("\n")
 
     # process footer from bottom till --- delimiter
@@ -59,6 +68,7 @@ def get_page_ref(
     ):
         n = 1
     else:
+        logger.debug("No reference section found in %s", page.file.src_path)
         return (markdown, None)
 
     ref_lines = []
@@ -80,4 +90,5 @@ def get_page_ref(
         extension_configs=config["mdx_configs"] or {},
     )
 
+    logger.debug("Reference section found in %s", page.file.src_path)
     return (markdown, processor.convert(page.meta["ref"]))

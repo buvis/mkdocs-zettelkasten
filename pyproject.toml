@@ -1,6 +1,6 @@
 [project]
 name = "mkdocs-zettelkasten"
-version = "0.3.1"
+version = "0.4.0"
 description = "Add Zettelkasten features to MkDocs"
 authors = [
     {name = "Tomáš Bouška",email = "tomas@buvis.net"}
@@ -15,6 +15,7 @@ dependencies = [
     "pymdown-extensions (==10.15)",
     "PyYAML (==6.0.2)",
     "tzlocal (==5.3.1)",
+    "colorlog (==6.9.0)",
 ]
 
 [project.entry-points."mkdocs.plugins"]
