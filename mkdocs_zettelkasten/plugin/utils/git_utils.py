@@ -1,6 +1,11 @@
 import datetime
+import logging
 
 from git import Git
+
+logger = logging.getLogger(
+    __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
+)
 
 
 class GitUtil:
