@@ -1,3 +1,5 @@
+import logging
+
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.structure.files import Files
 from mkdocs.structure.pages import Page
@@ -12,6 +14,10 @@ from mkdocs_zettelkasten.plugin.adapters.page_ref import get_page_ref
 from mkdocs_zettelkasten.plugin.adapters.page_title import adapt_page_title
 from mkdocs_zettelkasten.plugin.adapters.prev_next_page import get_prev_next_page
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
+
+logger = logging.getLogger(
+    __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
+)
 
 
 class PageTransformer:
@@ -30,6 +36,7 @@ class PageTransformer:
         """
         Apply all adapters to the markdown and update references.
         """
+        logger.debug("Started %s transformations", page.file.src_path)
         page = zettel_service.add_zettel_to_page(page)
         markdown = adapt_page_title(markdown, page, zettel_service)
         markdown = adapt_page_links_to_zettels(
@@ -40,5 +47,6 @@ class PageTransformer:
             page, files, zettel_service.get_zettels()
         )
         adapt_backlinks_to_page(page, zettel_service)
+        logger.debug("Finished %s transformations", page.file.src_path)
 
         return processed_md

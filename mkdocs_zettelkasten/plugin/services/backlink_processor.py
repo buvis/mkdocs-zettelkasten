@@ -1,9 +1,14 @@
+import logging
 from collections import defaultdict
 from collections.abc import Iterable
 
 from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
 
 from .zettel_store import ZettelStore
+
+logger = logging.getLogger(
+    __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
+)
 
 
 class BacklinkProcessor:
@@ -19,6 +24,12 @@ class BacklinkProcessor:
                 target_zettel = store.get_by_partial_path(normalized_link)
 
                 if target_zettel:
+                    logger.debug(
+                        "Link from %s to %s found and added to %s's backlinks.",
+                        zettel.id,
+                        target_zettel.id,
+                        target_zettel.id,
+                    )
                     backlinks[normalized_link].append(zettel)
 
         return backlinks

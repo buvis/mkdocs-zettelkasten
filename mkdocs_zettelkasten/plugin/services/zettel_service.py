@@ -51,8 +51,13 @@ class ZettelService:
         if zettel_for_page:
             enriched_page.meta["zettel"] = zettel_for_page
             enriched_page.meta["is_zettel"] = True
+            logger.debug("Added zettel to %s's metadata.", page.file.src_path)
         else:
             enriched_page.meta["is_zettel"] = False
+            logger.debug(
+                "Skipped adding zettel to %s's metadata, as no zettel was found.",
+                page.file.src_path,
+            )
 
         return enriched_page
 

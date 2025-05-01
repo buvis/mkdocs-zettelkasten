@@ -6,11 +6,16 @@ if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
     from mkdocs.structure.files import Files
 
+import logging
 from pathlib import Path
 from typing import Any
 
 from mkdocs_zettelkasten.plugin.utils.jinja_utils import create_jinja_environment
 from mkdocs_zettelkasten.plugin.utils.metadata_utils import extract_file_metadata
+
+logger = logging.getLogger(
+    __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
+)
 
 
 class TagsService:
@@ -30,17 +35,29 @@ class TagsService:
         """
         self.tags_filename = Path(config.get("tags_filename", "tags.md"))
         self.tags_folder = Path(config.get("tags_folder", ".build"))
+
+        logger.debug(
+            "Configuring TagsService: tags_filename=%s, tags_folder=%s",
+            self.tags_filename,
+            self.tags_folder,
+        )
         if not self.tags_folder.is_absolute():
             self.tags_folder = Path(config["docs_dir"]).parent / self.tags_folder
+            logger.debug(
+                "Resolved relative tags_folder to absolute path: %s", self.tags_folder
+            )
         if config.get("tags_template"):
             self.tags_template = Path(config["tags_template"])
+            logger.debug("Using custom tags_template: %s", self.tags_template)
         if not self.tags_folder.exists():
             self.tags_folder.mkdir(parents=True)
+            logger.info("Created tags_folder: %s", self.tags_folder)
 
         # this is just to be safe before rewriting methods using config
         self.config = config
 
     def process_files(self, files: Files) -> None:
+        logger.info("Processing %d files for tag extraction.", len(files))
         self.process_metadata(files, self.config)
         self.generate_tags_file()
         self.add_tags_file_to_build(files, self.config)
@@ -79,6 +96,7 @@ class TagsService:
             use_directory_urls=False,
         )
         files.append(new_file)
+        logger.info("List of pages per tag added as %s", new_file.src_path)
 
     def _create_tag_map(self) -> dict[str, list[dict[str, Any]]]:
         """
@@ -91,6 +109,10 @@ class TagsService:
             if tags := meta.get("tags"):
                 for tag in tags:
                     tag_map[tag].append(meta)
+
+        logger.info(
+            "Found %d unique tags: %s", len(tag_map.keys()), ", ".join(tag_map.keys())
+        )
         return dict(tag_map)
 
     def _render_tags_template(self, tag_map: dict[str, list[dict[str, Any]]]) -> str:
