@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -69,6 +70,16 @@ def adapt_page_links_to_zettels(
 
         return f"[{title}]({url})"
 
-    markdown = WIKI_LINK.sub(process_match, markdown)
+    # Split markdown into alternating segments (non-code/code)
+    code_block_pattern = re.compile(r"```", re.DOTALL)
+    parts = code_block_pattern.split(markdown)
 
-    return MD_LINK.sub(process_match, markdown)
+    processed_parts = []
+    for i, original_part in enumerate(parts):
+        processed_part = original_part
+        if i % 2 == 0:  # Process even-indexed non-code segments
+            processed_part = WIKI_LINK.sub(process_match, processed_part)
+            processed_part = MD_LINK.sub(process_match, processed_part)
+        processed_parts.append(processed_part)
+
+    return "```".join(processed_parts)
