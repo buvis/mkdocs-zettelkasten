@@ -48,16 +48,19 @@ class ZettelkastenPlugin(BasePlugin):
         self.zettel_service = ZettelService()
         self.page_transformer = PageTransformer()
         self._initialize_logger()
+        self.logger.debug("Initialized ZettelkastenPlugin with services and logger.")
 
     def on_config(self, config: MkDocsConfig) -> None:
         self.logger.setLevel(self.config["log_level"])
         self.logger.addHandler(self._create_logging_handler())
         self.tags_service.configure(config)
+        self.logger.info("Configured ZettelkastenPlugin with MkDocs config.")
 
     def on_files(self, files: Files, config: MkDocsConfig) -> None:
         _ = config
         self.zettel_service.process_files(files, config)
         self.tags_service.process_files(files)
+        self.logger.info("Processed %d files in on_files hook.", len(files))
 
     def on_page_markdown(
         self,
@@ -66,13 +69,17 @@ class ZettelkastenPlugin(BasePlugin):
         config: MkDocsConfig,
         files: Files,
     ) -> str | None:
-        return self.page_transformer.transform(
+        self.logger.debug("Transforming markdown for page: %s.", page.url)
+        transformed_markdown = self.page_transformer.transform(
             markdown,
             page,
             config,
             files,
             self.zettel_service,
         )
+        self.logger.debug("Completed markdown transformation for page: %s.", page.url)
+
+        return transformed_markdown
 
     def _initialize_logger(self) -> None:
         self.logger = logging.getLogger("mkdocs.plugins.zettelkasten")
