@@ -8,6 +8,12 @@ if TYPE_CHECKING:
 
     from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
 
+import logging
+
+logger = logging.getLogger(
+    __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
+)
+
 
 class ZettelStore:
     """Storage for zettels with efficient lookup capabilities."""
@@ -43,3 +49,4 @@ class ZettelStore:
         sorted_zettels = sorted(zettels, key=lambda z: z.id)
         self._zettels = list(dict.fromkeys(sorted_zettels))
         self._rebuild_indexes()
+        logger.info("Zettel store updated with %d zettels.", len(sorted_zettels))
