@@ -67,10 +67,3 @@ def adapt_backlinks_to_page(page: Page, zettel_service: ZettelService) -> None:
     for link, source_zettels in zettel_service.backlinks.items():
         for zettel in source_zettels:
             add_backlink_to_target(link, page, zettel, zettel_service)
-
-    if not page.meta["is_zettel"]:
-        return
-
-    for link, source_zettels in zettel_service.backlinks.items():
-        for zettel in source_zettels:
-            add_backlink_to_target(link, page, zettel, zettel_service)
