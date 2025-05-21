@@ -47,8 +47,11 @@ jobs:
         run: |
           VERSION="${{ steps.get_version.outputs.version }}"
           PKG="mkdocs-zettelkasten"
-          EXISTS=$(curl -sS "https://test.pypi.org/pypi/$PKG/json" | jq -e ".releases | has(\"$VERSION\")" && echo "true" || echo "false")
-          echo "exists=$EXISTS" >> $GITHUB_OUTPUT
+          if curl -fsS "https://test.pypi.org/pypi/$PKG/json" | jq -e ".releases | has(\"$VERSION\")" > /dev/null; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Publish to Test PyPI
         if: steps.version_check.outputs.exists == 'false'
