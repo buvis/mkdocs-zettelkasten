@@ -52,11 +52,7 @@ jobs:
       - name: Install Poetry & dynamic versioning plugin
         run: |
           pip install "poetry>=1.8.0" "poetry-dynamic-versioning[plugin]>=1.0.0"
-      - name: Check version change
-        uses: raven-wing/did-python-package-version-change@v1
-        id: did-version-change
       - name: Download built package
-        if: steps.did-version-change.outputs.is_version_greater == 'true'
         uses: actions/download-artifact@v4
         with:
           name: Packages
@@ -75,10 +71,10 @@ jobs:
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
       - name: Publish to PyPI
-        if: steps.did-version-change.outputs.is_version_greater == 'true' && steps.version_check.outputs.exists == 'false'
+        if: steps.version_check.outputs.exists == 'false'
         uses: pypa/gh-action-pypi-publish@release/v1
       - name: Retry build by creating empty commit
-        if: steps.did-version-change.outputs.is_version_greater == 'true' && steps.version_check.outputs.exists == 'true'
+        if: steps.version_check.outputs.exists == 'true'
         run: |
           git config --global user.email "ci-bot@github.com"
           git config --global user.name "CI Bot"
@@ -109,11 +105,7 @@ jobs:
       - name: Install Poetry & dynamic versioning plugin
         run: |
           pip install "poetry>=1.8.0" "poetry-dynamic-versioning[plugin]>=1.0.0"
-      - name: Check version change
-        uses: raven-wing/did-python-package-version-change@v1
-        id: did-version-change
       - name: Download built package
-        if: steps.did-version-change.outputs.is_version_greater == 'true'
         uses: actions/download-artifact@v4
         with:
           name: Packages
@@ -132,12 +124,12 @@ jobs:
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
       - name: Publish to Test PyPI
-        if: steps.did-version-change.outputs.is_version_greater == 'true' && steps.version_check.outputs.exists == 'false'
+        if: steps.version_check.outputs.exists == 'false'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
       - name: Retry build by creating empty commit
-        if: steps.did-version-change.outputs.is_version_greater == 'true' && steps.version_check.outputs.exists == 'true'
+        if: steps.version_check.outputs.exists == 'true'
         run: |
           git config --global user.email "ci-bot@github.com"
           git config --global user.name "CI Bot"
