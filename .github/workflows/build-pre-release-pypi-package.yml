@@ -70,7 +70,6 @@ jobs:
         env:
           PIP_DISABLE_PIP_VERSION_CHECK: 1
 
-      # --- Automatic retry on version conflict ---
       - name: Retry build by creating empty commit
         if: steps.version_check.outputs.exists == 'true'
         run: |
@@ -79,12 +78,10 @@ jobs:
           git commit --allow-empty -m "chore: retry build to generate new version"
           git push
 
-      # Optional: Remove build artifacts from the runner
       - name: Clean up local build artifacts
         if: always()
         run: rm -rf dist/*
 
-      # Post-job: Delete workflow artifacts from GitHub
       - name: Delete all workflow artifacts
         if: always()
         uses: geekyeggo/delete-artifact@v5
