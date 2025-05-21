@@ -70,13 +70,12 @@ jobs:
         env:
           PIP_DISABLE_PIP_VERSION_CHECK: 1
 
-      - name: Retry build by creating empty commit
+      - name: Version exists in PyPI
         if: steps.version_check.outputs.exists == 'true'
-        run: |
-          git config --global user.email "ci-bot@github.com"
-          git config --global user.name "CI Bot"
-          git commit --allow-empty -m "chore: retry build to generate new version"
-          git push
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.setFailed('This version was already published to PyPI!')
 
       - name: Clean up local build artifacts
         if: always()
