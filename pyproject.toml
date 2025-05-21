@@ -1,21 +1,18 @@
 [project]
 name = "mkdocs-zettelkasten"
-version = "0.4.0"
 description = "Add Zettelkasten features to MkDocs"
-authors = [
-    {name = "Tomáš Bouška",email = "tomas@buvis.net"}
-]
-license = {text = "MIT"}
+authors = [{ name = "Tomáš Bouška", email = "tomas@buvis.net" }]
+license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
-    "mkdocs (==1.6.1)",
-    "jinja2 (==3.1.6)",
-    "gitpython (==3.1.44)",
-    "pymdown-extensions (==10.15)",
-    "PyYAML (==6.0.2)",
-    "tzlocal (==5.3.1)",
-    "colorlog (==6.9.0)",
+  "mkdocs (==1.6.1)",
+  "jinja2 (==3.1.6)",
+  "gitpython (==3.1.44)",
+  "pymdown-extensions (==10.15)",
+  "PyYAML (==6.0.2)",
+  "tzlocal (==5.3.1)",
+  "colorlog (==6.9.0)",
 ]
 
 [project.entry-points."mkdocs.plugins"]
@@ -25,11 +22,29 @@ zettelkasten = "mkdocs_zettelkasten.plugin.plugin:ZettelkastenPlugin"
 zettelkasten-solarized-light = "mkdocs_zettelkasten.themes.solarized_light"
 
 [build-system]
-requires = ["poetry-core==2.1.3"]
+requires = ["poetry-core==2.1.3", "poetry-dynamic-versioning[plugin]==1.8.2"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "mkdocs-zettelkasten"
+version = "0.0.0"
+dynamic = ["version"]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.5"
+debugpy = "^1.8.14"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "pep440"
+format-jinja = """
+{%- if distance == 0 -%}
+{{ base }}
+{%- else -%}
+{{ base }}+{{ branch | replace("-", "_") }}.{{ distance }}.g{{ commit }}
+{%- endif -%}
+"""
 
 [tool.ruff.lint]
 select = ["ALL"]
