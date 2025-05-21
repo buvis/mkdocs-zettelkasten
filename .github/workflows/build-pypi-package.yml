@@ -68,7 +68,7 @@ jobs:
         id: version_check
         run: |
           VERSION="${{ steps.get_version.outputs.version }}"
-          PKG="your-package"
+          PKG="mkdocs-zettelkasten"
           EXISTS=$(curl -sS "https://pypi.org/pypi/$PKG/json" | jq -e ".releases | has(\"$VERSION\")" && echo "true" || echo "false")
           echo "exists=$EXISTS" >> $GITHUB_OUTPUT
       - name: Publish to PyPI
@@ -122,7 +122,7 @@ jobs:
         id: version_check
         run: |
           VERSION="${{ steps.get_version.outputs.version }}"
-          PKG="your-package"
+          PKG="mkdocs-zettelkasten"
           EXISTS=$(curl -sS "https://test.pypi.org/pypi/$PKG/json" | jq -e ".releases | has(\"$VERSION\")" && echo "true" || echo "false")
           echo "exists=$EXISTS" >> $GITHUB_OUTPUT
       - name: Publish to Test PyPI
