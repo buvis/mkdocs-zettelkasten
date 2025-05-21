@@ -1,1 +1,1 @@
-mkdocs-zettelkasten==0.4.0
+mkdocs-zettelkasten==0.4.1
