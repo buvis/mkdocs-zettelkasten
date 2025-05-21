@@ -40,13 +40,7 @@ debugpy = "^1.8.14"
 enable = true
 vcs = "git"
 style = "pep440"
-format-jinja = """
-{%- if distance == 0 -%}
-{{ base }}
-{%- else -%}
-{{ base }}+{{ branch | replace("-", "_") }}.{{ distance }}.g{{ commit }}
-{%- endif -%}
-"""
+format-jinja = "{% if distance == 0 %}{{ base }}{% else %}{{ base }}+{{ distance }}.{{ commit }}{% endif %}"
 
 [tool.ruff.lint]
 select = ["ALL"]
