@@ -25,7 +25,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.13"
       - name: Install Poetry & dynamic versioning plugin
         run: |
           pip install "poetry>=1.8.0" "poetry-dynamic-versioning[plugin]>=1.0.0"
@@ -48,7 +48,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.13"
       - name: Install Poetry & dynamic versioning plugin
         run: |
           pip install "poetry>=1.8.0" "poetry-dynamic-versioning[plugin]>=1.0.0"
@@ -102,7 +102,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.13"
       - name: Install Poetry & dynamic versioning plugin
         run: |
           pip install "poetry>=1.8.0" "poetry-dynamic-versioning[plugin]>=1.0.0"
