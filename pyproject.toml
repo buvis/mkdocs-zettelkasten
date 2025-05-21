@@ -41,6 +41,7 @@ enable = true
 vcs = "git"
 style = "pep440"
 bump = true
+format-jinja = "{% if distance == 0 %}{{ base }}{% else %}{{ base }}.dev{{ distance }}{% endif %}"
 
 [tool.ruff.lint]
 select = ["ALL"]
