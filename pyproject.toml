@@ -23,7 +23,7 @@ zettelkasten = "mkdocs_zettelkasten.plugin.plugin:ZettelkastenPlugin"
 zettelkasten-solarized-light = "mkdocs_zettelkasten.themes.solarized_light"
 
 [build-system]
-requires = ["poetry-core==2.1.3", "poetry-dynamic-versioning[plugin]==1.9.0"]
+requires = ["poetry-core==2.1.3", "poetry-dynamic-versioning[plugin]==1.9.1"]
 build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.poetry]
