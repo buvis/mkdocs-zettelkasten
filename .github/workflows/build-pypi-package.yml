@@ -82,7 +82,7 @@ jobs:
 
       - name: Version exists in PyPI
         if: steps.version_check.outputs.exists == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             core.setFailed('This version was already published to PyPI!')
