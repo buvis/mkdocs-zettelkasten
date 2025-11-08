@@ -33,7 +33,7 @@ version = "0.0.0"
 poetry-dynamic-versioning = { version = "==1.8.2", extras = ["plugin"] }
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.3.5"
+pytest = "^9.0.0"
 debugpy = "^1.8.14"
 
 [tool.poetry-dynamic-versioning]
