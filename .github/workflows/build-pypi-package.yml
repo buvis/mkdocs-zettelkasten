@@ -16,7 +16,7 @@ jobs:
     name: Build & verify package
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Needed for dynamic versioning to see all tags
 
@@ -42,7 +42,7 @@ jobs:
     if: github.event.action == 'published' || startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Check out code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
