@@ -17,19 +17,16 @@ def add_backlink_to_target(
     zettel_service: ZettelService,
 ) -> None:
     """
-    Adds a backlink to the target zettel if the given zettel links to the page.
+    Add a backlink to the target zettel if the link and page match.
 
-    This function checks if the zettel corresponds to the current page. If so,
-    it finds the target zettel referenced by the link and appends a backlink
-    entry to its backlinks list.
+    Parameters:
+    -----------
 
-    Args:
-        link (str): The link to the target zettel.
-        page (Page): The current MkDocs page.
-        zettel (Zettel): The zettel associated with the current page.
-        zettel_service (ZettelService): Service to retrieve zettels.
+        - link (str): The link to be processed.
+        - page (Page): The page containing the link.
+        - zettel (Zettel): The current zettel being processed.
+        - zettel_service (ZettelService): Service to get target zettel by partial path.
     """
-
     if zettel.id != page.meta["zettel"].id:
         return
 
@@ -53,14 +50,15 @@ def add_backlink_to_target(
 
 def adapt_backlinks_to_page(page: Page, zettel_service: ZettelService) -> None:
     """
-    Update backlinks for zettels that link to the current page.
+    Adapts backlinks to the specified page by adding them to the target Zettels.
 
-    :param page: The page whose backlinks should be updated.
-    :type page: Page
-    :param zettel_service: Service providing zettel and backlink information.
-    :type zettel_service: ZettelService
+    Parameters:
+    -----------
+
+        - page (Page): The Page object for which backlinks are being adapted.
+        - zettel_service (ZettelService): The ZettelService used to fetch Zettels and manage
+          backlinks.
     """
-
     if not page.meta["is_zettel"]:
         return
 
