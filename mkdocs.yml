@@ -6,7 +6,7 @@ site_url: https://buvis.github.io/mkdocs-zettelkasten/
 
 repo_name: buvis/mkdocs-zettelkasten
 repo_url: https://github.com/buvis/mkdocs-zettelkasten
-edit_uri: "edit/main/docs/"
+edit_uri: "edit/master/docs/"
 
 copyright: Copyright &copy; 2025 Tomáš Bouška
 
