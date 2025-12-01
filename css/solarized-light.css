@@ -1,0 +1,129 @@
+.bg-primary {
+  background-image: -webkit-gradient(linear,
+      left top,
+      left bottom,
+      from(#586e75),
+      to(#657b83));
+  background-image: linear-gradient(#586e75, #657b83);
+  background-repeat: no-repeat;
+}
+
+.file-header a,
+span {
+  color: #192062;
+}
+
+a.hidden-hyperlink {
+  text-decoration: none;
+}
+
+a.hidden-hyperlink:hover {
+  text-decoration: none;
+  cursor: default;
+}
+
+span[data-copy-value] {
+  cursor: copy;
+}
+
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #002b36;
+  color: #93a1a1;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: normal;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+[data-tooltip]:hover::after {
+  opacity: 1;
+}
+
+h1 {
+  color: #192062;
+}
+
+h1,
+h2,
+h3 {
+  padding-bottom: 0.2em;
+  border-bottom: 1px solid #eaeaea;
+  margin-bottom: 0.6em;
+}
+
+svg.clickable {
+  cursor: pointer;
+}
+
+.zettel {
+  margin-top: 1%;
+  margin-bottom: 1%;
+  padding: 0;
+  border: 1px solid lightgray;
+  border-radius: 7px;
+  background-color: #fcfbf3;
+}
+
+.file-header {
+  background-color: #f0e6c4;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  padding: 2.5em;
+  padding-top: 0.2em;
+  padding-bottom: 0.7em;
+  font-size: small;
+  color: #4a6888;
+}
+
+.file-header .row {
+  margin-top: 0.25em;
+}
+
+.file-header svg {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  font-size: inherit;
+  color: inherit;
+  vertical-align: -0.125em;
+  fill: currentColor;
+}
+
+.file-header .date {
+  padding-right: 0;
+}
+
+.file-body {
+  padding: 2em;
+  padding-top: 1em;
+  padding-bottom: 0;
+}
+
+.codehilite {
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  padding: 0.7em;
+  margin: 0.3em;
+  margin-bottom: 1rem;
+}
+
+.file-references {
+  padding-left: 1em;
+  padding-right: 1em;
+  font-style: italic;
+  font-size: small;
+  color: gray;
+}
