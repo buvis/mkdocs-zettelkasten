@@ -30,10 +30,10 @@ build-backend = "poetry_dynamic_versioning.backend"
 version = "0.0.0"
 
 [tool.poetry.requires-plugins]
-poetry-dynamic-versioning = { version = "==1.8.2", extras = ["plugin"] }
+poetry-dynamic-versioning = { version = "==1.9.1", extras = ["plugin"] }
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^9.0.0"
+pytest = {version = "^9.0.0", python = ">=3.10"}
 debugpy = "^1.8.14"
 
 [tool.poetry-dynamic-versioning]
