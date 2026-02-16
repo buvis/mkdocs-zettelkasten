@@ -26,6 +26,9 @@ zettelkasten-solarized-light = "mkdocs_zettelkasten.themes.solarized_light"
 requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
+[tool.hatch.build.targets.wheel]
+packages = ["mkdocs_zettelkasten"]
+
 [tool.hatch.version]
 source = "vcs"
 
