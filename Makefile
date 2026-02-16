@@ -1,19 +1,19 @@
 .PHONY: install update test run clean
 
 install:
-	poetry lock
-	poetry install
+	uv sync
 
 update:
-	poetry update
+	uv lock --upgrade
+	uv sync
 
 test:
-	poetry run pytest
+	uv run pytest
 
 run:
-	poetry run mkdocs serve --livereload
+	uv run mkdocs serve --livereload
 
 clean:
-	poetry env remove --all
+	rm -rf .venv
 	find . -name '*.pyc' -delete
 	find . -type d -name '__pycache__' -exec rm -r {} +
