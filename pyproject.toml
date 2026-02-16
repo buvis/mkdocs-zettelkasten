@@ -7,13 +7,13 @@ license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
-  "mkdocs (==1.6.1)",
-  "jinja2 (==3.1.6)",
-  "gitpython (==3.1.44)",
-  "pymdown-extensions (==10.15)",
-  "PyYAML (==6.0.2)",
-  "tzlocal (==5.3.1)",
-  "colorlog (==6.9.0)",
+  "mkdocs==1.6.1",
+  "jinja2==3.1.6",
+  "gitpython==3.1.46",
+  "pymdown-extensions==10.21",
+  "PyYAML==6.0.3",
+  "tzlocal==5.3.1",
+  "colorlog==6.10.1",
 ]
 
 [project.entry-points."mkdocs.plugins"]
@@ -23,25 +23,24 @@ zettelkasten = "mkdocs_zettelkasten.plugin.plugin:ZettelkastenPlugin"
 zettelkasten-solarized-light = "mkdocs_zettelkasten.themes.solarized_light"
 
 [build-system]
-requires = ["poetry-core==2.1.3", "poetry-dynamic-versioning[plugin]==1.8.2"]
-build-backend = "poetry_dynamic_versioning.backend"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
-[tool.poetry]
-version = "0.0.0"
+[tool.hatch.build.targets.wheel]
+packages = ["mkdocs_zettelkasten"]
 
-[tool.poetry.requires-plugins]
-poetry-dynamic-versioning = { version = "==1.8.2", extras = ["plugin"] }
+[tool.hatch.version]
+source = "vcs"
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.3.5"
-debugpy = "^1.8.14"
+[tool.hatch.version.raw-options]
+version_scheme = "python-simplified-semver"
+local_scheme = "no-local-version"
 
-[tool.poetry-dynamic-versioning]
-enable = true
-vcs = "git"
-style = "pep440"
-bump = true
-format-jinja = "{% if distance == 0 %}{{ base }}{% else %}{{ base }}.dev{{ distance }}{% endif %}"
+[dependency-groups]
+dev = [
+  "pytest>=9,<10; python_version >= '3.10'",
+  "debugpy>=1.8,<2",
+]
 
 [tool.ruff.lint]
 select = ["ALL"]

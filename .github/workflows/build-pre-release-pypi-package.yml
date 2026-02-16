@@ -1,5 +1,5 @@
 ---
-name: Build and upload pre-relase PyPI package
+name: Build and upload pre-release PyPI package
 
 on:
   push:
@@ -17,30 +17,28 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # Full history for dynamic versioning
+          fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
+          python-version: "3.14"
 
-      - name: Install Poetry and dynamic versioning plugin
-        run: |
-          pip install "poetry>=1.8.0" "poetry-dynamic-versioning[plugin]>=1.0.0"
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
 
-      - name: Install project dependencies
-        run: poetry install --no-interaction
+      - name: Build package
+        run: uv build
 
-      - name: Build package with dynamic version
-        run: poetry build -v
-        env:
-          PYTHON_KEYRING_BACKEND: keyring.backends.null.Keyring
-
-      - name: Get dynamic version
+      - name: Get version from built package
         id: get_version
-        run: echo "version=$(poetry version -s)" >> $GITHUB_OUTPUT
+        run: |
+          VERSION=$(ls dist/*.whl | head -1 | sed 's/.*-\([0-9][^-]*\)-.*/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Check if version exists on Test PyPI
         id: version_check
@@ -72,7 +70,7 @@ jobs:
 
       - name: Version exists in PyPI
         if: steps.version_check.outputs.exists == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             core.setFailed('This version was already published to PyPI!')
