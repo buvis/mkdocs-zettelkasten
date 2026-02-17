@@ -1,5 +1,7 @@
 import datetime
+from pathlib import Path
 from typing import Callable
+from unittest.mock import patch
 
 import pytest
 import tzlocal
@@ -36,56 +38,87 @@ title: Test with no ID
 # Test content"""
 
 
+def _ts(year: int, month: int = 1, day: int = 1) -> float:
+    """Helper to create a UTC timestamp from a date."""
+    return datetime.datetime(year, month, day, tzinfo=local_tz).timestamp()
+
+
 def test_last_update_from_frontmatter(
-    zettel_factory: Callable[[str, datetime.datetime], Zettel],
+    zettel_factory: Callable[[str, float], Zettel],
 ) -> None:
-    zettel = zettel_factory(
-        LAST_UPDATE_CONTENT,
-        datetime.datetime(2022, 1, 1, tzinfo=local_tz),
-    )
+    zettel = zettel_factory(LAST_UPDATE_CONTENT, _ts(2022))
     assert zettel.last_update_date == "2022-12-31"
 
 
 def test_last_update_from_date(
-    zettel_factory: Callable[[str, datetime.datetime], Zettel],
+    zettel_factory: Callable[[str, float], Zettel],
 ) -> None:
-    zettel = zettel_factory(
-        DATE_CONTENT,
-        datetime.datetime(2022, 1, 1, tzinfo=local_tz),
-    )
+    zettel = zettel_factory(DATE_CONTENT, _ts(2022))
     assert zettel.last_update_date == "2022-11-30"
 
 
 def test_last_update_from_id(
-    zettel_factory: Callable[[str, datetime.datetime], Zettel],
+    zettel_factory: Callable[[str, float], Zettel],
 ) -> None:
-    zettel = zettel_factory(ID_CONTENT, datetime.datetime(2022, 1, 1, tzinfo=local_tz))
+    zettel = zettel_factory(ID_CONTENT, _ts(2022))
     assert zettel.last_update_date == "2023-05-20"
 
 
 def test_last_update_fail_on_missing_id(
-    zettel_factory: Callable[[str, datetime.datetime], Zettel],
+    zettel_factory: Callable[[str, float], Zettel],
 ) -> None:
     with pytest.raises(ZettelFormatError, match="Missing zettel ID"):
-        zettel_factory(EMPTY_ID_CONTENT, datetime.datetime(2022, 1, 1, tzinfo=local_tz))
+        zettel_factory(EMPTY_ID_CONTENT, _ts(2022))
 
 
 def test_override_by_modification_date(
-    zettel_factory: Callable[[str, datetime.datetime], Zettel],
+    zettel_factory: Callable[[str, float], Zettel],
 ) -> None:
-    zettel = zettel_factory(
-        LAST_UPDATE_CONTENT,
-        datetime.datetime(2024, 1, 1, tzinfo=local_tz),
-    )
-    assert (
-        zettel.last_update_date == "2022-12-31"
-    )  # CORRECT: last_update date always wins
+    zettel = zettel_factory(LAST_UPDATE_CONTENT, _ts(2024))
+    assert zettel.last_update_date == "2022-12-31"  # last_update always wins
 
-    zettel = zettel_factory(
-        DATE_CONTENT,
-        datetime.datetime(2024, 1, 1, tzinfo=local_tz),
-    )
+    zettel = zettel_factory(DATE_CONTENT, _ts(2024))
     assert zettel.last_update_date == "2024-01-01"
 
-    zettel = zettel_factory(ID_CONTENT, datetime.datetime(2024, 1, 1, tzinfo=local_tz))
+    zettel = zettel_factory(ID_CONTENT, _ts(2024))
     assert zettel.last_update_date == "2024-01-01"
+
+
+def test_uses_git_revision_date_when_tracked(tmp_path: Path) -> None:
+    file_path = tmp_path / "test.md"
+    file_path.write_text(ID_CONTENT)
+    git_date = datetime.datetime(2025, 6, 15, 12, 0, 0, tzinfo=datetime.timezone.utc)
+
+    with (
+        patch(
+            "mkdocs_zettelkasten.plugin.entities.zettel.GitUtil.is_tracked",
+            return_value=True,
+        ),
+        patch(
+            "mkdocs_zettelkasten.plugin.entities.zettel.GitUtil.get_revision_date_for_file",
+            return_value=git_date,
+        ),
+    ):
+        zettel = Zettel(file_path, str(file_path.relative_to(tmp_path)))
+
+    assert zettel.last_update_date == "2025-06-15"
+
+
+def test_falls_back_to_mtime_when_git_returns_none(tmp_path: Path) -> None:
+    file_path = tmp_path / "test.md"
+    file_path.write_text(ID_CONTENT)
+
+    with (
+        patch(
+            "mkdocs_zettelkasten.plugin.entities.zettel.GitUtil.is_tracked",
+            return_value=True,
+        ),
+        patch(
+            "mkdocs_zettelkasten.plugin.entities.zettel.GitUtil.get_revision_date_for_file",
+            return_value=None,
+        ),
+    ):
+        zettel = Zettel(file_path, str(file_path.relative_to(tmp_path)))
+
+    # falls back to real file mtime — just verify it doesn't crash and has a date
+    assert zettel.last_update_date

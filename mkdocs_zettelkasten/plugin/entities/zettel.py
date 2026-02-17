@@ -200,25 +200,17 @@ class Zettel:
 
     def _get_revision_date(self) -> datetime.datetime:
         """Gets revision date from VCS or filesystem."""
-        if self._is_version_controlled():
-            return GitUtil().get_revision_date_for_file(str(self.path))
+        if GitUtil.is_tracked(str(self.path)):
+            git_date = GitUtil().get_revision_date_for_file(str(self.path))
+            if git_date is not None:
+                return git_date
 
+        return self._get_mtime()
+
+    def _get_mtime(self) -> datetime.datetime:
+        """Gets modification time from filesystem."""
         st_mtime = self.path.stat().st_mtime
-        if isinstance(st_mtime, (int, float)):
-            return datetime.datetime.fromtimestamp(st_mtime, tz=local_tz)
-
-        if isinstance(st_mtime, datetime.datetime):
-            if st_mtime.tzinfo is None:
-                st_mtime = st_mtime.replace(tzinfo=local_tz)
-            return st_mtime
-
-        logger.error("Unexpected type for st_mtime: %s", type(st_mtime))
-        msg = f"Unexpected type for st_mtime: {type(st_mtime)}"
-        raise TypeError(msg)
-
-    def _is_version_controlled(self) -> bool:
-        """Checks if file is under version control."""
-        return any(host in str(self.path) for host in ["//github.com", "//gitlab.com"])
+        return datetime.datetime.fromtimestamp(st_mtime, tz=local_tz)
 
 
 class ReadState:
