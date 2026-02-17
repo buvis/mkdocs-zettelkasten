@@ -17,7 +17,6 @@ from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
 from mkdocs_zettelkasten.plugin.utils.git_utils import GitUtil
 from mkdocs_zettelkasten.plugin.utils.patterns import MD_LINK, WIKI_LINK
 
-
 logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
 )
@@ -67,8 +66,12 @@ class Zettel:
         meta = self._parse_metadata(header)
         self._extract_links(body)
         self._set_core_metadata(meta, self._find_alt_title(body))
-        logger.info("Successfully initialized zettel %s (ID: %s, Title: %s)",
-                   self.rel_path, self.id, self.title)
+        logger.info(
+            "Successfully initialized zettel %s (ID: %s, Title: %s)",
+            self.rel_path,
+            self.id,
+            self.title,
+        )
 
     def _read_header_and_body(self) -> tuple[list[str], list[str]]:
         """Reads and separates YAML header from markdown body."""
@@ -118,7 +121,9 @@ class Zettel:
             meta = yaml.safe_load("".join(header)) or {}
 
             if not isinstance(meta, dict):
-                logger.error("Invalid YAML structure in %s: not a dictionary", self.path)
+                logger.error(
+                    "Invalid YAML structure in %s: not a dictionary", self.path
+                )
                 msg = "Invalid YAML structure"
                 raise ZettelFormatError(msg)
 
@@ -152,8 +157,11 @@ class Zettel:
         self.links.extend(wiki_links)
         self.links.extend(markdown_links)
 
-        logger.debug("Extracted %d wiki links and %d markdown links",
-                    len(wiki_links), len(markdown_links))
+        logger.debug(
+            "Extracted %d wiki links and %d markdown links",
+            len(wiki_links),
+            len(markdown_links),
+        )
 
     def _set_core_metadata(self, meta: dict, alt_title: str) -> None:
         """Sets fundamental metadata fields."""
@@ -249,6 +257,8 @@ class ReadState:
     def _validate_header(self) -> None:
         """Validates header termination."""
         if self.divider_count < Zettel.COUNT_HEADER_DIVIDERS:
-            logger.error("Unclosed YAML header (found only %d dividers)", self.divider_count)
+            logger.error(
+                "Unclosed YAML header (found only %d dividers)", self.divider_count
+            )
             msg = "Unclosed YAML header"
             raise ZettelFormatError(msg)

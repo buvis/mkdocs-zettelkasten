@@ -40,13 +40,14 @@ local_scheme = "no-local-version"
 dev = [
   "pytest>=9,<10; python_version >= '3.10'",
   "debugpy>=1.8,<2",
+  "ruff>=0.11,<1",
 ]
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D", "INP", "E501", "T201", "COM812"]
+ignore = ["D", "INP", "E501", "T201", "COM812", "ANN", "FA102", "PLC0415", "TRY400", "PLR0913"]
 unfixable = ["B"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*.py" = ["S101"]
-"**/test_*.py" = ["S101"]
+"**/test_*.py" = ["S101", "ARG005", "PLR2004", "FBT", "SLF001", "S108"]

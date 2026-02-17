@@ -2,13 +2,14 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 from mkdocs_zettelkasten.plugin.services.validation_service import (
-    ValidationIssue,
     ValidationService,
 )
 
 
 class TestValidationService:
-    def _make_zettel(self, zettel_id: int, rel_path: str, links: list[str] | None = None):
+    def _make_zettel(
+        self, zettel_id: int, rel_path: str, links: list[str] | None = None
+    ):
         z = MagicMock()
         z.id = zettel_id
         z.rel_path = rel_path
@@ -24,18 +25,21 @@ class TestValidationService:
         return svc
 
     def _make_partial_path_lookup(self, zettels):
-        def lookup(partial, file_suffix=".md"):
+        def lookup(partial, _file_suffix=".md"):
             for z in zettels:
                 if partial in z.rel_path:
                     return z
             return None
+
         return lookup
 
     def test_no_issues_when_all_linked(self, tmp_path: Path) -> None:
         z1 = self._make_zettel(1, "a.md", links=["b"])
         z2 = self._make_zettel(2, "b.md", links=["a"])
 
-        svc = self._make_zettel_service([z1, z2], backlinks={"a.md": [z2], "b.md": [z1]})
+        svc = self._make_zettel_service(
+            [z1, z2], backlinks={"a.md": [z2], "b.md": [z1]}
+        )
 
         vs = ValidationService()
         vs.output_folder = tmp_path
@@ -105,7 +109,9 @@ class TestValidationService:
         assert issues[0].severity == "error"
 
     def test_external_links_not_flagged(self, tmp_path: Path) -> None:
-        z1 = self._make_zettel(1, "a.md", links=["https://example.com", "#anchor", "mailto:x@y.com"])
+        z1 = self._make_zettel(
+            1, "a.md", links=["https://example.com", "#anchor", "mailto:x@y.com"]
+        )
 
         svc = self._make_zettel_service([z1], backlinks={})
 

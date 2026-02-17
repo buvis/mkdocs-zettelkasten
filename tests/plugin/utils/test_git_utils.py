@@ -36,7 +36,8 @@ class TestIsTracked:
 
             assert GitUtil.is_tracked("/repo/some/path.md") is True
             mock_repo_cls.assert_called_once_with(
-                "/repo/some/path.md", search_parent_directories=True,
+                "/repo/some/path.md",
+                search_parent_directories=True,
             )
 
     def test_returns_false_for_untracked_file(self) -> None:

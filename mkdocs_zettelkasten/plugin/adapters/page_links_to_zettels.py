@@ -39,7 +39,9 @@ def adapt_page_links_to_zettels(
         title = m.groupdict().get("title", url)
 
         for f in files:
-            url_with_suffix = url + file_suffix if not url.endswith(file_suffix) else url
+            url_with_suffix = (
+                url + file_suffix if not url.endswith(file_suffix) else url
+            )
 
             if url_with_suffix in f.src_path:
                 if f.page and (

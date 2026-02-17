@@ -22,10 +22,8 @@ class BacklinkProcessor:
         backlinks = defaultdict(list)
 
         for zettel in store.zettels:
-            for normalized_link in cls._normalize_links(zettel.links, file_suffix):
-                target_zettel = store.get_by_partial_path(
-                    normalized_link, file_suffix
-                )
+            for normalized_link in cls.normalize_links(zettel.links, file_suffix):
+                target_zettel = store.get_by_partial_path(normalized_link, file_suffix)
 
                 if target_zettel:
                     logger.debug(
@@ -39,9 +37,7 @@ class BacklinkProcessor:
         return backlinks
 
     @staticmethod
-    def _normalize_links(
-        links: Iterable[str], file_suffix: str = ".md"
-    ) -> set[str]:
+    def normalize_links(links: Iterable[str], file_suffix: str = ".md") -> set[str]:
         """Normalize links to consistent format with file suffix."""
         return {
             f"{link}{file_suffix}" if not link.endswith(file_suffix) else link

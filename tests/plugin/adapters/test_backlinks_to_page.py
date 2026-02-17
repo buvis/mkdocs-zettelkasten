@@ -1,8 +1,8 @@
 from unittest.mock import MagicMock
 
 from mkdocs_zettelkasten.plugin.adapters.backlinks_to_page import (
-    add_backlink_to_target,
     adapt_backlinks_to_page,
+    add_backlink_to_target,
 )
 
 

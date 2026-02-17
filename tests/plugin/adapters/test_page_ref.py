@@ -46,13 +46,13 @@ class TestGetPageRef:
 
     def test_no_ref_section(self) -> None:
         page = self._make_page()
-        md, ref = get_page_ref("# Title\nBody text", page, self._make_config())
+        _md, ref = get_page_ref("# Title\nBody text", page, self._make_config())
         assert ref is None
 
     def test_extracts_ref_section(self) -> None:
         page = self._make_page()
         content = "---\nid: 1\n---\n# Title\nBody\n---\nRef line 1\nRef line 2\n---"
-        md, ref = get_page_ref(content, page, self._make_config())
+        _md, ref = get_page_ref(content, page, self._make_config())
         assert ref is not None
         assert "Ref line 1" in page.meta["ref"]
         assert "Ref line 2" in page.meta["ref"]

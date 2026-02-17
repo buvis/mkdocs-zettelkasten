@@ -3,7 +3,6 @@ from unittest.mock import MagicMock, patch
 
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
 
-
 VALID_MD = "---\nid: 1\ndate: 2024-01-01\n---\n# Title\nBody\n"
 
 

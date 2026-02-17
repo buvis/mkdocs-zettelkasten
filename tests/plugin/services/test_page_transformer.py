@@ -37,7 +37,9 @@ class TestPageTransformer:
                 "mkdocs_zettelkasten.plugin.services.page_transformer.adapt_backlinks_to_page",
             ) as mock_backlinks,
         ):
-            result = transformer.transform("original", page, config, files, zettel_service)
+            result = transformer.transform(
+                "original", page, config, files, zettel_service
+            )
 
         assert result == "md3"
         mock_title.assert_called_once()

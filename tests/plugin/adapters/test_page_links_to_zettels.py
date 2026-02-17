@@ -59,9 +59,7 @@ class TestAdaptPageLinksToZettels:
         zettel_service = MagicMock()
 
         md = "text\n```\n[[should_not_change]]\n```\nafter"
-        result = adapt_page_links_to_zettels(
-            md, page, config, files, zettel_service
-        )
+        result = adapt_page_links_to_zettels(md, page, config, files, zettel_service)
         assert "[[should_not_change]]" in result
 
     def test_unresolved_md_link_keeps_text(self) -> None:

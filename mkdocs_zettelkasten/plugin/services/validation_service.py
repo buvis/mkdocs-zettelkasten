@@ -96,7 +96,7 @@ class ValidationService:
                 for link in zettel.links
                 if not link.startswith(("http://", "https://", "#", "mailto:"))
             ]
-            for link in backlink_processor_cls._normalize_links(
+            for link in backlink_processor_cls.normalize_links(
                 internal_links, self.file_suffix
             ):
                 target = zettel_service.store.get_by_partial_path(

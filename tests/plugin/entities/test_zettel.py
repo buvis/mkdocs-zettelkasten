@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Callable
 from unittest.mock import Mock, patch
 
 import pytest
@@ -50,7 +49,9 @@ title: Unclosed
 # Missing closing divider
 """
 
-BOM_CONTENT = "\ufeff---\nid: 20240101120000\ntitle: BOM Test\ndate: 2024-01-01\n---\nBody\n"
+BOM_CONTENT = (
+    "\ufeff---\nid: 20240101120000\ntitle: BOM Test\ndate: 2024-01-01\n---\nBody\n"
+)
 
 INVALID_YAML = '---\nkey: "unclosed string\n---\nBody\n'
 
