@@ -1,0 +1,82 @@
+/* Selenized dark palette overrides
+   https://github.com/jan-warchol/selenized */
+[data-theme="dark"] {
+  --bg-page: #103c48;
+  --bg-body-image: none;
+  --bg-zettel: #184956;
+  --bg-header: #1e5363;
+  --bg-accent: #153f4c;
+  --bg-code: #184956;
+  --bg-codehilite: #184956;
+  --bg-tooltip: #cad8d9;
+  --bg-kbd: #72898f;
+  --bg-img: #184956;
+
+  --text-primary: #adbcbc;
+  --text-link: #4695f7;
+  --text-header: #cad8d9;
+  --text-code: #adbcbc;
+  --text-muted: #72898f;
+  --text-tooltip: #103c48;
+  --text-kbd: #cad8d9;
+  --text-link-code: #4695f7;
+  --text-link-code-hover: #41c7b9;
+
+  --border-zettel: #2d5b69;
+  --border-heading: #2d5b69;
+  --border-accent: #2d5b69;
+  --border-code: #2d5b69;
+  --border-hr: #2d5b69;
+  --border-img: #2d5b69;
+
+  --nav-from: #184956;
+  --nav-to: #103c48;
+
+  --adm-note-text: #4695f7;
+  --adm-note-bg: #184956;
+  --adm-note-border: #4695f7;
+  --adm-warning-text: #dbb32d;
+  --adm-warning-bg: #184956;
+  --adm-warning-border: #dbb32d;
+  --adm-danger-text: #fa5750;
+  --adm-danger-bg: #184956;
+  --adm-danger-border: #fa5750;
+
+  --ch-highlight: #184956;
+  --ch-comment: #72898f;
+  --ch-error-border: #fa5750;
+  --ch-keyword: #75b938;
+  --ch-operator: #cad8d9;
+  --ch-preproc: #ed8649;
+  --ch-deleted: #fa5750;
+  --ch-error: #fa5750;
+  --ch-heading: #ed8649;
+  --ch-inserted: #75b938;
+  --ch-output: #72898f;
+  --ch-prompt: #4695f7;
+  --ch-subheading: #4695f7;
+  --ch-traceback: #fa5750;
+  --ch-type: #dbb32d;
+  --ch-number: #dbb32d;
+  --ch-string: #41c7b9;
+  --ch-attribute: #cad8d9;
+  --ch-builtin: #4695f7;
+  --ch-class: #4695f7;
+  --ch-constant: #dbb32d;
+  --ch-decorator: #ed8649;
+  --ch-entity: #ed8649;
+  --ch-exception: #ed8649;
+  --ch-function: #4695f7;
+  --ch-label: #cad8d9;
+  --ch-namespace: #cad8d9;
+  --ch-tag: #4695f7;
+  --ch-variable: #af88eb;
+  --ch-op-word: #75b938;
+  --ch-whitespace: #72898f;
+  --ch-string-escape: #ed8649;
+  --ch-string-interpol: #ed8649;
+  --ch-string-other: #41c7b9;
+  --ch-string-regex: #f275be;
+  --ch-linenos-special-text: #cad8d9;
+  --ch-linenos-special-bg: #184956;
+}

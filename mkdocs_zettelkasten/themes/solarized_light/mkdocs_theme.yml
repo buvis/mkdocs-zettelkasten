@@ -15,6 +15,8 @@ hljs_style: github
 navigation_depth: 2
 nav_style: primary
 
+color_scheme: solarized  # solarized or selenized
+
 analytics:
   gtag: null
 

@@ -1,0 +1,31 @@
+---
+title: Validation Report
+---
+
+# Validation Report
+
+**{{ total }}** issue{{ "s" if total != 1 else "" }} found.
+
+{% if errors %}
+## Errors
+
+{% for issue in errors %}
+* **{{ issue.path }}** — {{ issue.message }}
+{% endfor %}
+{% endif %}
+
+{% if warnings %}
+## Warnings
+
+{% for issue in warnings %}
+* **{{ issue.path }}** — {{ issue.message }}
+{% endfor %}
+{% endif %}
+
+{% if info %}
+## Info
+
+{% for issue in info %}
+* **{{ issue.path }}** — {{ issue.message }}
+{% endfor %}
+{% endif %}

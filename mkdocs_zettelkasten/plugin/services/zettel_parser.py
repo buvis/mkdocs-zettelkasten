@@ -14,7 +14,10 @@ class ZettelParser:
     """Converts Markdown files into validated Zettel instances."""
 
     @staticmethod
-    def parse_files(files: Files) -> tuple[list[Zettel], list[File]]:
+    def parse_files(
+        files: Files,
+        zettel_config: dict[str, str] | None = None,
+    ) -> tuple[list[Zettel], list[File]]:
         """
         Returns:
             Tuple of (valid_zettels, invalid_files)
@@ -28,7 +31,11 @@ class ZettelParser:
             if not file.abs_src_path:
                 continue
             try:
-                zettel = Zettel(Path(file.abs_src_path), file.src_path)
+                zettel = Zettel(
+                    Path(file.abs_src_path),
+                    file.src_path,
+                    zettel_config=zettel_config or {},
+                )
             except ValueError:
                 invalid_files.append(file)
                 logger.debug("Ignoring invalid zettel: %s", file.src_path)

@@ -1,3 +1,40 @@
+/* Theme toggle */
+(function() {
+    function getTheme() {
+        return document.documentElement.getAttribute('data-theme') || 'light';
+    }
+
+    function updateIcon() {
+        var icon = document.getElementById('theme-icon');
+        if (icon) {
+            icon.className = getTheme() === 'dark' ? 'fa fa-sun-o' : 'fa fa-moon-o';
+        }
+    }
+
+    function updateHljsTheme() {
+        var link = document.getElementById('hljs-theme');
+        if (!link) return;
+        var style = getTheme() === 'dark' ? link.dataset.darkStyle : link.dataset.lightStyle;
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/' + style + '.min.css';
+    }
+
+    function toggle(e) {
+        e.preventDefault();
+        var next = getTheme() === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        updateIcon();
+        updateHljsTheme();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        updateIcon();
+        updateHljsTheme();
+        var btn = document.getElementById('theme-toggle');
+        if (btn) btn.addEventListener('click', toggle);
+    });
+})();
+
 function getSearchTerm() {
     var sPageURL = window.location.search.substring(1);
     var sURLVariables = sPageURL.split('&');

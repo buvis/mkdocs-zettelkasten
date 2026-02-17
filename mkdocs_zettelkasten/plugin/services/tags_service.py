@@ -27,12 +27,14 @@ class TagsService:
         self.tags_filename: Path = Path("tags.md")
         self.tags_folder: Path = Path(".build")
         self.tags_template: Path | None = None
+        self.tags_key: str = "tags"
         self.metadata: list[dict[str, Any]] = []
 
-    def configure(self, config: MkDocsConfig) -> None:
+    def configure(self, config: MkDocsConfig, tags_key: str = "tags") -> None:
         """
         Configure paths and template from MkDocs config.
         """
+        self.tags_key = tags_key
         self.tags_filename = Path(config.get("tags_filename", "tags.md"))
         self.tags_folder = Path(config.get("tags_folder", ".build"))
 
@@ -106,7 +108,7 @@ class TagsService:
 
         tag_map = defaultdict(list)
         for meta in sorted(self.metadata, key=lambda x: x.get("year", 5000)):
-            if tags := meta.get("tags"):
+            if tags := meta.get(self.tags_key):
                 for tag in tags:
                     tag_map[tag].append(meta)
 

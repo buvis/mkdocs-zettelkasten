@@ -29,12 +29,19 @@ class ZettelService:
     def __init__(self) -> None:
         self.store = ZettelStore()
         self.backlinks: dict[str, list[Zettel]] = {}
+        self.invalid_files: list = []
+        self.zettel_config: dict[str, str] = {}
+
+    def configure(self, zettel_config: dict[str, str]) -> None:
+        self.zettel_config = zettel_config
 
     def process_files(self, files: Files, config: MkDocsConfig) -> None:
         """Main processing pipeline."""
         docs_dir = config["docs_dir"]
         logger.info("Scanning `%s` for zettels", docs_dir)
-        valid_zettels, _ = ZettelParser.parse_files(files)
+        valid_zettels, self.invalid_files = ZettelParser.parse_files(
+            files, self.zettel_config
+        )
         logger.info("Found %s zettels in `%s`", len(valid_zettels), docs_dir)
         self.store.update(valid_zettels)
         self.backlinks = BacklinkProcessor.process(self.store)
