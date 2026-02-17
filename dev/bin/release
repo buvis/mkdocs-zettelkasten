@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() { echo "Usage: release [--dry-run] [--pre <suffix>] [patch|minor|major]"; exit 1; }
+die() { echo "error: $1" >&2; exit 1; }
+
+bump_version() {
+  local ver="$1" part="$2"
+  IFS='.' read -r major minor patch <<< "$ver"
+  case "$part" in
+    major) echo "$((major + 1)).0.0" ;;
+    minor) echo "$major.$((minor + 1)).0" ;;
+    patch) echo "$major.$minor.$((patch + 1))" ;;
+  esac
+}
+
+dry_run=false
+pre_suffix=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --dry-run) dry_run=true; shift ;;
+    --pre) [[ $# -ge 2 ]] || usage; pre_suffix="$2"; shift 2 ;;
+    -*) usage ;;
+    *) break ;;
+  esac
+done
+
+part="${1:-}"
+
+# Get current version from latest v* tag
+old_tag=$(git tag -l 'v*' --sort=-v:refname | head -1)
+[[ -n "$old_tag" ]] || die "no v* tags found"
+old_ver="${old_tag#v}"
+
+# Strip any existing pre-release suffix to get base version
+base_ver="${old_ver%%[a-z]*}"
+
+if [[ -n "$part" ]]; then
+  [[ "$part" =~ ^(patch|minor|major)$ ]] || usage
+  new_base=$(bump_version "$base_ver" "$part")
+elif [[ -n "$pre_suffix" ]]; then
+  new_base="$base_ver"
+elif [[ "$old_ver" != "$base_ver" ]]; then
+  # Current version is pre-release; release as stable
+  new_base="$base_ver"
+else
+  usage
+fi
+
+new_ver="${new_base}${pre_suffix}"
+tag="v${new_ver}"
+
+if $dry_run; then
+  echo "$old_ver -> $new_ver (tag: $tag)"
+  exit 0
+fi
+
+[[ -z "$(git status --porcelain)" ]] || die "working tree is dirty"
+git tag -l "$tag" | grep -q . && die "tag $tag already exists"
+
+git tag "$tag"
+git push origin "$tag"
+
+echo "Released v$new_ver"
