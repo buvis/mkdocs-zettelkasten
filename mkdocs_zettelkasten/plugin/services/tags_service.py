@@ -30,11 +30,14 @@ class TagsService:
         self.tags_key: str = "tags"
         self.metadata: list[dict[str, Any]] = []
 
-    def configure(self, config: MkDocsConfig, tags_key: str = "tags") -> None:
+    def configure(
+        self, config: MkDocsConfig, tags_key: str = "tags", file_suffix: str = ".md"
+    ) -> None:
         """
         Configure paths and template from MkDocs config.
         """
         self.tags_key = tags_key
+        self.file_suffix = file_suffix
         self.tags_filename = Path(config.get("tags_filename", "tags.md"))
         self.tags_folder = Path(config.get("tags_folder", ".build"))
 
@@ -70,7 +73,7 @@ class TagsService:
         """
         self.metadata.clear()
         for file in files:
-            if file.src_path.endswith(".md"):
+            if file.src_path.endswith(self.file_suffix):
                 meta = extract_file_metadata(file.src_path, config["docs_dir"])
                 meta["src_path"] = file.src_path
 

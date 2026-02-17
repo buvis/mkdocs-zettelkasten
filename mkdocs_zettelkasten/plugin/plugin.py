@@ -55,6 +55,10 @@ class ZettelkastenPlugin(BasePlugin):
         ("editor_repo", config_options.Type(str, default="")),
         ("editor_branch", config_options.Type(str, default="main")),
         ("editor_docs_prefix", config_options.Type(str, default="docs")),
+        ("date_format", config_options.Type(str, default="%Y-%m-%d")),
+        ("icon_references", config_options.Type(str, default="fa fa-book")),
+        ("icon_backlinks", config_options.Type(str, default="fa fa-link")),
+        ("file_suffix", config_options.Type(str, default=".md")),
     )
 
     def __init__(self) -> None:
@@ -77,11 +81,19 @@ class ZettelkastenPlugin(BasePlugin):
             "tags_key": self.config["tags_key"],
             "id_format": self.config["id_format"],
             "timezone": tz,
+            "date_format": self.config["date_format"],
+            "file_suffix": self.config["file_suffix"],
         }
         self.zettel_service.configure(zettel_config)
-        self.tags_service.configure(config, tags_key=self.config["tags_key"])
+        self.tags_service.configure(
+            config,
+            tags_key=self.config["tags_key"],
+            file_suffix=self.config["file_suffix"],
+        )
         if self.config["validation_enabled"]:
-            self.validation_service.configure(config)
+            self.validation_service.configure(
+                config, file_suffix=self.config["file_suffix"]
+            )
         if self.config["editor_enabled"]:
             config["extra"]["editor_enabled"] = True
         self.logger.info("Configured ZettelkastenPlugin with MkDocs config.")
@@ -130,6 +142,10 @@ class ZettelkastenPlugin(BasePlugin):
                 "branch": self.config["editor_branch"],
                 "docs_prefix": self.config["editor_docs_prefix"],
             }
+        page.meta["icons"] = {
+            "references": self.config["icon_references"],
+            "backlinks": self.config["icon_backlinks"],
+        }
         self.logger.debug("Completed markdown transformation for page: %s.", page.url)
 
         return transformed_markdown

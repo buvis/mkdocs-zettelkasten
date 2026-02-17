@@ -84,6 +84,15 @@ def test_override_by_modification_date(
     assert zettel.last_update_date == "2024-01-01"
 
 
+def test_custom_date_format(
+    zettel_factory: Callable[..., Zettel],
+) -> None:
+    zettel = zettel_factory(
+        LAST_UPDATE_CONTENT, _ts(2022), zettel_config={"date_format": "%d/%m/%Y"}
+    )
+    assert zettel.last_update_date == "31/12/2022"
+
+
 def test_uses_git_revision_date_when_tracked(tmp_path: Path) -> None:
     file_path = tmp_path / "test.md"
     file_path.write_text(ID_CONTENT)

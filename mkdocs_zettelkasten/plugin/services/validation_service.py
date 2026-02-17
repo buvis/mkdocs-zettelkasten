@@ -30,11 +30,13 @@ class ValidationService:
         self.issues: dict[str, list[ValidationIssue]] = defaultdict(list)
         self.output_folder: Path = Path(".build")
         self.output_filename: Path = Path("validation.md")
+        self.file_suffix: str = ".md"
 
-    def configure(self, config: MkDocsConfig) -> None:
+    def configure(self, config: MkDocsConfig, file_suffix: str = ".md") -> None:
         self.output_folder = Path(config.get("tags_folder", ".build"))
         if not self.output_folder.is_absolute():
             self.output_folder = Path(config["docs_dir"]).parent / self.output_folder
+        self.file_suffix = file_suffix
         if not self.output_folder.exists():
             self.output_folder.mkdir(parents=True)
 
@@ -68,7 +70,9 @@ class ValidationService:
     def _check_orphans(self, zettel_service: Any) -> None:
         targeted_ids: set[int] = set()
         for link_path in zettel_service.backlinks:
-            target = zettel_service.store.get_by_partial_path(link_path)
+            target = zettel_service.store.get_by_partial_path(
+                link_path, self.file_suffix
+            )
             if target:
                 targeted_ids.add(target.id)
 
@@ -92,8 +96,12 @@ class ValidationService:
                 for link in zettel.links
                 if not link.startswith(("http://", "https://", "#", "mailto:"))
             ]
-            for link in backlink_processor_cls._normalize_links(internal_links):
-                target = zettel_service.store.get_by_partial_path(link)
+            for link in backlink_processor_cls._normalize_links(
+                internal_links, self.file_suffix
+            ):
+                target = zettel_service.store.get_by_partial_path(
+                    link, self.file_suffix
+                )
                 if not target:
                     self.issues[zettel.rel_path].append(
                         ValidationIssue(

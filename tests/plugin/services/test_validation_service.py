@@ -24,7 +24,7 @@ class TestValidationService:
         return svc
 
     def _make_partial_path_lookup(self, zettels):
-        def lookup(partial):
+        def lookup(partial, file_suffix=".md"):
             for z in zettels:
                 if partial in z.rel_path:
                     return z

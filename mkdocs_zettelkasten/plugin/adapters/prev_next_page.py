@@ -21,12 +21,13 @@ def get_prev_next_page(
     page: Page,
     files: Files,
     zettels: list[Zettel],
+    file_suffix: str = ".md",
 ) -> tuple[Page | None, Page | None]:
     """Determine previous and next pages for navigation with zettelkasten support."""
-    if _is_special_page(page):
-        return _handle_special_page(page, files, zettels)
+    if _is_special_page(page, file_suffix):
+        return _handle_special_page(page, files, zettels, file_suffix)
 
-    homepage_file = _find_homepage(files)
+    homepage_file = _find_homepage(files, file_suffix)
 
     if not page.meta.get("is_zettel"):
         return (None, None)
@@ -57,16 +58,17 @@ def get_prev_next_page(
     return (prev_page, next_page)
 
 
-def _is_special_page(page: Page) -> bool:
-    return page.file.src_path in {"index.md", "tags.md"}
+def _is_special_page(page: Page, file_suffix: str = ".md") -> bool:
+    return page.file.src_path in {f"index{file_suffix}", "tags.md"}
 
 
 def _handle_special_page(
     page: Page,
     files: Files,
     zettels: list[Zettel],
+    file_suffix: str = ".md",
 ) -> tuple[Page | None, Page | None]:
-    if page.file.src_path == "index.md" and zettels:
+    if page.file.src_path == f"index{file_suffix}" and zettels:
         first_zettel_file = _find_file_by_path(files, str(zettels[0].path))
         next_page = (
             first_zettel_file.page
@@ -78,8 +80,8 @@ def _handle_special_page(
     return (None, None)
 
 
-def _find_homepage(files: Files) -> File | str:
-    return next((f for f in files if f.src_path == "index.md"), "")
+def _find_homepage(files: Files, file_suffix: str = ".md") -> File | str:
+    return next((f for f in files if f.src_path == f"index{file_suffix}"), "")
 
 
 def _find_zettel_index(page: Page, zettels: list[Zettel]) -> int | None:

@@ -15,13 +15,17 @@ class BacklinkProcessor:
     """Manages backlink relationships between zettels."""
 
     @classmethod
-    def process(cls, store: ZettelStore) -> dict[str, list[Zettel]]:
+    def process(
+        cls, store: ZettelStore, file_suffix: str = ".md"
+    ) -> dict[str, list[Zettel]]:
         """Create mapping: target_path -> list_of_linking_files."""
         backlinks = defaultdict(list)
 
         for zettel in store.zettels:
-            for normalized_link in cls._normalize_links(zettel.links):
-                target_zettel = store.get_by_partial_path(normalized_link)
+            for normalized_link in cls._normalize_links(zettel.links, file_suffix):
+                target_zettel = store.get_by_partial_path(
+                    normalized_link, file_suffix
+                )
 
                 if target_zettel:
                     logger.debug(
@@ -35,6 +39,11 @@ class BacklinkProcessor:
         return backlinks
 
     @staticmethod
-    def _normalize_links(links: Iterable[str]) -> set[str]:
-        """Normalize links to consistent Markdown format."""
-        return {f"{link}.md" if not link.endswith(".md") else link for link in links}
+    def _normalize_links(
+        links: Iterable[str], file_suffix: str = ".md"
+    ) -> set[str]:
+        """Normalize links to consistent format with file suffix."""
+        return {
+            f"{link}{file_suffix}" if not link.endswith(file_suffix) else link
+            for link in links
+        }

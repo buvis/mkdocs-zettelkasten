@@ -28,6 +28,7 @@ def adapt_page_links_to_zettels(
     config: MkDocsConfig,
     files: Files,
     zettel_service: ZettelService,
+    file_suffix: str = ".md",
 ) -> str:
     """
     Adapt links in the markdown to point to zettels.
@@ -38,11 +39,11 @@ def adapt_page_links_to_zettels(
         title = m.groupdict().get("title", url)
 
         for f in files:
-            url_with_suffix = url + ".md" if not url.endswith(".md") else url
+            url_with_suffix = url + file_suffix if not url.endswith(file_suffix) else url
 
             if url_with_suffix in f.src_path:
                 if f.page and (
-                    title == url_with_suffix or title + ".md" == url_with_suffix
+                    title == url_with_suffix or title + file_suffix == url_with_suffix
                 ):
                     target_zettel = zettel_service.get_zettel_by_partial_path(
                         url_with_suffix

@@ -21,6 +21,10 @@ class TestZettelkastenPlugin:
             "editor_repo": "",
             "editor_branch": "main",
             "editor_docs_prefix": "docs",
+            "date_format": "%Y-%m-%d",
+            "icon_references": "fa fa-book",
+            "icon_backlinks": "fa fa-link",
+            "file_suffix": ".md",
         }
         return plugin
 
@@ -65,6 +69,8 @@ class TestZettelkastenPlugin:
         call_args = mock_cfg.call_args[0][0]
         assert call_args["id_key"] == "id"
         assert call_args["tags_key"] == "tags"
+        assert call_args["date_format"] == "%Y-%m-%d"
+        assert call_args["file_suffix"] == ".md"
 
     def test_on_config_passes_tags_key(self) -> None:
         plugin = self._make_plugin()
@@ -76,7 +82,7 @@ class TestZettelkastenPlugin:
         ):
             plugin.on_config(config)
 
-        mock_tags.assert_called_once_with(config, tags_key="tags")
+        mock_tags.assert_called_once_with(config, tags_key="tags", file_suffix=".md")
 
     def test_on_files_delegates(self) -> None:
         plugin = self._make_plugin()
@@ -106,3 +112,21 @@ class TestZettelkastenPlugin:
             result = plugin.on_page_markdown("original", page, config, files)
 
         assert result == "transformed"
+
+    def test_on_page_markdown_sets_icons_meta(self) -> None:
+        plugin = self._make_plugin()
+        page = MagicMock()
+        page.url = "/test/"
+        page.meta = {}
+        config = MagicMock()
+        files = MagicMock()
+
+        with patch.object(
+            plugin.page_transformer, "transform", return_value="transformed"
+        ):
+            plugin.on_page_markdown("original", page, config, files)
+
+        assert page.meta["icons"] == {
+            "references": "fa fa-book",
+            "backlinks": "fa fa-link",
+        }

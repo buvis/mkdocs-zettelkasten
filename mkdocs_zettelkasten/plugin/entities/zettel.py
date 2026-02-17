@@ -51,6 +51,7 @@ class Zettel:
         self._last_update_key = cfg.get("last_update_key", "last_update")
         self._id_format = cfg.get("id_format", r"^\d{14}$")
         self._tz = cfg.get("timezone") or tzlocal.get_localzone()
+        self._date_format = cfg.get("date_format", "%Y-%m-%d")
 
         self._initialize_zettel()
 
@@ -196,7 +197,7 @@ class Zettel:
                 self.rel_path,
             )
 
-        self.last_update_date = final_date.strftime("%Y-%m-%d")
+        self.last_update_date = final_date.strftime(self._date_format)
 
     def _get_initial_candidate_date(self, meta: dict) -> datetime.datetime:
         """Gets first valid date from metadata sources."""

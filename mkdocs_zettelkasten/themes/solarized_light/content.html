@@ -73,11 +73,11 @@
     {% if page and not page.is_homepage and (page.meta.ref or (page.meta.is_zettel and page.meta.zettel.backlinks)) %}
       <div class="file-references">
       {% if page.meta.ref %}
-        <h6><i class="fa fa-book" aria-hidden="true"></i><span class="sr-only">References</span></h6>
+        <h6><i class="{{ page.meta.icons.references }}" aria-hidden="true"></i><span class="sr-only">References</span></h6>
         {{page.meta.ref}}
       {% endif %}
       {% if page.meta.is_zettel and page.meta.zettel.backlinks %}
-        <h6><i class="fa fa-link" aria-hidden="true"></i><span class="sr-only">Backlinks</span></h6>
+        <h6><i class="{{ page.meta.icons.backlinks }}" aria-hidden="true"></i><span class="sr-only">Backlinks</span></h6>
         <ul>
           {% for link in page.meta.zettel.backlinks %}
             <li><a href="{{link.url|url}}">{{link.title}}</a></li>

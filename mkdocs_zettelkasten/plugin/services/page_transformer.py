@@ -40,11 +40,13 @@ class PageTransformer:
         page = zettel_service.add_zettel_to_page(page)
         markdown = adapt_page_title(markdown, page, zettel_service)
         markdown = adapt_page_links_to_zettels(
-            markdown, page, config, files, zettel_service
+            markdown, page, config, files, zettel_service,
+            file_suffix=zettel_service.file_suffix,
         )
         processed_md, page.meta["ref"] = get_page_ref(markdown, page, config)
         page.previous_page, page.next_page = get_prev_next_page(
-            page, files, zettel_service.get_zettels()
+            page, files, zettel_service.get_zettels(),
+            file_suffix=zettel_service.file_suffix,
         )
         adapt_backlinks_to_page(page, zettel_service)
         logger.debug("Finished %s transformations", page.file.src_path)

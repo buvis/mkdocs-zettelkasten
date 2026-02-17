@@ -8,8 +8,10 @@ from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
 
 
 @pytest.fixture
-def zettel_factory(tmp_path: Path) -> Callable[[str, float], Zettel]:
-    def _factory(file_content: str, mtime: float) -> Zettel:
+def zettel_factory(tmp_path: Path) -> Callable[..., Zettel]:
+    def _factory(
+        file_content: str, mtime: float, zettel_config: dict | None = None
+    ) -> Zettel:
         file_path = tmp_path / "test.md"
         file_path.write_text(file_content)
         mock_stat = Mock()
@@ -22,6 +24,8 @@ def zettel_factory(tmp_path: Path) -> Callable[[str, float], Zettel]:
                 return_value=False,
             ),
         ):
-            return Zettel(file_path, str(file_path.relative_to(tmp_path)))
+            return Zettel(
+                file_path, str(file_path.relative_to(tmp_path)), zettel_config
+            )
 
     return _factory

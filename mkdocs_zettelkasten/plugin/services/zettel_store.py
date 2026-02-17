@@ -34,9 +34,11 @@ class ZettelStore:
         """Retrieve zettel by filesystem path."""
         return self._path_index.get(path)
 
-    def get_by_partial_path(self, partial_path: str) -> Zettel | None:
+    def get_by_partial_path(
+        self, partial_path: str, file_suffix: str = ".md"
+    ) -> Zettel | None:
         """Retrieve zettel by partial filesystem path."""
-        partial_path.removesuffix(".md")
+        partial_path = partial_path.removesuffix(file_suffix)
 
         for zettel in self.zettels:
             if partial_path in str(zettel.path):

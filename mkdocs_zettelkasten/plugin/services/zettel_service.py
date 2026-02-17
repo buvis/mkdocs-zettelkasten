@@ -31,9 +31,11 @@ class ZettelService:
         self.backlinks: dict[str, list[Zettel]] = {}
         self.invalid_files: list = []
         self.zettel_config: dict[str, str] = {}
+        self.file_suffix: str = ".md"
 
     def configure(self, zettel_config: dict[str, str]) -> None:
         self.zettel_config = zettel_config
+        self.file_suffix = zettel_config.get("file_suffix", ".md")
 
     def process_files(self, files: Files, config: MkDocsConfig) -> None:
         """Main processing pipeline."""
@@ -44,7 +46,9 @@ class ZettelService:
         )
         logger.info("Found %s zettels in `%s`", len(valid_zettels), docs_dir)
         self.store.update(valid_zettels)
-        self.backlinks = BacklinkProcessor.process(self.store)
+        self.backlinks = BacklinkProcessor.process(
+            self.store, file_suffix=self.file_suffix
+        )
 
     def add_zettel_to_page(self, page: Page) -> Page:
         enriched_page = page
