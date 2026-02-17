@@ -17,8 +17,6 @@ from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
 from mkdocs_zettelkasten.plugin.utils.git_utils import GitUtil
 from mkdocs_zettelkasten.plugin.utils.patterns import MD_LINK, WIKI_LINK
 
-local_tz = tzlocal.get_localzone()
-
 
 logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
@@ -33,7 +31,12 @@ class Zettel:
     COUNT_HEADER_DIVIDERS = 2
     MARK_DIVIDER = "---"
 
-    def __init__(self, abs_src_path: Path, src_path: str) -> None:
+    def __init__(
+        self,
+        abs_src_path: Path,
+        src_path: str,
+        zettel_config: dict[str, str] | None = None,
+    ) -> None:
         self.id: int = 0
         self.title: str = ""
         self.path: Path = abs_src_path
@@ -41,6 +44,13 @@ class Zettel:
         self.backlinks: list[dict[str, str]] = []
         self.links: list[str] = []
         self.last_update_date: str = ""
+
+        cfg = zettel_config or {}
+        self._id_key = cfg.get("id_key", "id")
+        self._date_key = cfg.get("date_key", "date")
+        self._last_update_key = cfg.get("last_update_key", "last_update")
+        self._id_format = cfg.get("id_format", r"^\d{14}$")
+        self._tz = cfg.get("timezone") or tzlocal.get_localzone()
 
         self._initialize_zettel()
 
@@ -146,12 +156,12 @@ class Zettel:
 
     def _set_core_metadata(self, meta: dict, alt_title: str) -> None:
         """Sets fundamental metadata fields."""
-        if not meta.get("id"):
+        if not meta.get(self._id_key):
             logger.error("Missing required ID in zettel: %s", self.path)
             msg = "Missing zettel ID"
             raise ZettelFormatError(msg)
 
-        self.id = meta["id"]
+        self.id = meta[self._id_key]
 
         if meta.get("title"):
             self.title = meta["title"]
@@ -165,7 +175,9 @@ class Zettel:
     def _generate_filename_title(self) -> str:
         """Generates title from filename using pattern matching."""
         stem = self.path.stem
-        clean_stem = re.sub(r"^\d{14}", "", stem)
+        # Strip ID prefix from filename (remove anchors from id_format pattern)
+        id_prefix = self._id_format.lstrip("^").rstrip("$")
+        clean_stem = re.sub(id_prefix, "", stem)
         return clean_stem.replace("_", " ").replace("-", " ").strip().capitalize()
 
     def _determine_last_update_date(self, meta: dict) -> None:
@@ -173,7 +185,7 @@ class Zettel:
         candidate_date = self._get_initial_candidate_date(meta)
         revision_date = self._get_revision_date()
 
-        if "last_update" in meta:
+        if self._last_update_key in meta:
             final_date = candidate_date
         else:
             final_date = max(candidate_date, revision_date, key=lambda d: d.timestamp())
@@ -188,15 +200,15 @@ class Zettel:
 
     def _get_initial_candidate_date(self, meta: dict) -> datetime.datetime:
         """Gets first valid date from metadata sources."""
-        for field in ["last_update", "date"]:
-            if date := convert_string_to_date(meta.get(field, "")):
+        for field in [self._last_update_key, self._date_key]:
+            if date := convert_string_to_date(meta.get(field, ""), tz=self._tz):
                 return date
 
-        id_date = convert_string_to_date(str(self.id))
+        id_date = convert_string_to_date(str(self.id), tz=self._tz)
         if id_date:
             return id_date
 
-        return datetime.datetime.now(tz=local_tz)
+        return datetime.datetime.now(tz=self._tz)
 
     def _get_revision_date(self) -> datetime.datetime:
         """Gets revision date from VCS or filesystem."""
@@ -210,7 +222,7 @@ class Zettel:
     def _get_mtime(self) -> datetime.datetime:
         """Gets modification time from filesystem."""
         st_mtime = self.path.stat().st_mtime
-        return datetime.datetime.fromtimestamp(st_mtime, tz=local_tz)
+        return datetime.datetime.fromtimestamp(st_mtime, tz=self._tz)
 
 
 class ReadState:
