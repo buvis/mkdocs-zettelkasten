@@ -93,6 +93,7 @@ class TestZettelkastenPlugin:
         with (
             patch.object(plugin.zettel_service, "process_files") as mock_zs,
             patch.object(plugin.tags_service, "process_files") as mock_ts,
+            patch.object(plugin.validation_service, "validate"),
         ):
             plugin.on_files(files, config)
 
