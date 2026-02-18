@@ -1,0 +1,12 @@
+INHERIT: ../../../mkdocs.yml
+
+docs_dir: ../../../docs
+
+plugins:
+  - search
+  - zettelkasten:
+      log_level: DEBUG
+      editor_enabled: true
+      editor_repo: buvis/mkdocs-zettelkasten
+      editor_branch: master
+      editor_docs_prefix: docs

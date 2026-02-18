@@ -17,8 +17,8 @@
       el.addEventListener("click", () => copyText(el.dataset.copyValue));
     });
 
-    document.querySelectorAll(".codehilite pre, pre > code").forEach((el) => {
-      const container = el.closest(".codehilite") || el.parentElement;
+    document.querySelectorAll(".codehilite pre, .highlight pre, pre > code").forEach((el) => {
+      const container = el.closest(".codehilite") || el.closest(".highlight") || el.parentElement;
       if (container.querySelector(".copy-btn")) return;
 
       const btn = document.createElement("button");

@@ -1,0 +1,33 @@
+"""E2E tests for validation badges and page (testscript 061)."""
+
+from playwright.sync_api import expect
+
+
+def test_validation_badge_visible_on_zettel(page, default_site):
+    page.goto(f"{default_site}/20211122194827/")
+    badge = page.locator(".validation-badge")
+    assert badge.count() >= 1
+    assert badge.first.locator("i.fa.fa-exclamation-triangle").count() == 1
+
+
+def test_validation_page_exists(page, default_site):
+    resp = page.goto(f"{default_site}/validation.html")
+    assert resp.status == 200
+    content = page.locator("body").inner_text()
+    assert len(content) > 0
+
+
+def test_validation_page_has_issues(page, default_site):
+    page.goto(f"{default_site}/validation.html")
+    body = page.locator(".file-body")
+    expect(body).not_to_be_empty()
+
+
+def test_no_validation_badge_when_disabled(page, no_validation_site):
+    page.goto(f"{no_validation_site}/20211122194827/")
+    assert page.locator(".validation-badge").count() == 0
+
+
+def test_no_validation_page_when_disabled(page, no_validation_site):
+    resp = page.goto(f"{no_validation_site}/validation.html")
+    assert resp.status == 404

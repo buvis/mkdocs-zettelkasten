@@ -1,0 +1,14 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.12
+    hooks:
+      - id: ruff
+      - id: ruff-format
+  - repo: local
+    hooks:
+      - id: pytest
+        name: unit tests
+        entry: uv run pytest tests/plugin/
+        language: system
+        pass_filenames: false
+        always_run: true

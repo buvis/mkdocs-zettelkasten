@@ -39,6 +39,7 @@ local_scheme = "no-local-version"
 [dependency-groups]
 dev = [
   "pytest>=9,<10; python_version >= '3.10'",
+  "pytest-playwright>=0.7,<1; python_version >= '3.10'",
   "debugpy>=1.8,<2",
   "ruff>=0.11,<1",
 ]
@@ -51,3 +52,4 @@ unfixable = ["B"]
 [tool.ruff.lint.per-file-ignores]
 "tests/*.py" = ["S101"]
 "**/test_*.py" = ["S101", "ARG005", "PLR2004", "FBT", "SLF001", "S108"]
+"tests/e2e/**/*.py" = ["S101", "ARG005", "PLR2004", "FBT", "SLF001", "S108", "S603", "S607"]

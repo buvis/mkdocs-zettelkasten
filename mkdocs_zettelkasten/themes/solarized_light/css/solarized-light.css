@@ -284,11 +284,13 @@ svg.clickable {
 }
 
 .codehilite,
+.highlight,
 pre:has(> code) {
   position: relative;
 }
 
-.codehilite {
+.codehilite,
+.highlight {
   border: 1px solid var(--border-zettel);
   border-radius: 4px;
   padding: 0.7em;
@@ -317,6 +319,7 @@ pre:has(> code) {
 }
 
 .codehilite:hover .copy-btn,
+.highlight:hover .copy-btn,
 pre:has(> code):hover .copy-btn {
   opacity: 1;
 }

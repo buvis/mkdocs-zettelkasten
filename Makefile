@@ -1,4 +1,4 @@
-.PHONY: install update test run clean
+.PHONY: install update test test-e2e run clean
 
 install:
 	uv sync
@@ -8,7 +8,10 @@ update:
 	uv sync
 
 test:
-	uv run pytest
+	uv run pytest tests/plugin/
+
+test-e2e:
+	uv run pytest tests/e2e/ -v
 
 run:
 	uv run mkdocs serve --livereload
