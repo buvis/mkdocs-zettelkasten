@@ -17,7 +17,23 @@ uv sync                    # install deps
 uv run playwright install  # install browsers (first time only)
 ```
 
-### Run locally
+### Testing
+
+Three levels of testing, from fast to thorough:
+
+**1. Unit tests** — plugin logic without building the site:
+
+```bash
+make test      # ~0.3s, 124 tests
+```
+
+**2. E2E tests** — playwright builds the site from `docs/`, serves it, and checks the UI automatically:
+
+```bash
+make test-e2e  # ~27s, 63 tests
+```
+
+**3. Manual acceptance** — build and serve the site from `docs/`, open localhost:8000 in a browser and walk through the checklists in `.local/testscripts/`:
 
 ```bash
 make run                # default (solarized, validation on)
@@ -25,15 +41,6 @@ make run-selenized      # selenized theme
 make run-editor         # markdown editor enabled
 make run-no-validation  # validation disabled
 ```
-
-### Tests
-
-```bash
-make test      # unit tests (~0.3s)
-make test-e2e  # playwright e2e tests (~27s)
-```
-
-Manual test checklists for visual/interactive features live in `.local/testscripts/`.
 
 ## Release
 
