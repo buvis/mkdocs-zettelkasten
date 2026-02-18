@@ -8,3 +8,4 @@
 - [Insert zettel title as top heading if not done](20211123215950.md)
 - [Override previous / next page to follow the sequence of Zettelkasten IDs](20211123220309.md)
 - [Collect links by tag](20211123221647.md)
+- [Code highlighting test](../20260218000000.md)
