@@ -1,4 +1,4 @@
-.PHONY: install update test test-e2e run clean
+.PHONY: install update test test-e2e run run-selenized run-editor run-no-validation clean
 
 install:
 	uv sync
@@ -15,6 +15,15 @@ test-e2e:
 
 run:
 	uv run mkdocs serve --livereload
+
+run-selenized:
+	uv run mkdocs serve --livereload -f tests/e2e/configs/mkdocs-selenized.yml
+
+run-editor:
+	uv run mkdocs serve --livereload -f tests/e2e/configs/mkdocs-editor.yml
+
+run-no-validation:
+	uv run mkdocs serve --livereload -f tests/e2e/configs/mkdocs-no-validation.yml
 
 clean:
 	rm -rf .venv

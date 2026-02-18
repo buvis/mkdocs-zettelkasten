@@ -13,10 +13,27 @@ pip install mkdocs-zettelkasten
 ## Development
 
 ```bash
-uv sync
-uv run pytest
-uv run mkdocs serve --livereload
+uv sync                    # install deps
+uv run playwright install  # install browsers (first time only)
 ```
+
+### Run locally
+
+```bash
+make run                # default (solarized, validation on)
+make run-selenized      # selenized theme
+make run-editor         # markdown editor enabled
+make run-no-validation  # validation disabled
+```
+
+### Tests
+
+```bash
+make test      # unit tests (~0.3s)
+make test-e2e  # playwright e2e tests (~27s)
+```
+
+Manual test checklists for visual/interactive features live in `.local/testscripts/`.
 
 ## Release
 
