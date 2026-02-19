@@ -16,33 +16,22 @@ logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
 )
 
+DIVIDER = Zettel.MARK_DIVIDER
 
-def count_dividers_outside_code_blocks(
-    content_lines: list[str],
-    divider: str = Zettel.MARK_DIVIDER,
-) -> int:
-    """
-    Count occurrences of a divider line outside code blocks in a list of lines.
 
-    A code block starts with a line whose first three characters are '```
-    (optionally followed by a language specifier) and ends with another such line.
-    Divider lines inside code blocks are ignored.
-
-    :param content_lines: List of lines to process.
-    :param divider: The divider string to count (default: '---').
-    :return: Number of divider lines outside code blocks.
-    """
-    count = 0
+def _find_divider_indices(content_lines: list[str]) -> list[int]:
+    """Return indices of all ``---`` lines outside fenced code blocks."""
+    indices: list[int] = []
     in_code_block = False
 
-    for line in content_lines:
+    for i, line in enumerate(content_lines):
         stripped = line.strip()
         if stripped.startswith("```"):
             in_code_block = not in_code_block
-        elif not in_code_block and stripped == divider:
-            count += 1
+        elif not in_code_block and stripped == DIVIDER:
+            indices.append(i)
 
-    return count
+    return indices
 
 
 def get_page_ref(
@@ -50,41 +39,48 @@ def get_page_ref(
     page: Page,
     config: MkDocsConfig,
 ) -> tuple[str, str | None]:
-    """
-    Add or extract a page reference.
-    """
+    """Extract reference section from page markdown (frontmatter already stripped)."""
     if not page.meta["is_zettel"]:
         return (markdown, None)
 
     content_lines = markdown.rstrip().split("\n")
+    dividers = _find_divider_indices(content_lines)
 
-    # process footer from bottom till --- delimiter
-
-    if content_lines[-1] == Zettel.MARK_DIVIDER:
-        n = 2
-    elif (
-        count_dividers_outside_code_blocks(content_lines, Zettel.MARK_DIVIDER)
-        > Zettel.COUNT_HEADER_DIVIDERS
-    ):
-        n = 1
-    else:
+    if not dividers:
         logger.debug("No reference section found in %s", page.file.src_path)
         return (markdown, None)
 
+    last_line_is_divider = dividers[-1] == len(content_lines) - 1
+
+    if last_line_is_divider and len(dividers) >= 2:
+        # --- ... --- form: opening is second-to-last, closing is last
+        open_idx = dividers[-2]
+        end = dividers[-1]
+    elif last_line_is_divider:
+        # Single divider on last line — no ref content
+        logger.debug("No reference section found in %s", page.file.src_path)
+        return (markdown, None)
+    else:
+        # --- ... EOF form: last divider is opening, refs go to end
+        open_idx = dividers[-1]
+        end = len(content_lines)
+
     ref_lines = []
+    for line in content_lines[open_idx + 1 : end]:
+        if not line.strip():
+            continue
+        if line.lstrip().startswith("- "):
+            ref_lines.append(line)
+        else:
+            ref_lines.append("- " + line)
 
-    while content_lines[-n] != Zettel.MARK_DIVIDER and n < len(content_lines):
-        ref_lines.append(" - " + content_lines[-n])
-        n = n + 1
+    if not ref_lines:
+        logger.debug("No reference section found in %s", page.file.src_path)
+        return (markdown, None)
 
-    # remove footer from page's markdown source
-    markdown = "\n".join(content_lines[: -n - 1])
-    # restore the order of references (as we went bottom->up)
-    ref_lines.reverse()
-    page.meta["ref"] = "\n".join(
-        line for line in ref_lines if line.strip() and line.strip() != "-"
-    )
-    # convert the reference footer to HTML
+    markdown = "\n".join(content_lines[:open_idx])
+    page.meta["ref"] = "\n".join(ref_lines)
+
     processor = Markdown(
         extensions=config["markdown_extensions"],
         extension_configs=config["mdx_configs"] or {},

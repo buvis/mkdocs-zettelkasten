@@ -1,26 +1,26 @@
 from unittest.mock import MagicMock
 
 from mkdocs_zettelkasten.plugin.adapters.page_ref import (
-    count_dividers_outside_code_blocks,
+    _find_divider_indices,
     get_page_ref,
 )
 
 
-class TestCountDividersOutsideCodeBlocks:
+class TestFindDividerIndices:
     def test_no_dividers(self) -> None:
-        assert count_dividers_outside_code_blocks(["line1", "line2"]) == 0
+        assert _find_divider_indices(["line1", "line2"]) == []
 
-    def test_counts_dividers(self) -> None:
+    def test_returns_all_divider_indices(self) -> None:
         lines = ["---", "content", "---", "more"]
-        assert count_dividers_outside_code_blocks(lines) == 2
+        assert _find_divider_indices(lines) == [0, 2]
 
     def test_ignores_dividers_in_code_blocks(self) -> None:
         lines = ["```", "---", "```", "---"]
-        assert count_dividers_outside_code_blocks(lines) == 1
+        assert _find_divider_indices(lines) == [3]
 
-    def test_multiple_code_blocks(self) -> None:
+    def test_all_dividers_in_code_blocks(self) -> None:
         lines = ["```", "---", "```", "text", "```", "---", "```"]
-        assert count_dividers_outside_code_blocks(lines) == 0
+        assert _find_divider_indices(lines) == []
 
 
 class TestGetPageRef:
@@ -51,7 +51,7 @@ class TestGetPageRef:
 
     def test_extracts_ref_section(self) -> None:
         page = self._make_page()
-        content = "---\nid: 1\n---\n# Title\nBody\n---\nRef line 1\nRef line 2\n---"
+        content = "# Title\nBody\n---\nRef line 1\nRef line 2\n---"
         _md, ref = get_page_ref(content, page, self._make_config())
         assert ref is not None
         assert "Ref line 1" in page.meta["ref"]
