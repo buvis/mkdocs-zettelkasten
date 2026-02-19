@@ -100,6 +100,37 @@ class TestZettelkastenPlugin:
         mock_zs.assert_called_once_with(files, config)
         mock_ts.assert_called_once_with(files)
 
+    def test_on_files_sets_validation_count(self) -> None:
+        plugin = self._make_plugin()
+        files = MagicMock()
+        files.__len__ = lambda self: 5
+        config = {"extra": {}}
+
+        with (
+            patch.object(plugin.zettel_service, "process_files"),
+            patch.object(plugin.tags_service, "process_files"),
+            patch.object(plugin.validation_service, "validate"),
+            patch.object(plugin.validation_service, "total_issues", return_value=7),
+        ):
+            plugin.on_files(files, config)
+
+        assert config["extra"]["validation_issues_count"] == 7
+
+    def test_on_files_skips_validation_count_when_disabled(self) -> None:
+        plugin = self._make_plugin()
+        plugin.config["validation_enabled"] = False
+        files = MagicMock()
+        files.__len__ = lambda self: 5
+        config = {"extra": {}}
+
+        with (
+            patch.object(plugin.zettel_service, "process_files"),
+            patch.object(plugin.tags_service, "process_files"),
+        ):
+            plugin.on_files(files, config)
+
+        assert "validation_issues_count" not in config["extra"]
+
     def test_on_page_markdown_returns_transformed(self) -> None:
         plugin = self._make_plugin()
         page = MagicMock()
