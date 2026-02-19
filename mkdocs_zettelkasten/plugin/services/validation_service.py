@@ -50,8 +50,10 @@ class ValidationService:
         self._generate_report()
         self._add_to_build(files, config)
 
-        total = sum(len(v) for v in self.issues.values())
-        logger.info("Validation complete: %d issues found.", total)
+        logger.info("Validation complete: %d issues found.", self.total_issues())
+
+    def total_issues(self) -> int:
+        return sum(len(v) for v in self.issues.values())
 
     def get_issues(self, rel_path: str) -> list[ValidationIssue]:
         return self.issues.get(rel_path, [])
