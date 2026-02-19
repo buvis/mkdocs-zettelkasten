@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import TYPE_CHECKING
 
 from markdown import Markdown
@@ -11,6 +12,7 @@ if TYPE_CHECKING:
 import logging
 
 from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
+from mkdocs_zettelkasten.plugin.utils.patterns import WIKI_LINK
 
 logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
@@ -32,6 +34,37 @@ def _find_divider_indices(content_lines: list[str]) -> list[int]:
             indices.append(i)
 
     return indices
+
+
+def _convert_wiki_link(text: str) -> str:
+    """Replace ``[[path|title]]`` with ``[title](path)`` in *text*."""
+    def _repl(m: re.Match) -> str:
+        url = m.group("url")
+        title = m.group("title") or url
+        return f"[{title}]({url})"
+
+    return WIKI_LINK.sub(_repl, text)
+
+
+def _normalize_ref_line(line: str) -> str:
+    """Normalize a single reference line to ``- key: value`` form."""
+    stripped = line.strip()
+
+    # Already a list item
+    if stripped.startswith("- "):
+        inner = stripped[2:]
+        if "::" in inner:
+            # "- key:: value" → "- key: value"
+            inner = inner.replace("::", ":", 1)
+        return "- " + _convert_wiki_link(inner)
+
+    # Bare "key:: value"
+    if "::" in stripped:
+        normalized = stripped.replace("::", ":", 1)
+        return "- " + _convert_wiki_link(normalized)
+
+    # No :: — plain line, add list prefix
+    return "- " + stripped
 
 
 def get_page_ref(
@@ -69,10 +102,7 @@ def get_page_ref(
     for line in content_lines[open_idx + 1 : end]:
         if not line.strip():
             continue
-        if line.lstrip().startswith("- "):
-            ref_lines.append(line)
-        else:
-            ref_lines.append("- " + line)
+        ref_lines.append(_normalize_ref_line(line))
 
     if not ref_lines:
         logger.debug("No reference section found in %s", page.file.src_path)
