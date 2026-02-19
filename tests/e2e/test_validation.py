@@ -23,6 +23,27 @@ def test_validation_page_has_issues(page, default_site):
     expect(body).not_to_be_empty()
 
 
+def test_validation_navbar_icon_visible(page, default_site):
+    page.goto(f"{default_site}/20211122194827/")
+    icon = page.locator(".navbar .fa-exclamation-triangle")
+    assert icon.count() == 1
+    link = icon.locator("..")
+    assert "validation.html" in link.get_attribute("href")
+
+
+def test_validation_navbar_icon_shows_count(page, default_site):
+    page.goto(f"{default_site}/20211122194827/")
+    badge = page.locator(".navbar .badge-warning")
+    assert badge.count() == 1
+    count = int(badge.inner_text())
+    assert count > 0
+
+
+def test_validation_navbar_icon_hidden_when_disabled(page, no_validation_site):
+    page.goto(f"{no_validation_site}/20211122194827/")
+    assert page.locator(".navbar .fa-exclamation-triangle").count() == 0
+
+
 def test_no_validation_badge_when_disabled(page, no_validation_site):
     page.goto(f"{no_validation_site}/20211122194827/")
     assert page.locator(".validation-badge").count() == 0
