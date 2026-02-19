@@ -152,6 +152,17 @@
                         </li>
                       {%- endblock %}
 
+                      {%- block validation_icon %}
+                        {%- if config.extra.validation_issues_count is defined and config.extra.validation_issues_count > 0 %}
+                        <li class="nav-item">
+                          <a href="{{ 'validation.html'|url }}" class="nav-link" title="Validation issues: {{ config.extra.validation_issues_count }}">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            <span class="badge badge-warning">{{ config.extra.validation_issues_count }}</span>
+                          </a>
+                        </li>
+                        {%- endif %}
+                      {%- endblock %}
+
                       {%- block theme_toggle %}
                         <li class="nav-item">
                           <a href="#" class="nav-link" id="theme-toggle" aria-label="Toggle dark mode">
