@@ -115,6 +115,9 @@ class ZettelkastenPlugin(BasePlugin):
         self.tags_service.process_files(files)
         if self.config["validation_enabled"]:
             self.validation_service.validate(self.zettel_service, files, config)
+            config["extra"]["validation_issues_count"] = (
+                self.validation_service.total_issues()
+            )
         self.logger.info("Processed %d files in on_files hook.", len(files))
 
     def on_page_markdown(
