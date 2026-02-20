@@ -239,6 +239,40 @@ svg.clickable {
   cursor: pointer;
 }
 
+.zettel-edit-dropdown {
+  position: absolute;
+  right: 0;
+  margin-top: 0.2em;
+  background: var(--bg-zettel);
+  border: 1px solid var(--border-accent);
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+}
+
+.zettel-edit-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.4em 0.8em;
+  border: none;
+  background: none;
+  color: var(--text-primary);
+  text-align: left;
+  font-size: 0.85em;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.zettel-edit-dropdown-item:hover {
+  background: var(--bg-accent);
+  color: var(--text-link);
+  text-decoration: none;
+}
+
 .zettel {
   margin-top: 1%;
   margin-bottom: 1%;
@@ -275,6 +309,7 @@ svg.clickable {
 
 .file-header .date {
   padding-right: 0;
+  position: relative;
 }
 
 .file-body {
