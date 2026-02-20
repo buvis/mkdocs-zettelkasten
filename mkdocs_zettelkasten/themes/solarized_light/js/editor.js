@@ -143,12 +143,57 @@
     document.getElementById("zettel-cancel-btn").style.display = "none";
   }
 
+  function closeDropdown() {
+    var existing = document.getElementById("zettel-edit-dropdown");
+    if (existing) existing.remove();
+  }
+
+  function handleEditClick(e) {
+    e.stopPropagation();
+    var existing = document.getElementById("zettel-edit-dropdown");
+    if (existing) {
+      closeDropdown();
+      return;
+    }
+
+    var btn = document.getElementById("zettel-edit-btn");
+    var dropdown = document.createElement("div");
+    dropdown.id = "zettel-edit-dropdown";
+    dropdown.className = "zettel-edit-dropdown";
+
+    var editHere = document.createElement("button");
+    editHere.textContent = "Edit here";
+    editHere.className = "zettel-edit-dropdown-item";
+    editHere.addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      closeDropdown();
+      enterEditMode();
+    });
+
+    var editGithub = document.createElement("a");
+    editGithub.textContent = "Edit on GitHub";
+    editGithub.className = "zettel-edit-dropdown-item";
+    editGithub.href = cfg().editUrl || "#";
+    editGithub.addEventListener("click", function () {
+      closeDropdown();
+    });
+
+    dropdown.appendChild(editGithub);
+    dropdown.appendChild(editHere);
+    btn.parentNode.appendChild(dropdown);
+
+    document.addEventListener("click", function onOutside() {
+      closeDropdown();
+      document.removeEventListener("click", onOutside);
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     var editBtn = document.getElementById("zettel-edit-btn");
     var saveBtn = document.getElementById("zettel-save-btn");
     var cancelBtn = document.getElementById("zettel-cancel-btn");
 
-    if (editBtn) editBtn.addEventListener("click", enterEditMode);
+    if (editBtn) editBtn.addEventListener("click", handleEditClick);
     if (saveBtn) saveBtn.addEventListener("click", saveEdit);
     if (cancelBtn) cancelBtn.addEventListener("click", cancelEdit);
   });
