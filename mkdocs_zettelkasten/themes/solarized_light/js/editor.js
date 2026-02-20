@@ -143,9 +143,15 @@
     document.getElementById("zettel-cancel-btn").style.display = "none";
   }
 
+  var onOutsideListener = null;
+
   function closeDropdown() {
     var existing = document.getElementById("zettel-edit-dropdown");
     if (existing) existing.remove();
+    if (onOutsideListener) {
+      document.removeEventListener("click", onOutsideListener);
+      onOutsideListener = null;
+    }
   }
 
   function handleEditClick(e) {
@@ -182,10 +188,10 @@
     dropdown.appendChild(editHere);
     btn.parentNode.appendChild(dropdown);
 
-    document.addEventListener("click", function onOutside() {
+    onOutsideListener = function () {
       closeDropdown();
-      document.removeEventListener("click", onOutside);
-    });
+    };
+    document.addEventListener("click", onOutsideListener);
   }
 
   document.addEventListener("DOMContentLoaded", function () {
