@@ -12,6 +12,7 @@ def test_edit_button_triggers_prompt(page, editor_site):
     prompted = []
     page.on("dialog", lambda d: (prompted.append(d.message), d.dismiss()))
     page.click("#zettel-edit-btn")
+    page.locator(".zettel-edit-dropdown-item", has_text="Edit here").click()
     page.wait_for_timeout(500)
     assert len(prompted) > 0
 
