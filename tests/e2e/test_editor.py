@@ -48,3 +48,51 @@ def test_easymde_undefined_when_disabled(page, default_site):
     page.goto(f"{default_site}/20211122194827/")
     defined = page.evaluate("typeof EasyMDE !== 'undefined'")
     assert defined is False
+
+
+def test_single_edit_trigger_when_editor_enabled(page, editor_site):
+    page.goto(f"{editor_site}/20211122194827/")
+    assert page.locator("#zettel-edit-btn").count() == 1
+    assert page.locator("a > svg.bi-pencil").count() == 0
+
+
+def test_single_edit_trigger_when_editor_disabled(page, default_site):
+    page.goto(f"{default_site}/20211122194827/")
+    assert page.locator("a svg.bi-pencil").count() == 1
+    assert page.locator("#zettel-edit-btn").count() == 0
+
+
+def test_edit_click_shows_action_menu(page, editor_site):
+    page.goto(f"{editor_site}/20211122194827/")
+    page.click("#zettel-edit-btn")
+    dropdown = page.locator("#zettel-edit-dropdown")
+    assert dropdown.is_visible()
+    items = dropdown.locator(".zettel-edit-dropdown-item")
+    assert items.count() == 2
+
+
+def test_edit_here_triggers_editor(page, editor_site):
+    page.goto(f"{editor_site}/20211122194827/")
+    prompted = []
+    page.on("dialog", lambda d: (prompted.append(d.message), d.dismiss()))
+    page.click("#zettel-edit-btn")
+    page.locator(".zettel-edit-dropdown-item", has_text="Edit here").click()
+    page.wait_for_timeout(500)
+    assert len(prompted) > 0
+
+
+def test_edit_on_github_has_correct_url(page, editor_site):
+    page.goto(f"{editor_site}/20211122194827/")
+    page.click("#zettel-edit-btn")
+    link = page.locator(".zettel-edit-dropdown-item", has_text="Edit on GitHub")
+    href = link.get_attribute("href")
+    assert "github.com" in href
+    assert "20211122194827" in href
+
+
+def test_pencil_links_to_github_when_editor_disabled(page, default_site):
+    page.goto(f"{default_site}/20211122194827/")
+    link = page.locator("a:has(svg.bi-pencil)")
+    href = link.get_attribute("href")
+    assert "github.com" in href
+    assert page.locator("#zettel-edit-dropdown").count() == 0
