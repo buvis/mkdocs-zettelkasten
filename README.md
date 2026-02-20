@@ -60,3 +60,5 @@ release --dry-run patch                # preview without doing anything
 - GitHub repo settings: create `pypi` and `testpypi` environments
 
 The release script updates the pinned version in `.github/workflows/requirements.txt` (used by docs deployment), commits, tags, and pushes both. Version derives from git tags via hatch-vcs — no version field in `pyproject.toml`. This works for pure Python packages. Projects with native extensions (like buvis/gems with maturin/Rust) need an explicit version in `pyproject.toml` because maturin reads it at build time.
+
+Stable releases (no `rc` in tag) auto-create a GitHub Release with a changelog generated from conventional commits since the previous tag.
