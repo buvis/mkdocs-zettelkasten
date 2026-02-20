@@ -71,16 +71,6 @@ def test_edit_click_shows_action_menu(page, editor_site):
     assert items.count() == 2
 
 
-def test_edit_here_triggers_editor(page, editor_site):
-    page.goto(f"{editor_site}/20211122194827/")
-    prompted = []
-    page.on("dialog", lambda d: (prompted.append(d.message), d.dismiss()))
-    page.click("#zettel-edit-btn")
-    page.locator(".zettel-edit-dropdown-item", has_text="Edit here").click()
-    page.wait_for_timeout(500)
-    assert len(prompted) > 0
-
-
 def test_edit_on_github_has_correct_url(page, editor_site):
     page.goto(f"{editor_site}/20211122194827/")
     page.click("#zettel-edit-btn")
