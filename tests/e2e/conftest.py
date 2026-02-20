@@ -66,6 +66,15 @@ def editor_site(tmp_path_factory):
 
 
 @pytest.fixture(scope="session")
+def clean_validation_site(tmp_path_factory):
+    output = tmp_path_factory.mktemp("clean-validation")
+    _build_site(CONFIGS_DIR / "mkdocs-clean-validation.yml", output)
+    server, url = _serve_dir(output)
+    yield url
+    server.shutdown()
+
+
+@pytest.fixture(scope="session")
 def no_validation_site(tmp_path_factory):
     output = tmp_path_factory.mktemp("no-validation")
     _build_site(CONFIGS_DIR / "mkdocs-no-validation.yml", output)

@@ -1,0 +1,12 @@
+INHERIT: ../../../mkdocs.yml
+
+docs_dir: ../fixtures/clean-docs
+
+plugins:
+  - search
+  - zettelkasten:
+      log_level: DEBUG
+
+nav:
+  - Zettel One: 20990101000001.md
+  - Zettel Two: 20990101000002.md

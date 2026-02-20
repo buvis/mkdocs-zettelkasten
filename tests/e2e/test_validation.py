@@ -39,6 +39,11 @@ def test_validation_navbar_icon_shows_count(page, default_site):
     assert count > 0
 
 
+def test_validation_navbar_icon_hidden_when_zero_issues(page, clean_validation_site):
+    page.goto(f"{clean_validation_site}/20990101000001/")
+    assert page.locator(".navbar .fa-exclamation-triangle").count() == 0
+
+
 def test_validation_navbar_icon_hidden_when_disabled(page, no_validation_site):
     page.goto(f"{no_validation_site}/20211122194827/")
     assert page.locator(".navbar .fa-exclamation-triangle").count() == 0
