@@ -53,3 +53,85 @@ jobs:
         with:
           packages-dir: dist/
           repository-url: ${{ (contains(github.ref_name, 'rc') || inputs.testpypi) && 'https://test.pypi.org/legacy/' || 'https://upload.pypi.org/legacy/' }}
+
+  github-release:
+    needs: [build, publish]
+    if: github.event_name == 'push' && !contains(github.ref_name, 'rc')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: packages
+          path: dist/
+
+      - name: Generate changelog
+        shell: bash
+        run: |
+          tag="${{ github.ref_name }}"
+          version="${tag#v}"
+          date=$(git log -1 --format=%cs "$tag")
+          prev_tag=$(git tag --sort=-v:refname | grep '^v' | sed -n '2p')
+          range="${prev_tag:+$prev_tag..}$tag"
+          repo="${{ github.repository }}"
+
+          pkg_name=$(sed -n 's/^name = "\(.*\)"/\1/p' pyproject.toml)
+          echo "# ${pkg_name} $version ($date)" > CHANGELOG.md
+          echo "" >> CHANGELOG.md
+
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+          declare -A sections=(
+            [feat]="Features"
+            [fix]="Bug Fixes"
+            [perf]="Performance"
+            [refactor]="Refactoring"
+            [build]="Build"
+            [ops]="Operations"
+            [docs]="Documentation"
+            [test]="Tests"
+            [style]="Style"
+            [chore]="Chores"
+          )
+          order="feat fix perf refactor build ops docs test style chore"
+          scope_re='([^)]+)'
+
+          for type in $order; do
+            heading="${sections[$type]}"
+            entries=""
+            while IFS='|' read -r hash msg; do
+              [ -z "$hash" ] && continue
+              [[ "$msg" =~ ^build.*:\ bump ]] && continue
+              body="${msg#*: }"
+              scope=""
+              if [[ "$msg" =~ ^${type}\(${scope_re}\) ]]; then
+                scope="${BASH_REMATCH[1]}"
+              fi
+              if [ -n "$scope" ]; then
+                entries+="- **${scope}**: ${body}"$'\n'
+              else
+                entries+="- ${body}"$'\n'
+              fi
+              entries+="  ([\`${hash}\`](https://github.com/${repo}/commit/${hash}))"$'\n\n'
+            done < <(git log "$range" --no-merges --pretty="tformat:%h|%s" --grep="^${type}[:(!]" --extended-regexp)
+
+            if [ -n "$entries" ]; then
+              {
+                echo "## $heading"
+                echo ""
+                printf '%s' "$entries"
+              } >> CHANGELOG.md
+            fi
+          done
+
+      - uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ env.VERSION }}
+          body_path: CHANGELOG.md
+          files: dist/*
