@@ -65,7 +65,7 @@
     <div id="zettel-editor" style="display:none; padding: 1em;">
       <textarea id="zettel-editor-textarea"></textarea>
     </div>
-    <script>window.__zettelkasten_editor={repo:"{{page.meta.editor.repo}}",branch:"{{page.meta.editor.branch}}",docsPrefix:"{{page.meta.editor.docs_prefix}}",srcPath:"{{page.file.src_path}}",editUrl:"{{page.edit_url}}"};</script>
+    <script>window.__zettelkasten_editor={repo:"{{page.meta.editor.repo}}",branch:"{{page.meta.editor.branch}}",docsPrefix:"{{page.meta.editor.docs_prefix}}",srcPath:"{{page.file.src_path}}",editUrl:"{{page.edit_url or ''}}"};</script>
     {% endif %}
     {% if page and not page.is_homepage and (page.meta.ref or (page.meta.is_zettel and page.meta.zettel.backlinks)) %}
       <div class="file-references">
