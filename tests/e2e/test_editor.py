@@ -80,6 +80,24 @@ def test_edit_on_github_has_correct_url(page, editor_site):
     assert "20211122194827" in href
 
 
+def test_dropdown_closes_on_outside_click(page, editor_site):
+    page.goto(f"{editor_site}/20211122194827/")
+    page.click("#zettel-edit-btn")
+    assert page.locator("#zettel-edit-dropdown").is_visible()
+    page.click(".file-body")
+    page.wait_for_timeout(300)
+    assert page.locator("#zettel-edit-dropdown").count() == 0
+
+
+def test_dropdown_closes_on_toggle_click(page, editor_site):
+    page.goto(f"{editor_site}/20211122194827/")
+    page.click("#zettel-edit-btn")
+    assert page.locator("#zettel-edit-dropdown").is_visible()
+    page.click("#zettel-edit-btn")
+    page.wait_for_timeout(300)
+    assert page.locator("#zettel-edit-dropdown").count() == 0
+
+
 def test_pencil_links_to_github_when_editor_disabled(page, default_site):
     page.goto(f"{default_site}/20211122194827/")
     link = page.locator("a:has(svg.bi-pencil)")
