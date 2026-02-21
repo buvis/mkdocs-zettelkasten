@@ -10,7 +10,7 @@ title: Validation Report
 ## Errors
 
 {% for issue in errors %}
-* **{{ issue.path }}** — {{ issue.message }}
+* [{{ issue.path }}]({{ issue.path }}) — {{ issue.message }}
 {% endfor %}
 {% endif %}
 
@@ -18,7 +18,7 @@ title: Validation Report
 ## Warnings
 
 {% for issue in warnings %}
-* **{{ issue.path }}** — {{ issue.message }}
+* [{{ issue.path }}]({{ issue.path }}) — {{ issue.message }}
 {% endfor %}
 {% endif %}
 
@@ -26,6 +26,6 @@ title: Validation Report
 ## Info
 
 {% for issue in info %}
-* **{{ issue.path }}** — {{ issue.message }}
+* [{{ issue.path }}]({{ issue.path }}) — {{ issue.message }}
 {% endfor %}
 {% endif %}
