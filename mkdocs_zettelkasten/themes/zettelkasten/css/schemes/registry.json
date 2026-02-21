@@ -16,5 +16,212 @@
       "light": ["#fbf3db", "#53676d", "#0072d4", "#ece3cc"],
       "dark": ["#103c48", "#adbcbc", "#4695f7", "#1e5363"]
     }
+  },
+  {
+    "id": "gruvbox",
+    "name": "Gruvbox",
+    "category": "nature",
+    "preview": {
+      "light": ["#fbf1c7", "#3c3836", "#458588", "#ebdbb2"],
+      "dark": ["#282828", "#ebdbb2", "#83a598", "#504945"]
+    }
+  },
+  {
+    "id": "everforest",
+    "name": "Everforest",
+    "category": "nature",
+    "preview": {
+      "light": ["#fdf6e3", "#5c6a72", "#3a94c5", "#f4f0d9"],
+      "dark": ["#2b3339", "#d3c6aa", "#7fbbb3", "#3a464b"]
+    }
+  },
+  {
+    "id": "kanagawa",
+    "name": "Kanagawa",
+    "category": "nature",
+    "preview": {
+      "light": ["#f2ecbc", "#545464", "#4d699b", "#e5ddb0"],
+      "dark": ["#1f1f28", "#dcd7ba", "#7e9cd8", "#363646"]
+    }
+  },
+  {
+    "id": "nord",
+    "name": "Nord",
+    "category": "nature",
+    "preview": {
+      "light": ["#eceff4", "#2e3440", "#5e81ac", "#e5e9f0"],
+      "dark": ["#2e3440", "#d8dee9", "#88c0d0", "#434c5e"]
+    }
+  },
+  {
+    "id": "github",
+    "name": "GitHub",
+    "category": "modern",
+    "preview": {
+      "light": ["#ffffff", "#24292f", "#0969da", "#f6f8fa"],
+      "dark": ["#0d1117", "#c9d1d9", "#58a6ff", "#1c2128"]
+    }
+  },
+  {
+    "id": "one",
+    "name": "One",
+    "category": "modern",
+    "preview": {
+      "light": ["#fafafa", "#383a42", "#4078f2", "#f0f0f1"],
+      "dark": ["#282c34", "#abb2bf", "#61afef", "#2c313a"]
+    }
+  },
+  {
+    "id": "ayu",
+    "name": "Ayu",
+    "category": "modern",
+    "preview": {
+      "light": ["#fcfcfc", "#5c6166", "#399ee6", "#f3f4f5"],
+      "dark": ["#0b0e14", "#b3b1ad", "#39bae6", "#151920"]
+    }
+  },
+  {
+    "id": "material",
+    "name": "Material",
+    "category": "modern",
+    "preview": {
+      "light": ["#fafafa", "#212121", "#1976d2", "#f5f5f5"],
+      "dark": ["#121212", "#e0e0e0", "#82b1ff", "#2c2c2c"]
+    }
+  },
+  {
+    "id": "modus",
+    "name": "Modus",
+    "category": "accessibility",
+    "preview": {
+      "light": ["#ffffff", "#000000", "#0031a9", "#f0f0f0"],
+      "dark": ["#000000", "#ffffff", "#2fafff", "#2a2a2a"]
+    }
+  },
+  {
+    "id": "night-owl",
+    "name": "Night Owl",
+    "category": "accessibility",
+    "preview": {
+      "light": ["#fbfbfb", "#403f53", "#288ed7", "#f0f0f0"],
+      "dark": ["#011627", "#d6deeb", "#82aaff", "#112c45"]
+    }
+  },
+  {
+    "id": "papercolor",
+    "name": "PaperColor",
+    "category": "accessibility",
+    "preview": {
+      "light": ["#eeeeee", "#444444", "#005f87", "#e4e4e4"],
+      "dark": ["#1c1c1c", "#d0d0d0", "#5f8787", "#303030"]
+    }
+  },
+  {
+    "id": "catppuccin",
+    "name": "Catppuccin",
+    "category": "aesthetic",
+    "preview": {
+      "light": ["#eff1f5", "#4c4f69", "#1e66f5", "#e6e9ef"],
+      "dark": ["#1e1e2e", "#cdd6f4", "#89b4fa", "#3b3c50"]
+    }
+  },
+  {
+    "id": "rose-pine",
+    "name": "Rose Pine",
+    "category": "aesthetic",
+    "preview": {
+      "light": ["#faf4ed", "#575279", "#286983", "#f2e9e1"],
+      "dark": ["#191724", "#e0def4", "#9ccfd8", "#26233a"]
+    }
+  },
+  {
+    "id": "tokyo-night",
+    "name": "Tokyo Night",
+    "category": "aesthetic",
+    "preview": {
+      "light": ["#d5d6db", "#343b58", "#34548a", "#cbccd1"],
+      "dark": ["#1a1b26", "#a9b1d6", "#7aa2f7", "#2c3047"]
+    }
+  },
+  {
+    "id": "dracula",
+    "name": "Dracula",
+    "category": "aesthetic",
+    "preview": {
+      "light": ["#f8f8f2", "#282a36", "#6272a4", "#e6e6e6"],
+      "dark": ["#282a36", "#f8f8f2", "#bd93f9", "#4e5270"]
+    }
+  },
+  {
+    "id": "horizon",
+    "name": "Horizon",
+    "category": "aesthetic",
+    "preview": {
+      "light": ["#fdf0ed", "#1c1e26", "#e95678", "#fadad1"],
+      "dark": ["#1c1e26", "#d5d8da", "#e95678", "#2b2d3a"]
+    }
+  },
+  {
+    "id": "monokai",
+    "name": "Monokai",
+    "category": "classic",
+    "preview": {
+      "light": ["#fcfcfa", "#2d2a2e", "#5b5db8", "#f2f1ef"],
+      "dark": ["#2d2a2e", "#fcfcfa", "#78dce8", "#4a484b"]
+    }
+  },
+  {
+    "id": "zenburn",
+    "name": "Zenburn",
+    "category": "classic",
+    "preview": {
+      "light": ["#f0f0f0", "#3f3f3f", "#7cb8bb", "#e0e0e0"],
+      "dark": ["#3f3f3f", "#dcdccc", "#8cd0d3", "#5a5a5a"]
+    }
+  },
+  {
+    "id": "acme",
+    "name": "Acme",
+    "category": "classic",
+    "preview": {
+      "light": ["#ffffea", "#000000", "#0000ee", "#eaffff"],
+      "dark": ["#1a1a2e", "#ffffea", "#88ccff", "#2a2a40"]
+    }
+  },
+  {
+    "id": "flexoki",
+    "name": "Flexoki",
+    "category": "classic",
+    "preview": {
+      "light": ["#fffcf0", "#100f0f", "#205ea6", "#f2f0e5"],
+      "dark": ["#100f0f", "#cecdc3", "#4385be", "#282726"]
+    }
+  },
+  {
+    "id": "poimandres",
+    "name": "Poimandres",
+    "category": "aesthetic",
+    "preview": {
+      "light": ["#f0f0f5", "#303340", "#5b8fff", "#e5e5ea"],
+      "dark": ["#1b1e28", "#a6accd", "#add7ff", "#2e3444"]
+    }
+  },
+  {
+    "id": "palenight",
+    "name": "Palenight",
+    "category": "aesthetic",
+    "preview": {
+      "light": ["#eef0f8", "#292d3e", "#6182b8", "#e4e7f0"],
+      "dark": ["#292d3e", "#a6accd", "#82aaff", "#3c4160"]
+    }
+  },
+  {
+    "id": "atom-one-monokai",
+    "name": "Atom One Monokai",
+    "category": "classic",
+    "preview": {
+      "light": ["#fafafa", "#383a42", "#4078f2", "#f0f0f1"],
+      "dark": ["#282c34", "#f8f8f2", "#56b6c2", "#2c313a"]
+    }
   }
 ]
