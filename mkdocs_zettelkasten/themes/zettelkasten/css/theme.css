@@ -275,3 +275,62 @@ pre:has(> code):hover .copy-btn {
   padding: 0.1em 0.4em;
   font-size: 0.8em;
 }
+
+/* Settings modal */
+.scheme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75em;
+}
+
+.scheme-card {
+  cursor: pointer;
+  border: 2px solid var(--border-zettel);
+  border-radius: 6px;
+  padding: 0.5em;
+  text-align: center;
+  transition: border-color 0.15s;
+}
+
+.scheme-card:hover {
+  border-color: var(--text-link);
+}
+
+.scheme-card.active {
+  border-color: var(--text-link);
+  box-shadow: 0 0 0 1px var(--text-link);
+}
+
+.scheme-swatch {
+  display: flex;
+  height: 2em;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.swatch-strip {
+  flex: 1;
+}
+
+.scheme-label {
+  display: block;
+  margin-top: 0.3em;
+  font-size: 0.8em;
+  color: var(--text-primary);
+}
+
+.theme-switch-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  cursor: pointer;
+}
+
+.hljs-preview {
+  margin-top: 0.5em;
+  border: 1px solid var(--border-code);
+  border-radius: 4px;
+  padding: 0.7em;
+  max-height: 200px;
+  overflow: auto;
+}
