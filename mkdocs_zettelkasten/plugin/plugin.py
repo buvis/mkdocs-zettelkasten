@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 
 import logging
 import os
+from importlib.metadata import version
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import colorlog
@@ -96,6 +97,7 @@ class ZettelkastenPlugin(BasePlugin):
             )
         if self.config["editor_enabled"]:
             config["extra"]["editor_enabled"] = True
+        config["extra"]["plugin_version"] = version("mkdocs-zettelkasten")
         self.logger.info("Configured ZettelkastenPlugin with MkDocs config.")
 
     def _resolve_timezone(self) -> ZoneInfo:

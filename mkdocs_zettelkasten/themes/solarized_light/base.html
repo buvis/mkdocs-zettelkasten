@@ -219,7 +219,7 @@
             {%- if config.copyright %}
                 <p>{{ config.copyright }}</p>
             {%- endif %}
-            <p>{% trans mkdocs_link='<a href="https://www.mkdocs.org/">MkDocs</a>' %}Zettelkasten built with {{ mkdocs_link }}.{% endtrans %}</p>
+            <p>{% trans plugin_link='<a href="https://github.com/buvis/mkdocs-zettelkasten">MkDocs Zettelkasten</a>', version=config.extra.plugin_version %}{{ plugin_link }} v{{ version }}{% endtrans %}</p>
           {%- endblock %}
         </footer>
 
