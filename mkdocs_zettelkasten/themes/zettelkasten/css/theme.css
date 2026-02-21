@@ -334,3 +334,27 @@ pre:has(> code):hover .copy-btn {
   max-height: 200px;
   overflow: auto;
 }
+
+/* Color scheme gallery */
+.gallery-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1em;
+  margin-bottom: 1em;
+}
+
+.gallery-card {
+  border: 1px solid var(--border-zettel);
+  border-radius: 6px;
+  padding: 1em;
+  background: var(--bg-zettel);
+}
+
+.gallery-category {
+  display: inline-block;
+  font-size: 0.7em;
+  padding: 0.2em 0.5em;
+  border-radius: 3px;
+  background: var(--bg-accent);
+  color: var(--text-muted);
+}

@@ -2,6 +2,7 @@
 
 static_templates:
   - 404.html
+  - color-schemes.html
 
 locale: en
 
