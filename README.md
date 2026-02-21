@@ -37,7 +37,7 @@ make test-e2e  # ~27s, 63 tests
 
 ```bash
 make run                # default (solarized, validation on)
-make run-selenized      # selenized theme
+make run-selenized      # selenized color scheme
 make run-editor         # markdown editor enabled
 make run-no-validation  # validation disabled
 ```

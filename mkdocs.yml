@@ -11,7 +11,7 @@ edit_uri: "edit/master/docs/"
 copyright: Copyright &copy; 2025 Tomáš Bouška
 
 theme:
-  name: zettelkasten-solarized-light
+  name: zettelkasten
 plugins:
   - search
   - zettelkasten:

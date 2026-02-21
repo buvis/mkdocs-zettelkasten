@@ -20,7 +20,8 @@ dependencies = [
 zettelkasten = "mkdocs_zettelkasten.plugin.plugin:ZettelkastenPlugin"
 
 [project.entry-points."mkdocs.themes"]
-zettelkasten-solarized-light = "mkdocs_zettelkasten.themes.solarized_light"
+zettelkasten = "mkdocs_zettelkasten.themes.zettelkasten"
+zettelkasten-solarized-light = "mkdocs_zettelkasten.themes.zettelkasten"
 
 [build-system]
 requires = ["hatchling", "hatch-vcs"]
