@@ -1,0 +1,97 @@
+/* Nord palette — arcticicestudio
+   https://www.nordtheme.com */
+
+[data-color-scheme="nord"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #eceff4;
+  --bg-body-image: none;
+  --bg-zettel: #fff;
+  --bg-header: #e5e9f0;
+  --bg-accent: #e5e9f0;
+  --bg-code: #eceff4;
+  --bg-codehilite: #eceff4;
+  --bg-tooltip: #2e3440;
+  --bg-kbd: #2e3440;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #2e3440;
+  --text-link: #5e81ac;
+  --text-header: #2e3440;
+  --text-code: #2e3440;
+  --text-muted: #7b88a1;
+  --text-tooltip: #d8dee9;
+  --text-kbd: #eceff4;
+  --text-link-code: #5e81ac;
+  --text-link-code-hover: #a3be8c;
+
+  /* Borders */
+  --border-zettel: #d8dee9;
+  --border-heading: #d8dee9;
+  --border-accent: #d8dee9;
+  --border-code: #d8dee9;
+  --border-hr: #c0c8d8;
+  --border-img: #d8dee9;
+
+  /* Navbar */
+  --nav-from: #3b4252;
+  --nav-to: #2e3440;
+
+  /* Admonitions */
+  --adm-note-text: #5e81ac;
+  --adm-note-bg: #e3edf5;
+  --adm-note-border: #5e81ac;
+  --adm-warning-text: #d08770;
+  --adm-warning-bg: #f5ede8;
+  --adm-warning-border: #d08770;
+  --adm-danger-text: #bf616a;
+  --adm-danger-bg: #f3e4e5;
+  --adm-danger-border: #bf616a;
+}
+
+[data-color-scheme="nord"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #2e3440;
+  --bg-body-image: none;
+  --bg-zettel: #3b4252;
+  --bg-header: #434c5e;
+  --bg-accent: #353c4a;
+  --bg-code: #3b4252;
+  --bg-codehilite: #3b4252;
+  --bg-tooltip: #d8dee9;
+  --bg-kbd: #4c566a;
+  --bg-img: #3b4252;
+
+  --text-primary: #d8dee9;
+  --text-link: #88c0d0;
+  --text-header: #eceff4;
+  --text-code: #d8dee9;
+  --text-muted: #616e88;
+  --text-tooltip: #2e3440;
+  --text-kbd: #d8dee9;
+  --text-link-code: #88c0d0;
+  --text-link-code-hover: #a3be8c;
+
+  --border-zettel: #4c566a;
+  --border-heading: #4c566a;
+  --border-accent: #4c566a;
+  --border-code: #4c566a;
+  --border-hr: #4c566a;
+  --border-img: #4c566a;
+
+  --nav-from: #3b4252;
+  --nav-to: #2e3440;
+
+  --adm-note-text: #88c0d0;
+  --adm-note-bg: #3b4252;
+  --adm-note-border: #88c0d0;
+  --adm-warning-text: #ebcb8b;
+  --adm-warning-bg: #3b4252;
+  --adm-warning-border: #ebcb8b;
+  --adm-danger-text: #bf616a;
+  --adm-danger-bg: #3b4252;
+  --adm-danger-border: #bf616a;
+}
