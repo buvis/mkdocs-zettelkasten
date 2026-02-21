@@ -1,0 +1,97 @@
+/* Dracula palette — Zeno Rocha
+   https://draculatheme.com */
+
+[data-color-scheme="dracula"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #f8f8f2;
+  --bg-body-image: none;
+  --bg-zettel: #fff;
+  --bg-header: #e6e6e6;
+  --bg-accent: #e6e6e6;
+  --bg-code: #f8f8f2;
+  --bg-codehilite: #f8f8f2;
+  --bg-tooltip: #282a36;
+  --bg-kbd: #282a36;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #282a36;
+  --text-link: #6272a4;
+  --text-header: #282a36;
+  --text-code: #282a36;
+  --text-muted: #888;
+  --text-tooltip: #f8f8f2;
+  --text-kbd: #f8f8f2;
+  --text-link-code: #6272a4;
+  --text-link-code-hover: #b16286;
+
+  /* Borders */
+  --border-zettel: #d0d0d0;
+  --border-heading: #d0d0d0;
+  --border-accent: #d0d0d0;
+  --border-code: #d0d0d0;
+  --border-hr: #b0b0b0;
+  --border-img: #d0d0d0;
+
+  /* Navbar */
+  --nav-from: #44475a;
+  --nav-to: #282a36;
+
+  /* Admonitions */
+  --adm-note-text: #6272a4;
+  --adm-note-bg: #e3e7f0;
+  --adm-note-border: #6272a4;
+  --adm-warning-text: #b8960c;
+  --adm-warning-bg: #faf6dc;
+  --adm-warning-border: #b8960c;
+  --adm-danger-text: #ff5555;
+  --adm-danger-bg: #ffe5e5;
+  --adm-danger-border: #ff5555;
+}
+
+[data-color-scheme="dracula"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #282a36;
+  --bg-body-image: none;
+  --bg-zettel: #44475a;
+  --bg-header: #4e5270;
+  --bg-accent: #363948;
+  --bg-code: #44475a;
+  --bg-codehilite: #44475a;
+  --bg-tooltip: #f8f8f2;
+  --bg-kbd: #6272a4;
+  --bg-img: #44475a;
+
+  --text-primary: #f8f8f2;
+  --text-link: #bd93f9;
+  --text-header: #f8f8f2;
+  --text-code: #f8f8f2;
+  --text-muted: #6272a4;
+  --text-tooltip: #282a36;
+  --text-kbd: #f8f8f2;
+  --text-link-code: #bd93f9;
+  --text-link-code-hover: #ff79c6;
+
+  --border-zettel: #6272a4;
+  --border-heading: #6272a4;
+  --border-accent: #6272a4;
+  --border-code: #6272a4;
+  --border-hr: #6272a4;
+  --border-img: #6272a4;
+
+  --nav-from: #44475a;
+  --nav-to: #282a36;
+
+  --adm-note-text: #bd93f9;
+  --adm-note-bg: #44475a;
+  --adm-note-border: #bd93f9;
+  --adm-warning-text: #f1fa8c;
+  --adm-warning-bg: #44475a;
+  --adm-warning-border: #f1fa8c;
+  --adm-danger-text: #ff5555;
+  --adm-danger-bg: #44475a;
+  --adm-danger-border: #ff5555;
+}
