@@ -1,0 +1,20 @@
+[
+  {
+    "id": "solarized",
+    "name": "Solarized",
+    "category": "classic",
+    "preview": {
+      "light": ["#f8f8f8", "#444", "#192062", "#f0e6c4"],
+      "dark": ["#002b36", "#839496", "#268bd2", "#094050"]
+    }
+  },
+  {
+    "id": "selenized",
+    "name": "Selenized",
+    "category": "classic",
+    "preview": {
+      "light": ["#fbf3db", "#53676d", "#0072d4", "#ece3cc"],
+      "dark": ["#103c48", "#adbcbc", "#4695f7", "#1e5363"]
+    }
+  }
+]
