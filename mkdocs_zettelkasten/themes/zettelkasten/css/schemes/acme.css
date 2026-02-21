@@ -1,0 +1,97 @@
+/* Acme palette — Plan 9 from Bell Labs
+   https://plan9.io */
+
+[data-color-scheme="acme"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #ffffea;
+  --bg-body-image: none;
+  --bg-zettel: #fff;
+  --bg-header: #eaffff;
+  --bg-accent: #eaffff;
+  --bg-code: #ffffea;
+  --bg-codehilite: #ffffea;
+  --bg-tooltip: #1a1a2e;
+  --bg-kbd: #1a1a2e;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #000000;
+  --text-link: #0000ee;
+  --text-header: #000000;
+  --text-code: #000000;
+  --text-muted: #666666;
+  --text-tooltip: #ffffea;
+  --text-kbd: #ffffea;
+  --text-link-code: #0000ee;
+  --text-link-code-hover: #006600;
+
+  /* Borders */
+  --border-zettel: #d8d8c0;
+  --border-heading: #d8d8c0;
+  --border-accent: #d8d8c0;
+  --border-code: #d8d8c0;
+  --border-hr: #b0b098;
+  --border-img: #d8d8c0;
+
+  /* Navbar */
+  --nav-from: #333344;
+  --nav-to: #1a1a2e;
+
+  /* Admonitions */
+  --adm-note-text: #0000ee;
+  --adm-note-bg: #dde8ff;
+  --adm-note-border: #0000ee;
+  --adm-warning-text: #999900;
+  --adm-warning-bg: #f5f5d0;
+  --adm-warning-border: #999900;
+  --adm-danger-text: #990000;
+  --adm-danger-bg: #ffdede;
+  --adm-danger-border: #990000;
+}
+
+[data-color-scheme="acme"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #1a1a2e;
+  --bg-body-image: none;
+  --bg-zettel: #222236;
+  --bg-header: #2a2a40;
+  --bg-accent: #1e1e32;
+  --bg-code: #222236;
+  --bg-codehilite: #222236;
+  --bg-tooltip: #ffffea;
+  --bg-kbd: #3a3a50;
+  --bg-img: #222236;
+
+  --text-primary: #ffffea;
+  --text-link: #88ccff;
+  --text-header: #ffffea;
+  --text-code: #ffffea;
+  --text-muted: #8888aa;
+  --text-tooltip: #1a1a2e;
+  --text-kbd: #ffffea;
+  --text-link-code: #88ccff;
+  --text-link-code-hover: #77dd77;
+
+  --border-zettel: #3a3a50;
+  --border-heading: #3a3a50;
+  --border-accent: #3a3a50;
+  --border-code: #3a3a50;
+  --border-hr: #4a4a60;
+  --border-img: #3a3a50;
+
+  --nav-from: #222236;
+  --nav-to: #1a1a2e;
+
+  --adm-note-text: #88ccff;
+  --adm-note-bg: #222236;
+  --adm-note-border: #88ccff;
+  --adm-warning-text: #ffff77;
+  --adm-warning-bg: #222236;
+  --adm-warning-border: #ffff77;
+  --adm-danger-text: #ff6666;
+  --adm-danger-bg: #222236;
+  --adm-danger-border: #ff6666;
+}

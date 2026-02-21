@@ -1,0 +1,97 @@
+/* Material Palenight palette — Olaolu Olawuyi
+   https://github.com/whizkydee/vscode-palenight-theme */
+
+[data-color-scheme="palenight"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #eef0f8;
+  --bg-body-image: none;
+  --bg-zettel: #fff;
+  --bg-header: #e4e7f0;
+  --bg-accent: #e4e7f0;
+  --bg-code: #eef0f8;
+  --bg-codehilite: #eef0f8;
+  --bg-tooltip: #292d3e;
+  --bg-kbd: #292d3e;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #292d3e;
+  --text-link: #6182b8;
+  --text-header: #292d3e;
+  --text-code: #292d3e;
+  --text-muted: #8890a8;
+  --text-tooltip: #a6accd;
+  --text-kbd: #eef0f8;
+  --text-link-code: #6182b8;
+  --text-link-code-hover: #91b859;
+
+  /* Borders */
+  --border-zettel: #d4d7e2;
+  --border-heading: #d4d7e2;
+  --border-accent: #d4d7e2;
+  --border-code: #d4d7e2;
+  --border-hr: #bfc3d2;
+  --border-img: #d4d7e2;
+
+  /* Navbar */
+  --nav-from: #32374d;
+  --nav-to: #292d3e;
+
+  /* Admonitions */
+  --adm-note-text: #6182b8;
+  --adm-note-bg: #e0e7f3;
+  --adm-note-border: #6182b8;
+  --adm-warning-text: #f6a434;
+  --adm-warning-bg: #fdf2e0;
+  --adm-warning-border: #f6a434;
+  --adm-danger-text: #e53935;
+  --adm-danger-bg: #fce2e2;
+  --adm-danger-border: #e53935;
+}
+
+[data-color-scheme="palenight"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #292d3e;
+  --bg-body-image: none;
+  --bg-zettel: #32374d;
+  --bg-header: #3c4160;
+  --bg-accent: #2e3348;
+  --bg-code: #32374d;
+  --bg-codehilite: #32374d;
+  --bg-tooltip: #a6accd;
+  --bg-kbd: #444a66;
+  --bg-img: #32374d;
+
+  --text-primary: #a6accd;
+  --text-link: #82aaff;
+  --text-header: #bfc7e6;
+  --text-code: #a6accd;
+  --text-muted: #676e95;
+  --text-tooltip: #292d3e;
+  --text-kbd: #a6accd;
+  --text-link-code: #82aaff;
+  --text-link-code-hover: #c3e88d;
+
+  --border-zettel: #444a66;
+  --border-heading: #444a66;
+  --border-accent: #444a66;
+  --border-code: #444a66;
+  --border-hr: #525880;
+  --border-img: #444a66;
+
+  --nav-from: #32374d;
+  --nav-to: #292d3e;
+
+  --adm-note-text: #82aaff;
+  --adm-note-bg: #32374d;
+  --adm-note-border: #82aaff;
+  --adm-warning-text: #ffcb6b;
+  --adm-warning-bg: #32374d;
+  --adm-warning-border: #ffcb6b;
+  --adm-danger-text: #f07178;
+  --adm-danger-bg: #32374d;
+  --adm-danger-border: #f07178;
+}

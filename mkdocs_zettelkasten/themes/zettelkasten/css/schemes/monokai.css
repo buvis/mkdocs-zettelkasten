@@ -1,0 +1,97 @@
+/* Monokai Pro palette — Monokai
+   https://monokai.pro */
+
+[data-color-scheme="monokai"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #fcfcfa;
+  --bg-body-image: none;
+  --bg-zettel: #fff;
+  --bg-header: #f2f1ef;
+  --bg-accent: #f2f1ef;
+  --bg-code: #f2f1ef;
+  --bg-codehilite: #f2f1ef;
+  --bg-tooltip: #2d2a2e;
+  --bg-kbd: #2d2a2e;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #2d2a2e;
+  --text-link: #5b5db8;
+  --text-header: #2d2a2e;
+  --text-code: #2d2a2e;
+  --text-muted: #939293;
+  --text-tooltip: #fcfcfa;
+  --text-kbd: #fcfcfa;
+  --text-link-code: #5b5db8;
+  --text-link-code-hover: #7a8b27;
+
+  /* Borders */
+  --border-zettel: #dcdadb;
+  --border-heading: #dcdadb;
+  --border-accent: #dcdadb;
+  --border-code: #dcdadb;
+  --border-hr: #c0bfc0;
+  --border-img: #dcdadb;
+
+  /* Navbar */
+  --nav-from: #403e41;
+  --nav-to: #2d2a2e;
+
+  /* Admonitions */
+  --adm-note-text: #5b5db8;
+  --adm-note-bg: #e4e4f3;
+  --adm-note-border: #5b5db8;
+  --adm-warning-text: #b48b28;
+  --adm-warning-bg: #f5eeda;
+  --adm-warning-border: #b48b28;
+  --adm-danger-text: #ff6188;
+  --adm-danger-bg: #ffe3ea;
+  --adm-danger-border: #ff6188;
+}
+
+[data-color-scheme="monokai"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #2d2a2e;
+  --bg-body-image: none;
+  --bg-zettel: #403e41;
+  --bg-header: #4a484b;
+  --bg-accent: #353337;
+  --bg-code: #403e41;
+  --bg-codehilite: #403e41;
+  --bg-tooltip: #fcfcfa;
+  --bg-kbd: #5b595c;
+  --bg-img: #403e41;
+
+  --text-primary: #fcfcfa;
+  --text-link: #78dce8;
+  --text-header: #fcfcfa;
+  --text-code: #fcfcfa;
+  --text-muted: #727072;
+  --text-tooltip: #2d2a2e;
+  --text-kbd: #fcfcfa;
+  --text-link-code: #78dce8;
+  --text-link-code-hover: #a9dc76;
+
+  --border-zettel: #5b595c;
+  --border-heading: #5b595c;
+  --border-accent: #5b595c;
+  --border-code: #5b595c;
+  --border-hr: #727072;
+  --border-img: #5b595c;
+
+  --nav-from: #403e41;
+  --nav-to: #2d2a2e;
+
+  --adm-note-text: #78dce8;
+  --adm-note-bg: #403e41;
+  --adm-note-border: #78dce8;
+  --adm-warning-text: #ffd866;
+  --adm-warning-bg: #403e41;
+  --adm-warning-border: #ffd866;
+  --adm-danger-text: #ff6188;
+  --adm-danger-bg: #403e41;
+  --adm-danger-border: #ff6188;
+}

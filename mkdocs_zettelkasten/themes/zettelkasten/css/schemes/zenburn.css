@@ -1,0 +1,97 @@
+/* Zenburn palette — Jnurmine
+   https://github.com/jnurmine/Zenburn */
+
+[data-color-scheme="zenburn"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #f0f0f0;
+  --bg-body-image: none;
+  --bg-zettel: #fafafa;
+  --bg-header: #e0e0e0;
+  --bg-accent: #e0e0e0;
+  --bg-code: #f0f0f0;
+  --bg-codehilite: #f0f0f0;
+  --bg-tooltip: #3f3f3f;
+  --bg-kbd: #3f3f3f;
+  --bg-img: #fafafa;
+
+  /* Text */
+  --text-primary: #3f3f3f;
+  --text-link: #7cb8bb;
+  --text-header: #3f3f3f;
+  --text-code: #3f3f3f;
+  --text-muted: #808080;
+  --text-tooltip: #dcdccc;
+  --text-kbd: #f0f0f0;
+  --text-link-code: #7cb8bb;
+  --text-link-code-hover: #5f7f5f;
+
+  /* Borders */
+  --border-zettel: #cccccc;
+  --border-heading: #cccccc;
+  --border-accent: #cccccc;
+  --border-code: #cccccc;
+  --border-hr: #aaaaaa;
+  --border-img: #cccccc;
+
+  /* Navbar */
+  --nav-from: #4f4f4f;
+  --nav-to: #3f3f3f;
+
+  /* Admonitions */
+  --adm-note-text: #7cb8bb;
+  --adm-note-bg: #e2eff0;
+  --adm-note-border: #7cb8bb;
+  --adm-warning-text: #dfaf8f;
+  --adm-warning-bg: #f5ede5;
+  --adm-warning-border: #dfaf8f;
+  --adm-danger-text: #cc9393;
+  --adm-danger-bg: #f2e6e6;
+  --adm-danger-border: #cc9393;
+}
+
+[data-color-scheme="zenburn"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #3f3f3f;
+  --bg-body-image: none;
+  --bg-zettel: #4f4f4f;
+  --bg-header: #5a5a5a;
+  --bg-accent: #484848;
+  --bg-code: #4f4f4f;
+  --bg-codehilite: #4f4f4f;
+  --bg-tooltip: #dcdccc;
+  --bg-kbd: #636363;
+  --bg-img: #4f4f4f;
+
+  --text-primary: #dcdccc;
+  --text-link: #8cd0d3;
+  --text-header: #dcdccc;
+  --text-code: #dcdccc;
+  --text-muted: #7f7f7f;
+  --text-tooltip: #3f3f3f;
+  --text-kbd: #dcdccc;
+  --text-link-code: #8cd0d3;
+  --text-link-code-hover: #7f9f7f;
+
+  --border-zettel: #5f5f5f;
+  --border-heading: #5f5f5f;
+  --border-accent: #5f5f5f;
+  --border-code: #5f5f5f;
+  --border-hr: #6f6f6f;
+  --border-img: #5f5f5f;
+
+  --nav-from: #4f4f4f;
+  --nav-to: #3f3f3f;
+
+  --adm-note-text: #8cd0d3;
+  --adm-note-bg: #4f4f4f;
+  --adm-note-border: #8cd0d3;
+  --adm-warning-text: #f0dfaf;
+  --adm-warning-bg: #4f4f4f;
+  --adm-warning-border: #f0dfaf;
+  --adm-danger-text: #cc9393;
+  --adm-danger-bg: #4f4f4f;
+  --adm-danger-border: #cc9393;
+}

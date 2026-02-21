@@ -1,0 +1,97 @@
+/* Poimandres palette — drcmda
+   https://github.com/drcmda/poimandres-theme */
+
+[data-color-scheme="poimandres"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #f0f0f5;
+  --bg-body-image: none;
+  --bg-zettel: #fafafc;
+  --bg-header: #e5e5ea;
+  --bg-accent: #e5e5ea;
+  --bg-code: #f0f0f5;
+  --bg-codehilite: #f0f0f5;
+  --bg-tooltip: #1b1e28;
+  --bg-kbd: #1b1e28;
+  --bg-img: #fafafc;
+
+  /* Text */
+  --text-primary: #303340;
+  --text-link: #5b8fff;
+  --text-header: #303340;
+  --text-code: #303340;
+  --text-muted: #8888a0;
+  --text-tooltip: #a6accd;
+  --text-kbd: #f0f0f5;
+  --text-link-code: #5b8fff;
+  --text-link-code-hover: #42bd8e;
+
+  /* Borders */
+  --border-zettel: #d5d5dc;
+  --border-heading: #d5d5dc;
+  --border-accent: #d5d5dc;
+  --border-code: #d5d5dc;
+  --border-hr: #c0c0ca;
+  --border-img: #d5d5dc;
+
+  /* Navbar */
+  --nav-from: #303340;
+  --nav-to: #1b1e28;
+
+  /* Admonitions */
+  --adm-note-text: #5b8fff;
+  --adm-note-bg: #e0e8ff;
+  --adm-note-border: #5b8fff;
+  --adm-warning-text: #c8a64e;
+  --adm-warning-bg: #f5f0dd;
+  --adm-warning-border: #c8a64e;
+  --adm-danger-text: #d0679d;
+  --adm-danger-bg: #f5e2ed;
+  --adm-danger-border: #d0679d;
+}
+
+[data-color-scheme="poimandres"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #1b1e28;
+  --bg-body-image: none;
+  --bg-zettel: #252b37;
+  --bg-header: #2e3444;
+  --bg-accent: #202630;
+  --bg-code: #252b37;
+  --bg-codehilite: #252b37;
+  --bg-tooltip: #a6accd;
+  --bg-kbd: #3a4050;
+  --bg-img: #252b37;
+
+  --text-primary: #a6accd;
+  --text-link: #add7ff;
+  --text-header: #a6accd;
+  --text-code: #a6accd;
+  --text-muted: #5c6080;
+  --text-tooltip: #1b1e28;
+  --text-kbd: #a6accd;
+  --text-link-code: #add7ff;
+  --text-link-code-hover: #5de4c7;
+
+  --border-zettel: #323848;
+  --border-heading: #323848;
+  --border-accent: #323848;
+  --border-code: #323848;
+  --border-hr: #3a4050;
+  --border-img: #323848;
+
+  --nav-from: #252b37;
+  --nav-to: #1b1e28;
+
+  --adm-note-text: #add7ff;
+  --adm-note-bg: #252b37;
+  --adm-note-border: #add7ff;
+  --adm-warning-text: #fffac2;
+  --adm-warning-bg: #252b37;
+  --adm-warning-border: #fffac2;
+  --adm-danger-text: #d0679d;
+  --adm-danger-bg: #252b37;
+  --adm-danger-border: #d0679d;
+}
