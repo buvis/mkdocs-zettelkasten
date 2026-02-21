@@ -20,7 +20,6 @@ plugins:
 markdown_extensions:
   - admonition
   - meta
-  - codehilite:
   - pymdownx.superfences
 
 nav:
