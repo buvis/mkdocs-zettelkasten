@@ -221,6 +221,7 @@
                 shortcuts = {{ config.theme.shortcuts | tojson }};
         </script>
         <script src="{{ 'js/base.js'|url }}" defer></script>
+        <script src="{{ 'js/settings-modal.js'|url }}" defer></script>
         <script src="{{ 'js/copyable.js'|url }}" defer></script>
         {%- if config.extra.editor_enabled %}
         <script src="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js"></script>
@@ -233,6 +234,7 @@
 
         {% if 'search' in config['plugins'] %}{%- include "search-modal.html" %}{% endif %}
         {%- include "keyboard-modal.html" %}
+        {%- include "settings-modal.html" %}
 
     </body>
 </html>
