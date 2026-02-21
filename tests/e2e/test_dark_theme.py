@@ -1,6 +1,5 @@
 """E2E tests for dark theme toggle via settings modal."""
 
-import re
 
 
 def _open_settings(page):

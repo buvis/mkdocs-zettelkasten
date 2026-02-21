@@ -36,6 +36,6 @@ def test_settings_modal_has_dark_toggle(page, default_site):
 def test_settings_modal_closes(page, default_site):
     page.goto(default_site)
     _open_settings(page)
-    page.click('#mkdocs_settings_modal .close')
+    page.click("#mkdocs_settings_modal .close")
     page.wait_for_timeout(500)
     assert not page.locator("#mkdocs_settings_modal").is_visible()
