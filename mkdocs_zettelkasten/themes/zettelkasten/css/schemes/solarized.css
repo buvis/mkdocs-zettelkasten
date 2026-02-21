@@ -1,0 +1,97 @@
+/* Solarized palette — Ethan Schoonover
+   https://ethanschoonover.com/solarized/ */
+
+[data-color-scheme="solarized"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #f8f8f8;
+  --bg-body-image: url(../../img/grid.png);
+  --bg-zettel: #fcfbf3;
+  --bg-header: #f0e6c4;
+  --bg-accent: #eee8d5;
+  --bg-code: #fff;
+  --bg-codehilite: #f8f8f8;
+  --bg-tooltip: #002b36;
+  --bg-kbd: #333;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #444;
+  --text-link: #192062;
+  --text-header: #4a6888;
+  --text-code: #333;
+  --text-muted: gray;
+  --text-tooltip: #93a1a1;
+  --text-kbd: #fff;
+  --text-link-code: #2FA4E7;
+  --text-link-code-hover: #157AB5;
+
+  /* Borders */
+  --border-zettel: lightgray;
+  --border-heading: #eaeaea;
+  --border-accent: #d4cbb3;
+  --border-code: #e1e4e5;
+  --border-hr: #aaa;
+  --border-img: #ddd;
+
+  /* Navbar */
+  --nav-from: #586e75;
+  --nav-to: #657b83;
+
+  /* Admonitions */
+  --adm-note-text: #3a87ad;
+  --adm-note-bg: #d9edf7;
+  --adm-note-border: #bce8f1;
+  --adm-warning-text: #c09853;
+  --adm-warning-bg: #fcf8e3;
+  --adm-warning-border: #fbeed5;
+  --adm-danger-text: #b94a48;
+  --adm-danger-bg: #f2dede;
+  --adm-danger-border: #eed3d7;
+}
+
+[data-color-scheme="solarized"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #002b36;
+  --bg-body-image: none;
+  --bg-zettel: #073642;
+  --bg-header: #094050;
+  --bg-accent: #05313e;
+  --bg-code: #073642;
+  --bg-codehilite: #073642;
+  --bg-tooltip: #eee8d5;
+  --bg-kbd: #586e75;
+  --bg-img: #073642;
+
+  --text-primary: #839496;
+  --text-link: #268bd2;
+  --text-header: #93a1a1;
+  --text-code: #839496;
+  --text-muted: #586e75;
+  --text-tooltip: #002b36;
+  --text-kbd: #fdf6e3;
+  --text-link-code: #268bd2;
+  --text-link-code-hover: #2aa198;
+
+  --border-zettel: #586e75;
+  --border-heading: #586e75;
+  --border-accent: #586e75;
+  --border-code: #586e75;
+  --border-hr: #586e75;
+  --border-img: #586e75;
+
+  --nav-from: #073642;
+  --nav-to: #002b36;
+
+  --adm-note-text: #268bd2;
+  --adm-note-bg: #073642;
+  --adm-note-border: #268bd2;
+  --adm-warning-text: #b58900;
+  --adm-warning-bg: #073642;
+  --adm-warning-border: #b58900;
+  --adm-danger-text: #dc322f;
+  --adm-danger-bg: #073642;
+  --adm-danger-border: #dc322f;
+}
