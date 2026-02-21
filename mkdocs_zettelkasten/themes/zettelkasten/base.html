@@ -3,7 +3,7 @@
     <head>
       {%- block site_meta %}
         <meta charset="utf-8">
-        <script>(function(){var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})()</script>
+        <script>(function(){var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);var s=localStorage.getItem('color-scheme')||'{{ config.theme.color_scheme }}';document.documentElement.setAttribute('data-color-scheme',s);var l=document.createElement('link');l.id='scheme-css';l.rel='stylesheet';l.href='{{ "css/schemes/"|url }}'+s+'.css';document.head.appendChild(l);var ht=localStorage.getItem('hljs-theme-light')||'{{ config.theme.hljs_style }}';var hd=localStorage.getItem('hljs-theme-dark')||'{{ config.theme.hljs_style_dark|default("github-dark") }}';var h=t==='dark'?hd:ht;var hl=document.createElement('link');hl.id='hljs-theme';hl.rel='stylesheet';hl.dataset.lightStyle=ht;hl.dataset.darkStyle=hd;hl.href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/'+h+'.min.css';document.head.appendChild(hl)})()</script>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% if page and page.is_homepage %}<meta name="description" content="{{ config['site_description'] }}">{% endif %}
@@ -21,15 +21,7 @@
         <link href="{{ 'css/bootstrap.min.css'|url }}" rel="stylesheet">
         <link href="{{ 'css/font-awesome.min.css'|url }}" rel="stylesheet">
         <link href="{{ 'css/base.css'|url }}" rel="stylesheet">
-        <link href="{{ 'css/codehilite.css'|url }}" rel="stylesheet">
         <link href="{{ 'css/theme.css'|url }}" rel="stylesheet">
-        {%- if config.theme.color_scheme == 'selenized' %}
-        <link href="{{ 'css/selenized-light.css'|url }}" rel="stylesheet">
-        <link href="{{ 'css/selenized-dark.css'|url }}" rel="stylesheet">
-        {%- endif %}
-        {%- if config.theme.highlightjs %}
-        <link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/{{ config.theme.hljs_style }}.min.css" data-light-style="{{ config.theme.hljs_style }}" data-dark-style="solarized-dark">
-        {%- endif %}
         {%- if config.extra.editor_enabled %}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css">
         {%- endif %}
@@ -163,10 +155,10 @@
                         {%- endif %}
                       {%- endblock %}
 
-                      {%- block theme_toggle %}
+                      {%- block settings_toggle %}
                         <li class="nav-item">
-                          <a href="#" class="nav-link" id="theme-toggle" aria-label="Toggle dark mode">
-                            <i id="theme-icon" class="fa fa-moon-o"></i>
+                          <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_settings_modal" aria-label="Settings">
+                            <i class="fa fa-cog"></i>
                           </a>
                         </li>
                       {%- endblock %}

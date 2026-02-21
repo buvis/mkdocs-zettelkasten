@@ -1,13 +1,25 @@
-/* Theme toggle */
+/* Theme & scheme switching */
 (function() {
     function getTheme() {
         return document.documentElement.getAttribute('data-theme') || 'light';
     }
 
-    function updateIcon() {
-        var icon = document.getElementById('theme-icon');
-        if (icon) {
-            icon.className = getTheme() === 'dark' ? 'fa fa-sun-o' : 'fa fa-moon-o';
+    function getScheme() {
+        return document.documentElement.getAttribute('data-color-scheme') || 'solarized';
+    }
+
+    function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        updateHljsTheme();
+    }
+
+    function setScheme(scheme) {
+        document.documentElement.setAttribute('data-color-scheme', scheme);
+        localStorage.setItem('color-scheme', scheme);
+        var link = document.getElementById('scheme-css');
+        if (link) {
+            link.href = base_url + '/css/schemes/' + scheme + '.css';
         }
     }
 
@@ -18,20 +30,15 @@
         link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/' + style + '.min.css';
     }
 
-    function toggle(e) {
-        e.preventDefault();
-        var next = getTheme() === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-        updateIcon();
-        updateHljsTheme();
-    }
+    window.zkTheme = {
+        getTheme: getTheme,
+        getScheme: getScheme,
+        setTheme: setTheme,
+        setScheme: setScheme
+    };
 
     document.addEventListener('DOMContentLoaded', function() {
-        updateIcon();
         updateHljsTheme();
-        var btn = document.getElementById('theme-toggle');
-        if (btn) btn.addEventListener('click', toggle);
     });
 })();
 
