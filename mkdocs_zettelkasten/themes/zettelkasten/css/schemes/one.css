@@ -1,0 +1,97 @@
+/* Atom One Light/Dark palette — Atom
+   https://github.com/atom/atom */
+
+[data-color-scheme="one"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #fafafa;
+  --bg-body-image: none;
+  --bg-zettel: #fff;
+  --bg-header: #f0f0f1;
+  --bg-accent: #f0f0f1;
+  --bg-code: #fafafa;
+  --bg-codehilite: #fafafa;
+  --bg-tooltip: #282c34;
+  --bg-kbd: #282c34;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #383a42;
+  --text-link: #4078f2;
+  --text-header: #383a42;
+  --text-code: #383a42;
+  --text-muted: #a0a1a7;
+  --text-tooltip: #abb2bf;
+  --text-kbd: #fafafa;
+  --text-link-code: #4078f2;
+  --text-link-code-hover: #50a14f;
+
+  /* Borders */
+  --border-zettel: #d8d8db;
+  --border-heading: #d8d8db;
+  --border-accent: #d8d8db;
+  --border-code: #d8d8db;
+  --border-hr: #c8c8cc;
+  --border-img: #d8d8db;
+
+  /* Navbar */
+  --nav-from: #383a42;
+  --nav-to: #282c34;
+
+  /* Admonitions */
+  --adm-note-text: #4078f2;
+  --adm-note-bg: #e4ecfd;
+  --adm-note-border: #4078f2;
+  --adm-warning-text: #c18401;
+  --adm-warning-bg: #f8f0dd;
+  --adm-warning-border: #c18401;
+  --adm-danger-text: #e45649;
+  --adm-danger-bg: #fce5e3;
+  --adm-danger-border: #e45649;
+}
+
+[data-color-scheme="one"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #282c34;
+  --bg-body-image: none;
+  --bg-zettel: #21252b;
+  --bg-header: #2c313a;
+  --bg-accent: #252930;
+  --bg-code: #21252b;
+  --bg-codehilite: #21252b;
+  --bg-tooltip: #abb2bf;
+  --bg-kbd: #4b5263;
+  --bg-img: #21252b;
+
+  --text-primary: #abb2bf;
+  --text-link: #61afef;
+  --text-header: #d7dae0;
+  --text-code: #abb2bf;
+  --text-muted: #5c6370;
+  --text-tooltip: #282c34;
+  --text-kbd: #abb2bf;
+  --text-link-code: #61afef;
+  --text-link-code-hover: #98c379;
+
+  --border-zettel: #3e4451;
+  --border-heading: #3e4451;
+  --border-accent: #3e4451;
+  --border-code: #3e4451;
+  --border-hr: #4b5263;
+  --border-img: #3e4451;
+
+  --nav-from: #21252b;
+  --nav-to: #282c34;
+
+  --adm-note-text: #61afef;
+  --adm-note-bg: #21252b;
+  --adm-note-border: #61afef;
+  --adm-warning-text: #e5c07b;
+  --adm-warning-bg: #21252b;
+  --adm-warning-border: #e5c07b;
+  --adm-danger-text: #e06c75;
+  --adm-danger-bg: #21252b;
+  --adm-danger-border: #e06c75;
+}

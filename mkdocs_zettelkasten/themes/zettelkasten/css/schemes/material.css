@@ -1,0 +1,97 @@
+/* Material Design palette — Google
+   https://material.io */
+
+[data-color-scheme="material"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #fafafa;
+  --bg-body-image: none;
+  --bg-zettel: #fff;
+  --bg-header: #f5f5f5;
+  --bg-accent: #f5f5f5;
+  --bg-code: #f5f5f5;
+  --bg-codehilite: #f5f5f5;
+  --bg-tooltip: #212121;
+  --bg-kbd: #212121;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #212121;
+  --text-link: #1976d2;
+  --text-header: #212121;
+  --text-code: #212121;
+  --text-muted: #757575;
+  --text-tooltip: #e0e0e0;
+  --text-kbd: #fafafa;
+  --text-link-code: #1976d2;
+  --text-link-code-hover: #388e3c;
+
+  /* Borders */
+  --border-zettel: #e0e0e0;
+  --border-heading: #e0e0e0;
+  --border-accent: #e0e0e0;
+  --border-code: #e0e0e0;
+  --border-hr: #bdbdbd;
+  --border-img: #e0e0e0;
+
+  /* Navbar */
+  --nav-from: #37474f;
+  --nav-to: #263238;
+
+  /* Admonitions */
+  --adm-note-text: #1976d2;
+  --adm-note-bg: #e3f2fd;
+  --adm-note-border: #1976d2;
+  --adm-warning-text: #f9a825;
+  --adm-warning-bg: #fff8e1;
+  --adm-warning-border: #f9a825;
+  --adm-danger-text: #d32f2f;
+  --adm-danger-bg: #ffebee;
+  --adm-danger-border: #d32f2f;
+}
+
+[data-color-scheme="material"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #121212;
+  --bg-body-image: none;
+  --bg-zettel: #1f1f1f;
+  --bg-header: #2c2c2c;
+  --bg-accent: #1a1a1a;
+  --bg-code: #1f1f1f;
+  --bg-codehilite: #1f1f1f;
+  --bg-tooltip: #e0e0e0;
+  --bg-kbd: #424242;
+  --bg-img: #1f1f1f;
+
+  --text-primary: #e0e0e0;
+  --text-link: #82b1ff;
+  --text-header: #ffffff;
+  --text-code: #e0e0e0;
+  --text-muted: #757575;
+  --text-tooltip: #121212;
+  --text-kbd: #e0e0e0;
+  --text-link-code: #82b1ff;
+  --text-link-code-hover: #69f0ae;
+
+  --border-zettel: #333333;
+  --border-heading: #333333;
+  --border-accent: #333333;
+  --border-code: #333333;
+  --border-hr: #424242;
+  --border-img: #333333;
+
+  --nav-from: #1f1f1f;
+  --nav-to: #121212;
+
+  --adm-note-text: #82b1ff;
+  --adm-note-bg: #1f1f1f;
+  --adm-note-border: #82b1ff;
+  --adm-warning-text: #ffd740;
+  --adm-warning-bg: #1f1f1f;
+  --adm-warning-border: #ffd740;
+  --adm-danger-text: #ff5252;
+  --adm-danger-bg: #1f1f1f;
+  --adm-danger-border: #ff5252;
+}
