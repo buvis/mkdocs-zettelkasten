@@ -1,0 +1,97 @@
+/* Night Owl palette — Sarah Drasner
+   https://github.com/sdras/night-owl-vscode-theme */
+
+[data-color-scheme="night-owl"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #fbfbfb;
+  --bg-body-image: none;
+  --bg-zettel: #fff;
+  --bg-header: #f0f0f0;
+  --bg-accent: #f0f0f0;
+  --bg-code: #f0f0f0;
+  --bg-codehilite: #f0f0f0;
+  --bg-tooltip: #011627;
+  --bg-kbd: #011627;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #403f53;
+  --text-link: #288ed7;
+  --text-header: #403f53;
+  --text-code: #403f53;
+  --text-muted: #90a4ae;
+  --text-tooltip: #d6deeb;
+  --text-kbd: #fbfbfb;
+  --text-link-code: #288ed7;
+  --text-link-code-hover: #08916a;
+
+  /* Borders */
+  --border-zettel: #d9d9d9;
+  --border-heading: #d9d9d9;
+  --border-accent: #d9d9d9;
+  --border-code: #d9d9d9;
+  --border-hr: #c0c0c0;
+  --border-img: #d9d9d9;
+
+  /* Navbar */
+  --nav-from: #403f53;
+  --nav-to: #2e2d44;
+
+  /* Admonitions */
+  --adm-note-text: #288ed7;
+  --adm-note-bg: #e1f0fa;
+  --adm-note-border: #288ed7;
+  --adm-warning-text: #daaa01;
+  --adm-warning-bg: #faf4d7;
+  --adm-warning-border: #daaa01;
+  --adm-danger-text: #de3d3b;
+  --adm-danger-bg: #fbe3e3;
+  --adm-danger-border: #de3d3b;
+}
+
+[data-color-scheme="night-owl"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #011627;
+  --bg-body-image: none;
+  --bg-zettel: #0b253a;
+  --bg-header: #112c45;
+  --bg-accent: #061e30;
+  --bg-code: #0b253a;
+  --bg-codehilite: #0b253a;
+  --bg-tooltip: #d6deeb;
+  --bg-kbd: #1d3b53;
+  --bg-img: #0b253a;
+
+  --text-primary: #d6deeb;
+  --text-link: #82aaff;
+  --text-header: #d6deeb;
+  --text-code: #d6deeb;
+  --text-muted: #637777;
+  --text-tooltip: #011627;
+  --text-kbd: #d6deeb;
+  --text-link-code: #82aaff;
+  --text-link-code-hover: #22da6e;
+
+  --border-zettel: #1d3b53;
+  --border-heading: #1d3b53;
+  --border-accent: #1d3b53;
+  --border-code: #1d3b53;
+  --border-hr: #1d3b53;
+  --border-img: #1d3b53;
+
+  --nav-from: #0b253a;
+  --nav-to: #011627;
+
+  --adm-note-text: #82aaff;
+  --adm-note-bg: #0b253a;
+  --adm-note-border: #82aaff;
+  --adm-warning-text: #addb67;
+  --adm-warning-bg: #0b253a;
+  --adm-warning-border: #addb67;
+  --adm-danger-text: #ef5350;
+  --adm-danger-bg: #0b253a;
+  --adm-danger-border: #ef5350;
+}

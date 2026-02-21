@@ -1,0 +1,97 @@
+/* Modus palette — Protesilaos Stavrou
+   https://protesilaos.com/emacs/modus-themes */
+
+[data-color-scheme="modus"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #ffffff;
+  --bg-body-image: none;
+  --bg-zettel: #fff;
+  --bg-header: #f0f0f0;
+  --bg-accent: #f0f0f0;
+  --bg-code: #f0f0f0;
+  --bg-codehilite: #f0f0f0;
+  --bg-tooltip: #000000;
+  --bg-kbd: #000000;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #000000;
+  --text-link: #0031a9;
+  --text-header: #000000;
+  --text-code: #000000;
+  --text-muted: #595959;
+  --text-tooltip: #ffffff;
+  --text-kbd: #ffffff;
+  --text-link-code: #0031a9;
+  --text-link-code-hover: #006800;
+
+  /* Borders */
+  --border-zettel: #d7d7d7;
+  --border-heading: #d7d7d7;
+  --border-accent: #d7d7d7;
+  --border-code: #d7d7d7;
+  --border-hr: #b0b0b0;
+  --border-img: #d7d7d7;
+
+  /* Navbar */
+  --nav-from: #2a2a2a;
+  --nav-to: #000000;
+
+  /* Admonitions */
+  --adm-note-text: #0031a9;
+  --adm-note-bg: #e0ecff;
+  --adm-note-border: #0031a9;
+  --adm-warning-text: #6f5500;
+  --adm-warning-bg: #f5eeda;
+  --adm-warning-border: #6f5500;
+  --adm-danger-text: #a60000;
+  --adm-danger-bg: #ffe0e0;
+  --adm-danger-border: #a60000;
+}
+
+[data-color-scheme="modus"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #000000;
+  --bg-body-image: none;
+  --bg-zettel: #1e1e1e;
+  --bg-header: #2a2a2a;
+  --bg-accent: #111111;
+  --bg-code: #1e1e1e;
+  --bg-codehilite: #1e1e1e;
+  --bg-tooltip: #ffffff;
+  --bg-kbd: #505050;
+  --bg-img: #1e1e1e;
+
+  --text-primary: #ffffff;
+  --text-link: #2fafff;
+  --text-header: #ffffff;
+  --text-code: #ffffff;
+  --text-muted: #989898;
+  --text-tooltip: #000000;
+  --text-kbd: #ffffff;
+  --text-link-code: #2fafff;
+  --text-link-code-hover: #44bc44;
+
+  --border-zettel: #3a3a3a;
+  --border-heading: #3a3a3a;
+  --border-accent: #3a3a3a;
+  --border-code: #3a3a3a;
+  --border-hr: #505050;
+  --border-img: #3a3a3a;
+
+  --nav-from: #1e1e1e;
+  --nav-to: #000000;
+
+  --adm-note-text: #2fafff;
+  --adm-note-bg: #1e1e1e;
+  --adm-note-border: #2fafff;
+  --adm-warning-text: #d0bc00;
+  --adm-warning-bg: #1e1e1e;
+  --adm-warning-border: #d0bc00;
+  --adm-danger-text: #ff5f59;
+  --adm-danger-bg: #1e1e1e;
+  --adm-danger-border: #ff5f59;
+}

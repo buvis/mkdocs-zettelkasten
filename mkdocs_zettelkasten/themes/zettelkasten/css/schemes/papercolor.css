@@ -1,0 +1,97 @@
+/* PaperColor palette — Nikyle Nguyen
+   https://github.com/NLKNguyen/papercolor-theme */
+
+[data-color-scheme="papercolor"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #eeeeee;
+  --bg-body-image: none;
+  --bg-zettel: #fff;
+  --bg-header: #e4e4e4;
+  --bg-accent: #e4e4e4;
+  --bg-code: #eeeeee;
+  --bg-codehilite: #eeeeee;
+  --bg-tooltip: #1c1c1c;
+  --bg-kbd: #1c1c1c;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #444444;
+  --text-link: #005f87;
+  --text-header: #444444;
+  --text-code: #444444;
+  --text-muted: #878787;
+  --text-tooltip: #d0d0d0;
+  --text-kbd: #eeeeee;
+  --text-link-code: #005f87;
+  --text-link-code-hover: #5f8700;
+
+  /* Borders */
+  --border-zettel: #d0d0d0;
+  --border-heading: #d0d0d0;
+  --border-accent: #d0d0d0;
+  --border-code: #d0d0d0;
+  --border-hr: #b0b0b0;
+  --border-img: #d0d0d0;
+
+  /* Navbar */
+  --nav-from: #444444;
+  --nav-to: #1c1c1c;
+
+  /* Admonitions */
+  --adm-note-text: #005f87;
+  --adm-note-bg: #dfedf3;
+  --adm-note-border: #005f87;
+  --adm-warning-text: #af8700;
+  --adm-warning-bg: #f5efdb;
+  --adm-warning-border: #af8700;
+  --adm-danger-text: #af0000;
+  --adm-danger-bg: #f5dede;
+  --adm-danger-border: #af0000;
+}
+
+[data-color-scheme="papercolor"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #1c1c1c;
+  --bg-body-image: none;
+  --bg-zettel: #262626;
+  --bg-header: #303030;
+  --bg-accent: #222222;
+  --bg-code: #262626;
+  --bg-codehilite: #262626;
+  --bg-tooltip: #d0d0d0;
+  --bg-kbd: #444444;
+  --bg-img: #262626;
+
+  --text-primary: #d0d0d0;
+  --text-link: #5f8787;
+  --text-header: #d0d0d0;
+  --text-code: #d0d0d0;
+  --text-muted: #585858;
+  --text-tooltip: #1c1c1c;
+  --text-kbd: #d0d0d0;
+  --text-link-code: #5f8787;
+  --text-link-code-hover: #afd787;
+
+  --border-zettel: #3a3a3a;
+  --border-heading: #3a3a3a;
+  --border-accent: #3a3a3a;
+  --border-code: #3a3a3a;
+  --border-hr: #444444;
+  --border-img: #3a3a3a;
+
+  --nav-from: #262626;
+  --nav-to: #1c1c1c;
+
+  --adm-note-text: #5f8787;
+  --adm-note-bg: #262626;
+  --adm-note-border: #5f8787;
+  --adm-warning-text: #ffff87;
+  --adm-warning-bg: #262626;
+  --adm-warning-border: #ffff87;
+  --adm-danger-text: #d75f5f;
+  --adm-danger-bg: #262626;
+  --adm-danger-border: #d75f5f;
+}
