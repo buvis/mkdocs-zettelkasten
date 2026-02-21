@@ -48,15 +48,6 @@ def default_site(tmp_path_factory):
 
 
 @pytest.fixture(scope="session")
-def selenized_site(tmp_path_factory):
-    output = tmp_path_factory.mktemp("selenized")
-    _build_site(CONFIGS_DIR / "mkdocs-selenized.yml", output)
-    server, url = _serve_dir(output)
-    yield url
-    server.shutdown()
-
-
-@pytest.fixture(scope="session")
 def editor_site(tmp_path_factory):
     output = tmp_path_factory.mktemp("editor")
     _build_site(CONFIGS_DIR / "mkdocs-editor.yml", output)

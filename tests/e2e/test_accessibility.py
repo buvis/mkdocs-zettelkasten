@@ -7,9 +7,9 @@ def test_sr_only_elements_exist(page, default_site):
     assert sr.count() >= 1
 
 
-def test_theme_toggle_has_aria_label(page, default_site):
+def test_settings_button_has_aria_label(page, default_site):
     page.goto(default_site)
-    toggle = page.locator("#theme-toggle")
+    toggle = page.locator('[data-target="#mkdocs_settings_modal"]')
     label = toggle.get_attribute("aria-label")
     assert label is not None
     assert len(label) > 0

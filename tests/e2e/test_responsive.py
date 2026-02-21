@@ -46,5 +46,5 @@ def test_nav_items_accessible_on_mobile(page, default_site):
     page.goto(f"{default_site}/20211122195311/")
     page.click("button.navbar-toggler")
     page.locator("#navbar-collapse").wait_for(state="visible")
-    # theme toggle should be accessible in expanded nav
-    assert page.locator("#theme-toggle").is_visible()
+    # settings button should be accessible in expanded nav
+    assert page.locator('[data-target="#mkdocs_settings_modal"]').is_visible()

@@ -23,6 +23,8 @@ def test_icons_visible_in_light_mode(page, default_site):
 
 def test_icons_visible_in_dark_mode(page, default_site):
     page.goto(f"{default_site}/20211122194827/")
-    page.click("#theme-toggle")
+    page.click('[data-target="#mkdocs_settings_modal"]')
+    page.wait_for_selector("#mkdocs_settings_modal.show", timeout=2000)
+    page.click("#dark-mode-toggle")
     icon = page.locator(".file-references i.fa.fa-book").first
     assert icon.is_visible()

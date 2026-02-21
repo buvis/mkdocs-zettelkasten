@@ -3,7 +3,7 @@
     <head>
       {%- block site_meta %}
         <meta charset="utf-8">
-        <script>(function(){var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);var s=localStorage.getItem('color-scheme')||'{{ config.theme.color_scheme }}';document.documentElement.setAttribute('data-color-scheme',s);var l=document.createElement('link');l.id='scheme-css';l.rel='stylesheet';l.href='{{ "css/schemes/"|url }}'+s+'.css';document.head.appendChild(l);var ht=localStorage.getItem('hljs-theme-light')||'{{ config.theme.hljs_style }}';var hd=localStorage.getItem('hljs-theme-dark')||'{{ config.theme.hljs_style_dark|default("github-dark") }}';var h=t==='dark'?hd:ht;var hl=document.createElement('link');hl.id='hljs-theme';hl.rel='stylesheet';hl.dataset.lightStyle=ht;hl.dataset.darkStyle=hd;hl.href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/'+h+'.min.css';document.head.appendChild(hl)})()</script>
+        <script>(function(){var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);var s=localStorage.getItem('color-scheme')||'{{ config.theme.color_scheme }}';document.documentElement.setAttribute('data-color-scheme',s);window.__zkScheme=s;var ht=localStorage.getItem('hljs-theme-light')||'{{ config.theme.hljs_style }}';var hd=localStorage.getItem('hljs-theme-dark')||'{{ config.theme.hljs_style_dark|default("github-dark") }}';var h=t==='dark'?hd:ht;var hl=document.createElement('link');hl.id='hljs-theme';hl.rel='stylesheet';hl.dataset.lightStyle=ht;hl.dataset.darkStyle=hd;hl.href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/'+h+'.min.css';document.head.appendChild(hl)})()</script>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% if page and page.is_homepage %}<meta name="description" content="{{ config['site_description'] }}">{% endif %}
@@ -22,6 +22,8 @@
         <link href="{{ 'css/font-awesome.min.css'|url }}" rel="stylesheet">
         <link href="{{ 'css/base.css'|url }}" rel="stylesheet">
         <link href="{{ 'css/theme.css'|url }}" rel="stylesheet">
+        <link id="scheme-css" rel="stylesheet" href="{{ 'css/schemes/'|url }}{{ config.theme.color_scheme }}.css">
+        <script>if(window.__zkScheme){document.getElementById('scheme-css').href='{{ "css/schemes/"|url }}'+window.__zkScheme+'.css'}</script>
         {%- if config.extra.editor_enabled %}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css">
         {%- endif %}
