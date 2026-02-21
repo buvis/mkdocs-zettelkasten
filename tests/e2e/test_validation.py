@@ -54,6 +54,15 @@ def test_no_validation_badge_when_disabled(page, no_validation_site):
     assert page.locator(".validation-badge").count() == 0
 
 
+def test_validation_report_links_navigate_to_zettel(page, default_site):
+    page.goto(f"{default_site}/validation.html")
+    links = page.locator(".file-body li a")
+    assert links.count() > 0
+    href = links.first.get_attribute("href")
+    resp = page.goto(href)
+    assert resp.status == 200
+
+
 def test_no_validation_page_when_disabled(page, no_validation_site):
     resp = page.goto(f"{no_validation_site}/validation.html")
     assert resp.status == 404
