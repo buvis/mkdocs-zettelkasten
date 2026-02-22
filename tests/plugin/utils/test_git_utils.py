@@ -11,17 +11,18 @@ GIT_DATE_ISO = "2025-01-15T10:30:00+01:00"
 class TestGetRevisionDateForFile:
     def test_returns_datetime_from_git_log(self) -> None:
         util = GitUtil()
-        with patch.object(util, "git") as mock_git:
-            mock_git.log.return_value = GIT_DATE_ISO
+        with patch("mkdocs_zettelkasten.plugin.utils.git_utils.Git") as mock_git_cls:
+            mock_git_cls.return_value.log.return_value = GIT_DATE_ISO
             result = util.get_revision_date_for_file("/some/path.md")
 
         assert isinstance(result, datetime.datetime)
         assert result == datetime.datetime.fromisoformat(GIT_DATE_ISO)
+        mock_git_cls.assert_called_once_with(working_dir="/some")
 
     def test_returns_none_when_no_git_history(self) -> None:
         util = GitUtil()
-        with patch.object(util, "git") as mock_git:
-            mock_git.log.return_value = ""
+        with patch("mkdocs_zettelkasten.plugin.utils.git_utils.Git") as mock_git_cls:
+            mock_git_cls.return_value.log.return_value = ""
             result = util.get_revision_date_for_file("/some/path.md")
 
         assert result is None

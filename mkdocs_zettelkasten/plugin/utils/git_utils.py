@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 import logging
+from pathlib import Path
 
 from git import Git, InvalidGitRepositoryError, Repo
 
@@ -11,11 +12,9 @@ logger = logging.getLogger(
 
 
 class GitUtil:
-    def __init__(self) -> None:
-        self.git = Git()
-
     def get_revision_date_for_file(self, path: str) -> datetime.datetime | None:
-        raw = self.git.log(path, n=1, format="%cI")
+        git = Git(working_dir=str(Path(path).parent))
+        raw = git.log(path, n=1, format="%cI")
         if not raw:
             return None
         return datetime.datetime.fromisoformat(raw)
