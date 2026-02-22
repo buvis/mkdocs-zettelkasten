@@ -1,0 +1,55 @@
+:root {
+  --graph-node: var(--text-link);
+  --graph-node-current: var(--text-primary);
+  --graph-edge: var(--border-zettel);
+  --graph-label: var(--text-primary);
+  --graph-bg: var(--bg-page);
+}
+
+#graph-container {
+  width: 100%;
+  height: calc(100vh - 160px);
+  position: relative;
+  overflow: hidden;
+}
+
+#graph-container canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#graph-tooltip {
+  position: absolute;
+  pointer-events: none;
+  padding: 4px 8px;
+  background: var(--bg-tooltip);
+  color: var(--text-tooltip);
+  border-radius: 3px;
+  font-size: 0.85em;
+  white-space: nowrap;
+  display: none;
+  z-index: 10;
+}
+
+#local-graph-container {
+  width: 100%;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+  margin: 1.5em 0;
+  border: 1px solid var(--border-zettel);
+  border-radius: 4px;
+}
+
+#local-graph-container canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.local-graph-heading {
+  font-size: 0.85em;
+  color: var(--text-muted);
+  margin-bottom: 0.3em;
+}
