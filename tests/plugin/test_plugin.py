@@ -26,6 +26,7 @@ class TestZettelkastenPlugin:
             "icon_backlinks": "fa fa-link",
             "file_suffix": ".md",
             "graph_enabled": False,
+            "preview_enabled": False,
         }
         return plugin
 
