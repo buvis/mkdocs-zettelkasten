@@ -144,6 +144,16 @@
                         </li>
                       {%- endblock %}
 
+                      {%- block graph_button %}
+                        {%- if config.extra.graph_enabled is defined and config.extra.graph_enabled %}
+                        <li class="nav-item">
+                          <a href="{{ nav.homepage.url|url }}graph.html" class="nav-link" title="Graph View">
+                            <i class="fa fa-share-alt"></i>
+                          </a>
+                        </li>
+                        {%- endif %}
+                      {%- endblock %}
+
                       {%- block validation_icon %}
                         {%- if config.extra.validation_issues_count is defined and config.extra.validation_issues_count > 0 %}
                         <li class="nav-item">
