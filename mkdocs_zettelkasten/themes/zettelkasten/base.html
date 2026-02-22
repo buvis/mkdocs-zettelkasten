@@ -27,6 +27,9 @@
         {%- if config.extra.editor_enabled %}
         <link rel="stylesheet" href="{{ 'css/vendor/easymde.min.css'|url }}">
         {%- endif %}
+        {%- if config.extra.graph_enabled is defined and config.extra.graph_enabled %}
+        <link rel="stylesheet" href="{{ 'css/graph.css'|url }}">
+        {%- endif %}
         {%- for path in extra_css %}
         <link href="{{ path }}" rel="stylesheet">
         {%- endfor %}
@@ -236,6 +239,9 @@
         {%- if config.extra.editor_enabled %}
         <script src="{{ 'js/vendor/easymde.min.js'|url }}"></script>
         <script src="{{ 'js/editor.js'|url }}" defer></script>
+        {%- endif %}
+        {%- if config.extra.graph_enabled is defined and config.extra.graph_enabled %}
+        <script src="{{ 'js/graph.js'|url }}" defer></script>
         {%- endif %}
         {%- for script in config.extra_javascript %}
           {{ script | script_tag }}

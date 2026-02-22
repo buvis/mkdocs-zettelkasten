@@ -64,6 +64,10 @@
     <div class="file-body">
       {{page.content}}
     </div>
+    {% if config.extra.graph_enabled is defined and config.extra.graph_enabled and page.meta.is_zettel %}
+    <div class="local-graph-heading">Connections</div>
+    <div id="local-graph-container" data-graph-url="{{ 'graph.json'|url }}" data-zettel-id="{{ page.meta.zettel.id }}"></div>
+    {% endif %}
     {% if page.meta.editor %}
     <div id="zettel-editor" style="display:none; padding: 1em;">
       <textarea id="zettel-editor-textarea"></textarea>
