@@ -30,10 +30,10 @@ class TestAdaptPageLinksToZettels:
         files = MagicMock()
         files.__iter__ = lambda self: iter([f])
 
-        zettel_service = MagicMock()
+        zettel_lookup = MagicMock()
 
         result = adapt_page_links_to_zettels(
-            "see [[target|my alias]]", page, config, files, zettel_service
+            "see [[target|my alias]]", page, config, files, zettel_lookup
         )
         assert "[my alias](https://example.com/target/)" in result
 
@@ -43,11 +43,10 @@ class TestAdaptPageLinksToZettels:
         files = MagicMock()
         files.__iter__ = lambda self: iter([f])
 
-        zettel_service = MagicMock()
-        zettel_service.get_zettel_by_partial_path.return_value = None
+        zettel_lookup = MagicMock(return_value=None)
 
         result = adapt_page_links_to_zettels(
-            "[my text](note.md)", page, config, files, zettel_service
+            "[my text](note.md)", page, config, files, zettel_lookup
         )
         assert "[my text](https://example.com/note/)" in result
 
@@ -56,10 +55,10 @@ class TestAdaptPageLinksToZettels:
         files = MagicMock()
         files.__iter__ = lambda self: iter([])
 
-        zettel_service = MagicMock()
+        zettel_lookup = MagicMock()
 
         md = "text\n```\n[[should_not_change]]\n```\nafter"
-        result = adapt_page_links_to_zettels(md, page, config, files, zettel_service)
+        result = adapt_page_links_to_zettels(md, page, config, files, zettel_lookup)
         assert "[[should_not_change]]" in result
 
     def test_unresolved_md_link_keeps_text(self) -> None:
@@ -67,10 +66,10 @@ class TestAdaptPageLinksToZettels:
         files = MagicMock()
         files.__iter__ = lambda self: iter([])
 
-        zettel_service = MagicMock()
+        zettel_lookup = MagicMock()
 
         result = adapt_page_links_to_zettels(
-            "[my text](nonexistent)", page, config, files, zettel_service
+            "[my text](nonexistent)", page, config, files, zettel_lookup
         )
         assert "[my text](nonexistent)" in result
 
@@ -80,12 +79,11 @@ class TestAdaptPageLinksToZettels:
         files = MagicMock()
         files.__iter__ = lambda self: iter([f])
 
-        zettel_service = MagicMock()
         target = MagicMock()
         target.title = "Zettel Title"
-        zettel_service.get_zettel_by_partial_path.return_value = target
+        zettel_lookup = MagicMock(return_value=target)
 
         result = adapt_page_links_to_zettels(
-            "[note.md](note.md)", page, config, files, zettel_service
+            "[note.md](note.md)", page, config, files, zettel_lookup
         )
         assert "[Zettel Title](https://example.com/note/)" in result

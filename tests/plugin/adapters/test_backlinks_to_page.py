@@ -26,10 +26,9 @@ class TestAddBacklinkToTarget:
         target.rel_path = "target.md"
         zettel.rel_path = "source.md"
 
-        zettel_service = MagicMock()
-        zettel_service.get_zettel_by_partial_path.return_value = target
+        zettel_lookup = MagicMock(return_value=target)
 
-        add_backlink_to_target("link", page, zettel, zettel_service)
+        add_backlink_to_target("link", page, zettel, zettel_lookup)
         assert len(target.backlinks) == 1
         assert target.backlinks[0]["url"] == "/page/"
 
@@ -38,27 +37,24 @@ class TestAddBacklinkToTarget:
         zettel = MagicMock()
         zettel.id = 2
 
-        zettel_service = MagicMock()
-        add_backlink_to_target("link", page, zettel, zettel_service)
-        zettel_service.get_zettel_by_partial_path.assert_not_called()
+        zettel_lookup = MagicMock()
+        add_backlink_to_target("link", page, zettel, zettel_lookup)
+        zettel_lookup.assert_not_called()
 
     def test_skips_when_target_not_found(self) -> None:
         page = _make_page(zettel_id=1)
         zettel = MagicMock()
         zettel.id = 1
 
-        zettel_service = MagicMock()
-        zettel_service.get_zettel_by_partial_path.return_value = None
+        zettel_lookup = MagicMock(return_value=None)
 
-        add_backlink_to_target("link", page, zettel, zettel_service)
+        add_backlink_to_target("link", page, zettel, zettel_lookup)
 
 
 class TestAdaptBacklinksToPage:
     def test_skips_non_zettel(self) -> None:
         page = _make_page(is_zettel=False)
-        zettel_service = MagicMock()
-        adapt_backlinks_to_page(page, zettel_service)
-        # Should not iterate backlinks
+        adapt_backlinks_to_page(page, {}, MagicMock())
 
     def test_processes_backlinks(self) -> None:
         page = _make_page(zettel_id=1)
@@ -70,9 +66,8 @@ class TestAdaptBacklinksToPage:
         target.rel_path = "target.md"
         source_zettel.rel_path = "source.md"
 
-        zettel_service = MagicMock()
-        zettel_service.backlinks = {"link1": [source_zettel]}
-        zettel_service.get_zettel_by_partial_path.return_value = target
+        backlinks = {"link1": [source_zettel]}
+        zettel_lookup = MagicMock(return_value=target)
 
-        adapt_backlinks_to_page(page, zettel_service)
+        adapt_backlinks_to_page(page, backlinks, zettel_lookup)
         assert len(target.backlinks) == 1

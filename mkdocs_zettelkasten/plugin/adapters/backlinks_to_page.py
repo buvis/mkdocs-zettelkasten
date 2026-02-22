@@ -1,9 +1,14 @@
+from __future__ import annotations
+
 import logging
+from typing import TYPE_CHECKING
 
-from mkdocs.structure.pages import Page
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
-from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
-from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
+    from mkdocs.structure.pages import Page
+
+    from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
 
 logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
@@ -14,23 +19,13 @@ def add_backlink_to_target(
     link: str,
     page: Page,
     zettel: Zettel,
-    zettel_service: ZettelService,
+    zettel_lookup: Callable[[str], Zettel | None],
 ) -> None:
-    """
-    Add a backlink to the target zettel if the link and page match.
-
-    Parameters:
-    -----------
-
-        - link (str): The link to be processed.
-        - page (Page): The page containing the link.
-        - zettel (Zettel): The current zettel being processed.
-        - zettel_service (ZettelService): Service to get target zettel by partial path.
-    """
+    """Add a backlink to the target zettel if the link and page match."""
     if zettel.id != page.meta["zettel"].id:
         return
 
-    target_zettel = zettel_service.get_zettel_by_partial_path(link)
+    target_zettel = zettel_lookup(link)
 
     if not target_zettel:
         return
@@ -48,20 +43,15 @@ def add_backlink_to_target(
     )
 
 
-def adapt_backlinks_to_page(page: Page, zettel_service: ZettelService) -> None:
-    """
-    Adapts backlinks to the specified page by adding them to the target Zettels.
-
-    Parameters:
-    -----------
-
-        - page (Page): The Page object for which backlinks are being adapted.
-        - zettel_service (ZettelService): The ZettelService used to fetch Zettels and manage
-          backlinks.
-    """
+def adapt_backlinks_to_page(
+    page: Page,
+    backlinks: dict[str, list[Zettel]],
+    zettel_lookup: Callable[[str], Zettel | None],
+) -> None:
+    """Adapts backlinks to the specified page by adding them to target Zettels."""
     if not page.meta["is_zettel"]:
         return
 
-    for link, source_zettels in zettel_service.backlinks.items():
+    for link, source_zettels in backlinks.items():
         for zettel in source_zettels:
-            add_backlink_to_target(link, page, zettel, zettel_service)
+            add_backlink_to_target(link, page, zettel, zettel_lookup)

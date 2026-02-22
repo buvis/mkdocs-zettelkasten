@@ -4,14 +4,14 @@ import re
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+    from re import Match
+
     from mkdocs.config.defaults import MkDocsConfig
     from mkdocs.structure.files import Files
     from mkdocs.structure.pages import Page
 
-    from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
-
-if TYPE_CHECKING:
-    from re import Match
+    from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
 
 import logging
 
@@ -27,12 +27,10 @@ def adapt_page_links_to_zettels(
     page: Page,
     config: MkDocsConfig,
     files: Files,
-    zettel_service: ZettelService,
+    zettel_lookup: Callable[[str], Zettel | None],
     file_suffix: str = ".md",
 ) -> str:
-    """
-    Adapt links in the markdown to point to zettels.
-    """
+    """Adapt links in the markdown to point to zettels."""
 
     def process_match(m: Match) -> str:
         url = m.groupdict().get("url", "")
@@ -47,9 +45,7 @@ def adapt_page_links_to_zettels(
                 if f.page and (
                     title == url_with_suffix or title + file_suffix == url_with_suffix
                 ):
-                    target_zettel = zettel_service.get_zettel_by_partial_path(
-                        url_with_suffix
-                    )
+                    target_zettel = zettel_lookup(url_with_suffix)
                     title = target_zettel.title if target_zettel else url
                 new_url = config["site_url"] + f.url
                 logger.debug(
