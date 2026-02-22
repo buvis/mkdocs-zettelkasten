@@ -3,7 +3,7 @@
     <head>
       {%- block site_meta %}
         <meta charset="utf-8">
-        <script>(function(){var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);var s=localStorage.getItem('color-scheme')||'{{ config.theme.color_scheme }}';document.documentElement.setAttribute('data-color-scheme',s);window.__zkScheme=s;var ht=localStorage.getItem('hljs-theme-light')||'{{ config.theme.hljs_style }}';var hd=localStorage.getItem('hljs-theme-dark')||'{{ config.theme.hljs_style_dark|default("github-dark") }}';var h=t==='dark'?hd:ht;var hl=document.createElement('link');hl.id='hljs-theme';hl.rel='stylesheet';hl.dataset.lightStyle=ht;hl.dataset.darkStyle=hd;hl.href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/'+h+'.min.css';document.head.appendChild(hl)})()</script>
+        <script>(function(){var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);var s=localStorage.getItem('color-scheme')||'{{ config.theme.color_scheme }}';document.documentElement.setAttribute('data-color-scheme',s);window.__zkScheme=s;var ht=localStorage.getItem('hljs-theme-light')||'{{ config.theme.hljs_style }}';var hd=localStorage.getItem('hljs-theme-dark')||'{{ config.theme.hljs_style_dark|default("github-dark") }}';var h=t==='dark'?hd:ht;var hl=document.createElement('link');hl.id='hljs-theme';hl.rel='stylesheet';hl.dataset.lightStyle=ht;hl.dataset.darkStyle=hd;hl.href='{{ "css/vendor/hljs/"|url }}'+h+'.min.css';document.head.appendChild(hl)})()</script>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% if page and page.is_homepage %}<meta name="description" content="{{ config['site_description'] }}">{% endif %}
@@ -25,7 +25,7 @@
         <link id="scheme-css" rel="stylesheet" href="{{ 'css/schemes/'|url }}{{ config.theme.color_scheme }}.css">
         <script>if(window.__zkScheme){document.getElementById('scheme-css').href='{{ "css/schemes/"|url }}'+window.__zkScheme+'.css'}</script>
         {%- if config.extra.editor_enabled %}
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css">
+        <link rel="stylesheet" href="{{ 'css/vendor/easymde.min.css'|url }}">
         {%- endif %}
         {%- for path in extra_css %}
         <link href="{{ path }}" rel="stylesheet">
@@ -35,9 +35,9 @@
       {%- block libs %}
 
         {%- if config.theme.highlightjs %}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+        <script src="{{ 'js/vendor/highlight.min.js'|url }}"></script>
         {%- for lang in config.theme.hljs_languages %}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/{{lang}}.min.js"></script>
+        <script src="{{ ('js/vendor/hljs-languages/' ~ lang ~ '.min.js')|url }}"></script>
         {%- endfor %}
         <script>hljs.initHighlightingOnLoad();</script>
         {%- endif %}
@@ -224,7 +224,7 @@
         <script src="{{ 'js/settings-modal.js'|url }}" defer></script>
         <script src="{{ 'js/copyable.js'|url }}" defer></script>
         {%- if config.extra.editor_enabled %}
-        <script src="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js"></script>
+        <script src="{{ 'js/vendor/easymde.min.js'|url }}"></script>
         <script src="{{ 'js/editor.js'|url }}" defer></script>
         {%- endif %}
         {%- for script in config.extra_javascript %}

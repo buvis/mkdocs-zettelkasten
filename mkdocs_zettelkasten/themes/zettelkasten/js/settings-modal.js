@@ -1,7 +1,7 @@
 /* Settings modal — scheme grid, code theme picker, dark mode toggle */
 (function() {
     var REGISTRY_URL;
-    var HLJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/';
+    var HLJS_BASE = base_url + '/css/vendor/hljs/';
 
     function fetchRegistry(callback) {
         var xhr = new XMLHttpRequest();
@@ -71,7 +71,7 @@
             if (link) {
                 if (isDark) link.dataset.darkStyle = theme;
                 else link.dataset.lightStyle = theme;
-                link.href = HLJS_CDN + theme + '.min.css';
+                link.href = HLJS_BASE + theme + '.min.css';
             }
 
             var preview = document.querySelector('#hljs-preview code');

@@ -27,7 +27,7 @@
         var link = document.getElementById('hljs-theme');
         if (!link) return;
         var style = getTheme() === 'dark' ? link.dataset.darkStyle : link.dataset.lightStyle;
-        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/' + style + '.min.css';
+        link.href = base_url + '/css/vendor/hljs/' + style + '.min.css';
     }
 
     window.zkTheme = {
