@@ -5,7 +5,7 @@ on:
     branches: [master]
 
 jobs:
-  lint-and-test:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -13,6 +13,18 @@ jobs:
       - run: uv sync --all-extras
       - run: uv run ruff check
       - run: uv run ruff format --check
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: uv sync --all-extras
       - run: uv run pytest tests/plugin/
 
   e2e:
@@ -20,6 +32,8 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
+        with:
+          python-version: "3.12"
       - run: uv sync --all-extras
       - run: uv run playwright install chromium --with-deps
       - run: uv run pytest tests/e2e/ -v
