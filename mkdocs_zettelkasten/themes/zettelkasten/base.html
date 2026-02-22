@@ -30,6 +30,9 @@
         {%- if config.extra.graph_enabled is defined and config.extra.graph_enabled %}
         <link rel="stylesheet" href="{{ 'css/graph.css'|url }}">
         {%- endif %}
+        {%- if config.extra.preview_enabled is defined and config.extra.preview_enabled %}
+        <link rel="stylesheet" href="{{ 'css/preview.css'|url }}">
+        {%- endif %}
         {%- for path in extra_css %}
         <link href="{{ path }}" rel="stylesheet">
         {%- endfor %}
@@ -242,6 +245,9 @@
         {%- endif %}
         {%- if config.extra.graph_enabled is defined and config.extra.graph_enabled %}
         <script src="{{ 'js/graph.js'|url }}" defer></script>
+        {%- endif %}
+        {%- if config.extra.preview_enabled is defined and config.extra.preview_enabled %}
+        <script src="{{ 'js/preview.js'|url }}" defer></script>
         {%- endif %}
         {%- for script in config.extra_javascript %}
           {{ script | script_tag }}

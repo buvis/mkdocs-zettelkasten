@@ -1,0 +1,54 @@
+.zettel-preview-popover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10000;
+  max-width: 320px;
+  padding: 12px;
+  background: var(--bg-tooltip);
+  color: var(--text-tooltip);
+  border: 1px solid var(--border-zettel);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 0.9em;
+  line-height: 1.4;
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  display: none;
+}
+
+.zettel-preview-popover::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 6px;
+  border-color: transparent transparent var(--bg-tooltip) transparent;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.zettel-preview-popover.flipped::after {
+  top: 100%;
+  bottom: auto;
+  border-color: var(--bg-tooltip) transparent transparent transparent;
+}
+
+.preview-title {
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-bottom: 0.4em;
+  display: block;
+}
+
+.preview-excerpt {
+  color: var(--text-muted);
+  font-size: 0.95em;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
