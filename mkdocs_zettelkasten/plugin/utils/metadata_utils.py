@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 from typing import Any, TextIO
 
-from yaml.scanner import ScannerError
+import yaml
 
 from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
 
@@ -30,11 +30,8 @@ def extract_file_metadata(filename: str, docs_dir: str) -> dict[str, Any]:
                 return {}
             logger.debug("Metadata extracted successfully from file: %s.", file_path)
             return metadata
-    except FileNotFoundError:
-        logger.exception("File not found: %s.", file_path)
-        return {}
-    except Exception:
-        logger.exception("Unexpected error while reading file %s.", file_path)
+    except (OSError, UnicodeDecodeError, yaml.YAMLError) as e:
+        logger.warning("Failed to read metadata from %s: %s", file_path, e)
         return {}
 
 
@@ -42,8 +39,6 @@ def _read_yaml_frontmatter(file_handler: TextIO) -> dict[str, Any] | None:
     """
     Read YAML frontmatter from a file handler.
     """
-    import yaml
-
     yaml_lines = []
     delimiter_count = 0
     for line in file_handler:
@@ -59,7 +54,7 @@ def _read_yaml_frontmatter(file_handler: TextIO) -> dict[str, Any] | None:
         try:
             metadata = yaml.safe_load("".join(yaml_lines))
             logger.debug("YAML frontmatter parsed successfully.")
-        except ScannerError:
+        except yaml.scanner.ScannerError:
             logger.warning("Failed to parse YAML frontmatter due to ScannerError.")
             return None
         else:
