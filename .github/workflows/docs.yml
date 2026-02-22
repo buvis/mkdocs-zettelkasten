@@ -5,9 +5,9 @@ on:
   workflow_dispatch:
   push:
     branches:
-    - main
+    - master
     paths:
-    - '.github/workflows/docs.yaml'
+    - '.github/workflows/docs.yml'
     - '.github/workflows/requirements.txt'
     - 'mkdocs.yml'
     - 'docs/**'
@@ -20,7 +20,7 @@ jobs:
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
     - name: Deploy docs
-      uses: mhausenblas/mkdocs-deploy-gh-pages@master
+      uses: mhausenblas/mkdocs-deploy-gh-pages@d77dd03172e96abbcdb081d8c948224762033653 # 1.26
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         CONFIG_FILE: mkdocs.yml
