@@ -553,13 +553,13 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "colorlog", specifier = "==6.10.1" },
-    { name = "gitpython", specifier = "==3.1.46" },
-    { name = "jinja2", specifier = "==3.1.6" },
-    { name = "mkdocs", specifier = "==1.6.1" },
-    { name = "pymdown-extensions", specifier = "==10.21" },
-    { name = "pyyaml", specifier = "==6.0.3" },
-    { name = "tzlocal", specifier = "==5.3.1" },
+    { name = "colorlog", specifier = ">=6,<7" },
+    { name = "gitpython", specifier = ">=3.1,<4" },
+    { name = "jinja2", specifier = ">=3.1,<4" },
+    { name = "mkdocs", specifier = ">=1.6,<2" },
+    { name = "pymdown-extensions", specifier = ">=10,<11" },
+    { name = "pyyaml", specifier = ">=6,<7" },
+    { name = "tzlocal", specifier = ">=5,<6" },
 ]
 
 [package.metadata.requires-dev]
