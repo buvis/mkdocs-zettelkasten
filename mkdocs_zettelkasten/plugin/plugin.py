@@ -7,9 +7,11 @@ if TYPE_CHECKING:
     from mkdocs.structure.files import Files
     from mkdocs.structure.pages import Page
 
+import json
 import logging
 import os
 from importlib.metadata import version
+from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import colorlog
@@ -17,6 +19,7 @@ import tzlocal
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 
+from mkdocs_zettelkasten.plugin.services.graph_exporter import GraphExporter
 from mkdocs_zettelkasten.plugin.services.page_transformer import PageTransformer
 from mkdocs_zettelkasten.plugin.services.tags_service import TagsService
 from mkdocs_zettelkasten.plugin.services.validation_service import ValidationService
@@ -68,6 +71,7 @@ class ZettelkastenPlugin(BasePlugin):
         self.tags_service = TagsService()
         self.zettel_service = ZettelService()
         self.validation_service = ValidationService()
+        self.graph_exporter = GraphExporter()
         self.page_transformer = PageTransformer()
         self._initialize_logger()
         self.logger.debug("Initialized ZettelkastenPlugin with services and logger.")
@@ -118,12 +122,33 @@ class ZettelkastenPlugin(BasePlugin):
     def on_files(self, files: Files, config: MkDocsConfig) -> None:
         self.zettel_service.process_files(files, config)
         self.tags_service.process_files(files)
+        if self.config["graph_enabled"]:
+            self._export_graph(files, config)
         if self.config["validation_enabled"]:
             self.validation_service.validate(self.zettel_service, files, config)
             config["extra"]["validation_issues_count"] = (
                 self.validation_service.total_issues()
             )
         self.logger.info("Processed %d files in on_files hook.", len(files))
+
+    def _export_graph(self, files: Files, config: MkDocsConfig) -> None:
+        from mkdocs.structure.files import File
+
+        graph_data = self.graph_exporter.export(
+            self.zettel_service.store,
+            self.tags_service.metadata,
+            file_suffix=self.config["file_suffix"],
+        )
+        graph_path = self.tags_service.tags_folder / "graph.json"
+        graph_path.write_text(json.dumps(graph_data), encoding="utf-8")
+        files.append(
+            File(
+                path="graph.json",
+                src_dir=str(self.tags_service.tags_folder),
+                dest_dir=config["site_dir"],
+                use_directory_urls=False,
+            )
+        )
 
     def on_page_markdown(
         self,
