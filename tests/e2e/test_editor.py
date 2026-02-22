@@ -7,14 +7,14 @@ def test_edit_button_visible_when_enabled(page, editor_site):
     assert btn.is_visible()
 
 
-def test_edit_button_triggers_prompt(page, editor_site):
+def test_edit_here_shows_token_dialog(page, editor_site):
     page.goto(f"{editor_site}/20211122194827/")
-    prompted = []
-    page.on("dialog", lambda d: (prompted.append(d.message), d.dismiss()))
     page.click("#zettel-edit-btn")
     page.locator(".zettel-edit-dropdown-item", has_text="Edit here").click()
-    page.wait_for_timeout(500)
-    assert len(prompted) > 0
+    dialog = page.locator("#zettel-token-dialog")
+    assert dialog.get_attribute("open") is not None
+    assert page.locator("#zettel-token-input").is_visible()
+    assert page.locator("#zettel-token-submit").is_visible()
 
 
 def test_cancel_button_restores_body(page, editor_site):
@@ -96,6 +96,38 @@ def test_dropdown_closes_on_toggle_click(page, editor_site):
     page.click("#zettel-edit-btn")
     page.wait_for_timeout(300)
     assert page.locator("#zettel-edit-dropdown").count() == 0
+
+
+def test_forget_token_clears_session_storage(page, editor_site):
+    page.goto(f"{editor_site}/20211122194827/")
+    page.evaluate("sessionStorage.setItem('zettel-pat', 'ghp_test')")
+    page.reload()
+    page.wait_for_load_state("domcontentloaded")
+    forget_btn = page.locator("#zettel-forget-token-btn")
+    assert forget_btn.is_visible()
+    forget_btn.click()
+    val = page.evaluate("sessionStorage.getItem('zettel-pat')")
+    assert val is None
+    assert not forget_btn.is_visible()
+
+
+def test_forget_token_hidden_when_no_token(page, editor_site):
+    page.goto(f"{editor_site}/20211122194827/")
+    page.evaluate("sessionStorage.removeItem('zettel-pat')")
+    page.reload()
+    page.wait_for_load_state("domcontentloaded")
+    assert not page.locator("#zettel-forget-token-btn").is_visible()
+
+
+def test_token_dialog_closes_on_x(page, editor_site):
+    page.goto(f"{editor_site}/20211122194827/")
+    page.click("#zettel-edit-btn")
+    page.locator(".zettel-edit-dropdown-item", has_text="Edit here").click()
+    dialog = page.locator("#zettel-token-dialog")
+    assert dialog.get_attribute("open") is not None
+    page.locator("#zettel-token-dialog .modal-close").click()
+    page.wait_for_timeout(300)
+    assert dialog.get_attribute("open") is None
 
 
 def test_pencil_links_to_github_when_editor_disabled(page, default_site):

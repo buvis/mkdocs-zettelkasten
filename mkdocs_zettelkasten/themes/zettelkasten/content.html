@@ -44,6 +44,9 @@
             <button id="zettel-cancel-btn" class="btn btn-sm btn-outline-danger editor-btn" style="display:none" data-tooltip="Cancel editing">
               <i class="fa fa-times"></i>
             </button>
+            <button id="zettel-forget-token-btn" class="btn btn-sm btn-outline-secondary editor-btn" style="display:none" data-tooltip="Forget stored token">
+              <i class="fa fa-sign-out"></i>
+            </button>
           {% elif page and page.edit_url %}
             <a href="{{ page.edit_url }}" class="hidden-hyperlink" data-tooltip="Edit zettel's source">
               <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil clickable" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -66,6 +69,25 @@
       <textarea id="zettel-editor-textarea"></textarea>
     </div>
     <script>window.__zettelkasten_editor={repo:"{{page.meta.editor.repo}}",branch:"{{page.meta.editor.branch}}",docsPrefix:"{{page.meta.editor.docs_prefix}}",srcPath:"{{page.file.src_path}}",editUrl:"{{page.edit_url or ''}}"};</script>
+    <dialog id="zettel-token-dialog">
+      <div class="modal-header">
+        <h4 class="modal-title">GitHub Access Token</h4>
+        <button type="button" class="modal-close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p class="token-warning"><i class="fa fa-lock"></i> Token is stored in your browser session only and cleared when you close the tab.</p>
+        <div class="form-group">
+          <label for="zettel-token-input">Personal access token</label>
+          <input type="password" id="zettel-token-input" class="form-control" placeholder="ghp_...">
+        </div>
+        <p class="token-help">
+          <a href="https://github.com/settings/tokens/new?scopes=repo&amp;description=mkdocs-zettelkasten" target="_blank" rel="noopener">Create a token</a> with <code>repo</code> or <code>contents:write</code> scope.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button id="zettel-token-submit" class="btn btn-sm btn-primary">Continue</button>
+      </div>
+    </dialog>
     {% endif %}
     {% if page and not page.is_homepage and (page.meta.ref or (page.meta.is_zettel and page.meta.zettel.backlinks)) %}
       <div class="file-references">

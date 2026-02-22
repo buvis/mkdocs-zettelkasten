@@ -1,5 +1,4 @@
 (function () {
-  var token = null;
   var editor = null;
   var currentSha = null;
 
@@ -7,10 +6,81 @@
     return window.__zettelkasten_editor || {};
   }
 
-  function promptToken() {
-    if (token) return token;
-    token = prompt("Enter GitHub personal access token:");
-    return token;
+  function getToken() {
+    var stored = sessionStorage.getItem('zettel-pat');
+    if (stored) return Promise.resolve(stored);
+
+    return new Promise(function (resolve, reject) {
+      var dialog = document.getElementById('zettel-token-dialog');
+      var input = document.getElementById('zettel-token-input');
+      var submit = document.getElementById('zettel-token-submit');
+      if (!dialog || !input || !submit) {
+        reject(new Error('Token dialog not found'));
+        return;
+      }
+
+      input.value = '';
+      dialog.showModal();
+      input.focus();
+
+      function onSubmit() {
+        var val = input.value.trim();
+        if (!val) return;
+        sessionStorage.setItem('zettel-pat', val);
+        dialog.close();
+        cleanup();
+        updateForgetButton();
+        resolve(val);
+      }
+
+      function onKeydown(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          onSubmit();
+        }
+      }
+
+      function onClose() {
+        cleanup();
+        reject(new Error('cancelled'));
+      }
+
+      function cleanup() {
+        submit.removeEventListener('click', onSubmit);
+        input.removeEventListener('keydown', onKeydown);
+        dialog.removeEventListener('close', onClose);
+      }
+
+      submit.addEventListener('click', onSubmit);
+      input.addEventListener('keydown', onKeydown);
+      dialog.addEventListener('close', onClose);
+    });
+  }
+
+  function forgetToken() {
+    sessionStorage.removeItem('zettel-pat');
+    updateForgetButton();
+    showToast('Token forgotten');
+  }
+
+  function updateForgetButton() {
+    var btn = document.getElementById('zettel-forget-token-btn');
+    if (!btn) return;
+    btn.style.display = sessionStorage.getItem('zettel-pat') ? 'inline-block' : 'none';
+  }
+
+  function showToast(message, type) {
+    var toast = document.createElement('div');
+    toast.className = 'zettel-toast' + (type === 'error' ? ' zettel-toast-error' : '');
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    requestAnimationFrame(function () {
+      toast.classList.add('show');
+    });
+    setTimeout(function () {
+      toast.classList.remove('show');
+      setTimeout(function () { toast.remove(); }, 300);
+    }, 3000);
   }
 
   function repoPath() {
@@ -65,12 +135,11 @@
     var c = cfg();
     if (!c.repo || !c.srcPath) return;
 
-    var t = promptToken();
-    if (!t) return;
-
-    var path = repoPath();
-
-    fetchFile(path, t)
+    getToken()
+      .then(function (t) {
+        var path = repoPath();
+        return fetchFile(path, t);
+      })
       .then(function (data) {
         currentSha = data.sha;
         var content = decodeURIComponent(escape(atob(data.content)));
@@ -109,25 +178,28 @@
           "inline-block";
       })
       .catch(function (err) {
-        alert("Failed to load file: " + err.message);
+        if (err.message === 'cancelled') return;
+        showToast("Failed to load file: " + err.message, 'error');
       });
   }
 
   function saveEdit() {
-    var t = promptToken();
-    if (!t || !editor) return;
+    if (!editor) return;
 
-    var content = editor.value();
-    var path = repoPath();
-
-    saveFile(path, content, currentSha, t)
+    getToken()
+      .then(function (t) {
+        var content = editor.value();
+        var path = repoPath();
+        return saveFile(path, content, currentSha, t);
+      })
       .then(function () {
-        alert("Saved successfully!");
+        showToast("Saved successfully!");
         cancelEdit();
-        location.reload();
+        setTimeout(function () { location.reload(); }, 1000);
       })
       .catch(function (err) {
-        alert("Save failed: " + err.message);
+        if (err.message === 'cancelled') return;
+        showToast("Save failed: " + err.message, 'error');
       });
   }
 
@@ -198,9 +270,20 @@
     var editBtn = document.getElementById("zettel-edit-btn");
     var saveBtn = document.getElementById("zettel-save-btn");
     var cancelBtn = document.getElementById("zettel-cancel-btn");
+    var forgetBtn = document.getElementById("zettel-forget-token-btn");
 
     if (editBtn) editBtn.addEventListener("click", handleEditClick);
     if (saveBtn) saveBtn.addEventListener("click", saveEdit);
     if (cancelBtn) cancelBtn.addEventListener("click", cancelEdit);
+    if (forgetBtn) forgetBtn.addEventListener("click", forgetToken);
+
+    updateForgetButton();
+
+    var closeBtn = document.querySelector('#zettel-token-dialog .modal-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function () {
+        document.getElementById('zettel-token-dialog').close();
+      });
+    }
   });
 })();

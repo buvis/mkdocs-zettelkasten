@@ -271,6 +271,55 @@ pre:has(> code):hover .copy-btn {
   font-size: 0.8em;
 }
 
+/* Token dialog */
+.token-warning {
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  margin-bottom: 1em;
+}
+
+.token-warning .fa {
+  margin-right: 0.3em;
+}
+
+.token-help {
+  font-size: 0.85em;
+  margin-top: 0.5em;
+}
+
+#zettel-token-input {
+  font-family: monospace;
+  margin-top: 0.3em;
+}
+
+/* Toast notifications */
+.zettel-toast {
+  position: fixed;
+  bottom: 1.5em;
+  left: 50%;
+  transform: translateX(-50%) translateY(1em);
+  background: var(--bg-header);
+  color: var(--text-primary);
+  border: 1px solid var(--border-accent);
+  border-radius: 4px;
+  padding: 0.6em 1.2em;
+  font-size: 0.9em;
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+
+.zettel-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.zettel-toast-error {
+  border-color: var(--red, #dc3545);
+  color: var(--red, #dc3545);
+}
+
 /* Settings modal */
 .scheme-grid {
   display: grid;
