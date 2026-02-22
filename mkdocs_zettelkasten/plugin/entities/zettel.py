@@ -253,12 +253,3 @@ class ReadState:
             self.is_reading_body = True
         else:
             self.is_reading_body = False
-
-    def _validate_header(self) -> None:
-        """Validates header termination."""
-        if self.divider_count < Zettel.COUNT_HEADER_DIVIDERS:
-            logger.error(
-                "Unclosed YAML header (found only %d dividers)", self.divider_count
-            )
-            msg = "Unclosed YAML header"
-            raise ZettelFormatError(msg)
