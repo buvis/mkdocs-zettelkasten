@@ -60,6 +60,7 @@ class ZettelkastenPlugin(BasePlugin):
         ("icon_references", config_options.Type(str, default="fa fa-book")),
         ("icon_backlinks", config_options.Type(str, default="fa fa-link")),
         ("file_suffix", config_options.Type(str, default=".md")),
+        ("graph_enabled", config_options.Type(bool, default=False)),
     )
 
     def __init__(self) -> None:
@@ -97,6 +98,8 @@ class ZettelkastenPlugin(BasePlugin):
             )
         if self.config["editor_enabled"]:
             config["extra"]["editor_enabled"] = True
+        if self.config["graph_enabled"]:
+            config["extra"]["graph_enabled"] = True
         config["extra"]["plugin_version"] = version("mkdocs-zettelkasten")
         self.logger.info("Configured ZettelkastenPlugin with MkDocs config.")
 

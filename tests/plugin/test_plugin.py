@@ -25,6 +25,7 @@ class TestZettelkastenPlugin:
             "icon_references": "fa fa-book",
             "icon_backlinks": "fa fa-link",
             "file_suffix": ".md",
+            "graph_enabled": False,
         }
         return plugin
 
@@ -162,3 +163,33 @@ class TestZettelkastenPlugin:
             "references": "fa fa-book",
             "backlinks": "fa fa-link",
         }
+
+    def test_on_config_sets_graph_enabled_extra(self) -> None:
+        plugin = self._make_plugin()
+        plugin.config["graph_enabled"] = True
+        config = MagicMock()
+        config.__getitem__ = MagicMock(side_effect={"extra": {}}.get)
+        extra = {}
+        config.__getitem__ = lambda self_mock, key: extra if key == "extra" else MagicMock()
+
+        with (
+            patch.object(plugin.zettel_service, "configure"),
+            patch.object(plugin.tags_service, "configure"),
+        ):
+            plugin.on_config(config)
+
+        assert extra["graph_enabled"] is True
+
+    def test_on_config_skips_graph_extra_when_disabled(self) -> None:
+        plugin = self._make_plugin()
+        extra = {}
+        config = MagicMock()
+        config.__getitem__ = lambda self_mock, key: extra if key == "extra" else MagicMock()
+
+        with (
+            patch.object(plugin.zettel_service, "configure"),
+            patch.object(plugin.tags_service, "configure"),
+        ):
+            plugin.on_config(config)
+
+        assert "graph_enabled" not in extra
