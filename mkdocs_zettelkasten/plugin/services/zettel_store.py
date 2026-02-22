@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import PurePosixPath
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -37,11 +38,13 @@ class ZettelStore:
     def get_by_partial_path(
         self, partial_path: str, file_suffix: str = ".md"
     ) -> Zettel | None:
-        """Retrieve zettel by partial filesystem path."""
-        partial_path = partial_path.removesuffix(file_suffix)
+        """Retrieve zettel by matching tail path segments."""
+        partial_parts = PurePosixPath(partial_path.removesuffix(file_suffix)).parts
 
         for zettel in self.zettels:
-            if partial_path in str(zettel.path):
+            zettel_stem = zettel.path.with_suffix("") if zettel.path.suffix == file_suffix else zettel.path
+            zettel_parts = zettel_stem.parts
+            if len(partial_parts) <= len(zettel_parts) and zettel_parts[-len(partial_parts):] == partial_parts:
                 return zettel
 
         return None

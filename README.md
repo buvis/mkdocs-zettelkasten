@@ -24,7 +24,7 @@ Three levels of testing, from fast to thorough:
 **1. Unit tests** — plugin logic without building the site:
 
 ```bash
-make test      # ~0.3s, 139 tests
+make test      # ~0.3s, 143 tests
 ```
 
 **2. E2E tests** — playwright builds the site from `docs/`, serves it, and checks the UI automatically:
