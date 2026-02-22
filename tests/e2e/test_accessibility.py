@@ -1,9 +1,9 @@
-"""E2E tests for basic accessibility: ARIA, sr-only, focus, headings."""
+"""E2E tests for basic accessibility: ARIA, visually-hidden, focus, headings."""
 
 
-def test_sr_only_elements_exist(page, default_site):
+def test_visually_hidden_elements_exist(page, default_site):
     page.goto(f"{default_site}/20211122194827/")
-    sr = page.locator(".sr-only")
+    sr = page.locator(".visually-hidden")
     assert sr.count() >= 1
 
 
@@ -15,10 +15,10 @@ def test_settings_button_has_aria_label(page, default_site):
     assert len(label) > 0
 
 
-def test_search_modal_has_dialog_role(page, default_site):
+def test_search_modal_is_dialog_element(page, default_site):
     page.goto(default_site)
-    modal = page.locator("#mkdocs_search_modal")
-    assert modal.get_attribute("role") == "dialog"
+    modal = page.locator("dialog#mkdocs_search_modal")
+    assert modal.count() == 1
     assert modal.get_attribute("aria-labelledby") is not None
 
 

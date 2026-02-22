@@ -61,9 +61,9 @@ def test_copy_button_shows_checkmark_on_click(page, default_site):
 def test_copy_button_works_in_dark_mode(page, default_site):
     _goto_and_wait(page, f"{default_site}{TARGET}")
     page.click('[data-target="#mkdocs_settings_modal"]')
-    page.wait_for_selector("#mkdocs_settings_modal.show", timeout=2000)
+    page.wait_for_selector("#mkdocs_settings_modal[open]", timeout=2000)
     page.click("#dark-mode-toggle")
-    page.click("#mkdocs_settings_modal .close")
+    page.click("#mkdocs_settings_modal .modal-close")
     page.wait_for_timeout(500)
     block = page.locator(CODE_BLOCK).first
     block.hover()

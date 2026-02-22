@@ -4,7 +4,7 @@
 
 def _open_settings(page):
     page.click('[data-target="#mkdocs_settings_modal"]')
-    page.wait_for_selector("#mkdocs_settings_modal.show", timeout=2000)
+    page.wait_for_selector("#mkdocs_settings_modal[open]", timeout=2000)
 
 
 def test_settings_button_exists(page, default_site):

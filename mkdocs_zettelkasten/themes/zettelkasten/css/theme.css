@@ -41,11 +41,6 @@
 
 /* ===== Theme styles ===== */
 
-.bg-primary {
-  background-image: linear-gradient(var(--nav-from), var(--nav-to));
-  background-repeat: no-repeat;
-}
-
 .file-header a,
 span {
   color: var(--text-link);
@@ -226,7 +221,7 @@ pre:has(> code):hover .copy-btn {
   opacity: 1;
 }
 
-.sr-only {
+.visually-hidden {
   position: absolute;
   width: 1px;
   height: 1px;

@@ -53,7 +53,7 @@ def test_light_mode_accent_colors(page, default_site):
 def test_dark_mode_footer_still_differs(page, default_site):
     page.goto(f"{default_site}/20211122194827/")
     page.click('[data-target="#mkdocs_settings_modal"]')
-    page.wait_for_selector("#mkdocs_settings_modal.show", timeout=2000)
+    page.wait_for_selector("#mkdocs_settings_modal[open]", timeout=2000)
     page.click("#dark-mode-toggle")
     refs_bg = _get_computed(page.locator(".file-references").first, "backgroundColor")
     body_bg = _get_computed(page.locator(".file-body").first, "backgroundColor")

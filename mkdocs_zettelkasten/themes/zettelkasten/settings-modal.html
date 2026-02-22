@@ -1,11 +1,9 @@
-<div class="modal" id="mkdocs_settings_modal" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="settingsModalLabel">Settings</h4>
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            </div>
-            <div class="modal-body">
+<dialog id="mkdocs_settings_modal" class="modal-lg" aria-labelledby="settingsModalLabel">
+    <div class="modal-header">
+        <h4 class="modal-title" id="settingsModalLabel">Settings</h4>
+        <button type="button" class="modal-close" aria-label="Close"><span aria-hidden="true">&times;</span><span class="visually-hidden">Close</span></button>
+    </div>
+    <div class="modal-body">
                 <h5>Color Scheme</h5>
                 <div id="scheme-grid" class="scheme-grid"></div>
 
@@ -59,8 +57,6 @@ print(greet("Zettelkasten"))</code></pre>
                     </label>
                 </div>
             </div>
-            <div class="modal-footer">
-            </div>
-        </div>
+    <div class="modal-footer">
     </div>
-</div>
+</dialog>
