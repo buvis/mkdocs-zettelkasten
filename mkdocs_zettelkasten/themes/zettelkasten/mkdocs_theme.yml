@@ -3,6 +3,7 @@
 static_templates:
   - 404.html
   - color-schemes.html
+  - graph.html
 
 locale: en
 
