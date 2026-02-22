@@ -47,7 +47,7 @@ dev = [
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D", "INP", "E501", "T201", "COM812", "ANN", "FA102", "PLC0415", "TRY400", "PLR0913"]
+ignore = ["D", "INP", "E501", "T201", "COM812", "ANN", "FA102", "PLC0415", "TRY400", "PLR0913", "PLR2004"]
 unfixable = ["B"]
 
 [tool.ruff.lint.per-file-ignores]

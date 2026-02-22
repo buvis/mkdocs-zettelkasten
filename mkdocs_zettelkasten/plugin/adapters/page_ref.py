@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-import re
 from typing import TYPE_CHECKING
 
 from markdown import Markdown
 
 if TYPE_CHECKING:
+    import re
+
     from mkdocs.config.defaults import MkDocsConfig
     from mkdocs.structure.pages import Page
 
