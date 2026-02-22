@@ -129,7 +129,7 @@
 
     for (var i = 0; i < links.length; i++) {
       var link = links[i];
-      var href = link.getAttribute('href');
+      var href = link.href;
       if (!href) continue;
 
       var match = href.match(idRegex);

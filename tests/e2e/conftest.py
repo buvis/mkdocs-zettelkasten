@@ -81,3 +81,12 @@ def graph_site(tmp_path_factory):
     server, url = _serve_dir(output)
     yield url
     server.shutdown()
+
+
+@pytest.fixture(scope="session")
+def preview_site(tmp_path_factory):
+    output = tmp_path_factory.mktemp("preview")
+    _build_site(CONFIGS_DIR / "mkdocs-preview.yml", output)
+    server, url = _serve_dir(output)
+    yield url
+    server.shutdown()
