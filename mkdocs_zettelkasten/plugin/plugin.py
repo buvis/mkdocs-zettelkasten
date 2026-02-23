@@ -11,7 +11,6 @@ import json
 import logging
 import os
 from importlib.metadata import version
-from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import colorlog

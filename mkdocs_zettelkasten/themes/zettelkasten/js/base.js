@@ -42,17 +42,6 @@
     });
 })();
 
-function getSearchTerm() {
-    var sPageURL = window.location.search.substring(1);
-    var sURLVariables = sPageURL.split('&');
-    for (var i = 0; i < sURLVariables.length; i++) {
-        var sParameterName = sURLVariables[i].split('=');
-        if (sParameterName[0] == 'q') {
-            return sParameterName[1];
-        }
-    }
-}
-
 function applyTopPadding() {
     var container = document.querySelector('body > .container');
     if (!container) return;
@@ -181,15 +170,8 @@ var keyCodes = {
 function init() {
     applyTopPadding();
 
-    var search_term = getSearchTerm(),
-        searchModal = document.getElementById('mkdocs_search_modal'),
+    var searchModal = document.getElementById('mkdocs_search_modal'),
         keyboardModal = document.getElementById('mkdocs_keyboard_modal');
-
-    if (search_term) {
-        searchModal.showModal();
-        var qi = searchModal.querySelector('#mkdocs-search-query');
-        if (qi) qi.focus();
-    }
 
     // Close search modal when result is selected
     // The links get added later so listen to parent
@@ -249,21 +231,6 @@ function init() {
 
     document.querySelectorAll('table').forEach(function(t) {
         t.classList.add('table', 'table-striped', 'table-hover');
-    });
-
-    // Improve the scrollspy behaviour when users click on a TOC item.
-    document.querySelectorAll('.bs-sidenav a').forEach(function(link) {
-        link.addEventListener('click', function() {
-            var clicked = this;
-            setTimeout(function() {
-                var actives = document.querySelectorAll('.nav li.active a');
-                var active = actives[actives.length - 1];
-                if (clicked !== active && active) {
-                    active.parentElement.classList.remove('active');
-                }
-                clicked.parentElement.classList.add('active');
-            }, 50);
-        });
     });
 
     function showInnerDropdown(item) {
@@ -416,10 +383,6 @@ function init() {
         headings.forEach(function(h) { observer.observe(h.el); });
     })();
 
-    /* Prevent disabled links from causing a page reload */
-    document.querySelectorAll('li.disabled a').forEach(function(el) {
-        el.addEventListener('click', function(e) { e.preventDefault(); });
-    });
 }
 
 if (document.readyState === 'loading') {

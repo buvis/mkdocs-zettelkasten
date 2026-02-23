@@ -1,7 +1,10 @@
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TYPE_CHECKING
 from unittest.mock import MagicMock
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 from mkdocs_zettelkasten.plugin.services.preview_exporter import PreviewExporter
 from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore

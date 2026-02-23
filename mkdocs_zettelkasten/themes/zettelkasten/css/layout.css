@@ -103,7 +103,6 @@ body {
   width: 1.5em;
   height: 1.5em;
   vertical-align: middle;
-  content: "";
   background: no-repeat center center;
   background-size: 100% 100%;
 }
@@ -408,7 +407,7 @@ dialog.modal-lg {
   font-weight: 500;
 }
 
-.modal-close, .close {
+.modal-close {
   padding: 0;
   background-color: transparent;
   border: 0;
@@ -422,7 +421,7 @@ dialog.modal-lg {
   cursor: pointer;
 }
 
-.modal-close:hover, .close:hover {
+.modal-close:hover {
   color: var(--text-primary);
   text-decoration: none;
   opacity: .75;

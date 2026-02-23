@@ -38,21 +38,6 @@ body > .container {
     /* csslint ignore:end */
 }
 
-.source-links {
-    float: right;
-}
-
-.col-md-9 img {
-    max-width: 100%;
-    display: inline-block;
-    padding: 4px;
-    line-height: 1.428571429;
-    background-color: var(--bg-img);
-    border: 1px solid var(--border-img);
-    border-radius: 4px;
-    margin: 20px auto 30px auto;
-}
-
 h1 {
     color: var(--text-primary);
     font-weight: 400;
@@ -68,7 +53,7 @@ hr {
     border-top: 1px solid var(--border-hr);
 }
 
-pre, .rst-content tt {
+pre {
     max-width: 100%;
     background: var(--bg-code);
     border: solid 1px var(--border-code);
@@ -76,7 +61,7 @@ pre, .rst-content tt {
     overflow-x: auto;
 }
 
-code.code-large, .rst-content tt.code-large {
+code.code-large {
     font-size: 90%;
 }
 
@@ -123,10 +108,6 @@ footer {
     text-align: center;
     font-weight: 200;
     font-size: smaller;
-}
-
-.modal-dialog {
-    margin-top: 60px;
 }
 
 /*
