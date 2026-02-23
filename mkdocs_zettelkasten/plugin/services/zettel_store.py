@@ -25,11 +25,19 @@ class ZettelStore:
     @property
     def zettels(self) -> list[Zettel]:
         """View of stored zettels."""
-        return list(self._zettels)
+        return self._zettels
 
     def _rebuild_indexes(self) -> None:
         """Maintain internal indexes for fast lookups."""
-        self._path_index = {z.path: z for z in self._zettels}
+        self._path_index: dict[Path, Zettel] = {z.path: z for z in self._zettels}
+        self._suffix_index: dict[tuple[str, ...], Zettel] = {}
+        for z in self._zettels:
+            stem = z.path.with_suffix("")
+            parts = stem.parts
+            for i in range(len(parts)):
+                key = parts[i:]
+                if key not in self._suffix_index:
+                    self._suffix_index[key] = z
 
     def get_by_path(self, path: Path) -> Zettel | None:
         """Retrieve zettel by filesystem path."""
@@ -40,14 +48,7 @@ class ZettelStore:
     ) -> Zettel | None:
         """Retrieve zettel by matching tail path segments."""
         partial_parts = PurePosixPath(partial_path.removesuffix(file_suffix)).parts
-
-        for zettel in self.zettels:
-            zettel_stem = zettel.path.with_suffix("") if zettel.path.suffix == file_suffix else zettel.path
-            zettel_parts = zettel_stem.parts
-            if len(partial_parts) <= len(zettel_parts) and zettel_parts[-len(partial_parts):] == partial_parts:
-                return zettel
-
-        return None
+        return self._suffix_index.get(partial_parts)
 
     def update(self, zettels: Iterable[Zettel]) -> None:
         """Replace stored zettels with new collection."""
