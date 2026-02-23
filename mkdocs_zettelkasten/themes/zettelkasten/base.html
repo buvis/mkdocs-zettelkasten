@@ -33,6 +33,7 @@
         {%- if config.extra.preview_enabled is defined and config.extra.preview_enabled %}
         <link rel="stylesheet" href="{{ 'css/preview.css'|url }}">
         {%- endif %}
+        <link rel="stylesheet" href="{{ 'css/embed.css'|url }}">
         {%- for path in extra_css %}
         <link href="{{ path }}" rel="stylesheet">
         {%- endfor %}
