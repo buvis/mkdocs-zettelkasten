@@ -90,3 +90,12 @@ def preview_site(tmp_path_factory):
     server, url = _serve_dir(output)
     yield url
     server.shutdown()
+
+
+@pytest.fixture(scope="session")
+def math_site(tmp_path_factory):
+    output = tmp_path_factory.mktemp("math")
+    _build_site(CONFIGS_DIR / "mkdocs-math.yml", output)
+    server, url = _serve_dir(output)
+    yield url
+    server.shutdown()
