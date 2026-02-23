@@ -95,27 +95,19 @@
   /* ── init ────────────────────────────────────────────────── */
 
   function initPreviews() {
-    var xhr = new XMLHttpRequest();
-    // base_url is defined in base.html
-    // If base_url ends with /, remove it before appending /previews.json
-    // or just let double slashes happen as browsers handle them.
-    // However, clean concatenation is better.
     var url = base_url + '/previews.json';
     if (base_url.slice(-1) === '/') {
        url = base_url + 'previews.json';
     }
-    
-    xhr.open('GET', url);
-    xhr.onload = function () {
-      if (xhr.status !== 200) return;
-      try {
-        previews = JSON.parse(xhr.responseText);
-        bindLinks();
-      } catch (e) {
-        console.error('Failed to parse previews.json', e);
-      }
-    };
-    xhr.send();
+
+    fetch(url).then(function (res) {
+      if (!res.ok) return;
+      return res.json();
+    }).then(function (data) {
+      if (!data) return;
+      previews = data;
+      bindLinks();
+    });
   }
 
   function bindLinks() {

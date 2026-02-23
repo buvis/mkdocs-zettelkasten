@@ -4,12 +4,11 @@
     var HLJS_BASE = base_url + '/css/vendor/hljs/';
 
     function fetchRegistry(callback) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', REGISTRY_URL);
-        xhr.onload = function() {
-            if (xhr.status === 200) callback(JSON.parse(xhr.responseText));
-        };
-        xhr.send();
+        fetch(REGISTRY_URL).then(function(res) {
+            if (res.ok) return res.json();
+        }).then(function(data) {
+            if (data) callback(data);
+        });
     }
 
     function renderSchemeGrid(schemes) {

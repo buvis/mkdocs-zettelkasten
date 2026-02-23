@@ -320,20 +320,18 @@
     var url = container.getAttribute('data-graph-url');
     if (!url) return;
 
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
-    xhr.onload = function () {
-      if (xhr.status !== 200) return;
-      var data = JSON.parse(xhr.responseText);
-
+    fetch(url).then(function (res) {
+      if (!res.ok) return;
+      return res.json();
+    }).then(function (data) {
+      if (!data) return;
       if (opts && opts.currentId) {
         data = filterNeighborhood(data, opts.currentId);
       }
 
       container.setAttribute('data-node-count', data.nodes.length);
       new ForceGraph(container, data, opts);
-    };
-    xhr.send();
+    });
   }
 
   function filterNeighborhood(data, centerId) {
