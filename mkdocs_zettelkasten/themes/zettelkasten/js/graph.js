@@ -33,10 +33,7 @@
     var ctx = canvas.getContext('2d');
 
     var tooltip = document.createElement('div');
-    tooltip.id = container.id === 'graph-container' ? 'graph-tooltip' : '';
-    tooltip.style.cssText = 'position:absolute;pointer-events:none;padding:4px 8px;' +
-      'background:var(--bg-tooltip);color:var(--text-tooltip);border-radius:3px;' +
-      'font-size:0.85em;white-space:nowrap;display:none;z-index:10;';
+    tooltip.className = 'graph-tooltip';
     container.appendChild(tooltip);
 
     /* init node positions */
@@ -215,6 +212,7 @@
       if (hit) {
         dragging = hit;
         alpha = Math.max(alpha, 0.3);
+        ensureRunning();
       } else {
         panning = true;
         panStart = { x: ev.clientX, y: ev.clientY, camX: cam.x, camY: cam.y };
@@ -233,14 +231,16 @@
         dragging.vx = 0;
         dragging.vy = 0;
         alpha = Math.max(alpha, 0.3);
+        ensureRunning();
       } else if (panning) {
         var dx = (ev.clientX - panStart.x) / cam.zoom;
         var dy = (ev.clientY - panStart.y) / cam.zoom;
         cam.x = panStart.camX - dx;
         cam.y = panStart.camY - dy;
+        draw();
       } else {
         var hit = nodeAt(sx, sy);
-        hovered = hit;
+        if (hit !== hovered) { hovered = hit; draw(); }
         canvas.style.cursor = hit ? 'pointer' : 'grab';
         if (hit) {
           tooltip.textContent = hit.title;
@@ -273,13 +273,22 @@
       ev.preventDefault();
       var factor = ev.deltaY < 0 ? 1.1 : 0.9;
       cam.zoom = Math.min(Math.max(cam.zoom * factor, 0.1), 10);
+      draw();
     }, { passive: false });
 
     /* animation loop */
+    var animId = null;
     function loop() {
       tick();
       draw();
-      requestAnimationFrame(loop);
+      if (alpha > 0.001) {
+        animId = requestAnimationFrame(loop);
+      } else {
+        animId = null;
+      }
+    }
+    function ensureRunning() {
+      if (!animId) loop();
     }
 
     /* auto-fit after simulation settles */
