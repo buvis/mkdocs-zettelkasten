@@ -95,3 +95,20 @@ class TestGetPrevNextPage:
         prev, next_p = get_prev_next_page(page, files, [z1, z2])
         assert prev is f_index.page
         assert next_p is f2.page
+
+    def test_last_zettel_has_no_next(self) -> None:
+        z1 = _make_zettel(1, "/docs/a.md")
+        z2 = _make_zettel(2, "/docs/b.md")
+
+        f_index = _make_file("index.md")
+        f1 = _make_file("a.md", "/docs/a.md")
+        f2 = _make_file("b.md", "/docs/b.md")
+
+        files = MagicMock()
+        files.__iter__ = lambda self: iter([f_index, f1, f2])
+
+        page = _make_page("b.md", zettel_id=2)
+
+        prev, next_p = get_prev_next_page(page, files, [z1, z2])
+        assert prev is f1.page
+        assert next_p is None

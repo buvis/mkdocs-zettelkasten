@@ -74,3 +74,35 @@ class TestTagsService:
         assert output.exists()
         content = output.read_text()
         assert "demo" in content
+
+    def test_configure_creates_folder(self, tmp_path: Path) -> None:
+        target = tmp_path / "build_output"
+        config = MagicMock()
+        config.get = lambda key, default=None: {
+            "tags_filename": "tags.md",
+            "tags_folder": str(target),
+            "tags_template": None,
+        }.get(key, default)
+        config.__getitem__ = lambda self, key: {"docs_dir": str(tmp_path)}[key]
+
+        svc = TagsService()
+        svc.configure(config)
+
+        assert target.exists()
+        assert target.is_dir()
+
+    def test_configure_resolves_relative_folder(self, tmp_path: Path) -> None:
+        docs = tmp_path / "docs"
+        docs.mkdir()
+        config = MagicMock()
+        config.get = lambda key, default=None: {
+            "tags_filename": "tags.md",
+            "tags_folder": ".build",
+            "tags_template": None,
+        }.get(key, default)
+        config.__getitem__ = lambda self, key: {"docs_dir": str(docs)}[key]
+
+        svc = TagsService()
+        svc.configure(config)
+
+        assert svc.tags_folder == tmp_path / ".build"

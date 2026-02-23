@@ -2,6 +2,7 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 from mkdocs_zettelkasten.plugin.adapters.transclusion import (
+    MAX_EMBED_DEPTH,
     _extract_section,
     _read_zettel_body,
     adapt_transclusion,
@@ -221,3 +222,27 @@ class TestAdaptTransclusion:
             "![[1]]", lookup, site_url="https://example.com/", file_suffix=".md"
         )
         assert "Inner content." in result
+
+    def test_max_embed_depth_stops_recursion(self, tmp_path: Path) -> None:
+        # Create a chain of MAX_EMBED_DEPTH + 2 zettels
+        chain_len = MAX_EMBED_DEPTH + 2
+        zettels = {}
+        for i in range(1, chain_len + 1):
+            f = tmp_path / f"z{i}.md"
+            if i < chain_len:
+                f.write_text(f"---\nid: {i}\ntitle: Z{i}\n---\n\n![[{i + 1}]]\n")
+            else:
+                f.write_text(f"---\nid: {i}\ntitle: Z{i}\n---\n\nLeaf content.\n")
+            zettels[i] = _make_zettel(f"Z{i}", f)
+
+        def lookup(path: str):
+            for zid, z in zettels.items():
+                if str(zid) in path:
+                    return z
+            return None
+
+        result = adapt_transclusion(
+            "![[1]]", lookup, site_url="https://example.com/", file_suffix=".md"
+        )
+        # Leaf content should NOT appear because chain exceeds max depth
+        assert "Leaf content." not in result

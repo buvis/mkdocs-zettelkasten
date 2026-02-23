@@ -1,4 +1,5 @@
 import datetime
+from zoneinfo import ZoneInfo
 
 import tzlocal
 
@@ -47,6 +48,21 @@ def test_convert_string_to_date_none() -> None:
         pass
 
     assert result is None
+
+
+def test_convert_string_to_date_preserves_existing_timezone() -> None:
+    result = convert_string_to_date(
+        "2024-04-23T12:34:56+00:00", tz=ZoneInfo("US/Eastern")
+    )
+    assert result is not None
+    assert result.tzinfo == datetime.timezone.utc
+
+
+def test_convert_string_to_date_applies_tz_to_naive_iso() -> None:
+    eastern = ZoneInfo("US/Eastern")
+    result = convert_string_to_date("2024-04-23T12:34:56", tz=eastern)
+    assert result is not None
+    assert result.tzinfo is eastern
 
 
 def test_convert_string_to_date_already_datetime() -> None:

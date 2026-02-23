@@ -65,6 +65,16 @@ Body before third divider
 Content after third divider
 """
 
+HR_WITH_LINKS = """---
+id: 20240101120000
+title: HR with links
+date: 2024-01-01
+---
+Before the rule [[20240102120000]]
+---
+After the rule [[20240103120000]]
+"""
+
 
 def _make_zettel(tmp_path: Path, content: str, **kwargs) -> Zettel:
     fp = tmp_path / "test.md"
@@ -147,9 +157,10 @@ class TestExtractLinks:
 
 
 class TestExtraDivider:
-    def test_third_divider_stops_body(self, tmp_path: Path) -> None:
-        z = _make_zettel(tmp_path, EXTRA_DIVIDER)
-        assert z.id == 20240101120000
+    def test_links_extracted_after_hr(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, HR_WITH_LINKS)
+        assert "20240102120000" in z.links
+        assert "20240103120000" in z.links
 
 
 class TestHashAndEquality:

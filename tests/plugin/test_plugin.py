@@ -1,5 +1,7 @@
 import logging
+import os
 from unittest.mock import MagicMock, patch
+from zoneinfo import ZoneInfo
 
 from mkdocs_zettelkasten.plugin.plugin import ZettelkastenPlugin
 
@@ -195,3 +197,100 @@ class TestZettelkastenPlugin:
             plugin.on_config(config)
 
         assert "graph_enabled" not in extra
+
+    def test_resolve_timezone_from_env(self) -> None:
+        plugin = self._make_plugin()
+        with patch.dict(os.environ, {"ZETTELKASTEN_TZ": "US/Eastern"}):
+            tz = plugin._resolve_timezone()
+        assert tz == ZoneInfo("US/Eastern")
+
+    def test_resolve_timezone_from_config(self) -> None:
+        plugin = self._make_plugin()
+        plugin.config["timezone"] = "Europe/Berlin"
+        with patch.dict(os.environ, {}, clear=True):
+            tz = plugin._resolve_timezone()
+        assert tz == ZoneInfo("Europe/Berlin")
+
+    def test_resolve_timezone_invalid_falls_back_to_utc(self) -> None:
+        plugin = self._make_plugin()
+        plugin.config["timezone"] = "Invalid/Zone"
+        with patch.dict(os.environ, {}, clear=True):
+            tz = plugin._resolve_timezone()
+        assert tz == ZoneInfo("UTC")
+
+    def test_on_files_exports_graph_json(self, tmp_path) -> None:
+        plugin = self._make_plugin()
+        plugin.config["graph_enabled"] = True
+        files = MagicMock()
+        files.__len__ = lambda self: 1
+        site_dir = tmp_path / "site"
+        site_dir.mkdir()
+        config = {"extra": {}, "site_dir": str(site_dir)}
+
+        with (
+            patch.object(plugin.zettel_service, "process_files"),
+            patch.object(plugin.tags_service, "process_files"),
+            patch.object(plugin.validation_service, "validate"),
+            patch.object(plugin.graph_exporter, "export", return_value={}),
+            patch.object(plugin.tags_service, "tags_folder", tmp_path),
+        ):
+            plugin.on_files(files, config)
+
+        assert (tmp_path / "graph.json").exists()
+
+    def test_on_files_exports_previews_json(self, tmp_path) -> None:
+        plugin = self._make_plugin()
+        plugin.config["preview_enabled"] = True
+        files = MagicMock()
+        files.__len__ = lambda self: 1
+        site_dir = tmp_path / "site"
+        site_dir.mkdir()
+        config = {"extra": {}, "site_dir": str(site_dir)}
+
+        with (
+            patch.object(plugin.zettel_service, "process_files"),
+            patch.object(plugin.tags_service, "process_files"),
+            patch.object(plugin.validation_service, "validate"),
+            patch.object(plugin.preview_exporter, "export", return_value={}),
+            patch.object(plugin.tags_service, "tags_folder", tmp_path),
+        ):
+            plugin.on_files(files, config)
+
+        assert (tmp_path / "previews.json").exists()
+
+    def test_on_page_markdown_sets_validation_issues(self) -> None:
+        plugin = self._make_plugin()
+        page = MagicMock()
+        page.url = "/test/"
+        page.meta = {}
+        config = MagicMock()
+        files = MagicMock()
+        issues = [{"msg": "test issue"}]
+
+        with (
+            patch.object(plugin.page_transformer, "transform", return_value="md"),
+            patch.object(
+                plugin.validation_service, "get_issues", return_value=issues
+            ),
+        ):
+            plugin.on_page_markdown("original", page, config, files)
+
+        assert page.meta["validation_issues"] == issues
+
+    def test_on_page_markdown_sets_editor_meta(self) -> None:
+        plugin = self._make_plugin()
+        plugin.config["editor_enabled"] = True
+        plugin.config["editor_repo"] = "https://github.com/test/repo"
+        page = MagicMock()
+        page.url = "/test/"
+        page.meta = {}
+        config = MagicMock()
+        files = MagicMock()
+
+        with patch.object(
+            plugin.page_transformer, "transform", return_value="md"
+        ):
+            plugin.on_page_markdown("original", page, config, files)
+
+        assert page.meta["editor"]["repo"] == "https://github.com/test/repo"
+        assert page.meta["editor"]["branch"] == "main"
