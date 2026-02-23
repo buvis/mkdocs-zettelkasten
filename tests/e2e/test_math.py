@@ -15,14 +15,14 @@ def test_katex_js_loaded(page: Page, math_site: str) -> None:
 
 def test_inline_math_rendered(page: Page, math_site: str) -> None:
     page.goto(f"{math_site}/20990201000003/")
-    page.wait_for_timeout(1000)
+    page.locator("span.arithmatex .katex").first.wait_for(state="attached", timeout=5000)
     inline = page.locator("span.arithmatex .katex")
     assert inline.count() > 0
 
 
 def test_display_math_rendered(page: Page, math_site: str) -> None:
     page.goto(f"{math_site}/20990201000003/")
-    page.wait_for_timeout(1000)
+    page.locator("div.arithmatex .katex-display").first.wait_for(state="attached", timeout=5000)
     display = page.locator("div.arithmatex .katex-display")
     assert display.count() > 0
 

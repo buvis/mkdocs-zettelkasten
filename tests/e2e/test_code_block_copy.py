@@ -1,5 +1,7 @@
 """E2E tests for code block copy button (testscript 032)."""
 
+from playwright.sync_api import expect
+
 TARGET = "/20211122195311/"
 # pymdownx.superfences produces .highlight, codehilite produces .codehilite
 CODE_BLOCK = ".highlight"
@@ -30,10 +32,7 @@ def test_copy_button_visible_on_hover(page, default_site):
     _goto_and_wait(page, f"{default_site}{TARGET}")
     block = page.locator(CODE_BLOCK).first
     block.hover()
-    # wait for 0.2s CSS opacity transition to finish
-    page.wait_for_timeout(300)
-    opacity = block.locator(".copy-btn").evaluate("el => getComputedStyle(el).opacity")
-    assert float(opacity) == 1
+    expect(block.locator(".copy-btn")).to_have_css("opacity", "1")
 
 
 def test_copy_button_fades_on_mouse_leave(page, default_site):
@@ -43,9 +42,7 @@ def test_copy_button_fades_on_mouse_leave(page, default_site):
     block.locator(".copy-btn").wait_for(state="visible")
 
     page.locator("body").hover(position={"x": 0, "y": 0})
-    page.wait_for_timeout(500)
-    opacity = block.locator(".copy-btn").evaluate("el => getComputedStyle(el).opacity")
-    assert float(opacity) == 0
+    expect(block.locator(".copy-btn")).to_have_css("opacity", "0")
 
 
 def test_copy_button_shows_checkmark_on_click(page, default_site):
@@ -64,9 +61,7 @@ def test_copy_button_works_in_dark_mode(page, default_site):
     page.wait_for_selector("#mkdocs_settings_modal[open]", timeout=2000)
     page.click("#dark-mode-toggle")
     page.click("#mkdocs_settings_modal .modal-close")
-    page.wait_for_timeout(500)
+    page.locator("#mkdocs_settings_modal").wait_for(state="hidden")
     block = page.locator(CODE_BLOCK).first
     block.hover()
-    page.wait_for_timeout(300)
-    opacity = block.locator(".copy-btn").evaluate("el => getComputedStyle(el).opacity")
-    assert float(opacity) == 1
+    expect(block.locator(".copy-btn")).to_have_css("opacity", "1")

@@ -12,7 +12,7 @@ def test_graph_renders_canvas(page, graph_site):
 
 def test_graph_has_nodes(page, graph_site):
     page.goto(f"{graph_site}/graph.html")
-    page.wait_for_timeout(2000)
+    page.locator("#graph-container[data-node-count]").wait_for(state="attached", timeout=5000)
     count = page.locator("#graph-container").get_attribute("data-node-count")
     assert count is not None
     assert int(count) > 0

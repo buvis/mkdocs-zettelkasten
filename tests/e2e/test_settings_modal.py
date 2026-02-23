@@ -1,5 +1,7 @@
 """E2E tests for the settings modal."""
 
+from playwright.sync_api import expect
+
 
 def _open_settings(page):
     page.click('[data-target="#mkdocs_settings_modal"]')
@@ -37,5 +39,4 @@ def test_settings_modal_closes(page, default_site):
     page.goto(default_site)
     _open_settings(page)
     page.click("#mkdocs_settings_modal .modal-close")
-    page.wait_for_timeout(500)
-    assert not page.locator("#mkdocs_settings_modal").is_visible()
+    expect(page.locator("#mkdocs_settings_modal")).not_to_be_visible()

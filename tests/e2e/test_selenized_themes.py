@@ -26,7 +26,7 @@ def test_switch_to_selenized_via_modal(page, default_site):
     page.goto(default_site)
     _open_settings(page)
     page.click('.scheme-card[data-scheme-id="selenized"]')
-    page.wait_for_timeout(500)
+    page.locator('html[data-color-scheme="selenized"]').wait_for(state="attached")
     assert _get_css_var(page, "--bg-page") == "#fbf3db"
 
 
@@ -34,7 +34,7 @@ def test_scheme_persists_on_reload(page, default_site):
     page.goto(default_site)
     _open_settings(page)
     page.click('.scheme-card[data-scheme-id="selenized"]')
-    page.wait_for_timeout(500)
+    page.locator('html[data-color-scheme="selenized"]').wait_for(state="attached")
     page.reload()
     assert page.locator("html").get_attribute("data-color-scheme") == "selenized"
     assert _get_css_var(page, "--bg-page") == "#fbf3db"

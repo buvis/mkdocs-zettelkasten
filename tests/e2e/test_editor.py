@@ -1,5 +1,7 @@
 """E2E tests for markdown editor (testscript 062)."""
 
+from playwright.sync_api import expect
+
 
 def test_edit_button_visible_when_enabled(page, editor_site):
     page.goto(f"{editor_site}/20211122194827/")
@@ -27,7 +29,7 @@ def test_cancel_button_restores_body(page, editor_site):
         document.getElementById('zettel-cancel-btn').style.display = 'inline-block';
     }""")
     page.click("#zettel-cancel-btn")
-    page.wait_for_timeout(500)
+    page.locator("#zettel-edit-btn").wait_for(state="visible")
     restored = page.locator(".file-body").inner_text()
     assert len(restored) > 0
     assert original[:50] in restored[:100]
@@ -85,8 +87,7 @@ def test_dropdown_closes_on_outside_click(page, editor_site):
     page.click("#zettel-edit-btn")
     assert page.locator("#zettel-edit-dropdown").is_visible()
     page.click(".file-body")
-    page.wait_for_timeout(300)
-    assert page.locator("#zettel-edit-dropdown").count() == 0
+    expect(page.locator("#zettel-edit-dropdown")).to_have_count(0)
 
 
 def test_dropdown_closes_on_toggle_click(page, editor_site):
@@ -94,8 +95,7 @@ def test_dropdown_closes_on_toggle_click(page, editor_site):
     page.click("#zettel-edit-btn")
     assert page.locator("#zettel-edit-dropdown").is_visible()
     page.click("#zettel-edit-btn")
-    page.wait_for_timeout(300)
-    assert page.locator("#zettel-edit-dropdown").count() == 0
+    expect(page.locator("#zettel-edit-dropdown")).to_have_count(0)
 
 
 def test_forget_token_clears_session_storage(page, editor_site):
@@ -126,7 +126,7 @@ def test_token_dialog_closes_on_x(page, editor_site):
     dialog = page.locator("#zettel-token-dialog")
     assert dialog.get_attribute("open") is not None
     page.locator("#zettel-token-dialog .modal-close").click()
-    page.wait_for_timeout(300)
+    dialog.wait_for(state="hidden")
     assert dialog.get_attribute("open") is None
 
 
