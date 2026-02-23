@@ -1,4 +1,6 @@
-from mkdocs_zettelkasten.plugin.utils.patterns import MD_LINK, WIKI_LINK
+import pytest
+
+from mkdocs_zettelkasten.plugin.utils.patterns import EMBED_LINK, MD_LINK, WIKI_LINK
 
 
 class TestWikiLink:
@@ -60,3 +62,35 @@ class TestMdLink:
         assert match is not None
         assert match.group("title") == ""
         assert match.group("url") == "url"
+
+
+class TestEmbedLink:
+    @pytest.mark.parametrize(
+        ("text", "url", "section", "title"),
+        [
+            ("![[20211122194827]]", "20211122194827", None, None),
+            ("![[20211122194827#Method 1]]", "20211122194827", "Method 1", None),
+            ("![[20211122194827|Custom]]", "20211122194827", None, "Custom"),
+            (
+                "![[20211122194827#Method 1|Custom]]",
+                "20211122194827",
+                "Method 1",
+                "Custom",
+            ),
+            ("![[notes/my-note]]", "notes/my-note", None, None),
+        ],
+    )
+    def test_matches_embed_syntax(
+        self, text: str, url: str, section: str | None, title: str | None
+    ) -> None:
+        m = EMBED_LINK.search(text)
+        assert m is not None
+        assert m.group("url") == url
+        assert m.group("section") == section
+        assert m.group("title") == title
+
+    def test_does_not_match_regular_wiki_link(self) -> None:
+        assert EMBED_LINK.search("[[20211122194827]]") is None
+
+    def test_does_not_match_image(self) -> None:
+        assert EMBED_LINK.search("![alt](image.png)") is None
