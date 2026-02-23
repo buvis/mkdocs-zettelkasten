@@ -22,7 +22,8 @@ def add_backlink_to_target(
     zettel_lookup: Callable[[str], Zettel | None],
 ) -> None:
     """Add a backlink to the target zettel if the link and page match."""
-    if zettel.id != page.meta["zettel"].id:
+    zettel_meta = page.meta.get("zettel")
+    if not zettel_meta or zettel.id != zettel_meta.id:
         return
 
     target_zettel = zettel_lookup(link)
@@ -49,7 +50,7 @@ def adapt_backlinks_to_page(
     zettel_lookup: Callable[[str], Zettel | None],
 ) -> None:
     """Adapts backlinks to the specified page by adding them to target Zettels."""
-    if not page.meta["is_zettel"]:
+    if not page.meta.get("is_zettel"):
         return
 
     for link, source_zettels in backlinks.items():

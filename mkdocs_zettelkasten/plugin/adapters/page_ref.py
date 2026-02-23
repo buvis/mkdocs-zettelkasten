@@ -74,7 +74,7 @@ def get_page_ref(
     config: MkDocsConfig,
 ) -> tuple[str, str | None]:
     """Extract reference section from page markdown (frontmatter already stripped)."""
-    if not page.meta["is_zettel"]:
+    if not page.meta.get("is_zettel"):
         return (markdown, None)
 
     content_lines = markdown.rstrip().split("\n")
