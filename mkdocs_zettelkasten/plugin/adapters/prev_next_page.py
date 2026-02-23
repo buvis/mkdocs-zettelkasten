@@ -59,7 +59,7 @@ def get_prev_next_page(
 
 
 def _is_special_page(page: Page, file_suffix: str = ".md") -> bool:
-    return page.file.src_path in {f"index{file_suffix}", "tags.md"}
+    return page.file.src_path in {f"index{file_suffix}", f"tags{file_suffix}"}
 
 
 def _handle_special_page(
