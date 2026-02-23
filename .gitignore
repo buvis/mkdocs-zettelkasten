@@ -166,3 +166,4 @@ cython_debug/
 .local/
 .claude/
 .serena/
+.worktrees/
