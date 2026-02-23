@@ -66,6 +66,7 @@ class ZettelkastenPlugin(BasePlugin):
         ("file_suffix", config_options.Type(str, default=".md")),
         ("graph_enabled", config_options.Type(bool, default=False)),
         ("preview_enabled", config_options.Type(bool, default=False)),
+        ("transclusion_strip_heading", config_options.Type(bool, default=True)),
     )
 
     def __init__(self) -> None:
