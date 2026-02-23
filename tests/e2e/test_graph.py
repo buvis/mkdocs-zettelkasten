@@ -1,3 +1,6 @@
+from conftest import ZETTEL_INSTALL
+
+
 def test_graph_page_loads(page, graph_site):
     page.goto(f"{graph_site}/graph.html")
     assert "Graph View" in page.title()
@@ -31,7 +34,7 @@ def test_graph_nav_link_hidden_when_disabled(page, default_site):
 
 
 def test_local_graph_visible_on_zettel_page(page, graph_site):
-    page.goto(f"{graph_site}/20211122194827/")
+    page.goto(f"{graph_site}/{ZETTEL_INSTALL}/")
     container = page.locator("#local-graph-container")
     container.wait_for(state="attached", timeout=5000)
     canvas = container.locator("canvas")
@@ -40,6 +43,6 @@ def test_local_graph_visible_on_zettel_page(page, graph_site):
 
 
 def test_local_graph_hidden_when_disabled(page, default_site):
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     container = page.locator("#local-graph-container")
     assert container.count() == 0

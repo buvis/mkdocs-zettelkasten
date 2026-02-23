@@ -1,10 +1,11 @@
 """E2E tests for validation badges and page (testscript 061)."""
 
+from conftest import ZETTEL_INSTALL
 from playwright.sync_api import expect
 
 
 def test_validation_badge_visible_on_zettel(page, default_site):
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     badge = page.locator(".validation-badge")
     assert badge.count() >= 1
     assert badge.first.locator("i.fa.fa-exclamation-triangle").count() == 1
@@ -24,7 +25,7 @@ def test_validation_page_has_issues(page, default_site):
 
 
 def test_validation_navbar_icon_visible(page, default_site):
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     icon = page.locator(".navbar .fa-exclamation-triangle")
     assert icon.count() == 1
     link = icon.locator("..")
@@ -32,7 +33,7 @@ def test_validation_navbar_icon_visible(page, default_site):
 
 
 def test_validation_navbar_icon_shows_count(page, default_site):
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     badge = page.locator(".navbar .badge-warning")
     assert badge.count() == 1
     count = int(badge.inner_text())
@@ -45,12 +46,12 @@ def test_validation_navbar_icon_hidden_when_zero_issues(page, clean_validation_s
 
 
 def test_validation_navbar_icon_hidden_when_disabled(page, no_validation_site):
-    page.goto(f"{no_validation_site}/20211122194827/")
+    page.goto(f"{no_validation_site}/{ZETTEL_INSTALL}/")
     assert page.locator(".navbar .fa-exclamation-triangle").count() == 0
 
 
 def test_no_validation_badge_when_disabled(page, no_validation_site):
-    page.goto(f"{no_validation_site}/20211122194827/")
+    page.goto(f"{no_validation_site}/{ZETTEL_INSTALL}/")
     assert page.locator(".validation-badge").count() == 0
 
 

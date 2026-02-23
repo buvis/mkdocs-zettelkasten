@@ -9,6 +9,11 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 CONFIGS_DIR = Path(__file__).resolve().parent / "configs"
 
+# Zettel IDs from docs/ fixtures — shared across E2E tests
+ZETTEL_INSTALL = "20211122194827"
+ZETTEL_DEMO = "20211122195311"
+ZETTEL_PUBLISH = "20211122195910"
+
 
 def _build_site(config_file: Path, output_dir: Path) -> Path:
     subprocess.run(

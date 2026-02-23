@@ -1,8 +1,9 @@
 """E2E tests for code block copy button (testscript 032)."""
 
+from conftest import ZETTEL_DEMO
 from playwright.sync_api import expect
 
-TARGET = "/20211122195311/"
+TARGET = f"/{ZETTEL_DEMO}/"
 # pymdownx.superfences produces .highlight, codehilite produces .codehilite
 CODE_BLOCK = ".highlight"
 

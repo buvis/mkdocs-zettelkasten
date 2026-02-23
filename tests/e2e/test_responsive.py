@@ -1,5 +1,7 @@
 """E2E tests for responsive layout at mobile viewport."""
 
+from conftest import ZETTEL_DEMO, ZETTEL_INSTALL
+
 MOBILE_WIDTH = 375
 MOBILE_HEIGHT = 667
 
@@ -23,7 +25,7 @@ def test_hamburger_opens_nav(page, default_site):
 
 def test_content_readable_on_mobile(page, default_site):
     page.set_viewport_size({"width": MOBILE_WIDTH, "height": MOBILE_HEIGHT})
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     body = page.locator(".file-body")
     assert body.is_visible()
     # content should not overflow horizontally
@@ -35,7 +37,7 @@ def test_content_readable_on_mobile(page, default_site):
 
 def test_zettel_card_fits_mobile(page, default_site):
     page.set_viewport_size({"width": MOBILE_WIDTH, "height": MOBILE_HEIGHT})
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     zettel = page.locator(".zettel")
     box = zettel.bounding_box()
     assert box["width"] <= MOBILE_WIDTH
@@ -43,7 +45,7 @@ def test_zettel_card_fits_mobile(page, default_site):
 
 def test_nav_items_accessible_on_mobile(page, default_site):
     page.set_viewport_size({"width": MOBILE_WIDTH, "height": MOBILE_HEIGHT})
-    page.goto(f"{default_site}/20211122195311/")
+    page.goto(f"{default_site}/{ZETTEL_DEMO}/")
     page.click("button.navbar-toggler")
     page.locator("#navbar-collapse").wait_for(state="visible")
     # settings button should be accessible in expanded nav

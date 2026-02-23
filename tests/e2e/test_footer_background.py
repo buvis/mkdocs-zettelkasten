@@ -1,25 +1,27 @@
 """E2E tests for footer background styling (testscript 052)."""
 
+from conftest import ZETTEL_INSTALL
+
 
 def _get_computed(locator, prop):
     return locator.evaluate(f"el => getComputedStyle(el).{prop}")
 
 
 def test_footer_bg_differs_from_body(page, default_site):
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     refs_bg = _get_computed(page.locator(".file-references").first, "backgroundColor")
     body_bg = _get_computed(page.locator(".file-body").first, "backgroundColor")
     assert refs_bg != body_bg
 
 
 def test_footer_has_border_top(page, default_site):
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     style = _get_computed(page.locator(".file-references").first, "borderTopStyle")
     assert style == "solid"
 
 
 def test_footer_italic_and_smaller(page, default_site):
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     refs = page.locator(".file-references").first
     assert _get_computed(refs, "fontStyle") == "italic"
     refs_size = float(_get_computed(refs, "fontSize").replace("px", ""))
@@ -30,7 +32,7 @@ def test_footer_italic_and_smaller(page, default_site):
 
 
 def test_footer_has_rounded_bottom_corners(page, default_site):
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     refs = page.locator(".file-references").first
     bl = _get_computed(refs, "borderBottomLeftRadius")
     br = _get_computed(refs, "borderBottomRightRadius")
@@ -39,7 +41,7 @@ def test_footer_has_rounded_bottom_corners(page, default_site):
 
 
 def test_light_mode_accent_colors(page, default_site):
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     bg_accent = page.evaluate(
         "getComputedStyle(document.documentElement).getPropertyValue('--bg-accent').trim()"
     )
@@ -51,7 +53,7 @@ def test_light_mode_accent_colors(page, default_site):
 
 
 def test_dark_mode_footer_still_differs(page, default_site):
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     page.click('[data-target="#mkdocs_settings_modal"]')
     page.wait_for_selector("#mkdocs_settings_modal[open]", timeout=2000)
     page.click("#dark-mode-toggle")

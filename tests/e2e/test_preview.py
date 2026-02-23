@@ -1,3 +1,4 @@
+from conftest import ZETTEL_INSTALL
 from playwright.sync_api import expect
 
 
@@ -5,14 +6,14 @@ def test_previews_json_exists(page, preview_site):
     resp = page.request.get(f"{preview_site}/previews.json")
     assert resp.ok
     data = resp.json()
-    assert "20211122194827" in data
-    assert "title" in data["20211122194827"]
-    assert "excerpt" in data["20211122194827"]
+    assert ZETTEL_INSTALL in data
+    assert "title" in data[ZETTEL_INSTALL]
+    assert "excerpt" in data[ZETTEL_INSTALL]
 
 
 def test_hover_shows_popover(page, preview_site):
     page.goto(preview_site)
-    link = page.locator("a[href*='20211122194827']").first
+    link = page.locator(f"a[href*='{ZETTEL_INSTALL}']").first
     link.hover()
     popover = page.locator("#zettel-preview-popover")
     popover.wait_for(state="visible", timeout=5000)
@@ -21,7 +22,7 @@ def test_hover_shows_popover(page, preview_site):
 
 def test_popover_contains_title(page, preview_site):
     page.goto(preview_site)
-    link = page.locator("a[href*='20211122194827']").first
+    link = page.locator(f"a[href*='{ZETTEL_INSTALL}']").first
     link.hover()
     popover = page.locator("#zettel-preview-popover")
     popover.wait_for(state="visible", timeout=5000)
@@ -31,7 +32,7 @@ def test_popover_contains_title(page, preview_site):
 
 def test_popover_contains_excerpt(page, preview_site):
     page.goto(preview_site)
-    link = page.locator("a[href*='20211122194827']").first
+    link = page.locator(f"a[href*='{ZETTEL_INSTALL}']").first
     link.hover()
     popover = page.locator("#zettel-preview-popover")
     popover.wait_for(state="visible", timeout=5000)
@@ -41,7 +42,7 @@ def test_popover_contains_excerpt(page, preview_site):
 
 def test_popover_hides_on_mouseleave(page, preview_site):
     page.goto(preview_site)
-    link = page.locator("a[href*='20211122194827']").first
+    link = page.locator(f"a[href*='{ZETTEL_INSTALL}']").first
     link.hover()
     popover = page.locator("#zettel-preview-popover")
     popover.wait_for(state="visible", timeout=5000)

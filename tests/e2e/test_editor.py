@@ -1,16 +1,17 @@
 """E2E tests for markdown editor (testscript 062)."""
 
+from conftest import ZETTEL_INSTALL
 from playwright.sync_api import expect
 
 
 def test_edit_button_visible_when_enabled(page, editor_site):
-    page.goto(f"{editor_site}/20211122194827/")
+    page.goto(f"{editor_site}/{ZETTEL_INSTALL}/")
     btn = page.locator("#zettel-edit-btn")
     assert btn.is_visible()
 
 
 def test_edit_here_shows_token_dialog(page, editor_site):
-    page.goto(f"{editor_site}/20211122194827/")
+    page.goto(f"{editor_site}/{ZETTEL_INSTALL}/")
     page.click("#zettel-edit-btn")
     page.locator(".zettel-edit-dropdown-item", has_text="Edit here").click()
     dialog = page.locator("#zettel-token-dialog")
@@ -20,7 +21,7 @@ def test_edit_here_shows_token_dialog(page, editor_site):
 
 
 def test_cancel_button_restores_body(page, editor_site):
-    page.goto(f"{editor_site}/20211122194827/")
+    page.goto(f"{editor_site}/{ZETTEL_INSTALL}/")
     original = page.locator(".file-body").inner_text()
 
     # simulate editor-open state: show cancel, hide edit
@@ -36,36 +37,36 @@ def test_cancel_button_restores_body(page, editor_site):
 
 
 def test_easymde_defined_when_enabled(page, editor_site):
-    page.goto(f"{editor_site}/20211122194827/")
+    page.goto(f"{editor_site}/{ZETTEL_INSTALL}/")
     defined = page.evaluate("typeof EasyMDE !== 'undefined'")
     assert defined is True
 
 
 def test_no_edit_button_when_disabled(page, default_site):
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     assert page.locator("#zettel-edit-btn").count() == 0
 
 
 def test_easymde_undefined_when_disabled(page, default_site):
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     defined = page.evaluate("typeof EasyMDE !== 'undefined'")
     assert defined is False
 
 
 def test_single_edit_trigger_when_editor_enabled(page, editor_site):
-    page.goto(f"{editor_site}/20211122194827/")
+    page.goto(f"{editor_site}/{ZETTEL_INSTALL}/")
     assert page.locator("#zettel-edit-btn").count() == 1
     assert page.locator("a > svg.bi-pencil").count() == 0
 
 
 def test_single_edit_trigger_when_editor_disabled(page, default_site):
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     assert page.locator("a svg.bi-pencil").count() == 1
     assert page.locator("#zettel-edit-btn").count() == 0
 
 
 def test_edit_click_shows_action_menu(page, editor_site):
-    page.goto(f"{editor_site}/20211122194827/")
+    page.goto(f"{editor_site}/{ZETTEL_INSTALL}/")
     page.click("#zettel-edit-btn")
     dropdown = page.locator("#zettel-edit-dropdown")
     assert dropdown.is_visible()
@@ -74,16 +75,16 @@ def test_edit_click_shows_action_menu(page, editor_site):
 
 
 def test_edit_on_github_has_correct_url(page, editor_site):
-    page.goto(f"{editor_site}/20211122194827/")
+    page.goto(f"{editor_site}/{ZETTEL_INSTALL}/")
     page.click("#zettel-edit-btn")
     link = page.locator(".zettel-edit-dropdown-item", has_text="Edit on GitHub")
     href = link.get_attribute("href")
     assert "github.com" in href
-    assert "20211122194827" in href
+    assert ZETTEL_INSTALL in href
 
 
 def test_dropdown_closes_on_outside_click(page, editor_site):
-    page.goto(f"{editor_site}/20211122194827/")
+    page.goto(f"{editor_site}/{ZETTEL_INSTALL}/")
     page.click("#zettel-edit-btn")
     assert page.locator("#zettel-edit-dropdown").is_visible()
     page.click(".file-body")
@@ -91,7 +92,7 @@ def test_dropdown_closes_on_outside_click(page, editor_site):
 
 
 def test_dropdown_closes_on_toggle_click(page, editor_site):
-    page.goto(f"{editor_site}/20211122194827/")
+    page.goto(f"{editor_site}/{ZETTEL_INSTALL}/")
     page.click("#zettel-edit-btn")
     assert page.locator("#zettel-edit-dropdown").is_visible()
     page.click("#zettel-edit-btn")
@@ -99,7 +100,7 @@ def test_dropdown_closes_on_toggle_click(page, editor_site):
 
 
 def test_forget_token_clears_session_storage(page, editor_site):
-    page.goto(f"{editor_site}/20211122194827/")
+    page.goto(f"{editor_site}/{ZETTEL_INSTALL}/")
     page.evaluate("sessionStorage.setItem('zettel-pat', 'ghp_test')")
     page.reload()
     page.wait_for_load_state("domcontentloaded")
@@ -112,7 +113,7 @@ def test_forget_token_clears_session_storage(page, editor_site):
 
 
 def test_forget_token_hidden_when_no_token(page, editor_site):
-    page.goto(f"{editor_site}/20211122194827/")
+    page.goto(f"{editor_site}/{ZETTEL_INSTALL}/")
     page.evaluate("sessionStorage.removeItem('zettel-pat')")
     page.reload()
     page.wait_for_load_state("domcontentloaded")
@@ -120,7 +121,7 @@ def test_forget_token_hidden_when_no_token(page, editor_site):
 
 
 def test_token_dialog_closes_on_x(page, editor_site):
-    page.goto(f"{editor_site}/20211122194827/")
+    page.goto(f"{editor_site}/{ZETTEL_INSTALL}/")
     page.click("#zettel-edit-btn")
     page.locator(".zettel-edit-dropdown-item", has_text="Edit here").click()
     dialog = page.locator("#zettel-token-dialog")
@@ -131,7 +132,7 @@ def test_token_dialog_closes_on_x(page, editor_site):
 
 
 def test_pencil_links_to_github_when_editor_disabled(page, default_site):
-    page.goto(f"{default_site}/20211122194827/")
+    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     link = page.locator("a:has(svg.bi-pencil)")
     href = link.get_attribute("href")
     assert "github.com" in href
