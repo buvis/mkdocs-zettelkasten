@@ -296,8 +296,8 @@ pre:has(> code):hover .copy-btn {
 }
 
 .zettel-toast-error {
-  border-color: var(--red, #dc3545);
-  color: var(--red, #dc3545);
+  border-color: var(--adm-danger-text);
+  color: var(--adm-danger-text);
 }
 
 /* Settings modal */

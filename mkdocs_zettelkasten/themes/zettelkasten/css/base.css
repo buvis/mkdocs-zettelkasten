@@ -241,8 +241,8 @@ h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .head
 }
 
 .dropdown-item.open { /* csslint allow: adjoining-classes */
-    color: #fff;
-    background-color: #2FA4E7;
+    color: var(--bg-page);
+    background-color: var(--text-link);
 }
 
 .dropdown-submenu > .dropdown-menu {
@@ -260,13 +260,13 @@ h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .head
     border-color: transparent;
     border-style: solid;
     border-width: 5px 0 5px 5px;
-    border-left-color: #ccc;
+    border-left-color: var(--text-muted);
     margin-top: 5px;
     margin-right: -10px;
 }
 
 .dropdown-submenu:hover > a::after {
-    border-left-color: #fff;
+    border-left-color: var(--bg-page);
 }
 
 @media (min-width: 992px) {

@@ -161,11 +161,11 @@ body {
 }
 
 .bg-light {
-  background-color: #f8f9fa !important;
+  background-color: var(--bg-page) !important;
 }
 
 .bg-dark {
-  background-color: #343a40 !important;
+  background-color: var(--bg-header) !important;
 }
 
 .ml-auto {
@@ -336,7 +336,7 @@ body {
 }
 
 .dropdown-item.active, .dropdown-item:active {
-  color: #fff;
+  color: var(--bg-page);
   text-decoration: none;
   background-color: var(--text-link);
 }
@@ -471,7 +471,7 @@ dialog.modal-lg {
   background-color: var(--bg-zettel);
   border-color: var(--text-link);
   outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--text-link) 25%, transparent);
 }
 
 /* Buttons */
@@ -512,25 +512,25 @@ dialog.modal-lg {
 }
 
 .btn-outline-success {
-  color: #28a745;
-  border-color: #28a745;
+  color: var(--adm-note-text);
+  border-color: var(--adm-note-text);
 }
 
 .btn-outline-success:hover {
-  color: #fff;
-  background-color: #28a745;
-  border-color: #28a745;
+  color: var(--bg-page);
+  background-color: var(--adm-note-text);
+  border-color: var(--adm-note-text);
 }
 
 .btn-outline-danger {
-  color: #dc3545;
-  border-color: #dc3545;
+  color: var(--adm-danger-text);
+  border-color: var(--adm-danger-text);
 }
 
 .btn-outline-danger:hover {
-  color: #fff;
-  background-color: #dc3545;
-  border-color: #dc3545;
+  color: var(--bg-page);
+  background-color: var(--adm-danger-text);
+  border-color: var(--adm-danger-text);
 }
 
 /* Tables */
@@ -575,8 +575,8 @@ dialog.modal-lg {
 }
 
 .badge-warning {
-  color: #856404;
-  background-color: #fff3cd;
+  color: var(--adm-warning-text);
+  background-color: var(--adm-warning-bg);
 }
 
 /* Cards (used in TOC) */
