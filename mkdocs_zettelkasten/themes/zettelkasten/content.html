@@ -65,7 +65,7 @@
       {{page.content}}
     </div>
     {% if config.extra.graph_enabled is defined and config.extra.graph_enabled and page.meta.is_zettel %}
-    <div class="local-graph-heading">Connections</div>
+    <div class="local-graph-heading">{% trans %}Connections{% endtrans %}</div>
     <div id="local-graph-container" data-graph-url="{{ 'graph.json'|url }}" data-zettel-id="{{ page.meta.zettel.id }}"></div>
     {% endif %}
     {% if page.meta.editor %}
