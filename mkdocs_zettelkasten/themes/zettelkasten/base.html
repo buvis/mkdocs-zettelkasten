@@ -56,7 +56,7 @@
         {%- if config.theme.math_support %}
         <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.32/dist/katex.min.js" integrity="sha384-TNnVz4NqBjFIUtubnHyyCWyGiIboUd7yCCtn7k4DwDnkWWqyOEtNKYEELv0jW+NU" crossorigin="anonymous"></script>
         <script>
-          document.addEventListener("DOMContentLoaded", function() {
+          window.addEventListener("load", function() {
             if (typeof katex === "undefined") return;
             document.querySelectorAll(".arithmatex").forEach(function(el) {
               var tex = el.textContent;
@@ -166,7 +166,7 @@
 
                       {%-block tags_button %}
                         <li class="nav-item">
-                          <a href="{{ nav.homepage.url|url }}/tags.html" class="nav-link">
+                          <a href="{{ nav.homepage.url|url }}tags.html" class="nav-link">
                             <i class="fa fa-tags"></i> Tags
                           </a>
                         </li>

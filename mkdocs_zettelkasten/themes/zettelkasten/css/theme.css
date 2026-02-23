@@ -42,7 +42,7 @@
 /* ===== Theme styles ===== */
 
 .file-header a,
-span {
+.file-header span {
   color: var(--text-link);
 }
 
@@ -274,7 +274,7 @@ pre:has(> code):hover .copy-btn {
 /* Token dialog */
 .token-warning {
   font-size: 0.85em;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   margin-bottom: 1em;
 }
 

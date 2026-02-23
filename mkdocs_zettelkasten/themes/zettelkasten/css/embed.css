@@ -19,7 +19,7 @@
 }
 
 .zettel-embed-header a:hover {
-  color: var(--link-color);
+  color: var(--text-link);
 }
 
 .zettel-embed .zettel-embed {
