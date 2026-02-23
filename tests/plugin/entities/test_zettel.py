@@ -86,7 +86,7 @@ class TestZettelInit:
         z = _make_zettel(tmp_path, VALID_ZETTEL)
         assert z.id == 20240101120000
         assert z.title == "My Zettel"
-        assert z.last_update_date
+        assert z.last_update_date == "2024-01-01"
 
     def test_missing_id_raises(self, tmp_path: Path) -> None:
         with pytest.raises(ZettelFormatError, match="Missing zettel ID"):

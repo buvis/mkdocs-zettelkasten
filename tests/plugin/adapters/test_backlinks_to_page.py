@@ -49,12 +49,15 @@ class TestAddBacklinkToTarget:
         zettel_lookup = MagicMock(return_value=None)
 
         add_backlink_to_target("link", page, zettel, zettel_lookup)
+        zettel_lookup.assert_called_once()
 
 
 class TestAdaptBacklinksToPage:
     def test_skips_non_zettel(self) -> None:
         page = _make_page(is_zettel=False)
-        adapt_backlinks_to_page(page, {}, MagicMock())
+        zettel_lookup = MagicMock()
+        adapt_backlinks_to_page(page, {}, zettel_lookup)
+        zettel_lookup.assert_not_called()
 
     def test_processes_backlinks(self) -> None:
         page = _make_page(zettel_id=1)

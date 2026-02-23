@@ -129,5 +129,7 @@ def test_falls_back_to_mtime_when_git_returns_none(tmp_path: Path) -> None:
     ):
         zettel = Zettel(file_path, str(file_path.relative_to(tmp_path)))
 
-    # falls back to real file mtime — just verify it doesn't crash and has a date
-    assert zettel.last_update_date
+    # falls back to real file mtime — verify it's a valid date string
+    import re
+
+    assert re.match(r"\d{4}-\d{2}-\d{2}", zettel.last_update_date)

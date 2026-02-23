@@ -76,8 +76,8 @@ class TestGetPrevNextPage:
         page = _make_page("b.md", zettel_id=2)
 
         prev, next_p = get_prev_next_page(page, files, [z1, z2, z3])
-        assert prev is not None
-        assert next_p is not None
+        assert prev is f1.page
+        assert next_p is f3.page
 
     def test_first_zettel_has_homepage_as_prev(self) -> None:
         z1 = _make_zettel(1, "/docs/a.md")
@@ -93,5 +93,5 @@ class TestGetPrevNextPage:
         page = _make_page("a.md", zettel_id=1)
 
         prev, next_p = get_prev_next_page(page, files, [z1, z2])
-        assert prev is not None
-        assert next_p is not None
+        assert prev is f_index.page
+        assert next_p is f2.page
