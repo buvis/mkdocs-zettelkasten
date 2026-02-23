@@ -1,0 +1,19 @@
+INHERIT: ../../../mkdocs.yml
+
+docs_dir: ../../../docs
+
+theme:
+  name: zettelkasten
+  math_support: true
+
+plugins:
+  - search
+  - zettelkasten:
+      log_level: DEBUG
+
+markdown_extensions:
+  - admonition
+  - meta
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
