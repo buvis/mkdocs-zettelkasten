@@ -305,6 +305,7 @@ function init() {
             if (target) {
                 target.classList.toggle('show');
                 btn.classList.toggle('collapsed');
+                btn.setAttribute('aria-expanded', target.classList.contains('show'));
             }
         });
     });

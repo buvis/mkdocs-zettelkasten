@@ -97,7 +97,7 @@
 
                 {%- if nav|length>0 or (page and (page.next_page or page.previous_page)) or config.repo_url %}
                 <!-- Expander button -->
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 {%- endif %}
