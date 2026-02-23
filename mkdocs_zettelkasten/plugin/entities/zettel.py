@@ -251,5 +251,3 @@ class ReadState:
         elif self.divider_count == Zettel.COUNT_HEADER_DIVIDERS:
             self.is_reading_header = False
             self.is_reading_body = True
-        else:
-            self.is_reading_body = False

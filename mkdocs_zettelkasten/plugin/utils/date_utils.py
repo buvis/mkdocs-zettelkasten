@@ -24,7 +24,9 @@ def convert_string_to_date(
             date = datetime.strptime(string, "%Y%m%d%H%M%S").replace(tzinfo=tz)
         except ValueError:
             try:
-                date = datetime.fromisoformat(string).replace(tzinfo=tz)
+                date = datetime.fromisoformat(string)
+                if date.tzinfo is None:
+                    date = date.replace(tzinfo=tz)
             except ValueError:
                 date = None
 

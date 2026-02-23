@@ -75,9 +75,9 @@ class TagsService:
         for file in files:
             if file.src_path.endswith(self.file_suffix):
                 meta = extract_file_metadata(file.src_path, config["docs_dir"])
-                meta["src_path"] = file.src_path
 
                 if meta:
+                    meta["src_path"] = file.src_path
                     self.metadata.append(meta)
 
     def generate_tags_file(self) -> None:

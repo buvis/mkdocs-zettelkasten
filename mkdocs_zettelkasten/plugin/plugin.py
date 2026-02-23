@@ -82,7 +82,8 @@ class ZettelkastenPlugin(BasePlugin):
 
     def on_config(self, config: MkDocsConfig) -> None:
         self.logger.setLevel(self.config["log_level"])
-        self.logger.addHandler(self._create_logging_handler())
+        if not any(isinstance(h, logging.StreamHandler) and not isinstance(h, logging.NullHandler) for h in self.logger.handlers):
+            self.logger.addHandler(self._create_logging_handler())
         tz = self._resolve_timezone()
         zettel_config = {
             "id_key": self.config["id_key"],

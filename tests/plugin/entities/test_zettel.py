@@ -187,13 +187,13 @@ class TestReadState:
         assert not rs.is_reading_header
         assert rs.is_reading_body
 
-    def test_third_divider_stops_body(self) -> None:
+    def test_third_divider_keeps_reading_body(self) -> None:
         rs = ReadState()
         rs.handle_divider()
         rs.handle_divider()
         rs.handle_divider()
         assert not rs.is_reading_header
-        assert not rs.is_reading_body
+        assert rs.is_reading_body
 
 
 class TestConfigurableKeys:
