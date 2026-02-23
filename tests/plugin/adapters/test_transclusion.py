@@ -49,7 +49,7 @@ class TestExtractSection:
         assert _extract_section(body, "Nonexistent") is None
 
 
-def _make_zettel(title: str, path: Path, url: str = "/note/") -> MagicMock:
+def _make_zettel(title: str, path: Path) -> MagicMock:
     z = MagicMock()
     z.title = title
     z.path = path

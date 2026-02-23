@@ -12,8 +12,8 @@ from mkdocs_zettelkasten.plugin.adapters.page_links_to_zettels import (
 )
 from mkdocs_zettelkasten.plugin.adapters.page_ref import get_page_ref
 from mkdocs_zettelkasten.plugin.adapters.page_title import adapt_page_title
-from mkdocs_zettelkasten.plugin.adapters.transclusion import adapt_transclusion
 from mkdocs_zettelkasten.plugin.adapters.prev_next_page import get_prev_next_page
+from mkdocs_zettelkasten.plugin.adapters.transclusion import adapt_transclusion
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
 
 logger = logging.getLogger(

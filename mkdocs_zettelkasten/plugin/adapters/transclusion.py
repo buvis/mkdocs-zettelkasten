@@ -72,6 +72,7 @@ def adapt_transclusion(
     zettel_lookup: Callable[[str], Zettel | None],
     site_url: str,
     file_suffix: str = ".md",
+    *,
     strip_heading: bool = True,
     _depth: int = 0,
     _embed_stack: frozenset[str] | None = None,
@@ -84,16 +85,17 @@ def adapt_transclusion(
     parts = code_block_pattern.split(markdown)
 
     processed_parts = []
-    for i, part in enumerate(parts):
+    for i, original_part in enumerate(parts):
+        processed_part = original_part
         if i % 2 == 0:
-            part = EMBED_LINK.sub(
+            processed_part = EMBED_LINK.sub(
                 lambda m: _resolve_embed(
                     m, zettel_lookup, site_url, file_suffix, strip_heading,
                     _depth, _embed_stack,
                 ),
-                part,
+                processed_part,
             )
-        processed_parts.append(part)
+        processed_parts.append(processed_part)
 
     return "```".join(processed_parts)
 
@@ -103,7 +105,7 @@ def _resolve_embed(
     zettel_lookup: Callable[[str], Zettel | None],
     site_url: str,
     file_suffix: str,
-    strip_heading: bool,
+    strip_heading: bool,  # noqa: FBT001
     depth: int,
     embed_stack: frozenset[str],
 ) -> str:
@@ -142,7 +144,7 @@ def _resolve_embed(
             zettel_lookup,
             site_url,
             file_suffix,
-            strip_heading,
+            strip_heading=strip_heading,
             _depth=depth + 1,
             _embed_stack=embed_stack | {zettel_key},
         )
