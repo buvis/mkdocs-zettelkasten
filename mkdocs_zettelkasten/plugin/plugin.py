@@ -110,6 +110,7 @@ class ZettelkastenPlugin(BasePlugin):
             config["extra"]["graph_enabled"] = True
         if self.config["preview_enabled"]:
             config["extra"]["preview_enabled"] = True
+        config["extra"]["transclusion_strip_heading"] = self.config["transclusion_strip_heading"]
         config["extra"]["plugin_version"] = version("mkdocs-zettelkasten")
         self.logger.info("Configured ZettelkastenPlugin with MkDocs config.")
 

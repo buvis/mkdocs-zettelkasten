@@ -12,6 +12,7 @@ from mkdocs_zettelkasten.plugin.adapters.page_links_to_zettels import (
 )
 from mkdocs_zettelkasten.plugin.adapters.page_ref import get_page_ref
 from mkdocs_zettelkasten.plugin.adapters.page_title import adapt_page_title
+from mkdocs_zettelkasten.plugin.adapters.transclusion import adapt_transclusion
 from mkdocs_zettelkasten.plugin.adapters.prev_next_page import get_prev_next_page
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
 
@@ -39,6 +40,13 @@ class PageTransformer:
         logger.debug("Started %s transformations", page.file.src_path)
         page = zettel_service.add_zettel_to_page(page)
         markdown = adapt_page_title(markdown, page, page.meta.get("zettel"))
+        markdown = adapt_transclusion(
+            markdown,
+            zettel_service.get_zettel_by_partial_path,
+            site_url=config["site_url"],
+            file_suffix=zettel_service.file_suffix,
+            strip_heading=config.get("extra", {}).get("transclusion_strip_heading", True),
+        )
         markdown = adapt_page_links_to_zettels(
             markdown,
             page,
