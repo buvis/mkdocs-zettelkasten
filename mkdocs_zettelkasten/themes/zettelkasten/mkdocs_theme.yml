@@ -18,6 +18,8 @@ hljs_style_dark: github-dark
 navigation_depth: 2
 nav_style: primary
 
+math_support: false
+
 color_scheme: solarized  # solarized or selenized
 
 analytics:
