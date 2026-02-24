@@ -15,6 +15,8 @@ def _make_zettel(
     z.rel_path = rel_path
     z.title = title
     z.links = links
+    z.note_type = None
+    z.maturity = None
     z.__hash__ = lambda self: hash(zettel_id)
     z.__eq__ = lambda self, other: getattr(other, "id", None) == zettel_id
     return z
@@ -102,3 +104,37 @@ class TestGraphExporter:
         result = self.exporter.export(store, [], {})
 
         assert result["nodes"][0]["url"] == "notes/foo/"
+
+    def test_node_includes_type_when_present(self) -> None:
+        z = _make_zettel(1, "/docs/a.md", "a.md", "A", [])
+        z.note_type = "permanent"
+        store = ZettelStore([z])
+
+        result = self.exporter.export(store, [], {})
+
+        assert result["nodes"][0]["type"] == "permanent"
+
+    def test_node_includes_maturity_when_present(self) -> None:
+        z = _make_zettel(1, "/docs/a.md", "a.md", "A", [])
+        z.maturity = "evergreen"
+        store = ZettelStore([z])
+
+        result = self.exporter.export(store, [], {})
+
+        assert result["nodes"][0]["maturity"] == "evergreen"
+
+    def test_node_omits_type_when_none(self) -> None:
+        z = _make_zettel(1, "/docs/a.md", "a.md", "A", [])
+        store = ZettelStore([z])
+
+        result = self.exporter.export(store, [], {})
+
+        assert "type" not in result["nodes"][0]
+
+    def test_node_omits_maturity_when_none(self) -> None:
+        z = _make_zettel(1, "/docs/a.md", "a.md", "A", [])
+        store = ZettelStore([z])
+
+        result = self.exporter.export(store, [], {})
+
+        assert "maturity" not in result["nodes"][0]

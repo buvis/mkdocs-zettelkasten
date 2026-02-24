@@ -26,7 +26,17 @@ class GraphExporter:
             id_set.add(zid)
             url = z.rel_path.removesuffix(file_suffix) + "/"
             tags = tags_by_path.get(z.rel_path, []) or []
-            nodes.append({"id": zid, "title": z.title, "url": url, "tags": tags})
+            node: dict[str, Any] = {
+                "id": zid,
+                "title": z.title,
+                "url": url,
+                "tags": tags,
+            }
+            if z.note_type is not None:
+                node["type"] = z.note_type
+            if z.maturity is not None:
+                node["maturity"] = z.maturity
+            nodes.append(node)
 
         edges = []
         seen_edges: set[tuple[str, str]] = set()

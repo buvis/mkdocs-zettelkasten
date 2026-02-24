@@ -279,6 +279,50 @@ pre:has(> code):hover .copy-btn {
   font-size: 0.9em;
 }
 
+/* Note type & maturity badges */
+.zettel-badges {
+  display: flex;
+  gap: 0.6em;
+  align-items: center;
+}
+
+.zettel-type-badge,
+.zettel-maturity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  font-size: 0.8em;
+  padding: 0.1em 0.5em;
+  border-radius: 0.75em;
+  background: var(--bg-accent);
+  color: var(--text-header);
+}
+
+.zettel-type-badge svg {
+  width: 0.9em;
+  height: 0.9em;
+}
+
+.maturity-dot {
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.zettel-maturity-badge[data-maturity="draft"] .maturity-dot {
+  background: #dc322f;
+}
+
+.zettel-maturity-badge[data-maturity="developing"] .maturity-dot {
+  background: #b58900;
+}
+
+.zettel-maturity-badge[data-maturity="evergreen"] .maturity-dot {
+  background: #859900;
+}
+
 /* Editor buttons */
 .editor-btn {
   margin-left: 0.3em;

@@ -16,6 +16,8 @@ class TestZettelkastenPlugin:
             "date_key": "date",
             "last_update_key": "last_update",
             "tags_key": "tags",
+            "type_key": "type",
+            "maturity_key": "maturity",
             "id_format": r"^\d{14}$",
             "timezone": "",
             "validation_enabled": True,
@@ -74,6 +76,8 @@ class TestZettelkastenPlugin:
         call_args = mock_cfg.call_args[0][0]
         assert call_args["id_key"] == "id"
         assert call_args["tags_key"] == "tags"
+        assert call_args["type_key"] == "type"
+        assert call_args["maturity_key"] == "maturity"
         assert call_args["date_format"] == "%Y-%m-%d"
         assert call_args["file_suffix"] == ".md"
 

@@ -41,11 +41,16 @@ class Zettel:
         self.backlinks: list[dict[str, str]] = []
         self.links: list[str] = []
         self.last_update_date: str = ""
+        self.note_type: str | None = None
+        self.maturity: str | None = None
+        self.source: str | None = None
 
         cfg = zettel_config or {}
         self._id_key = cfg.get("id_key", "id")
         self._date_key = cfg.get("date_key", "date")
         self._last_update_key = cfg.get("last_update_key", "last_update")
+        self._type_key = cfg.get("type_key", "type")
+        self._maturity_key = cfg.get("maturity_key", "maturity")
         self._id_format = cfg.get("id_format", r"^\d{14}$")
         self._tz = cfg.get("timezone") or ZoneInfo("UTC")
         self._date_format = cfg.get("date_format", "%Y-%m-%d")
@@ -77,6 +82,7 @@ class Zettel:
         body_lines = body_text.splitlines()
         self._extract_links(body_lines)
         self._set_core_metadata(meta, self._find_alt_title(body_lines))
+        self._set_optional_metadata(meta)
         logger.debug(
             "Initialized zettel %s (ID: %s, Title: %s)",
             self.rel_path,
@@ -149,6 +155,14 @@ class Zettel:
             self.title = self._generate_filename_title()
 
         self._determine_last_update_date(meta)
+
+    def _set_optional_metadata(self, meta: dict) -> None:
+        raw_type = meta.get(self._type_key)
+        self.note_type = str(raw_type) if raw_type is not None else None
+        raw_maturity = meta.get(self._maturity_key)
+        self.maturity = str(raw_maturity) if raw_maturity is not None else None
+        raw_source = meta.get("source")
+        self.source = str(raw_source) if raw_source is not None else None
 
     def _generate_filename_title(self) -> str:
         """Generates title from filename using pattern matching."""

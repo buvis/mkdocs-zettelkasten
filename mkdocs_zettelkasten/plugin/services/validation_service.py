@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 import logging
 from collections import defaultdict
 from dataclasses import dataclass
@@ -47,6 +48,8 @@ class ValidationService:
         self._check_invalid_files(zettel_service)
         self._check_orphans(zettel_service)
         self._check_broken_links(zettel_service, BacklinkProcessor)
+        self._check_stale_fleeting(zettel_service)
+        self._check_missing_type(zettel_service)
         self._generate_report()
         self._add_to_build(files, config)
 
@@ -114,6 +117,38 @@ class ValidationService:
                             message=f"Broken link: {link}",
                         )
                     )
+
+    def _check_stale_fleeting(self, zettel_service: Any) -> None:
+        from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
+
+        cutoff = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(
+            days=7
+        )
+        for zettel in zettel_service.get_zettels():
+            if zettel.note_type != "fleeting":
+                continue
+            created = convert_string_to_date(str(zettel.id))
+            if created and created < cutoff:
+                self.issues[zettel.rel_path].append(
+                    ValidationIssue(
+                        path=zettel.rel_path,
+                        check="stale_fleeting",
+                        severity="info",
+                        message="Fleeting note older than 7 days",
+                    )
+                )
+
+    def _check_missing_type(self, zettel_service: Any) -> None:
+        for zettel in zettel_service.get_zettels():
+            if zettel.note_type is None:
+                self.issues[zettel.rel_path].append(
+                    ValidationIssue(
+                        path=zettel.rel_path,
+                        check="missing_type",
+                        severity="info",
+                        message="No note type metadata",
+                    )
+                )
 
     def _generate_report(self) -> None:
         env = create_jinja_environment(None)

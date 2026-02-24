@@ -126,6 +126,93 @@ class TestValidationService:
         broken = [i for i in vs.get_issues("a.md") if i.check == "broken_link"]
         assert len(broken) == 0
 
+    def test_stale_fleeting_detected(self, tmp_path: Path) -> None:
+        z1 = self._make_zettel(20200101120000, "a.md")
+        z1.note_type = "fleeting"
+
+        svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
+
+        vs = ValidationService()
+        vs.output_folder = tmp_path
+        config = MagicMock()
+        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
+        files = MagicMock()
+
+        vs.validate(svc, files, config)
+
+        stale = [i for i in vs.get_issues("a.md") if i.check == "stale_fleeting"]
+        assert len(stale) == 1
+        assert stale[0].severity == "info"
+
+    def test_recent_fleeting_not_flagged(self, tmp_path: Path) -> None:
+        z1 = self._make_zettel(20991231120000, "a.md")
+        z1.note_type = "fleeting"
+
+        svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
+
+        vs = ValidationService()
+        vs.output_folder = tmp_path
+        config = MagicMock()
+        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
+        files = MagicMock()
+
+        vs.validate(svc, files, config)
+
+        stale = [i for i in vs.get_issues("a.md") if i.check == "stale_fleeting"]
+        assert len(stale) == 0
+
+    def test_permanent_note_not_flagged_as_stale(self, tmp_path: Path) -> None:
+        z1 = self._make_zettel(20200101120000, "a.md")
+        z1.note_type = "permanent"
+
+        svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
+
+        vs = ValidationService()
+        vs.output_folder = tmp_path
+        config = MagicMock()
+        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
+        files = MagicMock()
+
+        vs.validate(svc, files, config)
+
+        stale = [i for i in vs.get_issues("a.md") if i.check == "stale_fleeting"]
+        assert len(stale) == 0
+
+    def test_missing_type_detected(self, tmp_path: Path) -> None:
+        z1 = self._make_zettel(1, "a.md")
+        z1.note_type = None
+
+        svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
+
+        vs = ValidationService()
+        vs.output_folder = tmp_path
+        config = MagicMock()
+        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
+        files = MagicMock()
+
+        vs.validate(svc, files, config)
+
+        missing = [i for i in vs.get_issues("a.md") if i.check == "missing_type"]
+        assert len(missing) == 1
+        assert missing[0].severity == "info"
+
+    def test_typed_note_not_flagged_as_missing(self, tmp_path: Path) -> None:
+        z1 = self._make_zettel(1, "a.md")
+        z1.note_type = "permanent"
+
+        svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
+
+        vs = ValidationService()
+        vs.output_folder = tmp_path
+        config = MagicMock()
+        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
+        files = MagicMock()
+
+        vs.validate(svc, files, config)
+
+        missing = [i for i in vs.get_issues("a.md") if i.check == "missing_type"]
+        assert len(missing) == 0
+
     def test_report_file_generated(self, tmp_path: Path) -> None:
         svc = self._make_zettel_service([])
 

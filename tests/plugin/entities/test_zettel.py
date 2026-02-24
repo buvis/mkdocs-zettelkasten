@@ -216,3 +216,47 @@ class TestConfigurableKeys:
             tmp_path, content, zettel_config={"last_update_key": "modified"}
         )
         assert z.last_update_date == "2025-06-15"
+
+
+class TestNoteTypeAndMaturity:
+    def test_note_type_from_frontmatter(self, tmp_path: Path) -> None:
+        content = "---\nid: 1\ntype: permanent\ndate: 2024-01-01\n---\n# Title\n"
+        z = _make_zettel(tmp_path, content)
+        assert z.note_type == "permanent"
+
+    def test_maturity_from_frontmatter(self, tmp_path: Path) -> None:
+        content = "---\nid: 1\nmaturity: developing\ndate: 2024-01-01\n---\n# Title\n"
+        z = _make_zettel(tmp_path, content)
+        assert z.maturity == "developing"
+
+    def test_source_from_frontmatter(self, tmp_path: Path) -> None:
+        content = '---\nid: 1\nsource: "Ahrens 2017"\ndate: 2024-01-01\n---\n# Title\n'
+        z = _make_zettel(tmp_path, content)
+        assert z.source == "Ahrens 2017"
+
+    def test_missing_type_is_none(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, VALID_ZETTEL)
+        assert z.note_type is None
+
+    def test_missing_maturity_is_none(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, VALID_ZETTEL)
+        assert z.maturity is None
+
+    def test_missing_source_is_none(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, VALID_ZETTEL)
+        assert z.source is None
+
+    def test_custom_type_key(self, tmp_path: Path) -> None:
+        content = "---\nid: 1\nkind: literature\ndate: 2024-01-01\n---\n# Title\n"
+        z = _make_zettel(tmp_path, content, zettel_config={"type_key": "kind"})
+        assert z.note_type == "literature"
+
+    def test_custom_maturity_key(self, tmp_path: Path) -> None:
+        content = "---\nid: 1\nstatus: evergreen\ndate: 2024-01-01\n---\n# Title\n"
+        z = _make_zettel(tmp_path, content, zettel_config={"maturity_key": "status"})
+        assert z.maturity == "evergreen"
+
+    def test_arbitrary_type_value(self, tmp_path: Path) -> None:
+        content = "---\nid: 1\ntype: custom_type\ndate: 2024-01-01\n---\n# Title\n"
+        z = _make_zettel(tmp_path, content)
+        assert z.note_type == "custom_type"
