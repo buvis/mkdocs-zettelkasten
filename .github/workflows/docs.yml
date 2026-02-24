@@ -18,6 +18,9 @@ jobs:
     steps:
     - name: Checkout branch
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      with:
+        fetch-depth: 0
+        fetch-tags: true
 
     - name: Deploy docs
       uses: mhausenblas/mkdocs-deploy-gh-pages@d77dd03172e96abbcdb081d8c948224762033653 # 1.26
