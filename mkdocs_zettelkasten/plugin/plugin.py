@@ -149,7 +149,7 @@ class ZettelkastenPlugin(BasePlugin):
         if self.config["validation_enabled"]:
             self.validation_service.validate(self.zettel_service, files, config)
             config["extra"]["validation_issues_count"] = (
-                self.validation_service.total_issues()
+                self.validation_service.total_actionable_issues()
             )
         self.logger.info("Processed %d files in on_files hook.", len(files))
 

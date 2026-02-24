@@ -7,7 +7,8 @@ The documentation you are reading is created using MkDocs Zettelkasten (yes, I'm
 
 Ok, you are still here, so your goal is to turn your markdown-based Zettelkasten into a static, nicely looking HTML site packed with features every smart notes taker needs. Let's see how I can help.
 
-> **Note:** This site uses Zettelkasten conventions — pages are named by timestamp IDs (e.g. `20211122194827`) rather than slugs. This is the intended workflow the plugin supports.
+!!! note
+    This site uses Zettelkasten conventions — pages are named by timestamp IDs (e.g. `20211122194827`) rather than slugs. This is the intended workflow the plugin supports.
 
 ## Features
 - [Render markdown document as a card](features/20211123212328.md)

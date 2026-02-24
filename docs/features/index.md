@@ -10,4 +10,4 @@
 - [Collect links by tag](20211123221647.md)
 - [Code highlighting test](../20260218215519.md) — sample code blocks for verifying syntax highlighting in light/dark modes
 - [References and backlinks test](20260218230519.md) — zettel with both sections for verifying icons and footer styling
-- [Note types and maturity badges](20260224200000.md) — type/maturity frontmatter, card header badges, and validation checks
+- [Note types and maturity badges](20260224212155.md) — type/maturity frontmatter, card header badges, and validation checks

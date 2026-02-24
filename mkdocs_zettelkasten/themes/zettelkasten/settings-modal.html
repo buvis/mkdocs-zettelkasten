@@ -21,9 +21,8 @@
                 </div>
                 <div id="scheme-grid" class="scheme-grid"></div>
 
-                <h5 style="margin-top: 1.5em;">Code Theme</h5>
-                <div class="form-group">
-                    <label for="hljs-theme-select">Syntax highlighting theme</label>
+                <div class="settings-section-header code-theme-header">
+                    <h5>Code Theme</h5>
                     <select id="hljs-theme-select" class="form-control">
                         <option value="github">GitHub</option>
                         <option value="github-dark">GitHub Dark</option>
@@ -57,12 +56,9 @@
                     </select>
                 </div>
                 <pre id="hljs-preview" class="hljs-preview"><code class="language-python">def greet(name: str) -> str:
-    """Return a greeting message."""
-    if not name:
-        return "Hello, World!"
+    """Return a greeting."""
     return f"Hello, {name}!"
 
-# Example usage
 print(greet("Zettelkasten"))</code></pre>
             </div>
     <div class="modal-footer">

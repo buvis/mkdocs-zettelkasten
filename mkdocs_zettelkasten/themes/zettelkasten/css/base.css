@@ -219,11 +219,12 @@ h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .head
 
 
 .admonition {
-    padding: 0.9375rem;
-    margin-bottom: 1.25rem;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
     border: 1px solid transparent;
     border-radius: 0.25rem;
     text-align: left;
+    font-size: 0.875rem;
 }
 
 .admonition.note { /* csslint allow: adjoining-classes */
@@ -244,9 +245,33 @@ h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .head
     border-color: var(--adm-danger-border);
 }
 
+.admonition.tip,  /* csslint allow: adjoining-classes */
+.admonition.hint, /* csslint allow: adjoining-classes */
+.admonition.info { /* csslint allow: adjoining-classes */
+    color: var(--adm-note-text);
+    background-color: var(--adm-note-bg);
+    border-color: var(--adm-note-border);
+}
+
+.admonition.important { /* csslint allow: adjoining-classes */
+    color: var(--adm-warning-text);
+    background-color: var(--adm-warning-bg);
+    border-color: var(--adm-warning-border);
+}
+
+.admonition p:last-child {
+    margin-bottom: 0;
+}
+
+.admonition p {
+    margin-bottom: 0.5rem;
+}
+
 .admonition-title {
-    font-weight: bold;
+    font-weight: 600;
     text-align: left;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
 }
 
 @media (max-width: 991.98px) {

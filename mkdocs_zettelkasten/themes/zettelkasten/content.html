@@ -13,9 +13,19 @@
                 </svg>
                 <strong><span data-tooltip="Copy link to zettel" data-copy-value="{{page.canonical_url}}">{{page.meta['zettel'].id}}</span></strong>
                 {% if page.meta.validation_issues %}
-                  <span class="validation-badge" data-tooltip="{{ page.meta.validation_issues|length }} validation issue{{ 's' if page.meta.validation_issues|length != 1 else '' }}">
+                  {% set actionable = page.meta.validation_issues|selectattr('severity', 'ne', 'info')|list %}
+                  {% if actionable %}
+                  <span class="validation-badge">
                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                    <div class="validation-popover">
+                      <ul>
+                        {% for issue in actionable %}
+                        <li>{{ issue.message }}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
                   </span>
+                  {% endif %}
                 {% endif %}
               </span>
             </div>
@@ -57,29 +67,29 @@
           {% endif %}
         </div>
         <div class="col-4 text-right date">
-          {% if page.meta.editor %}
-            <button id="zettel-edit-btn" class="btn btn-sm btn-outline-secondary editor-btn" data-tooltip="Edit zettel's source">
-              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-              </svg>
-            </button>
-            <button id="zettel-save-btn" class="btn btn-sm btn-outline-success editor-btn" style="display:none" data-tooltip="Save to GitHub">
-              <i class="fa fa-check"></i>
-            </button>
-            <button id="zettel-cancel-btn" class="btn btn-sm btn-outline-danger editor-btn" style="display:none" data-tooltip="Cancel editing">
-              <i class="fa fa-times"></i>
-            </button>
-            <button id="zettel-forget-token-btn" class="btn btn-sm btn-outline-secondary editor-btn" style="display:none" data-tooltip="Forget stored token">
-              <i class="fa fa-sign-out"></i>
-            </button>
-          {% elif page and page.edit_url %}
-            <a href="{{ page.edit_url }}" class="hidden-hyperlink" data-tooltip="Edit zettel's source">
-              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil clickable" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-              </svg>
-            </a>
-          {% endif %}
           {% if page.meta.is_zettel %}
+            {% if page.meta.editor %}
+              <button id="zettel-edit-btn" class="btn btn-sm btn-outline-secondary editor-btn" data-tooltip="Edit zettel's source">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                </svg>
+              </button>
+              <button id="zettel-save-btn" class="btn btn-sm btn-outline-success editor-btn" style="display:none" data-tooltip="Save to GitHub">
+                <i class="fa fa-check"></i>
+              </button>
+              <button id="zettel-cancel-btn" class="btn btn-sm btn-outline-danger editor-btn" style="display:none" data-tooltip="Cancel editing">
+                <i class="fa fa-times"></i>
+              </button>
+              <button id="zettel-forget-token-btn" class="btn btn-sm btn-outline-secondary editor-btn" style="display:none" data-tooltip="Forget stored token">
+                <i class="fa fa-sign-out"></i>
+              </button>
+            {% elif page.edit_url %}
+              <a href="{{ page.edit_url }}" class="hidden-hyperlink" data-tooltip="Edit zettel's source">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil clickable" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                </svg>
+              </a>
+            {% endif %}
             {{page.meta.zettel.last_update_date}}
           {% endif %}
         </div>
@@ -127,7 +137,7 @@
         </div>
       {% endif %}
       {% if page.meta.is_zettel and page.meta.zettel.backlinks %}
-        <div class="file-ref-section">
+        <div class="file-ref-section backlinks">
           <h6><i class="{{ page.meta.icons.backlinks }}" aria-hidden="true"></i><span class="visually-hidden">Backlinks</span></h6>
           <ul>
             {% for link in page.meta.zettel.backlinks %}

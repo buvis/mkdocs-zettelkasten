@@ -604,6 +604,18 @@ dialog.modal-lg {
 .badge-warning {
   color: var(--adm-warning-text);
   background-color: var(--adm-warning-bg);
+  font-size: 60%;
+  padding: 0.15em 0.35em;
+  position: absolute;
+  top: 0.1rem;
+  right: -0.1rem;
+  border-radius: 0.5rem;
+  min-width: 1rem;
+}
+
+.nav-icon-badge {
+  position: relative;
+  display: inline-block;
 }
 
 /* Cards (used in TOC) */

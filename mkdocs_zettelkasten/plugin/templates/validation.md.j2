@@ -5,27 +5,10 @@ title: Validation Report
 # Validation Report
 
 **{{ total }}** issue{{ "s" if total != 1 else "" }} found.
+{% for section in sections %}
 
-{% if errors %}
-## Errors
-
-{% for issue in errors %}
+## {{ section.title }}
+{% for issue in section.issues %}
 * [{{ issue.path }}]({{ issue.path }}) — {{ issue.message }}
 {% endfor %}
-{% endif %}
-
-{% if warnings %}
-## Warnings
-
-{% for issue in warnings %}
-* [{{ issue.path }}]({{ issue.path }}) — {{ issue.message }}
 {% endfor %}
-{% endif %}
-
-{% if info %}
-## Info
-
-{% for issue in info %}
-* [{{ issue.path }}]({{ issue.path }}) — {{ issue.message }}
-{% endfor %}
-{% endif %}

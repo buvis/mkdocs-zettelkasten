@@ -119,7 +119,7 @@ class TestZettelkastenPlugin:
             patch.object(plugin.zettel_service, "process_files"),
             patch.object(plugin.tags_service, "process_files"),
             patch.object(plugin.validation_service, "validate"),
-            patch.object(plugin.validation_service, "total_issues", return_value=7),
+            patch.object(plugin.validation_service, "total_actionable_issues", return_value=7),
         ):
             plugin.on_files(files, config)
 

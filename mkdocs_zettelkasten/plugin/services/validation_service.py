@@ -58,6 +58,11 @@ class ValidationService:
     def total_issues(self) -> int:
         return sum(len(v) for v in self.issues.values())
 
+    def total_actionable_issues(self) -> int:
+        return sum(
+            1 for issues in self.issues.values() for i in issues if i.severity != "info"
+        )
+
     def get_issues(self, rel_path: str) -> list[ValidationIssue]:
         return self.issues.get(rel_path, [])
 
@@ -150,6 +155,14 @@ class ValidationService:
                     )
                 )
 
+    _CHECK_LABELS: dict[str, tuple[str, int]] = {
+        "invalid_file": ("Invalid files", 0),
+        "broken_link": ("Broken links", 1),
+        "orphan": ("Orphan zettels", 2),
+        "stale_fleeting": ("Stale fleeting notes", 3),
+        "missing_type": ("Missing note type", 4),
+    }
+
     def _generate_report(self) -> None:
         env = create_jinja_environment(None)
         template = env.get_template("validation.md.j2")
@@ -158,11 +171,20 @@ class ValidationService:
         for path_issues in self.issues.values():
             all_issues.extend(path_issues)
 
+        by_check: dict[str, list[ValidationIssue]] = defaultdict(list)
+        for issue in all_issues:
+            by_check[issue.check].append(issue)
+
+        sections = [
+            {"title": self._CHECK_LABELS.get(check, (check, 99))[0], "issues": issues}
+            for check, issues in sorted(
+                by_check.items(), key=lambda kv: self._CHECK_LABELS.get(kv[0], (kv[0], 99))[1]
+            )
+        ]
+
         content = template.render(
-            errors=[i for i in all_issues if i.severity == "error"],
-            warnings=[i for i in all_issues if i.severity == "warning"],
-            info=[i for i in all_issues if i.severity == "info"],
-            total=len(all_issues),
+            sections=sections,
+            total=sum(1 for i in all_issues if i.severity != "info"),
         )
 
         output_path = self.output_folder / self.output_filename
