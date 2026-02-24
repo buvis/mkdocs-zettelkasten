@@ -26,7 +26,7 @@
                   <path fill-rule="evenodd" d="M5.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
                   <path d="M1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1v5.086z"/>
                 </svg>
-                {% for tag in page.meta.tags %}<a href="{{ nav.homepage.url|url }}/tags.html#{{tag}}">#{{tag}}</a> {% endfor %}
+                {% for tag in page.meta.tags %}<a href="{{ 'tags.html'|url }}#{{tag}}">#{{tag}}</a> {% endfor %}
               </span>
             </div>
           {% endif %}
