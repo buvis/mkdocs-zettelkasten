@@ -1,44 +1,44 @@
-(function () {
+(() => {
   'use strict';
 
-  var POP_DELAY = 300; // ms
-  var POP_HIDE_DELAY = 100; // ms
+  const POP_DELAY = 300; // ms
+  const POP_HIDE_DELAY = 100; // ms
 
-  var tooltip = null;
-  var showTimer = null;
-  var hideTimer = null;
-  var previews = {};
+  let tooltip = null;
+  let showTimer = null;
+  let hideTimer = null;
+  let previews = {};
 
   /* ── helpers ─────────────────────────────────────────────── */
 
-  function createTooltip() {
+  const createTooltip = () => {
     tooltip = document.createElement('div');
     tooltip.id = 'zettel-preview-popover';
     tooltip.className = 'zettel-preview-popover';
     document.body.appendChild(tooltip);
 
     // Keep visible if mouse moves over the tooltip
-    tooltip.addEventListener('mouseenter', function () {
+    tooltip.addEventListener('mouseenter', () => {
       if (hideTimer) {
         clearTimeout(hideTimer);
         hideTimer = null;
       }
     });
 
-    tooltip.addEventListener('mouseleave', function () {
+    tooltip.addEventListener('mouseleave', () => {
       hide();
     });
-  }
+  };
 
-  function show(link, data) {
+  const show = (link, data) => {
     if (hideTimer) clearTimeout(hideTimer);
 
     // Set content
-    var title = document.createElement('div');
+    const title = document.createElement('div');
     title.className = 'preview-title';
     title.textContent = data.title;
 
-    var excerpt = document.createElement('div');
+    const excerpt = document.createElement('div');
     excerpt.className = 'preview-excerpt';
     excerpt.textContent = data.excerpt || 'No preview available.';
 
@@ -51,11 +51,11 @@
     tooltip.style.opacity = '0';
 
     // Position
-    var rect = link.getBoundingClientRect();
-    var tipRect = tooltip.getBoundingClientRect();
+    const rect = link.getBoundingClientRect();
+    const tipRect = tooltip.getBoundingClientRect();
 
-    var top = rect.bottom + 10;
-    var left = rect.left + (rect.width / 2) - (tipRect.width / 2);
+    let top = rect.bottom + 10;
+    let left = rect.left + (rect.width / 2) - (tipRect.width / 2);
 
     // Viewport boundary checks
     if (left < 10) left = 10;
@@ -71,72 +71,72 @@
       tooltip.classList.remove('flipped');
     }
 
-    tooltip.style.top = (top + window.scrollY) + 'px';
-    tooltip.style.left = (left + window.scrollX) + 'px';
+    tooltip.style.top = `${top + window.scrollY}px`;
+    tooltip.style.left = `${left + window.scrollX}px`;
 
     // Fade in
-    requestAnimationFrame(function () {
+    requestAnimationFrame(() => {
       tooltip.style.opacity = '1';
     });
-  }
+  };
 
-  function hide() {
+  const hide = () => {
     if (showTimer) clearTimeout(showTimer);
-    hideTimer = setTimeout(function () {
+    hideTimer = setTimeout(() => {
       if (tooltip) {
         tooltip.style.opacity = '0';
-        setTimeout(function () {
+        setTimeout(() => {
           tooltip.style.display = 'none';
         }, 200);
       }
     }, POP_HIDE_DELAY);
-  }
+  };
 
   /* ── init ────────────────────────────────────────────────── */
 
-  function initPreviews() {
-    var url = base_url + '/previews.json';
+  const initPreviews = () => {
+    let url = `${base_url}/previews.json`;
     if (base_url.slice(-1) === '/') {
-       url = base_url + 'previews.json';
+       url = `${base_url}previews.json`;
     }
 
-    fetch(url).then(function (res) {
+    fetch(url).then((res) => {
       if (!res.ok) return;
       return res.json();
-    }).then(function (data) {
+    }).then((data) => {
       if (!data) return;
       previews = data;
       bindLinks();
     });
-  }
+  };
 
-  function bindLinks() {
+  const bindLinks = () => {
     createTooltip();
 
     // Match links that look like zettel IDs: /YYYYMMDDHHMMSS/
     // This regex might need tuning based on exact URL structure,
     // but looking for the ID pattern in href is a safe bet for internal links.
-    var links = document.querySelectorAll('a');
-    var idRegex = /\/(\d{14})\/?/;
+    const links = document.querySelectorAll('a');
+    const idRegex = /\/(\d{14})\/?/;
 
-    for (var i = 0; i < links.length; i++) {
-      var link = links[i];
-      var href = link.href;
+    for (let i = 0; i < links.length; i++) {
+      const link = links[i];
+      const href = link.href;
       if (!href) continue;
 
-      var match = href.match(idRegex);
+      const match = href.match(idRegex);
       if (match) {
-        var id = match[1];
+        const id = match[1];
         if (previews[id]) {
-          (function (l, d) {
-            l.addEventListener('mouseenter', function () {
+          ((l, d) => {
+            l.addEventListener('mouseenter', () => {
               if (showTimer) clearTimeout(showTimer);
-              showTimer = setTimeout(function () {
+              showTimer = setTimeout(() => {
                 show(l, d);
               }, POP_DELAY);
             });
 
-            l.addEventListener('mouseleave', function () {
+            l.addEventListener('mouseleave', () => {
               if (showTimer) clearTimeout(showTimer);
               hide();
             });
@@ -144,7 +144,7 @@
         }
       }
     }
-  }
+  };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initPreviews);

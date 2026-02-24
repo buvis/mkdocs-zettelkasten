@@ -1,59 +1,55 @@
 /* Theme & scheme switching */
-(function() {
-    function getTheme() {
-        return document.documentElement.getAttribute('data-theme') || 'light';
-    }
+(() => {
+    const getTheme = () => document.documentElement.getAttribute('data-theme') || 'light';
 
-    function getScheme() {
-        return document.documentElement.getAttribute('data-color-scheme') || 'solarized';
-    }
+    const getScheme = () => document.documentElement.getAttribute('data-color-scheme') || 'solarized';
 
-    function setTheme(theme) {
+    const setTheme = (theme) => {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
         updateHljsTheme();
-    }
-
-    function setScheme(scheme) {
-        document.documentElement.setAttribute('data-color-scheme', scheme);
-        localStorage.setItem('color-scheme', scheme);
-        var link = document.getElementById('scheme-css');
-        if (link) {
-            link.href = base_url + '/css/schemes/' + scheme + '.css';
-        }
-    }
-
-    function updateHljsTheme() {
-        var link = document.getElementById('hljs-theme');
-        if (!link) return;
-        var style = getTheme() === 'dark' ? link.dataset.darkStyle : link.dataset.lightStyle;
-        link.href = base_url + '/css/vendor/hljs/' + style + '.min.css';
-    }
-
-    window.zkTheme = {
-        getTheme: getTheme,
-        getScheme: getScheme,
-        setTheme: setTheme,
-        setScheme: setScheme
     };
 
-    document.addEventListener('DOMContentLoaded', function() {
+    const setScheme = (scheme) => {
+        document.documentElement.setAttribute('data-color-scheme', scheme);
+        localStorage.setItem('color-scheme', scheme);
+        const link = document.getElementById('scheme-css');
+        if (link) {
+            link.href = `${base_url}/css/schemes/${scheme}.css`;
+        }
+    };
+
+    const updateHljsTheme = () => {
+        const link = document.getElementById('hljs-theme');
+        if (!link) return;
+        const style = getTheme() === 'dark' ? link.dataset.darkStyle : link.dataset.lightStyle;
+        link.href = `${base_url}/css/vendor/hljs/${style}.min.css`;
+    };
+
+    window.zkTheme = {
+        getTheme,
+        getScheme,
+        setTheme,
+        setScheme
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
         updateHljsTheme();
     });
 })();
 
-function applyTopPadding() {
-    var container = document.querySelector('body > .container');
+const applyTopPadding = () => {
+    const container = document.querySelector('body > .container');
     if (!container) return;
-    var offset = container.getBoundingClientRect().top + window.scrollY;
-    document.documentElement.style.scrollPaddingTop = offset + 'px';
-    var sidebars = document.querySelectorAll('.bs-sidebar.affix');
-    sidebars.forEach(function(el) { el.style.top = offset + 'px'; });
-}
+    const offset = container.getBoundingClientRect().top + window.scrollY;
+    document.documentElement.style.scrollPaddingTop = `${offset}px`;
+    const sidebars = document.querySelectorAll('.bs-sidebar.affix');
+    sidebars.forEach((el) => { el.style.top = `${offset}px`; });
+};
 
 // See https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
 // We only list common keys below. Obscure keys are omitted and their use is discouraged.
-var keyCodes = {
+const keyCodes = {
     8: 'backspace',
     9: 'tab',
     13: 'enter',
@@ -167,17 +163,17 @@ var keyCodes = {
     222: '&apos;',
 };
 
-function init() {
+const init = () => {
     applyTopPadding();
 
-    var searchModal = document.getElementById('mkdocs_search_modal'),
-        keyboardModal = document.getElementById('mkdocs_keyboard_modal');
+    const searchModal = document.getElementById('mkdocs_search_modal');
+    const keyboardModal = document.getElementById('mkdocs_keyboard_modal');
 
     // Close search modal when result is selected
     // The links get added later so listen to parent
-    var searchResults = document.getElementById('mkdocs-search-results');
+    const searchResults = document.getElementById('mkdocs-search-results');
     if (searchResults) {
-        searchResults.addEventListener('click', function(e) {
+        searchResults.addEventListener('click', (e) => {
             if (e.target.matches('a')) {
                 searchModal.close();
             }
@@ -185,36 +181,36 @@ function init() {
     }
 
     // Populate keyboard modal with proper Keys
-    var kbdMap = [
+    const kbdMap = [
         {sel: '.help.shortcut kbd', key: shortcuts.help},
         {sel: '.prev.shortcut kbd', key: shortcuts.previous},
         {sel: '.next.shortcut kbd', key: shortcuts.next},
         {sel: '.search.shortcut kbd', key: shortcuts.search}
     ];
-    kbdMap.forEach(function(item) {
-        var el = keyboardModal.querySelector(item.sel);
+    kbdMap.forEach((item) => {
+        const el = keyboardModal.querySelector(item.sel);
         if (el) el.innerHTML = keyCodes[item.key];
     });
 
     // Keyboard navigation
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', (e) => {
         if (e.target.matches('input, select, textarea, button')) return true;
-        var key = e.which || e.keyCode;
-        var page;
+        const key = e.which || e.keyCode;
+        let page;
         switch (key) {
             case shortcuts.next:
-                var nextLink = document.querySelector('.navbar a[rel="next"]');
+                const nextLink = document.querySelector('.navbar a[rel="next"]');
                 if (nextLink) page = nextLink.href;
                 break;
             case shortcuts.previous:
-                var prevLink = document.querySelector('.navbar a[rel="prev"]');
+                const prevLink = document.querySelector('.navbar a[rel="prev"]');
                 if (prevLink) page = prevLink.href;
                 break;
             case shortcuts.search:
                 e.preventDefault();
                 keyboardModal.close();
                 searchModal.showModal();
-                var qi = searchModal.querySelector('#mkdocs-search-query');
+                const qi = searchModal.querySelector('#mkdocs-search-query');
                 if (qi) qi.focus();
                 break;
             case shortcuts.help:
@@ -229,55 +225,55 @@ function init() {
         }
     });
 
-    document.querySelectorAll('table').forEach(function(t) {
+    document.querySelectorAll('table').forEach((t) => {
         t.classList.add('table', 'table-striped', 'table-hover');
     });
 
-    function showInnerDropdown(item) {
-        var popup = item.nextElementSibling;
+    const showInnerDropdown = (item) => {
+        const popup = item.nextElementSibling;
         if (!popup || !popup.classList.contains('dropdown-menu')) return;
         popup.classList.add('show');
         item.classList.add('open');
 
-        var container = item.parentElement.parentElement;
-        var siblings = container.querySelectorAll(':scope > .dropdown-submenu > a');
-        siblings.forEach(function(el) {
+        const container = item.parentElement.parentElement;
+        const siblings = container.querySelectorAll(':scope > .dropdown-submenu > a');
+        siblings.forEach((el) => {
             if (el !== item) hideInnerDropdown(el);
         });
 
-        var popupMargin = 10;
-        var maxBottom = window.innerHeight - popupMargin;
-        var bounds = item.getBoundingClientRect();
+        const popupMargin = 10;
+        const maxBottom = window.innerHeight - popupMargin;
+        const bounds = item.getBoundingClientRect();
 
-        popup.style.left = bounds.right + 'px';
+        popup.style.left = `${bounds.right}px`;
         if (bounds.top + popup.offsetHeight > maxBottom && bounds.top > window.innerHeight / 2) {
-            popup.style.top = (bounds.bottom - popup.offsetHeight) + 'px';
-            popup.style.maxHeight = (bounds.bottom - popupMargin) + 'px';
+            popup.style.top = `${bounds.bottom - popup.offsetHeight}px`;
+            popup.style.maxHeight = `${bounds.bottom - popupMargin}px`;
         } else {
-            popup.style.top = bounds.top + 'px';
-            popup.style.maxHeight = (maxBottom - bounds.top) + 'px';
+            popup.style.top = `${bounds.top}px`;
+            popup.style.maxHeight = `${maxBottom - bounds.top}px`;
         }
-    }
+    };
 
-    function hideInnerDropdown(item) {
-        var popup = item.nextElementSibling;
+    const hideInnerDropdown = (item) => {
+        const popup = item.nextElementSibling;
         if (!popup || !popup.classList.contains('dropdown-menu')) return;
         popup.classList.remove('show');
         item.classList.remove('open');
 
         popup.scrollTop = 0;
-        popup.querySelectorAll('.dropdown-menu').forEach(function(m) {
+        popup.querySelectorAll('.dropdown-menu').forEach((m) => {
             m.scrollTop = 0;
             m.classList.remove('show');
         });
-        popup.querySelectorAll('.dropdown-submenu > a').forEach(function(a) {
+        popup.querySelectorAll('.dropdown-submenu > a').forEach((a) => {
             a.classList.remove('open');
         });
-    }
+    };
 
-    document.querySelectorAll('.dropdown-submenu > a').forEach(function(el) {
+    document.querySelectorAll('.dropdown-submenu > a').forEach((el) => {
         el.addEventListener('click', function(e) {
-            var nextMenu = this.nextElementSibling;
+            const nextMenu = this.nextElementSibling;
             if (nextMenu && nextMenu.classList.contains('dropdown-menu') && nextMenu.classList.contains('show')) {
                 hideInnerDropdown(this);
             } else {
@@ -288,20 +284,20 @@ function init() {
         });
     });
 
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', (e) => {
         if (!e.target.closest('.dropdown')) {
-            document.querySelectorAll('.dropdown-menu.show').forEach(function(m) {
+            document.querySelectorAll('.dropdown-menu.show').forEach((m) => {
                 m.classList.remove('show');
-                m.querySelectorAll('.dropdown-menu').forEach(function(sub) { sub.classList.remove('show'); });
-                m.querySelectorAll('.dropdown-submenu > a').forEach(function(a) { a.classList.remove('open'); });
+                m.querySelectorAll('.dropdown-menu').forEach((sub) => { sub.classList.remove('show'); });
+                m.querySelectorAll('.dropdown-submenu > a').forEach((a) => { a.classList.remove('open'); });
             });
         }
     });
 
-    document.querySelectorAll('[data-toggle="collapse"]').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
+    document.querySelectorAll('[data-toggle="collapse"]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
             e.preventDefault();
-            var target = document.querySelector(btn.getAttribute('data-target'));
+            const target = document.querySelector(btn.getAttribute('data-target'));
             if (target) {
                 target.classList.toggle('show');
                 btn.classList.toggle('collapsed');
@@ -310,40 +306,40 @@ function init() {
         });
     });
 
-    document.querySelectorAll('[data-toggle="modal"]').forEach(function(trigger) {
-        trigger.addEventListener('click', function(e) {
+    document.querySelectorAll('[data-toggle="modal"]').forEach((trigger) => {
+        trigger.addEventListener('click', (e) => {
             e.preventDefault();
-            var dialog = document.querySelector(trigger.getAttribute('data-target'));
+            const dialog = document.querySelector(trigger.getAttribute('data-target'));
             if (dialog && dialog.showModal) {
                 dialog.showModal();
-                var autoFocus = dialog.querySelector('#mkdocs-search-query');
+                const autoFocus = dialog.querySelector('#mkdocs-search-query');
                 if (autoFocus) autoFocus.focus();
             }
         });
     });
 
-    document.querySelectorAll('.modal-close').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var dialog = btn.closest('dialog');
+    document.querySelectorAll('.modal-close').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const dialog = btn.closest('dialog');
             if (dialog) dialog.close();
         });
     });
 
-    document.querySelectorAll('dialog').forEach(function(dialog) {
-        dialog.addEventListener('click', function(e) {
+    document.querySelectorAll('dialog').forEach((dialog) => {
+        dialog.addEventListener('click', (e) => {
             if (e.target === dialog) dialog.close();
         });
     });
 
-    document.querySelectorAll('.dropdown-toggle').forEach(function(toggle) {
-        toggle.addEventListener('click', function(e) {
+    document.querySelectorAll('.dropdown-toggle').forEach((toggle) => {
+        toggle.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            var menu = toggle.nextElementSibling;
+            const menu = toggle.nextElementSibling;
             if (menu && menu.classList.contains('dropdown-menu')) {
-                var wasOpen = menu.classList.contains('show');
+                const wasOpen = menu.classList.contains('show');
                 // Close all other dropdowns first
-                document.querySelectorAll('.dropdown-menu.show').forEach(function(m) {
+                document.querySelectorAll('.dropdown-menu.show').forEach((m) => {
                     m.classList.remove('show');
                 });
                 if (!wasOpen) {
@@ -354,24 +350,24 @@ function init() {
     });
 
     // Scrollspy via IntersectionObserver
-    (function() {
-        var tocLinks = document.querySelectorAll('.bs-sidebar .nav a');
+    (() => {
+        const tocLinks = document.querySelectorAll('.bs-sidebar .nav a');
         if (!tocLinks.length) return;
-        var headings = [];
-        tocLinks.forEach(function(link) {
-            var href = link.getAttribute('href');
+        const headings = [];
+        tocLinks.forEach((link) => {
+            const href = link.getAttribute('href');
             if (href && href.startsWith('#')) {
-                var el = document.getElementById(href.slice(1));
-                if (el) headings.push({el: el, link: link});
+                const el = document.getElementById(href.slice(1));
+                if (el) headings.push({el, link});
             }
         });
         if (!headings.length) return;
 
-        var currentActive = null;
-        var observer = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
+        let currentActive = null;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    var match = headings.find(function(h) { return h.el === entry.target; });
+                    const match = headings.find((h) => h.el === entry.target);
                     if (match) {
                         if (currentActive) currentActive.classList.remove('active');
                         match.link.classList.add('active');
@@ -381,10 +377,10 @@ function init() {
             });
         }, {rootMargin: '-100px 0px -66% 0px'});
 
-        headings.forEach(function(h) { observer.observe(h.el); });
+        headings.forEach((h) => { observer.observe(h.el); });
     })();
 
-}
+};
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
