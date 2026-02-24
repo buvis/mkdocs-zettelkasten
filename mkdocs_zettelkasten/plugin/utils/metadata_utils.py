@@ -26,8 +26,9 @@ def extract_file_metadata(filename: str, docs_dir: str) -> dict[str, Any]:
         metadata = yaml.safe_load(header_text)
         if not isinstance(metadata, dict):
             return {}
-        logger.debug("Metadata extracted successfully from file: %s.", file_path)
-        return metadata
     except (OSError, UnicodeDecodeError, yaml.YAMLError) as e:
         logger.warning("Failed to read metadata from %s: %s", file_path, e)
         return {}
+    else:
+        logger.debug("Metadata extracted successfully from file: %s.", file_path)
+        return metadata

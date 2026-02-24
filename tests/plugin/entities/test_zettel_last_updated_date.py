@@ -1,6 +1,6 @@
 import datetime
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 from unittest.mock import patch
 from zoneinfo import ZoneInfo
 

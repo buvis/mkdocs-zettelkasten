@@ -192,7 +192,7 @@ class TestParseFrontmatter:
 
     def test_unclosed_frontmatter_returns_empty_header(self) -> None:
         from mkdocs_zettelkasten.plugin.utils.frontmatter import parse_frontmatter
-        header, body = parse_frontmatter("---\nid: 1\n")
+        header, _body = parse_frontmatter("---\nid: 1\n")
         assert header == ""
 
 
