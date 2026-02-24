@@ -170,3 +170,22 @@ class TestBacklinkSnippets:
         add_backlink_to_target("link", page, source_zettel, zettel_lookup)
 
         assert target.moc_parents[0]["snippet"] == "MOC context snippet"
+
+    def test_snippet_found_via_normalized_key(self) -> None:
+        """Backlinks dict has .md-suffixed keys, link_snippets has raw IDs."""
+        page = _make_page(zettel_id=1)
+        source_zettel = MagicMock()
+        source_zettel.id = 1
+        source_zettel.is_moc = False
+        source_zettel.rel_path = "source.md"
+        source_zettel.link_snippets = {"20240102120000": "context text"}
+
+        target = MagicMock()
+        target.backlinks = []
+        target.moc_parents = []
+        target.rel_path = "target.md"
+
+        zettel_lookup = MagicMock(return_value=target)
+        add_backlink_to_target("20240102120000.md", page, source_zettel, zettel_lookup)
+
+        assert target.backlinks[0]["snippet"] == "context text"
