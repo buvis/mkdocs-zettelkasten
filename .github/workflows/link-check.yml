@@ -1,0 +1,21 @@
+name: Link check
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --all-extras
+      - run: uv run mkdocs build
+      - uses: lycheeverse/lychee-action@v2
+        with:
+          args: --verbose --no-progress ./site
+          fail: true
