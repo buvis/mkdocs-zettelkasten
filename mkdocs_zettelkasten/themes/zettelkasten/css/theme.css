@@ -221,20 +221,55 @@ pre:has(> code):hover .copy-btn {
   opacity: 1;
 }
 
-.file-references h6 .fa {
-  font-size: 1.1em;
-  margin-right: 0.3em;
-}
-
 .file-references {
   background-color: var(--bg-accent);
   border-top: 1px solid var(--border-accent);
   border-bottom-left-radius: 0.375rem;
   border-bottom-right-radius: 0.375rem;
-  padding: 1em;
+  padding: 0.5rem 0.75rem;
   font-style: italic;
-  font-size: small;
+  font-size: 0.85rem;
   color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media (min-width: 48rem) {
+  .file-references {
+    flex-direction: row;
+    gap: 2rem;
+  }
+}
+
+.file-ref-section {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.file-references h6 {
+  margin: 0 0.5rem 0 0;
+  line-height: 1.4;
+  flex-shrink: 0;
+  font-size: 1em;
+}
+
+.file-references h6 .fa {
+  font-size: 1.1em;
+}
+
+.file-references ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: 1;
+}
+
+.file-references li {
+  line-height: 1.4;
+  margin-bottom: 0.1rem;
 }
 
 /* Validation badge */
