@@ -126,6 +126,9 @@ class ZettelkastenPlugin(BasePlugin):
             or self.config["timezone"]
             or tzlocal.get_localzone_name()
         )
+        if not tz_name:
+            self.logger.warning("Could not detect system timezone, falling back to UTC")
+            return ZoneInfo("UTC")
         try:
             return ZoneInfo(tz_name)
         except (ZoneInfoNotFoundError, KeyError):
