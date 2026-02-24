@@ -199,10 +199,12 @@ const init = () => {
         let page;
         switch (key) {
             case shortcuts.next:
+            case 39: // right arrow
                 const nextLink = document.querySelector('.navbar a[rel="next"]');
                 if (nextLink) page = nextLink.href;
                 break;
             case shortcuts.previous:
+            case 37: // left arrow
                 const prevLink = document.querySelector('.navbar a[rel="prev"]');
                 if (prevLink) page = prevLink.href;
                 break;
