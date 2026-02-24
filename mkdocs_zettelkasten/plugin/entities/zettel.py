@@ -8,8 +8,8 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 import logging
+from zoneinfo import ZoneInfo
 
-import tzlocal
 import yaml
 from yaml.scanner import ScannerError
 
@@ -47,7 +47,7 @@ class Zettel:
         self._date_key = cfg.get("date_key", "date")
         self._last_update_key = cfg.get("last_update_key", "last_update")
         self._id_format = cfg.get("id_format", r"^\d{14}$")
-        self._tz = cfg.get("timezone") or tzlocal.get_localzone()
+        self._tz = cfg.get("timezone") or ZoneInfo("UTC")
         self._date_format = cfg.get("date_format", "%Y-%m-%d")
 
         self._initialize_zettel()

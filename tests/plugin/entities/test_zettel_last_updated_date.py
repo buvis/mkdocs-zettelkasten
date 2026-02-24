@@ -2,13 +2,13 @@ import datetime
 from pathlib import Path
 from typing import Callable
 from unittest.mock import patch
+from zoneinfo import ZoneInfo
 
 import pytest
-import tzlocal
 
 from mkdocs_zettelkasten.plugin.entities.zettel import Zettel, ZettelFormatError
 
-local_tz = tzlocal.get_localzone()
+UTC = ZoneInfo("UTC")
 
 LAST_UPDATE_CONTENT = """---
 id: 2020-05-20
@@ -40,7 +40,7 @@ title: Test with no ID
 
 def _ts(year: int, month: int = 1, day: int = 1) -> float:
     """Helper to create a UTC timestamp from a date."""
-    return datetime.datetime(year, month, day, tzinfo=local_tz).timestamp()
+    return datetime.datetime(year, month, day, tzinfo=UTC).timestamp()
 
 
 def test_last_update_from_frontmatter(
