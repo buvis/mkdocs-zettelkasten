@@ -260,3 +260,52 @@ class TestNoteTypeAndMaturity:
         content = "---\nid: 1\ntype: custom_type\ndate: 2024-01-01\n---\n# Title\n"
         z = _make_zettel(tmp_path, content)
         assert z.note_type == "custom_type"
+
+
+class TestRole:
+    def test_role_from_frontmatter(self, tmp_path: Path) -> None:
+        content = "---\nid: 1\nrole: moc\ndate: 2024-01-01\n---\n# Title\n"
+        z = _make_zettel(tmp_path, content)
+        assert z.role == "moc"
+
+    def test_missing_role_is_none(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, VALID_ZETTEL)
+        assert z.role is None
+
+    def test_custom_role_key(self, tmp_path: Path) -> None:
+        content = "---\nid: 1\nnote_role: index\ndate: 2024-01-01\n---\n# Title\n"
+        z = _make_zettel(tmp_path, content, zettel_config={"role_key": "note_role"})
+        assert z.role == "index"
+
+    def test_is_moc_true_for_moc(self, tmp_path: Path) -> None:
+        content = "---\nid: 1\nrole: moc\ndate: 2024-01-01\n---\n# Title\n"
+        z = _make_zettel(tmp_path, content)
+        assert z.is_moc is True
+
+    def test_is_moc_true_for_index(self, tmp_path: Path) -> None:
+        content = "---\nid: 1\nrole: index\ndate: 2024-01-01\n---\n# Title\n"
+        z = _make_zettel(tmp_path, content)
+        assert z.is_moc is True
+
+    def test_is_moc_true_for_hub(self, tmp_path: Path) -> None:
+        content = "---\nid: 1\nrole: hub\ndate: 2024-01-01\n---\n# Title\n"
+        z = _make_zettel(tmp_path, content)
+        assert z.is_moc is True
+
+    def test_is_moc_true_for_structure(self, tmp_path: Path) -> None:
+        content = "---\nid: 1\nrole: structure\ndate: 2024-01-01\n---\n# Title\n"
+        z = _make_zettel(tmp_path, content)
+        assert z.is_moc is True
+
+    def test_is_moc_false_for_other(self, tmp_path: Path) -> None:
+        content = "---\nid: 1\nrole: reference\ndate: 2024-01-01\n---\n# Title\n"
+        z = _make_zettel(tmp_path, content)
+        assert z.is_moc is False
+
+    def test_is_moc_false_when_no_role(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, VALID_ZETTEL)
+        assert z.is_moc is False
+
+    def test_moc_parents_initialized_empty(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, VALID_ZETTEL)
+        assert z.moc_parents == []

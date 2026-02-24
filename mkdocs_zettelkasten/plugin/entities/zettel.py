@@ -28,6 +28,8 @@ class ZettelFormatError(ValueError):
 
 
 class Zettel:
+    _MOC_ROLES = frozenset({"moc", "index", "hub", "structure"})
+
     def __init__(
         self,
         abs_src_path: Path,
@@ -44,6 +46,8 @@ class Zettel:
         self.note_type: str | None = None
         self.maturity: str | None = None
         self.source: str | None = None
+        self.role: str | None = None
+        self.moc_parents: list[dict[str, str]] = []
 
         cfg = zettel_config or {}
         self._id_key = cfg.get("id_key", "id")
@@ -51,6 +55,7 @@ class Zettel:
         self._last_update_key = cfg.get("last_update_key", "last_update")
         self._type_key = cfg.get("type_key", "type")
         self._maturity_key = cfg.get("maturity_key", "maturity")
+        self._role_key = cfg.get("role_key", "role")
         self._id_format = cfg.get("id_format", r"^\d{14}$")
         self._tz = cfg.get("timezone") or ZoneInfo("UTC")
         self._date_format = cfg.get("date_format", "%Y-%m-%d")
@@ -62,6 +67,10 @@ class Zettel:
 
     def __eq__(self, other: object) -> bool:
         return isinstance(other, Zettel) and self.id == other.id
+
+    @property
+    def is_moc(self) -> bool:
+        return self.role in self._MOC_ROLES
 
     def _initialize_zettel(self) -> None:
         """Orchestrates the zettel initialization process."""
@@ -163,6 +172,8 @@ class Zettel:
         self.maturity = str(raw_maturity) if raw_maturity is not None else None
         raw_source = meta.get("source")
         self.source = str(raw_source) if raw_source is not None else None
+        raw_role = meta.get(self._role_key)
+        self.role = str(raw_role) if raw_role is not None else None
 
     def _generate_filename_title(self) -> str:
         """Generates title from filename using pattern matching."""
