@@ -9,12 +9,12 @@
     }
   },
   {
-    "id": "selenized",
-    "name": "Selenized",
+    "id": "vesper",
+    "name": "Vesper",
     "category": "classic",
     "preview": {
-      "light": ["#fbf3db", "#53676d", "#0072d4", "#ece3cc"],
-      "dark": ["#103c48", "#adbcbc", "#4695f7", "#1e5363"]
+      "light": ["#f5f0e8", "#3b3228", "#b34b1f", "#ece5d8"],
+      "dark": ["#101010", "#b2b2b2", "#ffc799", "#222222"]
     }
   },
   {
@@ -45,12 +45,12 @@
     }
   },
   {
-    "id": "nord",
-    "name": "Nord",
+    "id": "vitesse",
+    "name": "Vitesse",
     "category": "nature",
     "preview": {
-      "light": ["#eceff4", "#2e3440", "#5e81ac", "#e5e9f0"],
-      "dark": ["#2e3440", "#d8dee9", "#88c0d0", "#434c5e"]
+      "light": ["#ffffff", "#393a34", "#1e754f", "#f5f5f5"],
+      "dark": ["#121212", "#dbd7ca", "#4d9375", "#222222"]
     }
   },
   {
@@ -63,30 +63,39 @@
     }
   },
   {
-    "id": "one",
-    "name": "One",
+    "id": "palenight",
+    "name": "Palenight",
     "category": "modern",
     "preview": {
-      "light": ["#fafafa", "#383a42", "#4078f2", "#f0f0f1"],
-      "dark": ["#282c34", "#abb2bf", "#61afef", "#2c313a"]
+      "light": ["#fafafa", "#4a4560", "#7c4dff", "#f0eff4"],
+      "dark": ["#292d3e", "#a6accd", "#c792ea", "#353a50"]
     }
   },
   {
-    "id": "ayu",
-    "name": "Ayu",
+    "id": "noctis",
+    "name": "Noctis",
     "category": "modern",
     "preview": {
-      "light": ["#fcfcfc", "#5c6166", "#399ee6", "#f3f4f5"],
-      "dark": ["#0b0e14", "#b3b1ad", "#39bae6", "#151920"]
+      "light": ["#fef8ec", "#5a4e38", "#c4762a", "#f5edd8"],
+      "dark": ["#252320", "#c8bfb0", "#e8a84c", "#383430"]
     }
   },
   {
-    "id": "material",
-    "name": "Material",
+    "id": "panda",
+    "name": "Panda",
     "category": "modern",
     "preview": {
-      "light": ["#fafafa", "#212121", "#1976d2", "#f5f5f5"],
-      "dark": ["#121212", "#e0e0e0", "#82b1ff", "#2c2c2c"]
+      "light": ["#f0f5f4", "#2a3937", "#00876c", "#e4ece9"],
+      "dark": ["#292a2b", "#e6e6e6", "#45c8b0", "#3b3e44"]
+    }
+  },
+  {
+    "id": "night-owl",
+    "name": "Night Owl",
+    "category": "modern",
+    "preview": {
+      "light": ["#fbfbfb", "#403f53", "#994cc3", "#f0f0f0"],
+      "dark": ["#011627", "#d6deeb", "#c792ea", "#13344f"]
     }
   },
   {
@@ -112,8 +121,17 @@
     "name": "Catppuccin",
     "category": "aesthetic",
     "preview": {
-      "light": ["#eff1f5", "#4c4f69", "#1e66f5", "#e6e9ef"],
-      "dark": ["#1e1e2e", "#cdd6f4", "#89b4fa", "#3b3c50"]
+      "light": ["#eff1f5", "#4c4f69", "#fe640b", "#e6e9ef"],
+      "dark": ["#1e1e2e", "#cdd6f4", "#fab387", "#3b3c50"]
+    }
+  },
+  {
+    "id": "andromeda",
+    "name": "Andromeda",
+    "category": "aesthetic",
+    "preview": {
+      "light": ["#f7f5f5", "#3b3440", "#d14231", "#ece8e8"],
+      "dark": ["#23262e", "#d6d6dd", "#ee5d43", "#353944"]
     }
   },
   {
@@ -126,12 +144,12 @@
     }
   },
   {
-    "id": "tokyo-night",
-    "name": "Tokyo Night",
+    "id": "synthwave",
+    "name": "Synthwave",
     "category": "aesthetic",
     "preview": {
-      "light": ["#d5d6db", "#343b58", "#34548a", "#cbccd1"],
-      "dark": ["#1a1b26", "#a9b1d6", "#7aa2f7", "#2c3047"]
+      "light": ["#f8f0f8", "#45384d", "#d63384", "#eee2ef"],
+      "dark": ["#262335", "#f8deff", "#ff7edb", "#38344a"]
     }
   },
   {

@@ -158,12 +158,12 @@ class TestParseSchemeFile:
             / "zettelkasten"
             / "css"
             / "schemes"
-            / "nord.css"
+            / "vesper.css"
         )
         if not real.exists():
-            pytest.skip("nord.css not in worktree")
+            pytest.skip("vesper.css not in worktree")
         result = parse_scheme_file(real)
-        assert "nord" in result
-        assert "nord__dark" in result
-        assert result["nord"]["--text-primary"] == "#2e3440"
-        assert result["nord__dark"]["--text-primary"] == "#d8dee9"
+        assert "vesper" in result
+        assert "vesper__dark" in result
+        assert result["vesper"]["--text-primary"] == "#3b3228"
+        assert result["vesper__dark"]["--text-primary"] == "#b2b2b2"

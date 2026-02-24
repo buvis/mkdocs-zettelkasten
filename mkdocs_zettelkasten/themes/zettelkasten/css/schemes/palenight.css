@@ -1,0 +1,93 @@
+/* Palenight palette — Material Theme
+   https://github.com/material-theme/vsc-material-theme */
+
+[data-color-scheme="palenight"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #fafafa;
+  --bg-zettel: #fff;
+  --bg-header: #f0eff4;
+  --bg-accent: #f0eff4;
+  --bg-code: #fafafa;
+  --bg-tooltip: #292d3e;
+  --bg-kbd: #292d3e;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #4a4560;
+  --text-link: #7c4dff;
+  --text-header: #4a4560;
+  --text-code: #4a4560;
+  --text-muted: #a0a0b8;
+  --text-tooltip: #a6accd;
+  --text-kbd: #fafafa;
+  --text-link-code: #7c4dff;
+  --text-link-code-hover: #c17e2f;
+
+  /* Borders */
+  --border-zettel: #d8d5e4;
+  --border-heading: #d8d5e4;
+  --border-accent: #d8d5e4;
+  --border-code: #d8d5e4;
+  --border-hr: #c8c4d6;
+  --border-img: #d8d5e4;
+
+  /* Navbar */
+  --nav-from: #4a4560;
+  --nav-to: #3a3550;
+
+  /* Admonitions */
+  --adm-note-text: #7c4dff;
+  --adm-note-bg: #ece6ff;
+  --adm-note-border: #7c4dff;
+  --adm-warning-text: #c17e2f;
+  --adm-warning-bg: #faf0dd;
+  --adm-warning-border: #c17e2f;
+  --adm-danger-text: #ff5370;
+  --adm-danger-bg: #ffe0e6;
+  --adm-danger-border: #ff5370;
+}
+
+[data-color-scheme="palenight"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #292d3e;
+  --bg-zettel: #2f3447;
+  --bg-header: #353a50;
+  --bg-accent: #2c314a;
+  --bg-code: #2f3447;
+  --bg-tooltip: #a6accd;
+  --bg-kbd: #3c4155;
+  --bg-img: #2f3447;
+
+  --text-primary: #a6accd;
+  --text-link: #c792ea;
+  --text-header: #d0d6f9;
+  --text-code: #a6accd;
+  --text-muted: #676e95;
+  --text-tooltip: #292d3e;
+  --text-kbd: #a6accd;
+  --text-link-code: #c792ea;
+  --text-link-code-hover: #f78c6c;
+
+  --border-zettel: #3c4155;
+  --border-heading: #3c4155;
+  --border-accent: #3c4155;
+  --border-code: #3c4155;
+  --border-hr: #4a5070;
+  --border-img: #3c4155;
+
+  --nav-from: #2f3447;
+  --nav-to: #292d3e;
+
+  --adm-note-text: #c792ea;
+  --adm-note-bg: #2f3447;
+  --adm-note-border: #c792ea;
+  --adm-warning-text: #ffcb6b;
+  --adm-warning-bg: #2f3447;
+  --adm-warning-border: #ffcb6b;
+  --adm-danger-text: #ff5370;
+  --adm-danger-bg: #2f3447;
+  --adm-danger-border: #ff5370;
+}

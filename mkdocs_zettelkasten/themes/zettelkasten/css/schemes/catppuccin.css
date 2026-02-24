@@ -1,4 +1,4 @@
-/* Catppuccin palette — Catppuccin
+/* Catppuccin palette (Peach accent) — Catppuccin
    https://github.com/catppuccin/catppuccin */
 
 [data-color-scheme="catppuccin"] {
@@ -16,13 +16,13 @@
 
   /* Text */
   --text-primary: #4c4f69;
-  --text-link: #1e66f5;
+  --text-link: #fe640b;
   --text-header: #4c4f69;
   --text-code: #4c4f69;
   --text-muted: #8c8fa1;
   --text-tooltip: #cdd6f4;
   --text-kbd: #eff1f5;
-  --text-link-code: #1e66f5;
+  --text-link-code: #fe640b;
   --text-link-code-hover: #40a02b;
 
   /* Borders */
@@ -38,9 +38,9 @@
   --nav-to: #3c3f57;
 
   /* Admonitions */
-  --adm-note-text: #1e66f5;
-  --adm-note-bg: #dde7fd;
-  --adm-note-border: #1e66f5;
+  --adm-note-text: #fe640b;
+  --adm-note-bg: #fde8d8;
+  --adm-note-border: #fe640b;
   --adm-warning-text: #df8e1d;
   --adm-warning-bg: #faf0dd;
   --adm-warning-border: #df8e1d;
@@ -62,13 +62,13 @@
   --bg-img: #313244;
 
   --text-primary: #cdd6f4;
-  --text-link: #89b4fa;
+  --text-link: #fab387;
   --text-header: #cdd6f4;
   --text-code: #cdd6f4;
   --text-muted: #6c7086;
   --text-tooltip: #1e1e2e;
   --text-kbd: #cdd6f4;
-  --text-link-code: #89b4fa;
+  --text-link-code: #fab387;
   --text-link-code-hover: #a6e3a1;
 
   --border-zettel: #45475a;
@@ -81,9 +81,9 @@
   --nav-from: #313244;
   --nav-to: #1e1e2e;
 
-  --adm-note-text: #89b4fa;
+  --adm-note-text: #fab387;
   --adm-note-bg: #313244;
-  --adm-note-border: #89b4fa;
+  --adm-note-border: #fab387;
   --adm-warning-text: #f9e2af;
   --adm-warning-bg: #313244;
   --adm-warning-border: #f9e2af;

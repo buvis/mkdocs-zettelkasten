@@ -1,0 +1,93 @@
+/* Vitesse palette — Anthony Fu
+   https://github.com/antfu/vscode-theme-vitesse */
+
+[data-color-scheme="vitesse"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #ffffff;
+  --bg-zettel: #fff;
+  --bg-header: #f5f5f5;
+  --bg-accent: #f5f5f5;
+  --bg-code: #fafafa;
+  --bg-tooltip: #1a1a1a;
+  --bg-kbd: #1a1a1a;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #393a34;
+  --text-link: #1e754f;
+  --text-header: #393a34;
+  --text-code: #393a34;
+  --text-muted: #999999;
+  --text-tooltip: #dbd7ca;
+  --text-kbd: #fafafa;
+  --text-link-code: #1e754f;
+  --text-link-code-hover: #b07d48;
+
+  /* Borders */
+  --border-zettel: #e5e5e5;
+  --border-heading: #e5e5e5;
+  --border-accent: #e5e5e5;
+  --border-code: #e5e5e5;
+  --border-hr: #d0d0d0;
+  --border-img: #e5e5e5;
+
+  /* Navbar */
+  --nav-from: #393a34;
+  --nav-to: #2c2c28;
+
+  /* Admonitions */
+  --adm-note-text: #1e754f;
+  --adm-note-bg: #e0f2e8;
+  --adm-note-border: #1e754f;
+  --adm-warning-text: #b07d48;
+  --adm-warning-bg: #faf0dd;
+  --adm-warning-border: #b07d48;
+  --adm-danger-text: #ab5959;
+  --adm-danger-bg: #f5e0e0;
+  --adm-danger-border: #ab5959;
+}
+
+[data-color-scheme="vitesse"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #121212;
+  --bg-zettel: #1a1a1a;
+  --bg-header: #222222;
+  --bg-accent: #171717;
+  --bg-code: #1a1a1a;
+  --bg-tooltip: #dbd7ca;
+  --bg-kbd: #2a2a2a;
+  --bg-img: #1a1a1a;
+
+  --text-primary: #dbd7ca;
+  --text-link: #4d9375;
+  --text-header: #dbd7ca;
+  --text-code: #dbd7ca;
+  --text-muted: #666666;
+  --text-tooltip: #121212;
+  --text-kbd: #dbd7ca;
+  --text-link-code: #4d9375;
+  --text-link-code-hover: #cb9959;
+
+  --border-zettel: #2e2e2e;
+  --border-heading: #2e2e2e;
+  --border-accent: #2e2e2e;
+  --border-code: #2e2e2e;
+  --border-hr: #3a3a3a;
+  --border-img: #2e2e2e;
+
+  --nav-from: #1a1a1a;
+  --nav-to: #121212;
+
+  --adm-note-text: #4d9375;
+  --adm-note-bg: #1a1a1a;
+  --adm-note-border: #4d9375;
+  --adm-warning-text: #e6cc77;
+  --adm-warning-bg: #1a1a1a;
+  --adm-warning-border: #e6cc77;
+  --adm-danger-text: #ce5050;
+  --adm-danger-bg: #1a1a1a;
+  --adm-danger-border: #ce5050;
+}

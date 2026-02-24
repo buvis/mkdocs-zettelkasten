@@ -1,0 +1,12 @@
+<div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+<nav id="sidebar-nav" class="sidebar-nav">
+    <div class="sidebar-header">
+        <span class="sidebar-title">{{ config.site_name }}</span>
+        <button class="sidebar-close" aria-label="Close navigation">&times;</button>
+    </div>
+    <ul class="sidebar-tree">
+    {%- for nav_item in nav %}
+        {% include "sidebar-nav-item.html" %}
+    {%- endfor %}
+    </ul>
+</nav>

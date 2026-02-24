@@ -1,0 +1,16 @@
+{%- if nav_item.children %}
+<li class="sidebar-section">
+    <button class="sidebar-section-toggle{% if nav_item.active %} open{% endif %}" aria-expanded="{{ 'true' if nav_item.active else 'false' }}">
+        <span class="sidebar-chevron"></span>{{ nav_item.title }}
+    </button>
+    <ul class="sidebar-subtree{% if nav_item.active %} expanded{% endif %}">
+    {%- for nav_item in nav_item.children %}
+        {% include "sidebar-nav-item.html" %}
+    {%- endfor %}
+    </ul>
+</li>
+{%- else %}
+<li class="sidebar-leaf">
+    <a href="{{ nav_item.url|url }}" class="sidebar-link{% if nav_item.active %} active{% endif %}">{{ nav_item.title }}</a>
+</li>
+{%- endif %}

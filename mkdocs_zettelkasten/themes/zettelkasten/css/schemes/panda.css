@@ -1,0 +1,93 @@
+/* Panda Syntax palette
+   https://github.com/PandaTheme */
+
+[data-color-scheme="panda"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #f0f5f4;
+  --bg-zettel: #fff;
+  --bg-header: #e4ece9;
+  --bg-accent: #e4ece9;
+  --bg-code: #f0f5f4;
+  --bg-tooltip: #292a2b;
+  --bg-kbd: #292a2b;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #2a3937;
+  --text-link: #00876c;
+  --text-header: #2a3937;
+  --text-code: #2a3937;
+  --text-muted: #7a908a;
+  --text-tooltip: #e6e6e6;
+  --text-kbd: #f0f5f4;
+  --text-link-code: #00876c;
+  --text-link-code-hover: #cc527a;
+
+  /* Borders */
+  --border-zettel: #c8d8d2;
+  --border-heading: #c8d8d2;
+  --border-accent: #c8d8d2;
+  --border-code: #c8d8d2;
+  --border-hr: #b0c4bc;
+  --border-img: #c8d8d2;
+
+  /* Navbar */
+  --nav-from: #2a3937;
+  --nav-to: #1e2c2a;
+
+  /* Admonitions */
+  --adm-note-text: #00876c;
+  --adm-note-bg: #d8f0e8;
+  --adm-note-border: #00876c;
+  --adm-warning-text: #c49000;
+  --adm-warning-bg: #faf0d0;
+  --adm-warning-border: #c49000;
+  --adm-danger-text: #e04068;
+  --adm-danger-bg: #ffe0e8;
+  --adm-danger-border: #e04068;
+}
+
+[data-color-scheme="panda"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #292a2b;
+  --bg-zettel: #31343a;
+  --bg-header: #3b3e44;
+  --bg-accent: #2e3035;
+  --bg-code: #31343a;
+  --bg-tooltip: #e6e6e6;
+  --bg-kbd: #3f4248;
+  --bg-img: #31343a;
+
+  --text-primary: #e6e6e6;
+  --text-link: #45c8b0;
+  --text-header: #f0f0f0;
+  --text-code: #e6e6e6;
+  --text-muted: #757575;
+  --text-tooltip: #292a2b;
+  --text-kbd: #e6e6e6;
+  --text-link-code: #45c8b0;
+  --text-link-code-hover: #ff75b5;
+
+  --border-zettel: #3f4248;
+  --border-heading: #3f4248;
+  --border-accent: #3f4248;
+  --border-code: #3f4248;
+  --border-hr: #505560;
+  --border-img: #3f4248;
+
+  --nav-from: #31343a;
+  --nav-to: #292a2b;
+
+  --adm-note-text: #45c8b0;
+  --adm-note-bg: #31343a;
+  --adm-note-border: #45c8b0;
+  --adm-warning-text: #ffb86c;
+  --adm-warning-bg: #31343a;
+  --adm-warning-border: #ffb86c;
+  --adm-danger-text: #ff75b5;
+  --adm-danger-bg: #31343a;
+  --adm-danger-border: #ff75b5;
+}

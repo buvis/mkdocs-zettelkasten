@@ -88,23 +88,33 @@
     </head>
 
     <body{% if page and page.is_homepage %} class="homepage"{% endif %}>
-        <div class="navbar fixed-top navbar-expand-lg navbar-{% if config.theme.nav_style == "light" %}light{% else %}dark{% endif %} bg-{{ config.theme.nav_style }}">
+        {%- if config.theme.nav_position == "sidebar" %}
+        <button id="sidebar-toggle" class="sidebar-toggle" aria-expanded="false" aria-label="Open navigation">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        {%- include "sidebar-nav.html" %}
+        {%- endif %}
+
+        <div class="navbar fixed-top navbar-expand-lg navbar-{% if config.theme.nav_style == "light" %}light{% else %}dark{% endif %} bg-{{ config.theme.nav_style }}{% if config.theme.nav_position == "sidebar" %} sidebar-mode{% endif %}">
             <div class="container">
 
                 {%- block site_name %}
                 <a class="navbar-brand" href="{{ nav.homepage.url|url }}">{{ config.site_name }}</a>
                 {%- endblock %}
 
+                {%- if config.theme.nav_position != "sidebar" %}
                 {%- if nav|length>0 or (page and (page.next_page or page.previous_page)) or config.repo_url %}
                 <!-- Expander button -->
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 {%- endif %}
+                {%- endif %}
 
                 <!-- Expanded navigation -->
                 <div id="navbar-collapse" class="navbar-collapse collapse">
                   {%- block site_nav %}
+                    {%- if config.theme.nav_position != "sidebar" %}
                     {%- if nav|length>0 %}
                         <!-- Main navigation -->
                         <ul class="nav navbar-nav">
@@ -126,9 +136,15 @@
                         {%- endfor %}
                         </ul>
                     {%- endif %}
+                    {%- endif %}
                   {%- endblock %}
 
-                    <ul class="nav navbar-nav ml-auto">
+                    {%- if config.theme.nav_position == "sidebar" %}
+                    <button class="controls-toggle" aria-expanded="false" aria-label="Toggle controls">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="9" r="1.5" fill="currentColor"/><circle cx="9" cy="9" r="1.5" fill="currentColor"/><circle cx="15" cy="9" r="1.5" fill="currentColor"/></svg>
+                    </button>
+                    {%- endif %}
+                    <ul class="nav navbar-nav ml-auto{% if config.theme.nav_position == "sidebar" %} controls-collapsible{% endif %}">
                       {%- block search_button %}
                         {%- if 'search' in config['plugins'] %}
                         <li class="nav-item">
@@ -143,12 +159,12 @@
                         {%- if page and (page.next_page or page.previous_page) %}
                             <li class="nav-item">
                                 <a rel="prev" {% if page.previous_page %}href="{{ page.previous_page.url|url }}" class="nav-link"{% else %}class="nav-link disabled"{% endif %}>
-                                    <i class="fa fa-arrow-left"></i> {% trans %}Previous{% endtrans %}
+                                    <i class="fa fa-arrow-left"></i>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a rel="next" {% if page.next_page %}href="{{ page.next_page.url|url }}" class="nav-link"{% else %}class="nav-link disabled"{% endif %}>
-                                    {% trans %}Next{% endtrans %} <i class="fa fa-arrow-right"></i>
+                                    <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
                         {%- endif %}
@@ -207,10 +223,10 @@
         <footer class="col-md-12">
           {%- block footer %}
             <hr>
-            {%- if config.copyright %}
-                <p>{{ config.copyright }}</p>
-            {%- endif %}
             <p>{% trans plugin_link='<a href="https://github.com/buvis/mkdocs-zettelkasten">MkDocs Zettelkasten</a>', version=config.extra.plugin_version %}{{ plugin_link }} v{{ version }}{% endtrans %}</p>
+            {%- if config.copyright %}
+                <p class="footer-copyright">{{ config.copyright }}</p>
+            {%- endif %}
           {%- endblock %}
         </footer>
 

@@ -17,10 +17,11 @@ hljs_style_dark: github-dark
 
 navigation_depth: 2
 nav_style: primary
+nav_position: sidebar
 
 math_support: false
 
-color_scheme: solarized  # solarized or selenized
+color_scheme: solarized
 
 analytics:
   gtag: null
