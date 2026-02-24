@@ -56,16 +56,9 @@ if $dry_run; then
   exit 0
 fi
 
-ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-REQS="$ROOT/.github/workflows/requirements.txt"
-
 [[ -z "$(git status --porcelain)" ]] || die "working tree is dirty"
 git tag -l "$tag" | grep -q . && die "tag $tag already exists"
 
-sed -i.bak "s/mkdocs-zettelkasten==.*/mkdocs-zettelkasten==$new_ver/" "$REQS" && rm -f "$REQS.bak"
-
-git add "$REQS"
-git commit -m "build: bump docs requirements to v$new_ver"
 git tag "$tag"
 git push origin HEAD --tags
 
