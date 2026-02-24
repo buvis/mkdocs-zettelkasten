@@ -114,3 +114,59 @@ class TestMocParents:
 
         assert len(target.backlinks) == 1
         assert len(target.moc_parents) == 0
+
+
+class TestBacklinkSnippets:
+    def test_snippet_included_when_available(self) -> None:
+        page = _make_page(zettel_id=1)
+        source_zettel = MagicMock()
+        source_zettel.id = 1
+        source_zettel.is_moc = False
+        source_zettel.rel_path = "source.md"
+        source_zettel.link_snippets = {"target_link": "some context around the link"}
+
+        target = MagicMock()
+        target.backlinks = []
+        target.moc_parents = []
+        target.rel_path = "target.md"
+
+        zettel_lookup = MagicMock(return_value=target)
+        add_backlink_to_target("target_link", page, source_zettel, zettel_lookup)
+
+        assert target.backlinks[0]["snippet"] == "some context around the link"
+
+    def test_snippet_none_when_not_available(self) -> None:
+        page = _make_page(zettel_id=1)
+        source_zettel = MagicMock()
+        source_zettel.id = 1
+        source_zettel.is_moc = False
+        source_zettel.rel_path = "source.md"
+        source_zettel.link_snippets = {}
+
+        target = MagicMock()
+        target.backlinks = []
+        target.moc_parents = []
+        target.rel_path = "target.md"
+
+        zettel_lookup = MagicMock(return_value=target)
+        add_backlink_to_target("some_link", page, source_zettel, zettel_lookup)
+
+        assert target.backlinks[0]["snippet"] is None
+
+    def test_moc_parent_also_gets_snippet(self) -> None:
+        page = _make_page(zettel_id=1)
+        source_zettel = MagicMock()
+        source_zettel.id = 1
+        source_zettel.is_moc = True
+        source_zettel.rel_path = "moc.md"
+        source_zettel.link_snippets = {"link": "MOC context snippet"}
+
+        target = MagicMock()
+        target.backlinks = []
+        target.moc_parents = []
+        target.rel_path = "target.md"
+
+        zettel_lookup = MagicMock(return_value=target)
+        add_backlink_to_target("link", page, source_zettel, zettel_lookup)
+
+        assert target.moc_parents[0]["snippet"] == "MOC context snippet"

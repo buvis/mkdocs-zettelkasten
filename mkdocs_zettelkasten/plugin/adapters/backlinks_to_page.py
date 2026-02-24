@@ -31,9 +31,11 @@ def add_backlink_to_target(
     if not target_zettel:
         return
 
+    snippet = zettel.link_snippets.get(link)
     backlink = {
         "url": page.url,
         "title": page.title,
+        "snippet": snippet,
     }
     target_zettel.backlinks.append(backlink)
 
