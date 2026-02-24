@@ -28,17 +28,23 @@ class TagsService:
         self.tags_folder: Path = Path(".build")
         self.tags_template: Path | None = None
         self.tags_key: str = "tags"
+        self.role_key: str = "role"
         self.metadata: list[dict[str, Any]] = []
         self._docs_dir: str = ""
         self._site_dir: str = ""
 
     def configure(
-        self, config: MkDocsConfig, tags_key: str = "tags", file_suffix: str = ".md"
+        self,
+        config: MkDocsConfig,
+        tags_key: str = "tags",
+        file_suffix: str = ".md",
+        role_key: str = "role",
     ) -> None:
         """
         Configure paths and template from MkDocs config.
         """
         self.tags_key = tags_key
+        self.role_key = role_key
         self.file_suffix = file_suffix
         self.tags_filename = Path(config.get("tags_filename", "tags.md"))
         self.tags_folder = Path(config.get("tags_folder", ".build"))
@@ -129,7 +135,10 @@ class TagsService:
         env = create_jinja_environment(self.tags_template)
         template_name = self.tags_template.name if self.tags_template else "tags.md.j2"
         template = env.get_template(template_name)
-        return template.render(tags=sorted(tag_map.items(), key=lambda t: t[0].lower()))
+        return template.render(
+            tags=sorted(tag_map.items(), key=lambda t: t[0].lower()),
+            role_key=self.role_key,
+        )
 
     def _write_tags_file(self, content: str) -> None:
         """

@@ -109,6 +109,7 @@ class ZettelkastenPlugin(BasePlugin):
             config,
             tags_key=self.config["tags_key"],
             file_suffix=self.config["file_suffix"],
+            role_key=self.config["role_key"],
         )
         if self.config["validation_enabled"]:
             self.validation_service.configure(

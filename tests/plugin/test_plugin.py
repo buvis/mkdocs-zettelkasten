@@ -92,7 +92,9 @@ class TestZettelkastenPlugin:
         ):
             plugin.on_config(config)
 
-        mock_tags.assert_called_once_with(config, tags_key="tags", file_suffix=".md")
+        mock_tags.assert_called_once_with(
+            config, tags_key="tags", file_suffix=".md", role_key="role"
+        )
 
     def test_on_files_delegates(self) -> None:
         plugin = self._make_plugin()

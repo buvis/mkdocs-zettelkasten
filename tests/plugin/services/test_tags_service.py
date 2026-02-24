@@ -112,3 +112,32 @@ class TestTagsService:
         svc.configure(config)
 
         assert svc.tags_folder == tmp_path / ".build"
+
+    def test_moc_featured_as_entry_points(self, tmp_path: Path) -> None:
+        svc = TagsService()
+        config = self._make_config(str(tmp_path))
+        svc.configure(config, role_key="role")
+        svc.metadata = [
+            {
+                "id": 1,
+                "title": "MOC Note",
+                "tags": ["python"],
+                "role": "moc",
+                "src_path": "moc.md",
+            },
+            {
+                "id": 2,
+                "title": "Regular Note",
+                "tags": ["python"],
+                "src_path": "regular.md",
+            },
+        ]
+        svc.generate_tags_file()
+
+        content = (tmp_path / "tags.md").read_text()
+        assert "Entry points" in content
+        assert "[MOC Note]" in content
+        # MOC should only appear in entry points, not in the regular list
+        assert content.count("MOC Note") == 1
+        # Regular note should appear in the regular list
+        assert "[Regular Note]" in content

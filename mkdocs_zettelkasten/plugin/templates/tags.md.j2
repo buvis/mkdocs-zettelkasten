@@ -3,12 +3,28 @@ title: Tags
 ---
 
 # Contents grouped by tag
-
+{% set moc_roles = ['moc', 'index', 'hub', 'structure'] %}
 {% for tag, pages in tags %}
 
 ## <span class="tag">{{tag}}</span>
-{%  for page in pages %}
+{% set mocs = [] %}
+{% set regular = [] %}
+{% for page in pages %}
+{% if page.get(role_key, '') in moc_roles %}
+{% set _ = mocs.append(page) %}
+{% else %}
+{% set _ = regular.append(page) %}
+{% endif %}
+{% endfor %}
+{% if mocs %}
+**Entry points**
+{% for page in mocs %}
   * [{{page.title}}]({{page.src_path}})
 {% endfor %}
- 
+
+{% endif %}
+{% for page in regular %}
+  * [{{page.title}}]({{page.src_path}})
+{% endfor %}
+
 {% endfor %}
