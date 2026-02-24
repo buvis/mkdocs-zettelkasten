@@ -1,0 +1,7 @@
+INHERIT: ../../../mkdocs.yml
+
+docs_dir: ../../../docs
+
+theme:
+  name: zettelkasten
+  color_scheme: selenized

@@ -5,7 +5,7 @@ description = "Add Zettelkasten features to MkDocs"
 authors = [{ name = "Tomáš Bouška", email = "tomas@buvis.net" }]
 license = { text = "MIT" }
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
   "mkdocs>=1.6,<2",
   "jinja2>=3.1,<4",
