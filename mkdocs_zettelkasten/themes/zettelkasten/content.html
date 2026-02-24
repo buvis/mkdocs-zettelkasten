@@ -165,7 +165,12 @@
           <h6><i class="{{ page.meta.icons.backlinks }}" aria-hidden="true"></i><span class="visually-hidden">Backlinks</span></h6>
           <ul>
             {% for link in page.meta.zettel.backlinks %}
-              <li><a href="{{link.url|url}}">{{link.title}}</a></li>
+              <li>
+                <a href="{{link.url|url}}">{{link.title}}</a>
+                {% if link.snippet %}
+                  <div class="backlink-snippet">{{link.snippet|safe}}</div>
+                {% endif %}
+              </li>
             {% endfor %}
           </ul>
         </div>
