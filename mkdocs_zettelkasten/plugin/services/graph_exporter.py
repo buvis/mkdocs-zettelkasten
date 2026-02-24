@@ -36,6 +36,8 @@ class GraphExporter:
                 node["type"] = z.note_type
             if z.maturity is not None:
                 node["maturity"] = z.maturity
+            if z.role is not None:
+                node["role"] = z.role
             nodes.append(node)
 
         edges = []

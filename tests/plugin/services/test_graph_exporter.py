@@ -17,6 +17,7 @@ def _make_zettel(
     z.links = links
     z.note_type = None
     z.maturity = None
+    z.role = None
     z.__hash__ = lambda self: hash(zettel_id)
     z.__eq__ = lambda self, other: getattr(other, "id", None) == zettel_id
     return z
@@ -138,3 +139,20 @@ class TestGraphExporter:
         result = self.exporter.export(store, [], {})
 
         assert "maturity" not in result["nodes"][0]
+
+    def test_node_includes_role_when_present(self) -> None:
+        z = _make_zettel(1, "/docs/a.md", "a.md", "A", [])
+        z.role = "moc"
+        store = ZettelStore([z])
+
+        result = self.exporter.export(store, [], {})
+
+        assert result["nodes"][0]["role"] == "moc"
+
+    def test_node_omits_role_when_none(self) -> None:
+        z = _make_zettel(1, "/docs/a.md", "a.md", "A", [])
+        store = ZettelStore([z])
+
+        result = self.exporter.export(store, [], {})
+
+        assert "role" not in result["nodes"][0]
