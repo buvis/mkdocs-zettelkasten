@@ -105,6 +105,7 @@ class ValidationService:
                     link, self.file_suffix
                 )
                 if not target:
+                    logger.warning("Broken link in %s: %s", zettel.rel_path, link)
                     self.issues[zettel.rel_path].append(
                         ValidationIssue(
                             path=zettel.rel_path,
