@@ -12,14 +12,12 @@ if TYPE_CHECKING:
 
 import logging
 
-from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
+from mkdocs_zettelkasten.plugin.utils.frontmatter import DIVIDER
 from mkdocs_zettelkasten.plugin.utils.patterns import WIKI_LINK
 
 logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
 )
-
-DIVIDER = Zettel.MARK_DIVIDER
 
 
 def _find_divider_indices(content_lines: list[str]) -> list[int]:

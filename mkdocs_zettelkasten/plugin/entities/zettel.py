@@ -14,7 +14,7 @@ import yaml
 from yaml.scanner import ScannerError
 
 from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
-from mkdocs_zettelkasten.plugin.utils.frontmatter import DIVIDER, DIVIDER_COUNT, parse_frontmatter
+from mkdocs_zettelkasten.plugin.utils.frontmatter import parse_frontmatter
 from mkdocs_zettelkasten.plugin.utils.git_utils import GitUtil
 from mkdocs_zettelkasten.plugin.utils.patterns import MD_LINK, WIKI_LINK
 
@@ -28,9 +28,6 @@ class ZettelFormatError(ValueError):
 
 
 class Zettel:
-    COUNT_HEADER_DIVIDERS = DIVIDER_COUNT
-    MARK_DIVIDER = DIVIDER
-
     def __init__(
         self,
         abs_src_path: Path,

@@ -31,7 +31,7 @@ class TestTagsService:
         svc = TagsService()
         config = self._make_config(str(tmp_path))
         svc.configure(config)
-        svc.process_metadata(files, config)
+        svc.process_metadata(files)
 
         assert len(svc.metadata) == 1
         assert svc.metadata[0]["tags"] == ["python", "testing"]
@@ -49,7 +49,7 @@ class TestTagsService:
         svc = TagsService()
         config = self._make_config(str(tmp_path))
         svc.configure(config, tags_key="labels")
-        svc.process_metadata(files, config)
+        svc.process_metadata(files)
 
         tag_map = svc._create_tag_map()
         assert "alpha" in tag_map
@@ -67,7 +67,7 @@ class TestTagsService:
         svc = TagsService()
         config = self._make_config(str(tmp_path))
         svc.configure(config)
-        svc.process_metadata(files, config)
+        svc.process_metadata(files)
         svc.generate_tags_file()
 
         output = tmp_path / "tags.md"
@@ -83,7 +83,7 @@ class TestTagsService:
             "tags_folder": str(target),
             "tags_template": None,
         }.get(key, default)
-        config.__getitem__ = lambda self, key: {"docs_dir": str(tmp_path)}[key]
+        config.__getitem__ = lambda self, key: {"docs_dir": str(tmp_path), "site_dir": str(tmp_path / "site")}[key]
 
         svc = TagsService()
         svc.configure(config)
@@ -100,7 +100,7 @@ class TestTagsService:
             "tags_folder": ".build",
             "tags_template": None,
         }.get(key, default)
-        config.__getitem__ = lambda self, key: {"docs_dir": str(docs)}[key]
+        config.__getitem__ = lambda self, key: {"docs_dir": str(docs), "site_dir": str(tmp_path / "site")}[key]
 
         svc = TagsService()
         svc.configure(config)

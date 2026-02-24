@@ -29,6 +29,8 @@ class TagsService:
         self.tags_template: Path | None = None
         self.tags_key: str = "tags"
         self.metadata: list[dict[str, Any]] = []
+        self._docs_dir: str = ""
+        self._site_dir: str = ""
 
     def configure(
         self, config: MkDocsConfig, tags_key: str = "tags", file_suffix: str = ".md"
@@ -58,23 +60,23 @@ class TagsService:
             self.tags_folder.mkdir(parents=True)
             logger.info("Created tags_folder: %s", self.tags_folder)
 
-        # this is just to be safe before rewriting methods using config
-        self.config = config
+        self._docs_dir = config["docs_dir"]
+        self._site_dir = config["site_dir"]
 
     def process_files(self, files: Files) -> None:
         logger.info("Processing %d files for tag extraction.", len(files))
-        self.process_metadata(files, self.config)
+        self.process_metadata(files)
         self.generate_tags_file()
-        self.add_tags_file_to_build(files, self.config)
+        self.add_tags_file_to_build(files)
 
-    def process_metadata(self, files: Files, config: MkDocsConfig) -> None:
+    def process_metadata(self, files: Files) -> None:
         """
         Extract metadata from Markdown files.
         """
         self.metadata.clear()
         for file in files:
             if file.src_path.endswith(self.file_suffix):
-                meta = extract_file_metadata(file.src_path, config["docs_dir"])
+                meta = extract_file_metadata(file.src_path, self._docs_dir)
 
                 if meta:
                     meta["src_path"] = file.src_path
@@ -88,7 +90,7 @@ class TagsService:
         rendered = self._render_tags_template(tag_map)
         self._write_tags_file(rendered)
 
-    def add_tags_file_to_build(self, files: Files, config: MkDocsConfig) -> None:
+    def add_tags_file_to_build(self, files: Files) -> None:
         """
         Add the generated tags file to the MkDocs build list.
         """
@@ -97,7 +99,7 @@ class TagsService:
         new_file = File(
             path=str(self.tags_filename),
             src_dir=str(self.tags_folder),
-            dest_dir=config["site_dir"],
+            dest_dir=self._site_dir,
             use_directory_urls=False,
         )
         files.append(new_file)
