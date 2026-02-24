@@ -99,15 +99,6 @@
     }
   },
   {
-    "id": "night-owl",
-    "name": "Night Owl",
-    "category": "accessibility",
-    "preview": {
-      "light": ["#fbfbfb", "#403f53", "#288ed7", "#f0f0f0"],
-      "dark": ["#011627", "#d6deeb", "#82aaff", "#112c45"]
-    }
-  },
-  {
     "id": "papercolor",
     "name": "PaperColor",
     "category": "accessibility",
@@ -198,30 +189,21 @@
     }
   },
   {
-    "id": "poimandres",
-    "name": "Poimandres",
-    "category": "aesthetic",
+    "id": "sepia",
+    "name": "Sepia",
+    "category": "accessibility",
     "preview": {
-      "light": ["#f0f0f5", "#303340", "#5b8fff", "#e5e5ea"],
-      "dark": ["#1b1e28", "#a6accd", "#add7ff", "#2e3444"]
+      "light": ["#f4ecd8", "#433422", "#a05a2c", "#e8ddc0"],
+      "dark": ["#2a241f", "#d3c6aa", "#e69875", "#3e362e"]
     }
   },
   {
-    "id": "palenight",
-    "name": "Palenight",
-    "category": "aesthetic",
+    "id": "eink",
+    "name": "E-ink",
+    "category": "accessibility",
     "preview": {
-      "light": ["#eef0f8", "#292d3e", "#6182b8", "#e4e7f0"],
-      "dark": ["#292d3e", "#a6accd", "#82aaff", "#3c4160"]
-    }
-  },
-  {
-    "id": "atom-one-monokai",
-    "name": "Atom One Monokai",
-    "category": "classic",
-    "preview": {
-      "light": ["#fafafa", "#383a42", "#4078f2", "#f0f0f1"],
-      "dark": ["#282c34", "#f8f8f2", "#56b6c2", "#2c313a"]
+      "light": ["#fafaf8", "#111111", "#444444", "#f0f0ee"],
+      "dark": ["#111111", "#d8d8d8", "#aaaaaa", "#242424"]
     }
   }
 ]

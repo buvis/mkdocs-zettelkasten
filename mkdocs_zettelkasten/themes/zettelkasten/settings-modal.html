@@ -4,7 +4,21 @@
         <button type="button" class="modal-close" aria-label="Close"><span aria-hidden="true">&times;</span><span class="visually-hidden">Close</span></button>
     </div>
     <div class="modal-body">
-                <h5>Color Scheme</h5>
+                <div class="settings-section-header">
+                    <h5>Color Scheme</h5>
+                    <div class="dark-mode-toggle-group">
+                        <span class="toggle-label">Light</span>
+                        <label class="dark-mode-toggle" title="Toggle dark mode">
+                            <input type="checkbox" id="dark-mode-toggle">
+                            <span class="toggle-track">
+                                <span class="toggle-icon toggle-sun">&#9788;</span>
+                                <span class="toggle-icon toggle-moon">&#9789;</span>
+                                <span class="toggle-thumb"></span>
+                            </span>
+                        </label>
+                        <span class="toggle-label">Dark</span>
+                    </div>
+                </div>
                 <div id="scheme-grid" class="scheme-grid"></div>
 
                 <h5 style="margin-top: 1.5em;">Code Theme</h5>
@@ -48,14 +62,6 @@
 
 # Example usage
 print(greet("Zettelkasten"))</code></pre>
-
-                <h5 style="margin-top: 1.5em;">Appearance</h5>
-                <div class="form-group">
-                    <label class="theme-switch-label">
-                        <span>Dark mode</span>
-                        <input type="checkbox" id="dark-mode-toggle">
-                    </label>
-                </div>
             </div>
     <div class="modal-footer">
     </div>

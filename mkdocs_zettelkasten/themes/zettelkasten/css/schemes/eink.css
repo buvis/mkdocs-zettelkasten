@@ -1,0 +1,93 @@
+/* E-ink palette — monochrome, paper-like, no color
+   Inspired by e-paper displays */
+
+[data-color-scheme="eink"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #fafaf8;
+  --bg-zettel: #fff;
+  --bg-header: #f0f0ee;
+  --bg-accent: #eaeae8;
+  --bg-code: #f0f0ee;
+  --bg-tooltip: #222;
+  --bg-kbd: #222;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #111;
+  --text-link: #444;
+  --text-header: #000;
+  --text-code: #222;
+  --text-muted: #888;
+  --text-tooltip: #f0f0ee;
+  --text-kbd: #f0f0ee;
+  --text-link-code: #444;
+  --text-link-code-hover: #000;
+
+  /* Borders */
+  --border-zettel: #d0d0d0;
+  --border-heading: #d0d0d0;
+  --border-accent: #d0d0d0;
+  --border-code: #d0d0d0;
+  --border-hr: #999;
+  --border-img: #d0d0d0;
+
+  /* Navbar */
+  --nav-from: #555;
+  --nav-to: #222;
+
+  /* Admonitions */
+  --adm-note-text: #333;
+  --adm-note-bg: #f0f0ee;
+  --adm-note-border: #888;
+  --adm-warning-text: #222;
+  --adm-warning-bg: #e8e8e6;
+  --adm-warning-border: #666;
+  --adm-danger-text: #111;
+  --adm-danger-bg: #e0e0de;
+  --adm-danger-border: #333;
+}
+
+[data-color-scheme="eink"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #111;
+  --bg-zettel: #1a1a1a;
+  --bg-header: #242424;
+  --bg-accent: #1e1e1e;
+  --bg-code: #1a1a1a;
+  --bg-tooltip: #ddd;
+  --bg-kbd: #ddd;
+  --bg-img: #1a1a1a;
+
+  --text-primary: #d8d8d8;
+  --text-link: #aaa;
+  --text-header: #eee;
+  --text-code: #ccc;
+  --text-muted: #666;
+  --text-tooltip: #111;
+  --text-kbd: #111;
+  --text-link-code: #aaa;
+  --text-link-code-hover: #fff;
+
+  --border-zettel: #3a3a3a;
+  --border-heading: #3a3a3a;
+  --border-accent: #3a3a3a;
+  --border-code: #3a3a3a;
+  --border-hr: #555;
+  --border-img: #3a3a3a;
+
+  --nav-from: #2a2a2a;
+  --nav-to: #111;
+
+  --adm-note-text: #ccc;
+  --adm-note-bg: #1a1a1a;
+  --adm-note-border: #777;
+  --adm-warning-text: #ddd;
+  --adm-warning-bg: #1a1a1a;
+  --adm-warning-border: #999;
+  --adm-danger-text: #eee;
+  --adm-danger-bg: #1a1a1a;
+  --adm-danger-border: #ccc;
+}

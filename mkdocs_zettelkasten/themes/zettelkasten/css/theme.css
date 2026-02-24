@@ -2,7 +2,7 @@
 :root {
   color-scheme: light;
   --bg-page: #f5f5f5;
-  --bg-body-image: none;
+  --bg-body-image: url(../img/grid.png);
   --bg-zettel: #fff;
   --bg-header: #e0e0e0;
   --bg-accent: #eee;
@@ -71,9 +71,9 @@ span[data-copy-value] {
   transform: translateX(-50%);
   background: var(--bg-tooltip);
   color: var(--text-tooltip);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 14px;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
   font-weight: normal;
   white-space: nowrap;
   opacity: 0;
@@ -107,10 +107,10 @@ svg.clickable {
   margin-top: 0.2em;
   background: var(--bg-zettel);
   border: 1px solid var(--border-accent);
-  border-radius: 4px;
+  border-radius: 0.25rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
   z-index: 100;
-  min-width: 140px;
+  min-width: 8.75rem;
   display: flex;
   flex-direction: column;
 }
@@ -140,14 +140,14 @@ svg.clickable {
   margin-bottom: 1%;
   padding: 0;
   border: 1px solid var(--border-zettel);
-  border-radius: 7px;
+  border-radius: 0.4375rem;
   background-color: var(--bg-zettel);
 }
 
 .file-header {
   background-color: var(--bg-header);
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
+  border-top-left-radius: 0.375rem;
+  border-top-right-radius: 0.375rem;
   padding: 2.5em;
   padding-top: 0.2em;
   padding-bottom: 0.7em;
@@ -189,7 +189,7 @@ pre:has(> code) {
 .codehilite,
 .highlight {
   border: 1px solid var(--border-zettel);
-  border-radius: 4px;
+  border-radius: 0.25rem;
   padding: 0.7em;
   margin: 0.3em;
   margin-bottom: 1rem;
@@ -197,14 +197,14 @@ pre:has(> code) {
 
 .copy-btn {
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: 0.25rem;
+  right: 0.25rem;
   background: var(--bg-accent);
   border: 1px solid var(--border-accent);
-  border-radius: 3px;
-  padding: 2px 6px;
+  border-radius: 0.1875rem;
+  padding: 0.125rem 0.375rem;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1;
   opacity: 0;
   transition: opacity 0.2s;
@@ -229,8 +229,8 @@ pre:has(> code):hover .copy-btn {
 .file-references {
   background-color: var(--bg-accent);
   border-top: 1px solid var(--border-accent);
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 0.375rem;
+  border-bottom-right-radius: 0.375rem;
   padding: 1em;
   font-style: italic;
   font-size: small;
@@ -281,7 +281,7 @@ pre:has(> code):hover .copy-btn {
   background: var(--bg-header);
   color: var(--text-primary);
   border: 1px solid var(--border-accent);
-  border-radius: 4px;
+  border-radius: 0.25rem;
   padding: 0.6em 1.2em;
   font-size: 0.9em;
   z-index: 10000;
@@ -303,14 +303,14 @@ pre:has(> code):hover .copy-btn {
 /* Settings modal */
 .scheme-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
   gap: 0.75em;
 }
 
 .scheme-card {
   cursor: pointer;
   border: 2px solid var(--border-zettel);
-  border-radius: 6px;
+  border-radius: 0.375rem;
   padding: 0.5em;
   text-align: center;
   transition: border-color 0.15s;
@@ -328,7 +328,7 @@ pre:has(> code):hover .copy-btn {
 .scheme-swatch {
   display: flex;
   height: 2em;
-  border-radius: 3px;
+  border-radius: 0.1875rem;
   overflow: hidden;
 }
 
@@ -343,33 +343,124 @@ pre:has(> code):hover .copy-btn {
   color: var(--text-primary);
 }
 
-.theme-switch-label {
+.modal-body h5 {
+  font-weight: 700;
+}
+
+.settings-section-header {
   display: flex;
   align-items: center;
-  gap: 0.5em;
+  justify-content: space-between;
+}
+
+.settings-section-header h5 {
+  margin: 0;
+}
+
+.dark-mode-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+.toggle-label {
+  font-size: 0.85em;
+  color: var(--fg-secondary, #888);
+  user-select: none;
+}
+
+.dark-mode-toggle {
+  position: relative;
   cursor: pointer;
+  display: inline-block;
+}
+
+.dark-mode-toggle input {
+  position: absolute;
+  width: 3.25rem;
+  height: 1.75rem;
+  margin: 0;
+  opacity: 0.01;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.toggle-track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 3.25rem;
+  height: 1.75rem;
+  border-radius: 0.875rem;
+  background: var(--bg-accent, #ddd);
+  transition: background 0.2s;
+}
+
+.toggle-icon {
+  position: absolute;
+  font-size: 0.875rem;
+  line-height: 1;
+  transition: opacity 0.2s;
+}
+
+.toggle-sun {
+  left: 0.375rem;
+  opacity: 1;
+}
+
+.toggle-moon {
+  right: 0.7rem;
+  font-size: 1.125rem;
+  opacity: 0.4;
+}
+
+.toggle-thumb {
+  position: absolute;
+  left: 0.125rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--bg-zettel, #fff);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  transition: transform 0.2s;
+}
+
+.dark-mode-toggle input:checked ~ .toggle-track {
+  background: var(--bg-accent, #555);
+}
+
+.dark-mode-toggle input:checked ~ .toggle-track .toggle-sun {
+  opacity: 0.4;
+}
+
+.dark-mode-toggle input:checked ~ .toggle-track .toggle-moon {
+  opacity: 1;
+}
+
+.dark-mode-toggle input:checked ~ .toggle-track .toggle-thumb {
+  transform: translateX(1.5rem);
 }
 
 .hljs-preview {
   margin-top: 0.5em;
   border: 1px solid var(--border-code);
-  border-radius: 4px;
+  border-radius: 0.25rem;
   padding: 0.7em;
-  max-height: 200px;
+  max-height: 12.5rem;
   overflow: auto;
 }
 
 /* Color scheme gallery */
 .gallery-section {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(11.25rem, 1fr));
   gap: 1em;
   margin-bottom: 1em;
 }
 
 .gallery-card {
   border: 1px solid var(--border-zettel);
-  border-radius: 6px;
+  border-radius: 0.375rem;
   padding: 1em;
   background: var(--bg-zettel);
 }
@@ -378,7 +469,7 @@ pre:has(> code):hover .copy-btn {
   display: inline-block;
   font-size: 0.7em;
   padding: 0.2em 0.5em;
-  border-radius: 3px;
+  border-radius: 0.1875rem;
   background: var(--bg-accent);
   color: var(--text-muted);
 }

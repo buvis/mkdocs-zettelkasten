@@ -6,7 +6,6 @@
 
   /* Page backgrounds */
   --bg-page: #fafafa;
-  --bg-body-image: none;
   --bg-zettel: #fff;
   --bg-header: #f0f0f1;
   --bg-accent: #f0f0f1;
@@ -54,7 +53,6 @@
   color-scheme: dark;
 
   --bg-page: #282c34;
-  --bg-body-image: none;
   --bg-zettel: #21252b;
   --bg-header: #2c313a;
   --bg-accent: #252930;
