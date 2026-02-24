@@ -3,6 +3,8 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 
+from mkdocs_zettelkasten.plugin.utils.frontmatter import parse_frontmatter
+
 if TYPE_CHECKING:
     from pathlib import Path
 
@@ -32,11 +34,12 @@ class PreviewExporter:
     def _extract_excerpt(self, path: Path) -> str:
         """Read zettel file, skip YAML frontmatter, return first paragraph."""
         try:
-            lines = path.read_text(encoding="utf-8-sig", errors="strict").splitlines()
+            content = path.read_text(encoding="utf-8-sig", errors="strict")
         except OSError:
             return ""
 
-        body_lines = self._skip_frontmatter(lines)
+        _, body = parse_frontmatter(content)
+        body_lines = body.splitlines()
 
         paragraph_lines: list[str] = []
         for line in body_lines:
@@ -57,13 +60,3 @@ class PreviewExporter:
             text = text[: self.MAX_EXCERPT_LENGTH].rsplit(" ", 1)[0] + "\u2026"
         return text
 
-    @staticmethod
-    def _skip_frontmatter(lines: list[str]) -> list[str]:
-        """Skip YAML frontmatter delimited by --- lines."""
-        divider_count = 0
-        for i, line in enumerate(lines):
-            if line.strip() == "---":
-                divider_count += 1
-                if divider_count == 2:
-                    return lines[i + 1 :]
-        return lines

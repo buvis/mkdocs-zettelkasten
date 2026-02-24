@@ -14,6 +14,7 @@ import yaml
 from yaml.scanner import ScannerError
 
 from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
+from mkdocs_zettelkasten.plugin.utils.frontmatter import DIVIDER, DIVIDER_COUNT, parse_frontmatter
 from mkdocs_zettelkasten.plugin.utils.git_utils import GitUtil
 from mkdocs_zettelkasten.plugin.utils.patterns import MD_LINK, WIKI_LINK
 
@@ -27,8 +28,8 @@ class ZettelFormatError(ValueError):
 
 
 class Zettel:
-    COUNT_HEADER_DIVIDERS = 2
-    MARK_DIVIDER = "---"
+    COUNT_HEADER_DIVIDERS = DIVIDER_COUNT
+    MARK_DIVIDER = DIVIDER
 
     def __init__(
         self,
@@ -62,10 +63,23 @@ class Zettel:
 
     def _initialize_zettel(self) -> None:
         """Orchestrates the zettel initialization process."""
-        header, body = self._read_header_and_body()
-        meta = self._parse_metadata(header)
-        self._extract_links(body)
-        self._set_core_metadata(meta, self._find_alt_title(body))
+        try:
+            content = self.path.read_text(encoding="utf-8-sig", errors="strict")
+        except OSError as err:
+            logger.exception("Failed to read file %s", self.path)
+            msg = f"File {self.path} read error"
+            raise ZettelFormatError(msg) from err
+
+        header_text, body_text = parse_frontmatter(content)
+        if not header_text:
+            logger.error("Unclosed YAML header in file: %s", self.path)
+            msg = "Unclosed YAML header in file"
+            raise ZettelFormatError(msg)
+
+        meta = self._parse_metadata(header_text)
+        body_lines = body_text.splitlines()
+        self._extract_links(body_lines)
+        self._set_core_metadata(meta, self._find_alt_title(body_lines))
         logger.debug(
             "Initialized zettel %s (ID: %s, Title: %s)",
             self.rel_path,
@@ -73,52 +87,10 @@ class Zettel:
             self.title,
         )
 
-    def _read_header_and_body(self) -> tuple[list[str], list[str]]:
-        """Reads and separates YAML header from markdown body."""
-        header = []
-        body = []
-        read_state = ReadState()
-
+    def _parse_metadata(self, header: str) -> dict:
+        """Parses YAML metadata from header text."""
         try:
-            with self.path.open(encoding="utf-8-sig", errors="strict") as file:
-                for line in file:
-                    self._process_line(line, read_state, header, body)
-        except OSError as err:
-            logger.exception("Failed to read file %s", self.path)
-            msg = f"File {self.path} read error"
-            raise ZettelFormatError(msg) from err
-
-        self._validate_header(read_state)
-        return header, body
-
-    def _validate_header(self, read_state: ReadState) -> None:
-        """Validate header termination."""
-        if read_state.divider_count < Zettel.COUNT_HEADER_DIVIDERS:
-            logger.error("Unclosed YAML header in file: %s", self.path)
-            msg = "Unclosed YAML header in file"
-            raise ZettelFormatError(msg)
-
-    def _process_line(
-        self,
-        line: str,
-        state: ReadState,
-        header: list[str],
-        body: list[str],
-    ) -> None:
-        """Processes a single line based on current read state."""
-        if line.strip() == "---":
-            state.handle_divider()
-            return
-
-        if state.is_reading_header:
-            header.append(line)
-        elif state.is_reading_body:
-            body.append(line)
-
-    def _parse_metadata(self, header: list[str]) -> dict:
-        """Parses YAML metadata from header lines."""
-        try:
-            meta = yaml.safe_load("".join(header)) or {}
+            meta = yaml.safe_load(header) or {}
 
             if not isinstance(meta, dict):
                 logger.error(
@@ -232,22 +204,3 @@ class Zettel:
         """Gets modification time from filesystem."""
         st_mtime = self.path.stat().st_mtime
         return datetime.datetime.fromtimestamp(st_mtime, tz=self._tz)
-
-
-class ReadState:
-    """Manages state machine for header/body parsing."""
-
-    def __init__(self) -> None:
-        self.is_reading_header = False
-        self.is_reading_body = False
-        self.divider_count = 0
-
-    def handle_divider(self) -> None:
-        """Updates state based on divider encounter."""
-        self.divider_count += 1
-
-        if self.divider_count == 1:
-            self.is_reading_header = True
-        elif self.divider_count == Zettel.COUNT_HEADER_DIVIDERS:
-            self.is_reading_header = False
-            self.is_reading_body = True

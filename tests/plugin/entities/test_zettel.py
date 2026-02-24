@@ -4,7 +4,6 @@ from unittest.mock import Mock, patch
 import pytest
 
 from mkdocs_zettelkasten.plugin.entities.zettel import (
-    ReadState,
     Zettel,
     ZettelFormatError,
 )
@@ -178,33 +177,23 @@ class TestHashAndEquality:
         assert z != "not a zettel"
 
 
-class TestReadState:
-    def test_initial_state(self) -> None:
-        rs = ReadState()
-        assert not rs.is_reading_header
-        assert not rs.is_reading_body
-        assert rs.divider_count == 0
+class TestParseFrontmatter:
+    def test_splits_header_and_body(self) -> None:
+        from mkdocs_zettelkasten.plugin.utils.frontmatter import parse_frontmatter
+        header, body = parse_frontmatter("---\nid: 1\n---\nbody text\n")
+        assert "id: 1" in header
+        assert "body text" in body
 
-    def test_first_divider_starts_header(self) -> None:
-        rs = ReadState()
-        rs.handle_divider()
-        assert rs.is_reading_header
-        assert not rs.is_reading_body
+    def test_no_frontmatter_returns_empty_header(self) -> None:
+        from mkdocs_zettelkasten.plugin.utils.frontmatter import parse_frontmatter
+        header, body = parse_frontmatter("just text\n")
+        assert header == ""
+        assert "just text" in body
 
-    def test_second_divider_starts_body(self) -> None:
-        rs = ReadState()
-        rs.handle_divider()
-        rs.handle_divider()
-        assert not rs.is_reading_header
-        assert rs.is_reading_body
-
-    def test_third_divider_keeps_reading_body(self) -> None:
-        rs = ReadState()
-        rs.handle_divider()
-        rs.handle_divider()
-        rs.handle_divider()
-        assert not rs.is_reading_header
-        assert rs.is_reading_body
+    def test_unclosed_frontmatter_returns_empty_header(self) -> None:
+        from mkdocs_zettelkasten.plugin.utils.frontmatter import parse_frontmatter
+        header, body = parse_frontmatter("---\nid: 1\n")
+        assert header == ""
 
 
 class TestConfigurableKeys:
