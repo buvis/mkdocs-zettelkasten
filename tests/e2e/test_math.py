@@ -2,19 +2,19 @@ from playwright.sync_api import Page
 
 
 def test_katex_css_loaded(page: Page, math_site: str) -> None:
-    page.goto(f"{math_site}/20990201000003/")
+    page.goto(f"{math_site}/20260223142755/")
     link = page.locator("link[href*='katex']")
     assert link.count() == 1
 
 
 def test_katex_js_loaded(page: Page, math_site: str) -> None:
-    page.goto(f"{math_site}/20990201000003/")
+    page.goto(f"{math_site}/20260223142755/")
     script = page.locator("script[src*='katex']")
     assert script.count() == 1
 
 
 def test_inline_math_rendered(page: Page, math_site: str) -> None:
-    page.goto(f"{math_site}/20990201000003/")
+    page.goto(f"{math_site}/20260223142755/")
     page.locator("span.arithmatex .katex").first.wait_for(
         state="attached", timeout=5000
     )
@@ -23,7 +23,7 @@ def test_inline_math_rendered(page: Page, math_site: str) -> None:
 
 
 def test_display_math_rendered(page: Page, math_site: str) -> None:
-    page.goto(f"{math_site}/20990201000003/")
+    page.goto(f"{math_site}/20260223142755/")
     page.locator("div.arithmatex .katex-display").first.wait_for(
         state="attached", timeout=5000
     )
