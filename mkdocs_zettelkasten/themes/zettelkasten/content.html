@@ -6,11 +6,17 @@
           {% if page.meta.is_zettel %}
             <div class="row align-items-center">
               <span>
+                {% if page.meta.zettel.is_moc %}
+                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M11.536 3.464a5 5 0 010 7.072L8 14.07l-3.536-3.535a5 5 0 117.072-7.072v.001zm1.06 8.132a6.5 6.5 0 10-9.192 0l3.535 3.536a1.5 1.5 0 002.122 0l3.535-3.536zM8 9a2 2 0 100-4 2 2 0 000 4z"/>
+                </svg>
+                {% else %}
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-earmark-text" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <path d="M4 0h5.5v1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h1V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
                   <path d="M9.5 3V0L14 4.5h-3A1.5 1.5 0 0 1 9.5 3z"/>
                   <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
                 </svg>
+                {% endif %}
                 <strong><span data-tooltip="Copy link to zettel" data-copy-value="{{page.canonical_url}}">{{page.meta['zettel'].id}}</span></strong>
                 {% if page.meta.validation_issues %}
                   {% set actionable = page.meta.validation_issues|selectattr('severity', 'ne', 'info')|list %}
@@ -29,7 +35,12 @@
                 {% endif %}
               </span>
             </div>
-            {% if page.meta.zettel.note_type or page.meta.zettel.maturity %}
+            {% if page.meta.zettel.is_moc %}
+            <div class="row align-items-center">
+              <span class="moc-link-count">{{ page.meta.zettel.links|length }} notes in this map</span>
+            </div>
+            {% endif %}
+            {% if page.meta.zettel.note_type or (page.meta.zettel.maturity and not page.meta.zettel.is_moc) %}
             <div class="row align-items-center">
               <span class="zettel-badges">
                 {% if page.meta.zettel.note_type %}
@@ -46,11 +57,24 @@
                     {{ page.meta.zettel.note_type }}
                   </span>
                 {% endif %}
-                {% if page.meta.zettel.maturity %}
+                {% if page.meta.zettel.maturity and not page.meta.zettel.is_moc %}
                   <span class="zettel-maturity-badge" data-maturity="{{ page.meta.zettel.maturity }}">
                     <span class="maturity-dot"></span>{{ page.meta.zettel.maturity }}
                   </span>
                 {% endif %}
+              </span>
+            </div>
+            {% endif %}
+            {% if page.meta.zettel.moc_parents %}
+            <div class="row align-items-center">
+              <span class="moc-breadcrumb">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M11.536 3.464a5 5 0 010 7.072L8 14.07l-3.536-3.535a5 5 0 117.072-7.072v.001zm1.06 8.132a6.5 6.5 0 10-9.192 0l3.535 3.536a1.5 1.5 0 002.122 0l3.535-3.536zM8 9a2 2 0 100-4 2 2 0 000 4z"/>
+                </svg>
+                Part of:
+                {% for moc in page.meta.zettel.moc_parents %}
+                  <a href="{{ moc.url|url }}">{{ moc.title }}</a>{% if not loop.last %}, {% endif %}
+                {% endfor %}
               </span>
             </div>
             {% endif %}

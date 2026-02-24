@@ -386,6 +386,25 @@ pre:has(> code):hover .copy-btn {
   background: #859900;
 }
 
+/* MOC card styling */
+.moc-link-count {
+  font-size: 0.8em;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.moc-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  font-size: 0.8em;
+  color: var(--text-muted);
+}
+
+.moc-breadcrumb a {
+  color: var(--text-link);
+}
+
 /* Editor buttons */
 .editor-btn {
   margin-left: 0.3em;
