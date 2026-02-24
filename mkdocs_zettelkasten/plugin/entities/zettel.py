@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 import re
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -34,7 +34,7 @@ class Zettel:
         self,
         abs_src_path: Path,
         src_path: str,
-        zettel_config: dict[str, str] | None = None,
+        zettel_config: dict[str, Any] | None = None,
     ) -> None:
         self.id: int = 0
         self.title: str = ""
@@ -66,8 +66,8 @@ class Zettel:
         meta = self._parse_metadata(header)
         self._extract_links(body)
         self._set_core_metadata(meta, self._find_alt_title(body))
-        logger.info(
-            "Successfully initialized zettel %s (ID: %s, Title: %s)",
+        logger.debug(
+            "Initialized zettel %s (ID: %s, Title: %s)",
             self.rel_path,
             self.id,
             self.title,

@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
-
-from mkdocs.config.defaults import MkDocsConfig
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
@@ -30,10 +28,10 @@ class ZettelService:
         self.store = ZettelStore()
         self.backlinks: dict[str, list[Zettel]] = {}
         self.invalid_files: list = []
-        self.zettel_config: dict[str, str] = {}
+        self.zettel_config: dict[str, Any] = {}
         self.file_suffix: str = ".md"
 
-    def configure(self, zettel_config: dict[str, str]) -> None:
+    def configure(self, zettel_config: dict[str, Any]) -> None:
         self.zettel_config = zettel_config
         self.file_suffix = zettel_config.get("file_suffix", ".md")
 
