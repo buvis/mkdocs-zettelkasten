@@ -36,6 +36,10 @@ def add_backlink_to_target(
         "title": page.title,
     }
     target_zettel.backlinks.append(backlink)
+
+    if zettel.is_moc:
+        target_zettel.moc_parents.append(backlink)
+
     logger.debug(
         "Found link from %s to %s. Adding it to %s's backlinks.",
         zettel.rel_path,

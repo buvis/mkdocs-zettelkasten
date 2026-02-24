@@ -74,3 +74,43 @@ class TestAdaptBacklinksToPage:
 
         adapt_backlinks_to_page(page, backlinks, zettel_lookup)
         assert len(target.backlinks) == 1
+
+
+class TestMocParents:
+    def test_moc_source_populates_moc_parents(self) -> None:
+        page = _make_page(zettel_id=1)
+        source_zettel = MagicMock()
+        source_zettel.id = 1
+        source_zettel.is_moc = True
+        source_zettel.rel_path = "moc.md"
+
+        target = MagicMock()
+        target.backlinks = []
+        target.moc_parents = []
+        target.rel_path = "target.md"
+
+        zettel_lookup = MagicMock(return_value=target)
+        add_backlink_to_target("link", page, source_zettel, zettel_lookup)
+
+        assert len(target.backlinks) == 1
+        assert len(target.moc_parents) == 1
+        assert target.moc_parents[0]["title"] == "Page Title"
+        assert target.moc_parents[0]["url"] == "/page/"
+
+    def test_non_moc_source_skips_moc_parents(self) -> None:
+        page = _make_page(zettel_id=1)
+        source_zettel = MagicMock()
+        source_zettel.id = 1
+        source_zettel.is_moc = False
+        source_zettel.rel_path = "regular.md"
+
+        target = MagicMock()
+        target.backlinks = []
+        target.moc_parents = []
+        target.rel_path = "target.md"
+
+        zettel_lookup = MagicMock(return_value=target)
+        add_backlink_to_target("link", page, source_zettel, zettel_lookup)
+
+        assert len(target.backlinks) == 1
+        assert len(target.moc_parents) == 0
