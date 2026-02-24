@@ -146,6 +146,7 @@ class ZettelkastenPlugin(BasePlugin):
         graph_data = self.graph_exporter.export(
             self.zettel_service.store,
             self.tags_service.metadata,
+            self.zettel_service.backlinks,
             file_suffix=self.config["file_suffix"],
         )
         graph_path = self.tags_service.tags_folder / "graph.json"

@@ -1,6 +1,7 @@
 from pathlib import Path
 from unittest.mock import MagicMock
 
+from mkdocs_zettelkasten.plugin.services.backlink_processor import BacklinkProcessor
 from mkdocs_zettelkasten.plugin.services.graph_exporter import GraphExporter
 from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
 
@@ -19,19 +20,23 @@ def _make_zettel(
     return z
 
 
+def _build_backlinks(store: ZettelStore) -> dict:
+    return BacklinkProcessor.process(store)
+
+
 class TestGraphExporter:
     def setup_method(self) -> None:
         self.exporter = GraphExporter()
 
     def test_empty_store(self) -> None:
         store = ZettelStore()
-        result = self.exporter.export(store, [])
+        result = self.exporter.export(store, [], {})
         assert result == {"nodes": [], "edges": []}
 
     def test_single_zettel_no_links(self) -> None:
         z = _make_zettel(20211122194827, "/docs/notes/install.md", "notes/install.md", "Install", [])
         store = ZettelStore([z])
-        result = self.exporter.export(store, [])
+        result = self.exporter.export(store, [], _build_backlinks(store))
 
         assert len(result["nodes"]) == 1
         assert result["nodes"][0] == {
@@ -47,7 +52,7 @@ class TestGraphExporter:
         z2 = _make_zettel(2, "/docs/b.md", "b.md", "B", [])
         store = ZettelStore([z1, z2])
 
-        result = self.exporter.export(store, [])
+        result = self.exporter.export(store, [], _build_backlinks(store))
 
         assert len(result["nodes"]) == 2
         assert len(result["edges"]) == 1
@@ -57,7 +62,7 @@ class TestGraphExporter:
         z = _make_zettel(1, "/docs/a.md", "a.md", "A", ["nonexistent.md"])
         store = ZettelStore([z])
 
-        result = self.exporter.export(store, [])
+        result = self.exporter.export(store, [], _build_backlinks(store))
 
         assert len(result["nodes"]) == 1
         assert result["edges"] == []
@@ -67,7 +72,7 @@ class TestGraphExporter:
         z2 = _make_zettel(2, "/docs/b.md", "b.md", "B", [])
         store = ZettelStore([z1, z2])
 
-        result = self.exporter.export(store, [])
+        result = self.exporter.export(store, [], _build_backlinks(store))
 
         assert len(result["edges"]) == 1
 
@@ -76,7 +81,7 @@ class TestGraphExporter:
         store = ZettelStore([z])
         metadata = [{"src_path": "a.md", "tags": ["setup", "guide"]}]
 
-        result = self.exporter.export(store, metadata)
+        result = self.exporter.export(store, metadata, {})
 
         assert result["nodes"][0]["tags"] == ["setup", "guide"]
 
@@ -84,7 +89,7 @@ class TestGraphExporter:
         z = _make_zettel(1, "/docs/a.md", "a.md", "A", [])
         store = ZettelStore([z])
 
-        result = self.exporter.export(store, [])
+        result = self.exporter.export(store, [], {})
 
         assert result["nodes"][0]["tags"] == []
 
@@ -92,6 +97,6 @@ class TestGraphExporter:
         z = _make_zettel(1, "/docs/notes/foo.md", "notes/foo.md", "Foo", [])
         store = ZettelStore([z])
 
-        result = self.exporter.export(store, [])
+        result = self.exporter.export(store, [], {})
 
         assert result["nodes"][0]["url"] == "notes/foo/"

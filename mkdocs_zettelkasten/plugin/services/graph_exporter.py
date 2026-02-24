@@ -3,9 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
+    from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
     from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
-
-from mkdocs_zettelkasten.plugin.services.backlink_processor import BacklinkProcessor
 
 
 class GraphExporter:
@@ -15,11 +14,12 @@ class GraphExporter:
         self,
         store: ZettelStore,
         tags_metadata: list[dict[str, Any]],
+        backlinks: dict[str, list[Zettel]],
         file_suffix: str = ".md",
     ) -> dict:
         tags_by_path = {m["src_path"]: m.get("tags", []) for m in tags_metadata}
+        id_set: set[str] = set()
         nodes = []
-        id_set = set()
 
         for z in store.zettels:
             zid = str(z.id)
@@ -31,13 +31,18 @@ class GraphExporter:
         edges = []
         seen_edges: set[tuple[str, str]] = set()
 
-        for z in store.zettels:
-            source_id = str(z.id)
-            for link in BacklinkProcessor.normalize_links(z.links, file_suffix):
-                target = store.get_by_partial_path(link, file_suffix)
-                if target is None:
+        # Build edges from precomputed backlinks (link_path -> source zettels)
+        for link_path, source_zettels in backlinks.items():
+            target = store.get_by_partial_path(link_path, file_suffix)
+            if target is None:
+                continue
+            target_id = str(target.id)
+            if target_id not in id_set:
+                continue
+            for source in source_zettels:
+                source_id = str(source.id)
+                if source_id not in id_set:
                     continue
-                target_id = str(target.id)
                 pair = (source_id, target_id)
                 if pair not in seen_edges:
                     seen_edges.add(pair)
