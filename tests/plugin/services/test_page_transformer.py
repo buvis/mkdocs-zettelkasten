@@ -33,9 +33,7 @@ class TestPageTransformer:
             patch(
                 f"{MODULE}.adapt_page_links_to_zettels", return_value="md2"
             ) as mock_links,
-            patch(
-                f"{MODULE}.get_page_ref", return_value=("md3", None)
-            ) as mock_ref,
+            patch(f"{MODULE}.get_page_ref", return_value=("md3", None)) as mock_ref,
             patch(
                 f"{MODULE}.get_prev_next_page", return_value=(None, None)
             ) as mock_nav,
@@ -64,9 +62,7 @@ class TestPageTransformer:
             patch(
                 f"{MODULE}.adapt_page_links_to_zettels", return_value="after_links"
             ) as m_links,
-            patch(
-                f"{MODULE}.get_page_ref", return_value=("after_ref", None)
-            ) as m_ref,
+            patch(f"{MODULE}.get_page_ref", return_value=("after_ref", None)) as m_ref,
             patch(f"{MODULE}.get_prev_next_page", return_value=(None, None)),
             patch(f"{MODULE}.adapt_backlinks_to_page"),
         ):

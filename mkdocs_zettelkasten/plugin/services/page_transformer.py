@@ -45,7 +45,9 @@ class PageTransformer:
             zettel_service.get_zettel_by_partial_path,
             site_url=config["site_url"],
             file_suffix=zettel_service.file_suffix,
-            strip_heading=config.get("extra", {}).get("transclusion_strip_heading", True),
+            strip_heading=config.get("extra", {}).get(
+                "transclusion_strip_heading", True
+            ),
         )
         markdown = adapt_page_links_to_zettels(
             markdown,

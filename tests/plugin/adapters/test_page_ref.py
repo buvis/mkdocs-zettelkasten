@@ -135,9 +135,7 @@ class TestGetPageRef:
     def test_multiple_existing_style_refs(self) -> None:
         page = self._make_page()
         content = (
-            "Body\n---\n"
-            "web: [One](https://one.com)\n"
-            "web: [Two](https://two.com)\n---"
+            "Body\n---\nweb: [One](https://one.com)\nweb: [Two](https://two.com)\n---"
         )
         _md, ref = get_page_ref(content, page, self._make_config())
         assert ref is not None
@@ -146,11 +144,7 @@ class TestGetPageRef:
 
     def test_old_and_new_formats_mixed(self) -> None:
         page = self._make_page()
-        content = (
-            "Body\n---\n"
-            "web: [Site](https://example.com)\n"
-            "source:: a book\n---"
-        )
+        content = "Body\n---\nweb: [Site](https://example.com)\nsource:: a book\n---"
         _md, ref = get_page_ref(content, page, self._make_config())
         assert ref is not None
         assert "- web: [Site](https://example.com)" in page.meta["ref"]
@@ -174,10 +168,7 @@ class TestGetPageRef:
 
     def test_code_fence_between_body_and_ref(self) -> None:
         page = self._make_page()
-        content = (
-            "Body\n```\ncode with ---\n```\n"
-            "More body\n---\nref line\n---"
-        )
+        content = "Body\n```\ncode with ---\n```\nMore body\n---\nref line\n---"
         md, ref = get_page_ref(content, page, self._make_config())
         assert ref is not None
         assert "ref line" in page.meta["ref"]

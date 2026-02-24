@@ -81,7 +81,11 @@ class ZettelkastenPlugin(BasePlugin):
 
     def on_config(self, config: MkDocsConfig) -> None:
         self.logger.setLevel(self.config["log_level"])
-        if not any(isinstance(h, logging.StreamHandler) and not isinstance(h, logging.NullHandler) for h in self.logger.handlers):
+        if not any(
+            isinstance(h, logging.StreamHandler)
+            and not isinstance(h, logging.NullHandler)
+            for h in self.logger.handlers
+        ):
             self.logger.addHandler(self._create_logging_handler())
         tz = self._resolve_timezone()
         zettel_config = {
@@ -110,7 +114,9 @@ class ZettelkastenPlugin(BasePlugin):
             config["extra"]["graph_enabled"] = True
         if self.config["preview_enabled"]:
             config["extra"]["preview_enabled"] = True
-        config["extra"]["transclusion_strip_heading"] = self.config["transclusion_strip_heading"]
+        config["extra"]["transclusion_strip_heading"] = self.config[
+            "transclusion_strip_heading"
+        ]
         config["extra"]["plugin_version"] = version("mkdocs-zettelkasten")
         self.logger.info("Configured ZettelkastenPlugin with MkDocs config.")
 

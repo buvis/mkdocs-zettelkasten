@@ -157,48 +157,54 @@ def check_schemes(schemes_dir: Path) -> list[dict]:
                 fg_raw = variables.get(fg_var)
                 bg_raw = variables.get(bg_var)
                 if fg_raw is None or bg_raw is None:
-                    results.append({
-                        "scheme": scheme_name,
-                        "mode": mode,
-                        "pair": label,
-                        "fg_var": fg_var,
-                        "bg_var": bg_var,
-                        "ratio": None,
-                        "required": required,
-                        "pass": False,
-                        "note": "missing variable",
-                    })
+                    results.append(
+                        {
+                            "scheme": scheme_name,
+                            "mode": mode,
+                            "pair": label,
+                            "fg_var": fg_var,
+                            "bg_var": bg_var,
+                            "ratio": None,
+                            "required": required,
+                            "pass": False,
+                            "note": "missing variable",
+                        }
+                    )
                     continue
 
                 try:
                     fg = parse_color(fg_raw)
                     bg = parse_color(bg_raw)
                 except ValueError as exc:
-                    results.append({
+                    results.append(
+                        {
+                            "scheme": scheme_name,
+                            "mode": mode,
+                            "pair": label,
+                            "fg_var": fg_var,
+                            "bg_var": bg_var,
+                            "ratio": None,
+                            "required": required,
+                            "pass": False,
+                            "note": str(exc),
+                        }
+                    )
+                    continue
+
+                ratio = contrast_ratio(fg, bg)
+                results.append(
+                    {
                         "scheme": scheme_name,
                         "mode": mode,
                         "pair": label,
                         "fg_var": fg_var,
                         "bg_var": bg_var,
-                        "ratio": None,
+                        "ratio": ratio,
                         "required": required,
-                        "pass": False,
-                        "note": str(exc),
-                    })
-                    continue
-
-                ratio = contrast_ratio(fg, bg)
-                results.append({
-                    "scheme": scheme_name,
-                    "mode": mode,
-                    "pair": label,
-                    "fg_var": fg_var,
-                    "bg_var": bg_var,
-                    "ratio": ratio,
-                    "required": required,
-                    "pass": ratio >= required,
-                    "note": "",
-                })
+                        "pass": ratio >= required,
+                        "note": "",
+                    }
+                )
 
     return results
 

@@ -1,7 +1,6 @@
 """E2E tests for dark theme toggle via settings modal."""
 
 
-
 def _open_settings(page):
     page.click('[data-target="#mkdocs_settings_modal"]')
     page.wait_for_selector("#mkdocs_settings_modal[open]", timeout=2000)

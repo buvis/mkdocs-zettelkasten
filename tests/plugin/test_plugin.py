@@ -174,7 +174,9 @@ class TestZettelkastenPlugin:
         config = MagicMock()
         config.__getitem__ = MagicMock(side_effect={"extra": {}}.get)
         extra = {}
-        config.__getitem__ = lambda self_mock, key: extra if key == "extra" else MagicMock()
+        config.__getitem__ = lambda self_mock, key: (
+            extra if key == "extra" else MagicMock()
+        )
 
         with (
             patch.object(plugin.zettel_service, "configure"),
@@ -188,7 +190,9 @@ class TestZettelkastenPlugin:
         plugin = self._make_plugin()
         extra = {}
         config = MagicMock()
-        config.__getitem__ = lambda self_mock, key: extra if key == "extra" else MagicMock()
+        config.__getitem__ = lambda self_mock, key: (
+            extra if key == "extra" else MagicMock()
+        )
 
         with (
             patch.object(plugin.zettel_service, "configure"),
@@ -269,9 +273,7 @@ class TestZettelkastenPlugin:
 
         with (
             patch.object(plugin.page_transformer, "transform", return_value="md"),
-            patch.object(
-                plugin.validation_service, "get_issues", return_value=issues
-            ),
+            patch.object(plugin.validation_service, "get_issues", return_value=issues),
         ):
             plugin.on_page_markdown("original", page, config, files)
 
@@ -287,9 +289,7 @@ class TestZettelkastenPlugin:
         config = MagicMock()
         files = MagicMock()
 
-        with patch.object(
-            plugin.page_transformer, "transform", return_value="md"
-        ):
+        with patch.object(plugin.page_transformer, "transform", return_value="md"):
             plugin.on_page_markdown("original", page, config, files)
 
         assert page.meta["editor"]["repo"] == "https://github.com/test/repo"

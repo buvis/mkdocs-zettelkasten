@@ -59,4 +59,3 @@ class PreviewExporter:
         if len(text) > self.MAX_EXCERPT_LENGTH:
             text = text[: self.MAX_EXCERPT_LENGTH].rsplit(" ", 1)[0] + "\u2026"
         return text
-

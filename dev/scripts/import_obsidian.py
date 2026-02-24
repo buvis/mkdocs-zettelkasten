@@ -13,6 +13,7 @@ import yaml
 # Filename helpers
 # ---------------------------------------------------------------------------
 
+
 def slugify_filename(name: str) -> str:
     """Turn a human filename into a slug: lowercase, spaces to hyphens."""
     return re.sub(r"\s+", "-", name.strip()).lower()
@@ -26,9 +27,7 @@ _EMBED_LINK = re.compile(
     r"!\[\[(?P<target>[^\]#|]+)(?:#(?P<section>[^\]|]+))?(?:\|(?P<alias>[^\]]+))?\]\]"
 )
 
-_WIKI_LINK = re.compile(
-    r"\[\[(?P<target>[^\]|]+)(?:\|(?P<alias>[^\]]+))?\]\]"
-)
+_WIKI_LINK = re.compile(r"\[\[(?P<target>[^\]|]+)(?:\|(?P<alias>[^\]]+))?\]\]")
 
 
 def convert_embed_link(m: re.Match) -> str:
@@ -67,11 +66,11 @@ def convert_links(text: str) -> str:
 # ---------------------------------------------------------------------------
 
 DEFAULT_FRONTMATTER_MAP: dict[str, str | None] = {
-    "aliases": None,      # strip
-    "cssclass": None,     # strip
-    "cssclasses": None,   # strip
-    "publish": None,      # strip
-    "alias": None,        # strip
+    "aliases": None,  # strip
+    "cssclass": None,  # strip
+    "cssclasses": None,  # strip
+    "publish": None,  # strip
+    "alias": None,  # strip
 }
 
 
@@ -116,7 +115,9 @@ def convert_file_content(
         if isinstance(fm, dict):
             fm = map_frontmatter(fm, frontmatter_map)
             body = text[fm_match.end() :]
-            fm_str = yaml.dump(fm, default_flow_style=False, allow_unicode=True).rstrip()
+            fm_str = yaml.dump(
+                fm, default_flow_style=False, allow_unicode=True
+            ).rstrip()
             return f"---\n{fm_str}\n---\n{convert_links(body)}"
 
     return convert_links(text)
@@ -125,6 +126,7 @@ def convert_file_content(
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
+
 
 def process_vault(input_dir: Path, output_dir: Path) -> int:
     """Walk input_dir, convert .md files, copy everything else. Returns file count."""
@@ -157,10 +159,16 @@ def main() -> None:
         description="Convert an Obsidian vault to mkdocs-zettelkasten format.",
     )
     parser.add_argument(
-        "--input-dir", required=True, type=Path, help="Path to Obsidian vault",
+        "--input-dir",
+        required=True,
+        type=Path,
+        help="Path to Obsidian vault",
     )
     parser.add_argument(
-        "--output-dir", required=True, type=Path, help="Path to output directory",
+        "--output-dir",
+        required=True,
+        type=Path,
+        help="Path to output directory",
     )
     args = parser.parse_args()
 

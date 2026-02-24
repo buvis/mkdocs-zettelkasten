@@ -83,7 +83,10 @@ class TestTagsService:
             "tags_folder": str(target),
             "tags_template": None,
         }.get(key, default)
-        config.__getitem__ = lambda self, key: {"docs_dir": str(tmp_path), "site_dir": str(tmp_path / "site")}[key]
+        config.__getitem__ = lambda self, key: {
+            "docs_dir": str(tmp_path),
+            "site_dir": str(tmp_path / "site"),
+        }[key]
 
         svc = TagsService()
         svc.configure(config)
@@ -100,7 +103,10 @@ class TestTagsService:
             "tags_folder": ".build",
             "tags_template": None,
         }.get(key, default)
-        config.__getitem__ = lambda self, key: {"docs_dir": str(docs), "site_dir": str(tmp_path / "site")}[key]
+        config.__getitem__ = lambda self, key: {
+            "docs_dir": str(docs),
+            "site_dir": str(tmp_path / "site"),
+        }[key]
 
         svc = TagsService()
         svc.configure(config)

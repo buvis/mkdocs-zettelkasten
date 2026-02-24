@@ -19,7 +19,9 @@ def _make_zettel(zettel_id: int, path: Path, rel_path: str, title: str) -> Magic
     return z
 
 
-def _write_zettel(tmp_path: Path, name: str, zettel_id: int, title: str, body: str) -> Path:
+def _write_zettel(
+    tmp_path: Path, name: str, zettel_id: int, title: str, body: str
+) -> Path:
     path = tmp_path / name
     path.write_text(
         f"---\nid: {zettel_id}\ntitle: {title}\n---\n\n{body}",
@@ -109,7 +111,9 @@ class TestPreviewExporter:
 
         result = self.exporter.export(store)
 
-        assert result["5"]["excerpt"] == "This is the first paragraph after blank lines."
+        assert (
+            result["5"]["excerpt"] == "This is the first paragraph after blank lines."
+        )
 
     def test_markdown_links_stripped(self, tmp_path: Path) -> None:
         z_path = _write_zettel(

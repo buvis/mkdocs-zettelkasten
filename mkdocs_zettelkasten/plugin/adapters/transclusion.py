@@ -84,8 +84,13 @@ def adapt_transclusion(
         if i % 2 == 0:
             processed_part = EMBED_LINK.sub(
                 lambda m: _resolve_embed(
-                    m, zettel_lookup, site_url, file_suffix, strip_heading,
-                    _depth, _embed_stack,
+                    m,
+                    zettel_lookup,
+                    site_url,
+                    file_suffix,
+                    strip_heading,
+                    _depth,
+                    _embed_stack,
                 ),
                 processed_part,
             )

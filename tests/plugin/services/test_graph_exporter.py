@@ -34,7 +34,9 @@ class TestGraphExporter:
         assert result == {"nodes": [], "edges": []}
 
     def test_single_zettel_no_links(self) -> None:
-        z = _make_zettel(20211122194827, "/docs/notes/install.md", "notes/install.md", "Install", [])
+        z = _make_zettel(
+            20211122194827, "/docs/notes/install.md", "notes/install.md", "Install", []
+        )
         store = ZettelStore([z])
         result = self.exporter.export(store, [], _build_backlinks(store))
 

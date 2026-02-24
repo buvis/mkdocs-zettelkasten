@@ -37,6 +37,7 @@ def _find_divider_indices(content_lines: list[str]) -> list[int]:
 
 def _convert_wiki_link(text: str) -> str:
     """Replace ``[[path|title]]`` with ``[title](path)`` in *text*."""
+
     def _repl(m: re.Match) -> str:
         url = m.group("url")
         title = m.group("title") or url
