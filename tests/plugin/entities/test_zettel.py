@@ -74,6 +74,64 @@ Before the rule [[20240102120000]]
 After the rule [[20240103120000]]
 """
 
+ZETTEL_WITH_CONTEXT = """---
+id: 20240101120000
+title: My Zettel
+date: 2024-01-01
+---
+# Heading
+
+First paragraph has no links at all.
+
+Second paragraph discusses the concept of knowledge and links to [[20240102120000|other note]] as an example of justified true belief.
+
+Third paragraph is unrelated content.
+"""
+
+ZETTEL_MD_LINK_CONTEXT = """---
+id: 20240101120000
+title: My Zettel
+date: 2024-01-01
+---
+# Heading
+
+This paragraph references [another note](other.md) with context around it.
+"""
+
+ZETTEL_LINK_AT_START = """---
+id: 20240101120000
+title: My Zettel
+date: 2024-01-01
+---
+[[20240102120000|Note]] is the first word in this paragraph with some more text.
+"""
+
+ZETTEL_LINK_AT_END = """---
+id: 20240101120000
+title: My Zettel
+date: 2024-01-01
+---
+This paragraph ends with a reference to [[20240102120000|another note]].
+"""
+
+ZETTEL_LONG_PARAGRAPH = """---
+id: 20240101120000
+title: My Zettel
+date: 2024-01-01
+---
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Here we link to [[20240102120000|important note]] which is very relevant. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+"""
+
+ZETTEL_DUPLICATE_LINKS = """---
+id: 20240101120000
+title: My Zettel
+date: 2024-01-01
+---
+First mention of [[20240102120000|note]] in this paragraph.
+
+Second mention of [[20240102120000|note]] in another paragraph.
+"""
+
 
 def _make_zettel(tmp_path: Path, content: str, **kwargs) -> Zettel:
     fp = tmp_path / "test.md"
@@ -309,3 +367,47 @@ class TestRole:
     def test_moc_parents_initialized_empty(self, tmp_path: Path) -> None:
         z = _make_zettel(tmp_path, VALID_ZETTEL)
         assert z.moc_parents == []
+
+
+class TestLinkSnippets:
+    def test_wiki_link_snippet_extracted(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, ZETTEL_WITH_CONTEXT)
+        assert "20240102120000" in z.link_snippets
+        snippet = z.link_snippets["20240102120000"]
+        assert "justified true belief" in snippet
+
+    def test_md_link_snippet_extracted(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, ZETTEL_MD_LINK_CONTEXT)
+        assert "other.md" in z.link_snippets
+        assert "references" in z.link_snippets["other.md"]
+
+    def test_link_at_paragraph_start(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, ZETTEL_LINK_AT_START)
+        assert "20240102120000" in z.link_snippets
+
+    def test_link_at_paragraph_end(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, ZETTEL_LINK_AT_END)
+        assert "20240102120000" in z.link_snippets
+        assert "reference to" in z.link_snippets["20240102120000"]
+
+    def test_long_paragraph_trimmed(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, ZETTEL_LONG_PARAGRAPH)
+        snippet = z.link_snippets["20240102120000"]
+        assert len(snippet) <= 220
+        assert "..." in snippet
+
+    def test_duplicate_link_keeps_first(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, ZETTEL_DUPLICATE_LINKS)
+        snippet = z.link_snippets["20240102120000"]
+        assert "First mention" in snippet
+
+    def test_no_links_empty_snippets(self, tmp_path: Path) -> None:
+        content = "---\nid: 1\ndate: 2024-01-01\n---\nNo links here.\n"
+        z = _make_zettel(tmp_path, content)
+        assert z.link_snippets == {}
+
+    def test_snippet_does_not_include_link_syntax(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, ZETTEL_WITH_CONTEXT)
+        snippet = z.link_snippets["20240102120000"]
+        assert "[[" not in snippet
+        assert "]]" not in snippet

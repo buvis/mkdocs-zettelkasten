@@ -48,6 +48,7 @@ class Zettel:
         self.source: str | None = None
         self.role: str | None = None
         self.moc_parents: list[dict[str, str]] = []
+        self.link_snippets: dict[str, str] = {}
 
         cfg = zettel_config or {}
         self._id_key = cfg.get("id_key", "id")
@@ -129,23 +130,85 @@ class Zettel:
 
     def _extract_links(self, body: list[str]) -> None:
         """Extracts all wiki and markdown links from body."""
-        wiki_links = []
-        markdown_links = []
+        wiki_count = 0
+        md_count = 0
 
-        for line in body:
-            wiki_matches = [m.groupdict()["url"] for m in WIKI_LINK.finditer(line)]
-            md_matches = [m.groupdict()["url"] for m in MD_LINK.finditer(line)]
-            wiki_links.extend(wiki_matches)
-            markdown_links.extend(md_matches)
+        for paragraph in self._split_paragraphs(body):
+            for m in WIKI_LINK.finditer(paragraph):
+                url = m.group("url")
+                self.links.append(url)
+                wiki_count += 1
+                if url not in self.link_snippets:
+                    self.link_snippets[url] = self._make_snippet(paragraph, m)
 
-        self.links.extend(wiki_links)
-        self.links.extend(markdown_links)
+            for m in MD_LINK.finditer(paragraph):
+                url = m.group("url")
+                self.links.append(url)
+                md_count += 1
+                if url not in self.link_snippets:
+                    self.link_snippets[url] = self._make_snippet(paragraph, m)
 
         logger.debug(
             "Extracted %d wiki links and %d markdown links",
-            len(wiki_links),
-            len(markdown_links),
+            wiki_count,
+            md_count,
         )
+
+    @staticmethod
+    def _split_paragraphs(body: list[str]) -> list[str]:
+        """Joins body lines into paragraph strings split by blank lines."""
+        paragraphs: list[str] = []
+        current: list[str] = []
+        for line in body:
+            if line.strip() == "":
+                if current:
+                    paragraphs.append(" ".join(current))
+                    current = []
+            else:
+                current.append(line.strip())
+        if current:
+            paragraphs.append(" ".join(current))
+        return paragraphs
+
+    @staticmethod
+    def _make_snippet(paragraph: str, match: re.Match) -> str:
+        """Cleans link syntax and trims paragraph to ~200 chars around the link."""
+        # Replace the matched link with its display text
+        title = match.group("title")
+        url = match.group("url")
+        display = title if title else url
+        # Replace all link syntax in the paragraph
+        cleaned = WIKI_LINK.sub(lambda m: m.group("title") or m.group("url"), paragraph)
+        cleaned = MD_LINK.sub(lambda m: m.group("title"), cleaned)
+
+        if len(cleaned) <= 200:
+            return cleaned
+
+        # Find where the display text lands in the cleaned string
+        # Approximate: locate display text near original match position
+        pos = cleaned.find(display)
+        if pos == -1:
+            pos = len(cleaned) // 2
+
+        center = pos + len(display) // 2
+        half = 100
+        start = max(0, center - half)
+        end = min(len(cleaned), center + half)
+
+        # Expand to word boundaries
+        if start > 0:
+            space = cleaned.rfind(" ", 0, start)
+            start = space + 1 if space != -1 else start
+        if end < len(cleaned):
+            space = cleaned.find(" ", end)
+            end = space if space != -1 else end
+
+        snippet = cleaned[start:end]
+        if start > 0:
+            snippet = "..." + snippet
+        if end < len(cleaned):
+            snippet = snippet + "..."
+        return snippet
 
     def _set_core_metadata(self, meta: dict, alt_title: str) -> None:
         """Sets fundamental metadata fields."""
