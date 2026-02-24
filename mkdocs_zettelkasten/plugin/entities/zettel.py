@@ -173,40 +173,36 @@ class Zettel:
     @staticmethod
     def _make_snippet(paragraph: str, match: re.Match) -> str:
         """Cleans link syntax and trims paragraph to ~200 chars around the link."""
-        # Replace the matched link with its display text
-        title = match.group("title")
-        url = match.group("url")
-        display = title if title else url
-        # Replace all link syntax in the paragraph
-        cleaned = WIKI_LINK.sub(lambda m: m.group("title") or m.group("url"), paragraph)
-        cleaned = MD_LINK.sub(lambda m: m.group("title"), cleaned)
+        # Replace the matched link with its display text wrapped in <mark>
+        link_text = match.group("title") or match.group("url")
+        marked_text = f"<mark>{link_text}</mark>"
+        clean = paragraph[:match.start()] + marked_text + paragraph[match.end():]
+        # Strip remaining link syntax
+        clean = WIKI_LINK.sub(lambda m: m.group("title") or m.group("url"), clean)
+        clean = MD_LINK.sub(lambda m: m.group("title"), clean)
 
-        if len(cleaned) <= 200:
-            return cleaned
+        link_pos = match.start()
 
-        # Find where the display text lands in the cleaned string
-        # Approximate: locate display text near original match position
-        pos = cleaned.find(display)
-        if pos == -1:
-            pos = len(cleaned) // 2
+        if len(clean) <= 200:
+            return clean
 
-        center = pos + len(display) // 2
+        # Center a 200-char window on the link
         half = 100
-        start = max(0, center - half)
-        end = min(len(cleaned), center + half)
+        start = max(0, link_pos - half)
+        end = min(len(clean), link_pos + len(marked_text) + half)
 
         # Expand to word boundaries
         if start > 0:
-            space = cleaned.rfind(" ", 0, start)
+            space = clean.rfind(" ", 0, start)
             start = space + 1 if space != -1 else start
-        if end < len(cleaned):
-            space = cleaned.find(" ", end)
+        if end < len(clean):
+            space = clean.find(" ", end)
             end = space if space != -1 else end
 
-        snippet = cleaned[start:end]
+        snippet = clean[start:end]
         if start > 0:
             snippet = "..." + snippet
-        if end < len(cleaned):
+        if end < len(clean):
             snippet = snippet + "..."
         return snippet
 

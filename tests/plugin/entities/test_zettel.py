@@ -393,7 +393,7 @@ class TestLinkSnippets:
     def test_long_paragraph_trimmed(self, tmp_path: Path) -> None:
         z = _make_zettel(tmp_path, ZETTEL_LONG_PARAGRAPH)
         snippet = z.link_snippets["20240102120000"]
-        assert len(snippet) <= 220
+        assert len(snippet) <= 250
         assert "..." in snippet
 
     def test_duplicate_link_keeps_first(self, tmp_path: Path) -> None:
@@ -405,6 +405,12 @@ class TestLinkSnippets:
         content = "---\nid: 1\ndate: 2024-01-01\n---\nNo links here.\n"
         z = _make_zettel(tmp_path, content)
         assert z.link_snippets == {}
+
+    def test_snippet_highlights_link_text(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, ZETTEL_WITH_CONTEXT)
+        snippet = z.link_snippets["20240102120000"]
+        assert "<mark>" in snippet
+        assert "other note</mark>" in snippet
 
     def test_snippet_does_not_include_link_syntax(self, tmp_path: Path) -> None:
         z = _make_zettel(tmp_path, ZETTEL_WITH_CONTEXT)

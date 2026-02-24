@@ -641,3 +641,19 @@ pre:has(> code):hover .copy-btn {
   background: var(--bg-accent);
   color: var(--text-muted);
 }
+
+/* Backlink context snippets */
+.backlink-snippet {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.backlink-snippet mark {
+  background: none;
+  color: var(--text-link);
+  font-style: normal;
+  font-weight: 600;
+}
