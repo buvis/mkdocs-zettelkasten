@@ -18,6 +18,7 @@ class TestZettelkastenPlugin:
             "tags_key": "tags",
             "type_key": "type",
             "maturity_key": "maturity",
+            "role_key": "role",
             "id_format": r"^\d{14}$",
             "timezone": "",
             "validation_enabled": True,
