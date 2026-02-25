@@ -152,7 +152,7 @@
       </div>
     </dialog>
     {% endif %}
-    {% if page and not page.is_homepage and (page.meta.ref or (page.meta.is_zettel and page.meta.zettel.backlinks)) %}
+    {% if page and not page.is_homepage and (page.meta.ref or (page.meta.is_zettel and (page.meta.zettel.backlinks or page.meta.zettel.unlinked_mentions))) %}
       <div class="file-references">
       {% if page.meta.ref %}
         <div class="file-ref-section">
@@ -169,6 +169,21 @@
                 <a href="{{link.url|url}}">{{link.title}}</a>
                 {% if link.snippet %}
                   <div class="backlink-snippet">{{link.snippet|safe}}</div>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+      {% if page.meta.is_zettel and page.meta.zettel.unlinked_mentions %}
+        <div class="file-ref-section unlinked-mentions">
+          <h6><i class="fa fa-question-circle" aria-hidden="true"></i><span class="visually-hidden">Unlinked Mentions</span></h6>
+          <ul>
+            {% for mention in page.meta.zettel.unlinked_mentions %}
+              <li>
+                <a href="{{mention.url|url}}">{{mention.title}}</a>
+                {% if mention.snippet %}
+                  <div class="backlink-snippet">{{mention.snippet|safe}}</div>
                 {% endif %}
               </li>
             {% endfor %}
