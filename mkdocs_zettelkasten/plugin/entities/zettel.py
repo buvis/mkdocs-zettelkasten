@@ -50,6 +50,7 @@ class Zettel:
         self.moc_parents: list[dict[str, str]] = []
         self.link_snippets: dict[str, str] = {}
         self.body: str = ""
+        self.unlinked_mentions: list[dict[str, str]] = []
 
         cfg = zettel_config or {}
         self._id_key = cfg.get("id_key", "id")

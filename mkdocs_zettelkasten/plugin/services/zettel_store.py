@@ -38,10 +38,14 @@ class ZettelStore:
                 key = parts[i:]
                 if key not in self._suffix_index:
                     self._suffix_index[key] = z
+        self._id_index: dict[int, Zettel] = {z.id: z for z in self._zettels}
 
     def get_by_path(self, path: Path) -> Zettel | None:
         """Retrieve zettel by filesystem path."""
         return self._path_index.get(path)
+
+    def get_by_id(self, zettel_id: int) -> Zettel | None:
+        return self._id_index.get(zettel_id)
 
     def get_by_partial_path(
         self, partial_path: str, file_suffix: str = ".md"

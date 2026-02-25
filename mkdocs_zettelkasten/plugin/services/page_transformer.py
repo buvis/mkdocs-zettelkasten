@@ -7,6 +7,9 @@ from mkdocs.structure.pages import Page
 from mkdocs_zettelkasten.plugin.adapters.backlinks_to_page import (
     adapt_backlinks_to_page,
 )
+from mkdocs_zettelkasten.plugin.adapters.mentions_to_page import (
+    adapt_mentions_to_page,
+)
 from mkdocs_zettelkasten.plugin.adapters.page_links_to_zettels import (
     adapt_page_links_to_zettels,
 )
@@ -68,6 +71,11 @@ class PageTransformer:
             page,
             zettel_service.backlinks,
             zettel_service.get_zettel_by_partial_path,
+        )
+        adapt_mentions_to_page(
+            page,
+            zettel_service.mentions,
+            zettel_service.get_zettel_by_id,
         )
         logger.debug("Finished %s transformations", page.file.src_path)
 

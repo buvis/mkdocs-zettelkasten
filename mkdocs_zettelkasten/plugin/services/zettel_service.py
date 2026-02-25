@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 import logging
 
 from .backlink_processor import BacklinkProcessor
+from .mention_service import MentionService
 from .zettel_parser import ZettelParser
 from .zettel_store import ZettelStore
 
@@ -30,6 +31,8 @@ class ZettelService:
         self.invalid_files: list = []
         self.zettel_config: dict[str, Any] = {}
         self.file_suffix: str = ".md"
+        self.mention_service = MentionService()
+        self.mentions: dict[int, list[tuple[int, str]]] = {}
 
     def configure(self, zettel_config: dict[str, Any]) -> None:
         self.zettel_config = zettel_config
@@ -47,6 +50,7 @@ class ZettelService:
         self.backlinks = BacklinkProcessor.process(
             self.store, file_suffix=self.file_suffix
         )
+        self.mentions = self.mention_service.find_unlinked_mentions(self.store)
 
     def add_zettel_to_page(self, page: Page) -> Page:
         enriched_page = page
@@ -76,6 +80,10 @@ class ZettelService:
     def get_zettel_by_path(self, path: Path) -> Zettel | None:
         """Delegate to store's lookup mechanism."""
         return self.store.get_by_path(path)
+
+    def get_zettel_by_id(self, zettel_id: int) -> Zettel | None:
+        """Look up zettel by ID."""
+        return self.store.get_by_id(zettel_id)
 
     def get_zettel_by_partial_path(self, partial_path: str) -> Zettel | None:
         """Delegate to store's lookup mechanism."""
