@@ -436,6 +436,43 @@ pre:has(> code):hover .copy-btn {
   color: var(--text-link);
 }
 
+/* Sequence tree view */
+.sequence-tree-container {
+  border-top: 1px solid var(--border-accent);
+  padding: 0.5rem 2em;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: var(--bg-header);
+}
+
+.sequence-tree summary {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  font-size: 0.8em;
+  color: var(--text-header);
+}
+
+.sequence-tree-list,
+.sequence-tree-list ul {
+  margin: 0.25em 0 0 0;
+  padding-left: 1.2em;
+  list-style: none;
+}
+
+.sequence-tree-list li {
+  line-height: 1.8;
+}
+
+.sequence-tree-list .current strong {
+  color: var(--text-primary);
+}
+
+.sequence-tree-list a {
+  color: var(--text-link);
+}
+
 /* Editor buttons */
 .editor-btn {
   margin-left: 0.3em;

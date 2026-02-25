@@ -146,6 +146,27 @@
         </div>
       </div>
     </div>
+    {% if page.meta.is_zettel and page.meta.zettel.sequence_tree %}
+    <div class="sequence-tree-container">
+      <details class="sequence-tree" open>
+        <summary>
+          <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1z"/>
+            <path d="M.5 12a1.5 1.5 0 0 1 1.5-1.5h1A1.5 1.5 0 0 1 5 12v1A1.5 1.5 0 0 1 3.5 14.5h-1A1.5 1.5 0 0 1 .5 13v-1zm5 0a1.5 1.5 0 0 1 1.5-1.5h1A1.5 1.5 0 0 1 10 12v1A1.5 1.5 0 0 1 8.5 14.5h-1A1.5 1.5 0 0 1 5.5 13v-1zm5 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1z"/>
+          </svg>
+          Sequence
+        </summary>
+        <ul class="sequence-tree-list">
+          {% for node in page.meta.zettel.sequence_tree recursive %}
+            <li{% if node.current %} class="current"{% endif %}>
+              {% if node.current %}<strong>{{ node.title }}</strong>{% else %}<a href="{{ node.url|url }}">{{ node.title }}</a>{% endif %}
+              {% if node.children %}<ul>{{ loop(node.children) }}</ul>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </details>
+    </div>
+    {% endif %}
     {% endif %}
     <div class="file-body">
       {{page.content}}
