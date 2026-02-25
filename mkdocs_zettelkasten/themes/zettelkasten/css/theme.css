@@ -405,6 +405,37 @@ pre:has(> code):hover .copy-btn {
   color: var(--text-link);
 }
 
+/* Sequence (Folgezettel) navigation */
+.sequence-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  font-size: 0.8em;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.sequence-breadcrumb a {
+  color: var(--text-link);
+}
+
+.sequence-breadcrumb strong {
+  color: var(--text-header);
+}
+
+.sequence-branches {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  font-size: 0.8em;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.sequence-branches a {
+  color: var(--text-link);
+}
+
 /* Editor buttons */
 .editor-btn {
   margin-left: 0.3em;

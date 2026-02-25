@@ -78,6 +78,33 @@
               </span>
             </div>
             {% endif %}
+            {% if page.meta.zettel.sequence_breadcrumb %}
+            <div class="row align-items-center">
+              <span class="sequence-breadcrumb">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1z"/>
+                  <path d="M.5 12a1.5 1.5 0 0 1 1.5-1.5h1A1.5 1.5 0 0 1 5 12v1A1.5 1.5 0 0 1 3.5 14.5h-1A1.5 1.5 0 0 1 .5 13v-1zm5 0a1.5 1.5 0 0 1 1.5-1.5h1A1.5 1.5 0 0 1 10 12v1A1.5 1.5 0 0 1 8.5 14.5h-1A1.5 1.5 0 0 1 5.5 13v-1zm5 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1z"/>
+                </svg>
+                {% for ancestor in page.meta.zettel.sequence_breadcrumb %}
+                  <a href="{{ ancestor.url|url }}">{{ ancestor.title }}</a> &rsaquo;
+                {% endfor %}
+                <strong>{{ page.title }}</strong>
+              </span>
+            </div>
+            {% endif %}
+            {% if page.meta.zettel.sequence_children %}
+            <div class="row align-items-center">
+              <span class="sequence-branches">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 1a1.5 1.5 0 0 0-1.5 1.5v4.34L5.29 5.62a1.5 1.5 0 1 0-2.12 2.12l3.54 3.54a1.5 1.5 0 0 0 2.12 0l3.54-3.54a1.5 1.5 0 0 0-2.12-2.12L9 6.84V2.5A1.5 1.5 0 0 0 8 1zM3 13.5A1.5 1.5 0 0 1 4.5 12h7a1.5 1.5 0 0 1 0 3h-7A1.5 1.5 0 0 1 3 13.5z"/>
+                </svg>
+                Branches:
+                {% for child in page.meta.zettel.sequence_children %}
+                  <a href="{{ child.url|url }}">{{ child.title }}</a>{% if not loop.last %} &middot; {% endif %}
+                {% endfor %}
+              </span>
+            </div>
+            {% endif %}
             <div class="row align-items-center">
               <span>
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-tags" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
