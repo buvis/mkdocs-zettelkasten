@@ -60,4 +60,21 @@ class GraphExporter:
                     seen_edges.add(pair)
                     edges.append({"source": source_id, "target": target_id})
 
+        # Sequence edges (child → parent, distinct type)
+        for z in store.zettels:
+            if z.sequence_parent_id is None:
+                continue
+            child_id = str(z.id)
+            parent_id = str(z.sequence_parent_id)
+            if parent_id not in id_set or child_id not in id_set:
+                continue
+            pair = (child_id, parent_id)
+            if pair not in seen_edges:
+                seen_edges.add(pair)
+                edges.append({
+                    "source": child_id,
+                    "target": parent_id,
+                    "type": "sequence",
+                })
+
         return {"nodes": nodes, "edges": edges}

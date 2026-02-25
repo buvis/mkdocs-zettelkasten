@@ -18,6 +18,7 @@ def _make_zettel(
     z.note_type = None
     z.maturity = None
     z.role = None
+    z.sequence_parent_id = None
     z.__hash__ = lambda self: hash(zettel_id)
     z.__eq__ = lambda self, other: getattr(other, "id", None) == zettel_id
     return z
@@ -156,3 +157,39 @@ class TestGraphExporter:
         result = self.exporter.export(store, [], {})
 
         assert "role" not in result["nodes"][0]
+
+    def test_sequence_edges_exported(self) -> None:
+        z1 = _make_zettel(1, "/docs/a.md", "a.md", "A", [])
+        z1.sequence_parent_id = None
+        z2 = _make_zettel(2, "/docs/b.md", "b.md", "B", [])
+        z2.sequence_parent_id = 1
+        store = ZettelStore([z1, z2])
+
+        result = self.exporter.export(store, [], _build_backlinks(store))
+
+        seq_edges = [e for e in result["edges"] if e.get("type") == "sequence"]
+        assert len(seq_edges) == 1
+        assert seq_edges[0]["source"] == "2"
+        assert seq_edges[0]["target"] == "1"
+
+    def test_sequence_edge_skipped_when_parent_missing(self) -> None:
+        z = _make_zettel(1, "/docs/a.md", "a.md", "A", [])
+        z.sequence_parent_id = 999
+        store = ZettelStore([z])
+
+        result = self.exporter.export(store, [], {})
+
+        seq_edges = [e for e in result["edges"] if e.get("type") == "sequence"]
+        assert seq_edges == []
+
+    def test_link_edges_have_no_type(self) -> None:
+        z1 = _make_zettel(1, "/docs/a.md", "a.md", "A", ["b.md"])
+        z1.sequence_parent_id = None
+        z2 = _make_zettel(2, "/docs/b.md", "b.md", "B", [])
+        z2.sequence_parent_id = None
+        store = ZettelStore([z1, z2])
+
+        result = self.exporter.export(store, [], _build_backlinks(store))
+
+        link_edges = [e for e in result["edges"] if "type" not in e]
+        assert len(link_edges) == 1
