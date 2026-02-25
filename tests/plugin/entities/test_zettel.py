@@ -417,3 +417,13 @@ class TestLinkSnippets:
         snippet = z.link_snippets["20240102120000"]
         assert "[[" not in snippet
         assert "]]" not in snippet
+
+
+class TestBody:
+    def test_body_stored(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, VALID_ZETTEL)
+        assert "Some body text" in z.body
+
+    def test_body_excludes_frontmatter(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, VALID_ZETTEL)
+        assert "id:" not in z.body

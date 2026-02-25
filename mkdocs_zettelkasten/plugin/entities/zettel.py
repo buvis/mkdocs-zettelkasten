@@ -49,6 +49,7 @@ class Zettel:
         self.role: str | None = None
         self.moc_parents: list[dict[str, str]] = []
         self.link_snippets: dict[str, str] = {}
+        self.body: str = ""
 
         cfg = zettel_config or {}
         self._id_key = cfg.get("id_key", "id")
@@ -89,6 +90,7 @@ class Zettel:
             raise ZettelFormatError(msg)
 
         meta = self._parse_metadata(header_text)
+        self.body = body_text
         body_lines = body_text.splitlines()
         self._extract_links(body_lines)
         self._set_core_metadata(meta, self._find_alt_title(body_lines))
