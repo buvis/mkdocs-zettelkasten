@@ -50,6 +50,7 @@ class ValidationService:
         self._check_broken_links(zettel_service, BacklinkProcessor)
         self._check_stale_fleeting(zettel_service)
         self._check_missing_type(zettel_service)
+        self._check_broken_sequences(zettel_service)
         self._generate_report()
         self._add_to_build(files, config)
 
@@ -155,12 +156,28 @@ class ValidationService:
                     )
                 )
 
+    def _check_broken_sequences(self, zettel_service: Any) -> None:
+        for zettel in zettel_service.get_zettels():
+            if zettel.sequence_parent_id is None:
+                continue
+            parent = zettel_service.get_zettel_by_id(zettel.sequence_parent_id)
+            if not parent:
+                self.issues[zettel.rel_path].append(
+                    ValidationIssue(
+                        path=zettel.rel_path,
+                        check="broken_sequence",
+                        severity="warning",
+                        message=f"Sequence parent {zettel.sequence_parent_id} not found",
+                    )
+                )
+
     _CHECK_LABELS: dict[str, tuple[str, int]] = {
         "invalid_file": ("Invalid files", 0),
         "broken_link": ("Broken links", 1),
         "orphan": ("Orphan zettels", 2),
         "stale_fleeting": ("Stale fleeting notes", 3),
         "missing_type": ("Missing note type", 4),
+        "broken_sequence": ("Broken sequence references", 5),
     }
 
     def _generate_report(self) -> None:

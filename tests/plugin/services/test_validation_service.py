@@ -14,6 +14,7 @@ class TestValidationService:
         z.id = zettel_id
         z.rel_path = rel_path
         z.links = links or []
+        z.sequence_parent_id = None
         return z
 
     def _make_zettel_service(self, zettels, backlinks=None, invalid_files=None):
@@ -212,6 +213,48 @@ class TestValidationService:
 
         missing = [i for i in vs.get_issues("a.md") if i.check == "missing_type"]
         assert len(missing) == 0
+
+    def test_broken_sequence_detected(self, tmp_path: Path) -> None:
+        z1 = self._make_zettel(1, "a.md")
+        z1.note_type = "permanent"
+        z1.sequence_parent_id = 999
+
+        svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
+        svc.get_zettel_by_id.return_value = None
+
+        vs = ValidationService()
+        vs.output_folder = tmp_path
+        config = MagicMock()
+        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
+        files = MagicMock()
+
+        vs.validate(svc, files, config)
+
+        broken = [i for i in vs.get_issues("a.md") if i.check == "broken_sequence"]
+        assert len(broken) == 1
+        assert broken[0].severity == "warning"
+        assert "999" in broken[0].message
+
+    def test_valid_sequence_not_flagged(self, tmp_path: Path) -> None:
+        z1 = self._make_zettel(1, "a.md")
+        z1.note_type = "permanent"
+        z1.sequence_parent_id = 2
+        z2 = self._make_zettel(2, "b.md")
+        z2.note_type = "permanent"
+
+        svc = self._make_zettel_service([z1, z2], backlinks={"a.md": [z1], "b.md": [z2]})
+        svc.get_zettel_by_id.side_effect = lambda zid: z2 if zid == 2 else None
+
+        vs = ValidationService()
+        vs.output_folder = tmp_path
+        config = MagicMock()
+        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
+        files = MagicMock()
+
+        vs.validate(svc, files, config)
+
+        broken = [i for i in vs.get_issues("a.md") if i.check == "broken_sequence"]
+        assert len(broken) == 0
 
     def test_report_file_generated(self, tmp_path: Path) -> None:
         svc = self._make_zettel_service([])
