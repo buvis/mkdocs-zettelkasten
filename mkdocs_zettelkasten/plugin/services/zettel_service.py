@@ -14,6 +14,7 @@ import logging
 
 from .backlink_processor import BacklinkProcessor
 from .mention_service import MentionService
+from .sequence_service import SequenceService
 from .zettel_parser import ZettelParser
 from .zettel_store import ZettelStore
 
@@ -33,6 +34,7 @@ class ZettelService:
         self.file_suffix: str = ".md"
         self.mention_service = MentionService()
         self.mentions: dict[int, list[tuple[int, str]]] = {}
+        self.sequence_children: dict[int, list[int]] = {}
 
     def configure(self, zettel_config: dict[str, Any]) -> None:
         self.zettel_config = zettel_config
@@ -51,6 +53,7 @@ class ZettelService:
             self.store, file_suffix=self.file_suffix
         )
         self.mentions = self.mention_service.find_unlinked_mentions(self.store)
+        self.sequence_children = SequenceService.build_tree(self.store)
 
     def add_zettel_to_page(self, page: Page) -> Page:
         enriched_page = page
