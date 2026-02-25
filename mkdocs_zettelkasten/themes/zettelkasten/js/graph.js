@@ -49,7 +49,7 @@
     for (let e = 0; e < edges.length; e++) {
       const src = idMap[edges[e].source];
       const tgt = idMap[edges[e].target];
-      if (src && tgt) resolvedEdges.push({ source: src, target: tgt });
+      if (src && tgt) resolvedEdges.push({ source: src, target: tgt, type: edges[e].type || null });
     }
 
     /* camera */
@@ -119,10 +119,11 @@
         const edge = resolvedEdges[e];
         const dx2 = edge.target.x - edge.source.x;
         const dy2 = edge.target.y - edge.source.y;
-        edge.source.vx += dx2 * ATTRACTION;
-        edge.source.vy += dy2 * ATTRACTION;
-        edge.target.vx -= dx2 * ATTRACTION;
-        edge.target.vy -= dy2 * ATTRACTION;
+        const k = edge.type === 'sequence' ? ATTRACTION * 3 : ATTRACTION;
+        edge.source.vx += dx2 * k;
+        edge.source.vy += dy2 * k;
+        edge.target.vx -= dx2 * k;
+        edge.target.vy -= dy2 * k;
       }
 
       /* integrate */
@@ -146,18 +147,27 @@
       const currentColor = cssVar('--graph-node-current') || '#333';
 
       /* edges */
-      ctx.strokeStyle = edgeColor;
-      ctx.lineWidth = 0.5;
-      ctx.globalAlpha = 0.4;
+      const seqColor = cssVar('--graph-edge-sequence') || cssVar('--text-link') || '#0066cc';
       for (let e = 0; e < resolvedEdges.length; e++) {
-        const s = toScreen(resolvedEdges[e].source.x, resolvedEdges[e].source.y);
-        const t = toScreen(resolvedEdges[e].target.x, resolvedEdges[e].target.y);
+        const edge = resolvedEdges[e];
+        const s = toScreen(edge.source.x, edge.source.y);
+        const t = toScreen(edge.target.x, edge.target.y);
+        const isSeq = edge.type === 'sequence';
+        ctx.strokeStyle = isSeq ? seqColor : edgeColor;
+        ctx.lineWidth = isSeq ? 1.5 : 0.5;
+        ctx.globalAlpha = isSeq ? 0.7 : 0.4;
+        if (isSeq) {
+          ctx.setLineDash([4, 3]);
+        } else {
+          ctx.setLineDash([]);
+        }
         ctx.beginPath();
         ctx.moveTo(s.x, s.y);
         ctx.lineTo(t.x, t.y);
         ctx.stroke();
       }
       ctx.globalAlpha = 1;
+      ctx.setLineDash([]);
 
       /* nodes */
       const r = NODE_RADIUS;
