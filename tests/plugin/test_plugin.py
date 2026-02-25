@@ -19,6 +19,7 @@ class TestZettelkastenPlugin:
             "type_key": "type",
             "maturity_key": "maturity",
             "role_key": "role",
+            "sequence_key": "sequence",
             "id_format": r"^\d{14}$",
             "timezone": "",
             "validation_enabled": True,
@@ -301,3 +302,7 @@ class TestZettelkastenPlugin:
 
         assert page.meta["editor"]["repo"] == "https://github.com/test/repo"
         assert page.meta["editor"]["branch"] == "main"
+
+    def test_config_scheme_has_sequence_key(self) -> None:
+        keys = [name for name, _ in ZettelkastenPlugin.config_scheme]
+        assert "sequence_key" in keys
