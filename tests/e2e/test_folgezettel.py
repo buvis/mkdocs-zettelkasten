@@ -56,6 +56,39 @@ class TestSequenceBranches:
         assert branches.count() == 0
 
 
+class TestSequenceTree:
+    def test_tree_visible_on_sequence_note(self, page, default_site):
+        page.goto(f"{default_site}/{JTB}/")
+        tree = page.locator(".sequence-tree")
+        assert tree.count() >= 1
+
+    def test_tree_contains_all_sequence_notes(self, page, default_site):
+        page.goto(f"{default_site}/{JTB}/")
+        tree = page.locator(".sequence-tree")
+        text = tree.first.inner_text()
+        assert "Epistemology" in text
+        assert "JTB Theory" in text
+        assert "Gettier Problems" in text
+        assert "Reliabilism" in text
+
+    def test_tree_highlights_current_note(self, page, default_site):
+        page.goto(f"{default_site}/{JTB}/")
+        current = page.locator(".sequence-tree .current strong")
+        assert current.count() >= 1
+        assert "JTB Theory" in current.first.inner_text()
+
+    def test_tree_absent_on_non_sequence_note(self, page, default_site):
+        page.goto(f"{default_site}/20211122194827/")
+        tree = page.locator(".sequence-tree")
+        assert tree.count() == 0
+
+    def test_tree_collapsible(self, page, default_site):
+        page.goto(f"{default_site}/{JTB}/")
+        details = page.locator("details.sequence-tree")
+        assert details.count() >= 1
+        assert details.first.get_attribute("open") is not None
+
+
 class TestSequenceLinks:
     def test_breadcrumb_links_navigate(self, page, default_site):
         """Clicking Epistemology in Gettier's breadcrumb should navigate there."""
