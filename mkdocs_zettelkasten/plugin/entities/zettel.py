@@ -51,6 +51,11 @@ class Zettel:
         self.link_snippets: dict[str, str] = {}
         self.body: str = ""
         self.unlinked_mentions: list[dict[str, str]] = []
+        self.sequence_parent_id: int | None = None
+        self.sequence_parent: dict[str, str] | None = None
+        self.sequence_children: list[dict[str, str]] = []
+        self.sequence_breadcrumb: list[dict[str, str]] = []
+        self.sequence_tree: list[dict] = []
 
         cfg = zettel_config or {}
         self._id_key = cfg.get("id_key", "id")
@@ -59,6 +64,7 @@ class Zettel:
         self._type_key = cfg.get("type_key", "type")
         self._maturity_key = cfg.get("maturity_key", "maturity")
         self._role_key = cfg.get("role_key", "role")
+        self._sequence_key = cfg.get("sequence_key", "sequence")
         self._id_format = cfg.get("id_format", r"^\d{14}$")
         self._tz = cfg.get("timezone") or ZoneInfo("UTC")
         self._date_format = cfg.get("date_format", "%Y-%m-%d")
@@ -236,6 +242,8 @@ class Zettel:
         self.source = str(raw_source) if raw_source is not None else None
         raw_role = meta.get(self._role_key)
         self.role = str(raw_role) if raw_role is not None else None
+        raw_seq = meta.get(self._sequence_key)
+        self.sequence_parent_id = int(raw_seq) if raw_seq is not None else None
 
     def _generate_filename_title(self) -> str:
         """Generates title from filename using pattern matching."""

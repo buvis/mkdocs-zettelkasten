@@ -419,6 +419,38 @@ class TestLinkSnippets:
         assert "]]" not in snippet
 
 
+class TestSequence:
+    def test_sequence_parent_id_from_frontmatter(self, tmp_path: Path) -> None:
+        content = "---\nid: 20240201120000\nsequence: 20240101120000\ndate: 2024-02-01\n---\n# Title\n"
+        z = _make_zettel(tmp_path, content)
+        assert z.sequence_parent_id == 20240101120000
+
+    def test_missing_sequence_is_none(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, VALID_ZETTEL)
+        assert z.sequence_parent_id is None
+
+    def test_custom_sequence_key(self, tmp_path: Path) -> None:
+        content = "---\nid: 1\nfollows: 99\ndate: 2024-01-01\n---\n# Title\n"
+        z = _make_zettel(tmp_path, content, zettel_config={"sequence_key": "follows"})
+        assert z.sequence_parent_id == 99
+
+    def test_sequence_parent_initialized_none(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, VALID_ZETTEL)
+        assert z.sequence_parent is None
+
+    def test_sequence_children_initialized_empty(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, VALID_ZETTEL)
+        assert z.sequence_children == []
+
+    def test_sequence_breadcrumb_initialized_empty(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, VALID_ZETTEL)
+        assert z.sequence_breadcrumb == []
+
+    def test_sequence_tree_initialized_empty(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, VALID_ZETTEL)
+        assert z.sequence_tree == []
+
+
 class TestBody:
     def test_body_stored(self, tmp_path: Path) -> None:
         z = _make_zettel(tmp_path, VALID_ZETTEL)
