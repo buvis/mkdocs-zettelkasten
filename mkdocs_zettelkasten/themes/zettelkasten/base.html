@@ -216,6 +216,18 @@
                         {%- endif %}
                       {%- endblock %}
 
+                      {%- block outline_icon %}
+                        {%- if config.extra.outline_enabled is defined and config.extra.outline_enabled %}
+                        <li class="nav-item">
+                          <a href="{{ 'outline.html'|url }}" class="nav-link" title="Outlines">
+                            <span class="nav-icon-badge">
+                              <i class="fa fa-file-text-o"></i>
+                            </span>
+                          </a>
+                        </li>
+                        {%- endif %}
+                      {%- endblock %}
+
                       {%- block settings_toggle %}
                         <li class="nav-item">
                           <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_settings_modal" aria-label="Settings">

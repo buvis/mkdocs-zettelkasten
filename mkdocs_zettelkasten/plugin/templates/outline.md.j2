@@ -1,0 +1,33 @@
+---
+title: Outlines
+---
+
+# Outlines
+{% for outline in moc_outlines %}
+
+## {{ outline.title }}
+{% for entry in outline.entries %}
+{% if entry.gap_before %}
+* **[GAP]** — no direct link between adjacent notes
+{% endif %}
+* [{{ entry.title }}]({{ entry.rel_path }}){% if entry.note_type %} ({{ entry.note_type }}{% if entry.maturity %}, {{ entry.maturity }}{% endif %}){% endif %}{% if entry.preview %}
+    {{ entry.preview }}{% endif %}
+{% endfor %}
+
+**Copy as transclusion:**
+
+```
+{{ outline.transclusion_text }}
+```
+{% endfor %}
+{% if sequence_outlines %}
+
+---
+{% for tree in sequence_outlines %}
+
+## Sequence: {{ tree.title }}
+{% for item in tree.flat_entries %}
+{{ "    " * item.indent }}* [{{ item.title }}]({{ item.rel_path }})
+{% endfor %}
+{% endfor %}
+{% endif %}
