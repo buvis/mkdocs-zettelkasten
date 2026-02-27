@@ -191,8 +191,8 @@ class TestGraphExporter:
         result = self.exporter.export(store, [], _build_backlinks(store))
 
         degrees = {n["id"]: n["degree"] for n in result["nodes"]}
-        assert degrees["1"] >= 1
-        assert degrees["2"] >= 1
+        assert degrees["1"] == 2
+        assert degrees["2"] == 2
 
     def test_node_degree_no_links(self) -> None:
         z = _make_zettel(1, "/docs/a.md", "a.md", "A", [])
