@@ -42,6 +42,8 @@
       n.vx = 0;
       n.vy = 0;
       idMap[n.id] = n;
+      n._visible = true;
+      n._degree = 0;
     }
 
     /* resolve edge references */
@@ -52,12 +54,20 @@
       if (src && tgt) resolvedEdges.push({ source: src, target: tgt, type: edges[e].type || null });
     }
 
+    /* compute degree */
+    for (let e = 0; e < resolvedEdges.length; e++) {
+      resolvedEdges[e].source._degree++;
+      resolvedEdges[e].target._degree++;
+    }
+
     /* camera */
     const cam = { x: 0, y: 0, zoom: 1 };
     let dragging = null;
     let panning = false;
     let panStart = { x: 0, y: 0, camX: 0, camY: 0 };
     let hovered = null;
+    let onFocusCb = null;
+    let navTimeout = null;
 
     /* sizing */
     const resize = () => {
@@ -150,6 +160,7 @@
       const seqColor = cssVar('--graph-edge-sequence') || cssVar('--text-link') || '#0066cc';
       for (let e = 0; e < resolvedEdges.length; e++) {
         const edge = resolvedEdges[e];
+        if (!edge.source._visible || !edge.target._visible) continue;
         const s = toScreen(edge.source.x, edge.source.y);
         const t = toScreen(edge.target.x, edge.target.y);
         const isSeq = edge.type === 'sequence';
@@ -173,6 +184,7 @@
       const r = NODE_RADIUS;
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
+        if (!n._visible) continue;
         const p = toScreen(n.x, n.y);
         const isCurrent = currentId && n.id === currentId;
         const isHovered = n === hovered;
@@ -198,6 +210,7 @@
       const w = toWorld(sx, sy);
       let best = null, bestD = Infinity;
       for (let i = 0; i < nodes.length; i++) {
+        if (!nodes[i]._visible) continue;
         const dx = nodes[i].x - w.x;
         const dy = nodes[i].y - w.y;
         const d = Math.sqrt(dx * dx + dy * dy);
@@ -266,7 +279,10 @@
         const hit = nodeAt(sx, sy);
         if (hit === dragging) {
           const moved = Math.abs(hit.vx) + Math.abs(hit.vy);
-          if (moved < 0.1) window.location.href = base_url + hit.url;
+          if (moved < 0.1) {
+            clearTimeout(navTimeout);
+            navTimeout = setTimeout(() => { window.location.href = base_url + hit.url; }, 250);
+          }
         }
         dragging = null;
       }
@@ -279,6 +295,16 @@
       cam.zoom = Math.min(Math.max(cam.zoom * factor, 0.1), 10);
       draw();
     }, { passive: false });
+
+    canvas.addEventListener('dblclick', (ev) => {
+      ev.preventDefault();
+      clearTimeout(navTimeout);
+      const rect = canvas.getBoundingClientRect();
+      const sx = ev.clientX - rect.left;
+      const sy = ev.clientY - rect.top;
+      const hit = nodeAt(sx, sy);
+      if (hit && onFocusCb) onFocusCb(hit.id);
+    });
 
     /* animation loop */
     let animId = null;
@@ -316,6 +342,29 @@
     for (let w = 0; w < 200; w++) tick();
     autoFit();
     loop();
+
+    return {
+      nodes,
+      resolvedEdges,
+      draw,
+      ensureRunning,
+      setVisibility: (visibleIds) => {
+        for (let i = 0; i < nodes.length; i++) {
+          nodes[i]._visible = visibleIds === null || visibleIds.has(nodes[i].id);
+        }
+        draw();
+      },
+      centerOn: (nodeId) => {
+        const node = idMap[nodeId];
+        if (!node) return;
+        cam.x = node.x;
+        cam.y = node.y;
+        cam.zoom = Math.max(cam.zoom, 1.5);
+        draw();
+      },
+      idMap,
+      setOnFocus: (cb) => { onFocusCb = cb; },
+    };
   };
 
   /* ── init ────────────────────────────────────────────────── */
@@ -334,7 +383,7 @@
       }
 
       container.setAttribute('data-node-count', data.nodes.length);
-      ForceGraph(container, data, opts);
+      const graph = ForceGraph(container, data, opts);
     });
   };
 
