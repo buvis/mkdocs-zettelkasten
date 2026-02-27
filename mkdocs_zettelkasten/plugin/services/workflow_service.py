@@ -31,8 +31,9 @@ class WorkflowService:
         today: date | None = None,
     ) -> dict[str, Any]:
         today = today or date.today()
-        backlinked_ids = self._backlinked_ids(store, backlinks, file_suffix)
-        backlink_counts = self._backlink_counts(store, backlinks, file_suffix)
+        backlinked_ids, backlink_counts = self._resolve_backlinks(
+            store, backlinks, file_suffix
+        )
         return {
             "stats": self._stats(store, backlinks, mentions),
             "inbox": self._inbox(store, today),
@@ -73,22 +74,17 @@ class WorkflowService:
         s = str(zettel_id)
         return date(int(s[:4]), int(s[4:6]), int(s[6:8]))
 
-    def _backlinked_ids(self, store, backlinks, file_suffix):
+    def _resolve_backlinks(self, store, backlinks, file_suffix):
         ids: set[int] = set()
-        for key, linkers in backlinks.items():
-            if linkers:
-                target = store.get_by_partial_path(key, file_suffix)
-                if target:
-                    ids.add(target.id)
-        return ids
-
-    def _backlink_counts(self, store, backlinks, file_suffix):
         counts: dict[int, int] = {}
         for key, linkers in backlinks.items():
             target = store.get_by_partial_path(key, file_suffix)
-            if target:
-                counts[target.id] = counts.get(target.id, 0) + len(linkers)
-        return counts
+            if not target:
+                continue
+            if linkers:
+                ids.add(target.id)
+            counts[target.id] = counts.get(target.id, 0) + len(linkers)
+        return ids, counts
 
     def _stats(self, store, backlinks, mentions):
         zettels = store.zettels
@@ -154,9 +150,9 @@ class WorkflowService:
                 "id": z.id,
                 "title": z.title,
                 "rel_path": z.rel_path,
-                "days_since_update": age,
+                "days_since_creation": age,
             })
-        return sorted(items, key=lambda x: x["days_since_update"], reverse=True)
+        return sorted(items, key=lambda x: x["days_since_creation"], reverse=True)
 
     def _orphans(self, store, backlinked_ids):
         items = []

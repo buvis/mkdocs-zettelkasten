@@ -22,9 +22,9 @@ from mkdocs_zettelkasten.plugin.services.graph_exporter import GraphExporter
 from mkdocs_zettelkasten.plugin.services.page_transformer import PageTransformer
 from mkdocs_zettelkasten.plugin.services.preview_exporter import PreviewExporter
 from mkdocs_zettelkasten.plugin.services.suggestion_service import SuggestionService
-from mkdocs_zettelkasten.plugin.services.workflow_service import WorkflowService
 from mkdocs_zettelkasten.plugin.services.tags_service import TagsService
 from mkdocs_zettelkasten.plugin.services.validation_service import ValidationService
+from mkdocs_zettelkasten.plugin.services.workflow_service import WorkflowService
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
 
 

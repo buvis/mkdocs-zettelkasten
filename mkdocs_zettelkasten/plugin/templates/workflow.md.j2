@@ -16,7 +16,6 @@ title: Workflow Dashboard
 ## Inbox ({{ inbox|length }})
 {% for item in inbox %}
 * [{{ item.title }}]({{ item.rel_path }}) — {{ item.age_days }} day{{ "s" if item.age_days != 1 else "" }}{% if item.stale %} ⚠️{% endif %}
-
 {% endfor %}
 {% endif %}
 {% if needs_connection %}
@@ -30,7 +29,7 @@ title: Workflow Dashboard
 
 ## Review Queue ({{ review_queue|length }})
 {% for item in review_queue %}
-* [{{ item.title }}]({{ item.rel_path }}) — {{ item.days_since_update }} days since creation
+* [{{ item.title }}]({{ item.rel_path }}) — {{ item.days_since_creation }} days since creation
 {% endfor %}
 {% endif %}
 {% if orphans %}
