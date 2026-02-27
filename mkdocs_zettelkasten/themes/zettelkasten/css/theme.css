@@ -725,3 +725,10 @@ pre:has(> code):hover .copy-btn {
   font-style: normal;
   font-weight: 600;
 }
+
+/* Suggestion reason label */
+.suggestion-reason {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-left: 0.25rem;
+}

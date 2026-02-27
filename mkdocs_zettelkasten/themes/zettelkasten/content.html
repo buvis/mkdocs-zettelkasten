@@ -238,6 +238,19 @@
           </ul>
         </div>
       {% endif %}
+      {% if page.meta.is_zettel and page.meta.zettel.suggested_links %}
+        <div class="file-ref-section suggested-links">
+          <h6><i class="fa fa-lightbulb-o" aria-hidden="true"></i><span class="visually-hidden">Suggested Links</span></h6>
+          <ul>
+            {% for sugg in page.meta.zettel.suggested_links %}
+              <li>
+                <a href="{{sugg.url|url}}">{{sugg.title}}</a>
+                <span class="suggestion-reason">{{sugg.reason}}, {{sugg.confidence}}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
       </div>
     {% endif %}
   </div>
