@@ -200,7 +200,7 @@
       </div>
     </dialog>
     {% endif %}
-    {% if page and not page.is_homepage and (page.meta.ref or (page.meta.is_zettel and (page.meta.zettel.backlinks or page.meta.zettel.unlinked_mentions))) %}
+    {% if page and not page.is_homepage and (page.meta.ref or (page.meta.is_zettel and (page.meta.zettel.backlinks or page.meta.zettel.unlinked_mentions or page.meta.zettel.suggested_links))) %}
       <div class="file-references">
       {% if page.meta.ref %}
         <div class="file-ref-section">
