@@ -351,6 +351,33 @@ const init = () => {
         });
     });
 
+    // Sidebar navigation toggle
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebarNav = document.getElementById('sidebar-nav');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+    const sidebarClose = sidebarNav && sidebarNav.querySelector('.sidebar-close');
+    if (sidebarToggle && sidebarNav) {
+        const openSidebar = () => {
+            sidebarNav.classList.add('open');
+            if (sidebarBackdrop) sidebarBackdrop.classList.add('open');
+            sidebarToggle.setAttribute('aria-expanded', 'true');
+            sessionStorage.setItem('sidebar-open', '1');
+        };
+        const closeSidebar = () => {
+            sidebarNav.classList.remove('open');
+            if (sidebarBackdrop) sidebarBackdrop.classList.remove('open');
+            sidebarToggle.setAttribute('aria-expanded', 'false');
+            sessionStorage.setItem('sidebar-open', '0');
+        };
+        sidebarToggle.addEventListener('click', openSidebar);
+        if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
+        if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && sidebarNav.classList.contains('open')) closeSidebar();
+        });
+        if (sessionStorage.getItem('sidebar-open') !== '0') openSidebar();
+    }
+
     // Scrollspy via IntersectionObserver
     (() => {
         const tocLinks = document.querySelectorAll('.bs-sidebar .nav a');

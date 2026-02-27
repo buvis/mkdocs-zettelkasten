@@ -89,14 +89,17 @@
 
     <body{% if page and page.is_homepage %} class="homepage"{% endif %}>
         {%- if config.theme.nav_position == "sidebar" %}
-        <button id="sidebar-toggle" class="sidebar-toggle" aria-expanded="false" aria-label="Open navigation">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </button>
         {%- include "sidebar-nav.html" %}
         {%- endif %}
 
         <div class="navbar fixed-top navbar-expand-lg navbar-{% if config.theme.nav_style == "light" %}light{% else %}dark{% endif %} bg-{{ config.theme.nav_style }}{% if config.theme.nav_position == "sidebar" %} sidebar-mode{% endif %}">
             <div class="container">
+
+                {%- if config.theme.nav_position == "sidebar" %}
+                <button id="sidebar-toggle" class="sidebar-toggle" aria-expanded="false" aria-label="Open navigation">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+                {%- endif %}
 
                 {%- block site_name %}
                 <a class="navbar-brand" href="{{ nav.homepage.url|url }}">{{ config.site_name }}</a>
@@ -139,12 +142,7 @@
                     {%- endif %}
                   {%- endblock %}
 
-                    {%- if config.theme.nav_position == "sidebar" %}
-                    <button class="controls-toggle" aria-expanded="false" aria-label="Toggle controls">
-                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="9" r="1.5" fill="currentColor"/><circle cx="9" cy="9" r="1.5" fill="currentColor"/><circle cx="15" cy="9" r="1.5" fill="currentColor"/></svg>
-                    </button>
-                    {%- endif %}
-                    <ul class="nav navbar-nav ml-auto{% if config.theme.nav_position == "sidebar" %} controls-collapsible{% endif %}">
+                    <ul class="nav navbar-nav ml-auto">
                       {%- block search_button %}
                         {%- if 'search' in config['plugins'] %}
                         <li class="nav-item">

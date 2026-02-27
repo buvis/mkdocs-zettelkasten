@@ -682,28 +682,33 @@ dialog.modal-lg {
 
 /* Sidebar Navigation */
 .sidebar-toggle {
-  position: fixed;
-  top: 0.75rem;
-  left: 0.75rem;
-  z-index: 1040;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2rem;
+  height: 2rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--bg-zettel);
-  border: 1px solid var(--border-accent);
-  border-radius: 0.25rem;
-  box-shadow: 0 1px 0.25rem rgba(0, 0, 0, 0.1);
-  color: var(--text-primary);
+  background: none;
+  border: 0;
   cursor: pointer;
   padding: 0;
-  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
 }
 
-.sidebar-toggle[aria-expanded="true"] {
-  opacity: 0;
-  pointer-events: none;
+.navbar-light .sidebar-toggle {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.navbar-light .sidebar-toggle:hover {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.navbar-dark .sidebar-toggle {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.navbar-dark .sidebar-toggle:hover {
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .sidebar-backdrop {
@@ -876,48 +881,31 @@ dialog.modal-lg {
 }
 
 /* Sidebar-mode navbar adjustments */
+.navbar.sidebar-mode > .container {
+  flex-wrap: nowrap;
+}
+
 .navbar.sidebar-mode .navbar-collapse {
   display: flex !important;
   flex-basis: auto;
 }
 
 .navbar.sidebar-mode .navbar-brand {
-  margin-left: 2.5rem;
+  margin-left: 0.5rem;
 }
 
-/* Controls overflow toggle */
-.controls-toggle {
-  display: none;
+.navbar.sidebar-mode .navbar-nav.ml-auto {
+  display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  background-color: transparent;
-  border: 0;
-  color: inherit;
-  cursor: pointer;
-  padding: 0;
-  margin-left: auto;
+}
+
+.navbar.sidebar-mode .navbar-nav.ml-auto .nav-link {
+  padding: 0.5rem 0.5rem;
 }
 
 @media (max-width: 599px) {
-  .navbar.sidebar-mode .controls-collapsible {
-    display: none;
-  }
-
-  .navbar.sidebar-mode .controls-collapsible.show {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;
-    justify-content: flex-start;
-    gap: 0.25rem;
-    padding: 0.5rem 0;
-    border-top: 1px solid rgba(128, 128, 128, 0.2);
-    margin-top: 0.5rem;
-  }
-
-  .navbar.sidebar-mode .controls-toggle {
-    display: inline-flex;
+  .navbar.sidebar-mode .navbar-nav.ml-auto .nav-link {
+    padding: 0.5rem 0.25rem;
   }
 }
