@@ -22,6 +22,7 @@ from mkdocs_zettelkasten.plugin.services.graph_exporter import GraphExporter
 from mkdocs_zettelkasten.plugin.services.page_transformer import PageTransformer
 from mkdocs_zettelkasten.plugin.services.preview_exporter import PreviewExporter
 from mkdocs_zettelkasten.plugin.services.suggestion_service import SuggestionService
+from mkdocs_zettelkasten.plugin.services.workflow_service import WorkflowService
 from mkdocs_zettelkasten.plugin.services.tags_service import TagsService
 from mkdocs_zettelkasten.plugin.services.validation_service import ValidationService
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
@@ -71,6 +72,7 @@ class ZettelkastenPlugin(BasePlugin):
         ("graph_enabled", config_options.Type(bool, default=False)),
         ("preview_enabled", config_options.Type(bool, default=False)),
         ("suggestions_enabled", config_options.Type(bool, default=False)),
+        ("workflow_enabled", config_options.Type(bool, default=False)),
         ("transclusion_strip_heading", config_options.Type(bool, default=True)),
     )
 
@@ -82,6 +84,7 @@ class ZettelkastenPlugin(BasePlugin):
         self.graph_exporter = GraphExporter()
         self.preview_exporter = PreviewExporter()
         self.suggestion_service = SuggestionService()
+        self.workflow_service = WorkflowService()
         self.page_transformer = PageTransformer()
         self._initialize_logger()
         self.logger.debug("Initialized ZettelkastenPlugin with services and logger.")
@@ -126,6 +129,12 @@ class ZettelkastenPlugin(BasePlugin):
             config["extra"]["graph_enabled"] = True
         if self.config["preview_enabled"]:
             config["extra"]["preview_enabled"] = True
+        if self.config["workflow_enabled"]:
+            self.workflow_service.configure(
+                self.tags_service.tags_folder,
+                config["site_dir"],
+            )
+            config["extra"]["workflow_enabled"] = True
         config["extra"]["transclusion_strip_heading"] = self.config[
             "transclusion_strip_heading"
         ]
@@ -161,6 +170,16 @@ class ZettelkastenPlugin(BasePlugin):
                 file_suffix=self.config["file_suffix"],
             )
             self._export_suggestions(files, config)
+        if self.config["workflow_enabled"]:
+            dashboard = self.workflow_service.compute(
+                self.zettel_service.store,
+                self.zettel_service.backlinks,
+                self.zettel_service.mentions,
+                file_suffix=self.config["file_suffix"],
+            )
+            self.workflow_service.generate(dashboard)
+            self.workflow_service.add_to_build(files)
+            config["extra"]["workflow_inbox_count"] = len(dashboard["inbox"])
         if self.config["validation_enabled"]:
             self.validation_service.validate(self.zettel_service, files, config)
             config["extra"]["validation_issues_count"] = (

@@ -34,6 +34,7 @@ class TestZettelkastenPlugin:
             "graph_enabled": False,
             "preview_enabled": False,
             "suggestions_enabled": False,
+            "workflow_enabled": False,
             "transclusion_strip_heading": True,
         }
         return plugin
