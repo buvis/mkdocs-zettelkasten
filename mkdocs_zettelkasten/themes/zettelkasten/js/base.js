@@ -172,7 +172,7 @@ const init = () => {
     // Close search modal when result is selected
     // The links get added later so listen to parent
     const searchResults = document.getElementById('mkdocs-search-results');
-    if (searchResults) {
+    if (searchResults && searchModal) {
         searchResults.addEventListener('click', (e) => {
             if (e.target.matches('a')) {
                 searchModal.close();
@@ -181,16 +181,18 @@ const init = () => {
     }
 
     // Populate keyboard modal with proper Keys
-    const kbdMap = [
-        {sel: '.help.shortcut kbd', key: shortcuts.help},
-        {sel: '.prev.shortcut kbd', key: shortcuts.previous},
-        {sel: '.next.shortcut kbd', key: shortcuts.next},
-        {sel: '.search.shortcut kbd', key: shortcuts.search}
-    ];
-    kbdMap.forEach((item) => {
-        const el = keyboardModal.querySelector(item.sel);
-        if (el) el.innerHTML = keyCodes[item.key];
-    });
+    if (keyboardModal) {
+        const kbdMap = [
+            {sel: '.help.shortcut kbd', key: shortcuts.help},
+            {sel: '.prev.shortcut kbd', key: shortcuts.previous},
+            {sel: '.next.shortcut kbd', key: shortcuts.next},
+            {sel: '.search.shortcut kbd', key: shortcuts.search}
+        ];
+        kbdMap.forEach((item) => {
+            const el = keyboardModal.querySelector(item.sel);
+            if (el) el.innerHTML = keyCodes[item.key];
+        });
+    }
 
     // Keyboard navigation
     document.addEventListener('keydown', (e) => {
@@ -210,19 +212,21 @@ const init = () => {
                 break;
             case shortcuts.search:
                 e.preventDefault();
-                keyboardModal.close();
-                searchModal.showModal();
-                const qi = searchModal.querySelector('#mkdocs-search-query');
-                if (qi) qi.focus();
+                if (keyboardModal) keyboardModal.close();
+                if (searchModal) {
+                    searchModal.showModal();
+                    const qi = searchModal.querySelector('#mkdocs-search-query');
+                    if (qi) qi.focus();
+                }
                 break;
             case shortcuts.help:
-                searchModal.close();
-                keyboardModal.showModal();
+                if (searchModal) searchModal.close();
+                if (keyboardModal) keyboardModal.showModal();
                 break;
             default: break;
         }
         if (page) {
-            keyboardModal.close();
+            if (keyboardModal) keyboardModal.close();
             window.location.href = page;
         }
     });
@@ -375,7 +379,7 @@ const init = () => {
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && sidebarNav.classList.contains('open')) closeSidebar();
         });
-        if (sessionStorage.getItem('sidebar-open') !== '0') openSidebar();
+        if (sessionStorage.getItem('sidebar-open') === '1') openSidebar();
     }
 
     // Scrollspy via IntersectionObserver

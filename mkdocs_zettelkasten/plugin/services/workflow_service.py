@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 import logging
-from datetime import date
-from pathlib import Path
+from datetime import date, datetime, timezone
 from typing import TYPE_CHECKING, Any
 
 from mkdocs_zettelkasten.plugin.utils.jinja_utils import create_jinja_environment
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
+    from mkdocs.structure.files import Files
+
     from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
 
 logger = logging.getLogger(
@@ -30,7 +33,7 @@ class WorkflowService:
         file_suffix: str = ".md",
         today: date | None = None,
     ) -> dict[str, Any]:
-        today = today or date.today()
+        today = today or datetime.now(tz=timezone.utc).date()
         backlinked_ids, backlink_counts = self._resolve_backlinks(
             store, backlinks, file_suffix
         )
@@ -58,7 +61,7 @@ class WorkflowService:
         output_path.write_text(content, encoding="utf-8")
         logger.info("Generated workflow dashboard.")
 
-    def add_to_build(self, files: Any) -> None:
+    def add_to_build(self, files: Files) -> None:
         """Add generated workflow.md to MkDocs file collection."""
         from mkdocs.structure.files import File
 
@@ -70,9 +73,14 @@ class WorkflowService:
         )
         files.append(new_file)
 
-    def _id_to_date(self, zettel_id: int) -> date:
+    def _id_to_date(self, zettel_id: int) -> date | None:
         s = str(zettel_id)
-        return date(int(s[:4]), int(s[4:6]), int(s[6:8]))
+        if len(s) < 8 or not s[:8].isdigit():
+            return None
+        try:
+            return date(int(s[:4]), int(s[4:6]), int(s[6:8]))
+        except ValueError:
+            return None
 
     def _resolve_backlinks(self, store, backlinks, file_suffix):
         ids: set[int] = set()
@@ -112,6 +120,8 @@ class WorkflowService:
             if z.note_type != "fleeting":
                 continue
             created = self._id_to_date(z.id)
+            if not created:
+                continue
             age = (today - created).days
             items.append({
                 "id": z.id,
@@ -143,6 +153,8 @@ class WorkflowService:
             if z.maturity != "developing":
                 continue
             created = self._id_to_date(z.id)
+            if not created:
+                continue
             age = (today - created).days
             if age <= self.REVIEW_STALE_DAYS:
                 continue

@@ -18,8 +18,7 @@ def _make_zettel(zettel_id, title, rel_path, links=None):
 
 
 def _make_store(zettels):
-    store = ZettelStore(zettels)
-    return store
+    return ZettelStore(zettels)
 
 
 class TestSharedLinkSuggestions:
@@ -48,7 +47,7 @@ class TestSharedLinkSuggestions:
         c = _make_zettel(3, "C", "c.md")
         store = _make_store([a, b, c])
         result = self.service.compute(store, [])
-        sugg = [s for s in result.get(1, []) if s["target_id"] == 2][0]
+        sugg = next(s for s in result.get(1, []) if s["target_id"] == 2)
         assert "shared link" in sugg["reason"]
         assert sugg["confidence"] > 0
 
@@ -98,7 +97,7 @@ class TestSharedTagSuggestions:
             {"src_path": "b.md", "tags": ["philosophy", "science"]},
         ]
         result = self.service.compute(store, tags_meta)
-        sugg = [s for s in result.get(1, []) if s["target_id"] == 2][0]
+        sugg = next(s for s in result.get(1, []) if s["target_id"] == 2)
         assert "shared tag" in sugg["reason"]
 
     def test_no_shared_tags_no_suggestion(self):
@@ -127,7 +126,7 @@ class TestMergeAndLimits:
                    for i, name in enumerate(
                        ["shared", "x1", "x2", "x3", "x4", "y1", "y2", "y3", "y4"],
                        start=10)]
-        store = _make_store([a, b] + targets)
+        store = _make_store([a, b, *targets])
         result = self.service.compute(store, [])
         sugg_for_a = result.get(1, [])
         # Jaccard = 1/9 ~ 0.11 < 0.3 threshold
@@ -137,7 +136,7 @@ class TestMergeAndLimits:
         """A note with many tag matches should only get top 5."""
         main = _make_zettel(1, "Main", "main.md")
         others = [_make_zettel(i, f"Other{i}", f"other{i}.md") for i in range(2, 9)]
-        store = _make_store([main] + others)
+        store = _make_store([main, *others])
         tags_meta = [{"src_path": "main.md", "tags": ["a", "b"]}]
         tags_meta += [{"src_path": f"other{i}.md", "tags": ["a", "b"]} for i in range(2, 9)]
         result = self.service.compute(store, tags_meta)

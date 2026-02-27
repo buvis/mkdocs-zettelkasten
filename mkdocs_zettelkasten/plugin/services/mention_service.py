@@ -5,6 +5,7 @@ import re
 from collections import defaultdict
 
 from mkdocs_zettelkasten.plugin.utils.patterns import MD_LINK, WIKI_LINK
+from mkdocs_zettelkasten.plugin.utils.snippet_utils import truncate_around
 
 logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
@@ -24,46 +25,40 @@ class MentionService:
 
         for target in store.zettels:
             title = target.title
-            title_ok = len(title) >= _MIN_TITLE_LEN
             id_str = str(target.id)
-            title_pat = re.compile(r"\b" + re.escape(title) + r"\b", re.IGNORECASE) if title_ok else None
+            title_pat = re.compile(r"\b" + re.escape(title) + r"\b", re.IGNORECASE) if len(title) >= _MIN_TITLE_LEN else None
             id_pat = re.compile(r"\b" + re.escape(id_str) + r"\b")
 
             for source in store.zettels:
-                if source.id == target.id:
+                if source.id == target.id or self._already_links_to(source, target):
                     continue
-                if self._already_links_to(source, target):
-                    continue
-
-                body = source.body
-                body_clean = _FENCED_CODE.sub(lambda m: " " * len(m.group()), body)
-
-                for paragraph in self._split_paragraphs(body_clean):
-                    stripped = self._strip_syntax(paragraph)
-
-                    match = None
-                    matched_term = None
-                    if title_pat:
-                        m = title_pat.search(stripped)
-                        if m:
-                            match = m
-                            matched_term = title
-                    if not match:
-                        m = id_pat.search(stripped)
-                        if m:
-                            match = m
-                            matched_term = id_str
-
-                    if match:
-                        # Get the original paragraph (before fenced code stripping)
-                        # by finding the matching paragraph in the original body
-                        orig_paragraph = self._find_original_paragraph(body, paragraph)
-                        snippet = self._make_snippet(orig_paragraph, match, matched_term)
-                        mentions[target.id].append((source.id, snippet))
-                        break  # one mention per source is enough
+                result = self._find_mention_in_body(source.body, title_pat, title, id_pat, id_str)
+                if result:
+                    mentions[target.id].append((source.id, result))
 
         logger.debug("Found unlinked mentions for %d targets", len(mentions))
         return dict(mentions)
+
+    def _find_mention_in_body(self, body, title_pat, title, id_pat, id_str):
+        """Search body paragraphs for a mention, return snippet or None."""
+        body_clean = _FENCED_CODE.sub(lambda m: " " * len(m.group()), body)
+
+        for paragraph in self._split_paragraphs(body_clean):
+            stripped = self._strip_syntax(paragraph)
+            matched_term = self._match_paragraph(stripped, title_pat, title, id_pat, id_str)
+            if matched_term:
+                orig_paragraph = self._find_original_paragraph(body, paragraph)
+                return self._make_snippet(orig_paragraph, matched_term)
+        return None
+
+    @staticmethod
+    def _match_paragraph(stripped, title_pat, title, id_pat, id_str):
+        """Return matched term if paragraph contains a mention, else None."""
+        if title_pat and title_pat.search(stripped):
+            return title
+        if id_pat.search(stripped):
+            return id_str
+        return None
 
     @staticmethod
     def _already_links_to(source, target) -> bool:
@@ -124,42 +119,21 @@ class MentionService:
         return cleaned_paragraph
 
     @staticmethod
-    def _make_snippet(paragraph: str, match: re.Match, term: str) -> str:
+    def _make_snippet(paragraph: str, term: str) -> str:
         """Create a display snippet with <mark> around the matched term."""
-        # Clean link syntax for display: replace links with their display text
         clean = WIKI_LINK.sub(lambda m: m.group("title") or m.group("url"), paragraph)
         clean = MD_LINK.sub(lambda m: m.group("title"), clean)
 
-        # Find the term in the cleaned text and insert <mark>
         term_pat = re.compile(r"\b" + re.escape(term) + r"\b", re.IGNORECASE)
         m = term_pat.search(clean)
         if m:
-            clean = clean[:m.start()] + "<mark>" + clean[m.start():m.end()] + "</mark>" + clean[m.end():]
+            marked = f"<mark>{clean[m.start():m.end()]}</mark>"
+            clean = clean[:m.start()] + marked + clean[m.end():]
             mark_start = m.start()
+            marker_len = len(marked)
         else:
             mark_start = 0
+            marker_len = 0
 
-        # Flatten to single line for display
         clean = " ".join(clean.split())
-
-        if len(clean) <= 200:
-            return clean
-
-        # Center a 200-char window on the match
-        half = 100
-        start = max(0, mark_start - half)
-        end = min(len(clean), mark_start + len("<mark>") + len(term) + len("</mark>") + half)
-
-        if start > 0:
-            space = clean.rfind(" ", 0, start)
-            start = space + 1 if space != -1 else start
-        if end < len(clean):
-            space = clean.find(" ", end)
-            end = space if space != -1 else end
-
-        snippet = clean[start:end]
-        if start > 0:
-            snippet = "..." + snippet
-        if end < len(clean):
-            snippet = snippet + "..."
-        return snippet
+        return truncate_around(clean, mark_start, marker_len)

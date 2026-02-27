@@ -23,8 +23,8 @@ class SequenceService:
         for z in store.zettels:
             if z.sequence_parent_id is not None:
                 children[z.sequence_parent_id].append(z.id)
-        for k in children:
-            children[k].sort()
+        for child_list in children.values():
+            child_list.sort()
 
         total = sum(len(v) for v in children.values())
         logger.info("Built sequence tree: %d parent-child relations", total)

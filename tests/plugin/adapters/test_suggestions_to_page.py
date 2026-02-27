@@ -16,7 +16,7 @@ def _make_page(zettel_id):
 
 def _make_zettel_lookup(zettels):
     mapping = {z.id: z for z in zettels}
-    return lambda zid: mapping.get(zid)
+    return mapping.get
 
 
 def _make_target(zettel_id, title, rel_path):

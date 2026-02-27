@@ -5,11 +5,13 @@ import logging
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, ClassVar
 
 if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
     from mkdocs.structure.files import Files
+
+    from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
 
 from mkdocs_zettelkasten.plugin.utils.jinja_utils import create_jinja_environment
 
@@ -41,7 +43,7 @@ class ValidationService:
         if not self.output_folder.exists():
             self.output_folder.mkdir(parents=True)
 
-    def validate(self, zettel_service: Any, files: Files, config: MkDocsConfig) -> None:
+    def validate(self, zettel_service: ZettelService, files: Files, config: MkDocsConfig) -> None:
         from .backlink_processor import BacklinkProcessor
 
         self.issues.clear()
@@ -67,7 +69,7 @@ class ValidationService:
     def get_issues(self, rel_path: str) -> list[ValidationIssue]:
         return self.issues.get(rel_path, [])
 
-    def _check_invalid_files(self, zettel_service: Any) -> None:
+    def _check_invalid_files(self, zettel_service: ZettelService) -> None:
         for f in zettel_service.invalid_files:
             self.issues[f.src_path].append(
                 ValidationIssue(
@@ -78,7 +80,7 @@ class ValidationService:
                 )
             )
 
-    def _check_orphans(self, zettel_service: Any) -> None:
+    def _check_orphans(self, zettel_service: ZettelService) -> None:
         targeted_ids: set[int] = set()
         for link_path in zettel_service.backlinks:
             target = zettel_service.store.get_by_partial_path(
@@ -99,7 +101,7 @@ class ValidationService:
                 )
 
     def _check_broken_links(
-        self, zettel_service: Any, backlink_processor_cls: type
+        self, zettel_service: ZettelService, backlink_processor_cls: type
     ) -> None:
         for zettel in zettel_service.get_zettels():
             internal_links = [
@@ -124,7 +126,7 @@ class ValidationService:
                         )
                     )
 
-    def _check_stale_fleeting(self, zettel_service: Any) -> None:
+    def _check_stale_fleeting(self, zettel_service: ZettelService) -> None:
         from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
 
         cutoff = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(
@@ -144,7 +146,7 @@ class ValidationService:
                     )
                 )
 
-    def _check_missing_type(self, zettel_service: Any) -> None:
+    def _check_missing_type(self, zettel_service: ZettelService) -> None:
         for zettel in zettel_service.get_zettels():
             if zettel.note_type is None:
                 self.issues[zettel.rel_path].append(
@@ -156,7 +158,7 @@ class ValidationService:
                     )
                 )
 
-    def _check_broken_sequences(self, zettel_service: Any) -> None:
+    def _check_broken_sequences(self, zettel_service: ZettelService) -> None:
         for zettel in zettel_service.get_zettels():
             if zettel.sequence_parent_id is None:
                 continue
@@ -171,7 +173,7 @@ class ValidationService:
                     )
                 )
 
-    _CHECK_LABELS: dict[str, tuple[str, int]] = {
+    _CHECK_LABELS: ClassVar[dict[str, tuple[str, int]]] = {
         "invalid_file": ("Invalid files", 0),
         "broken_link": ("Broken links", 1),
         "orphan": ("Orphan zettels", 2),
