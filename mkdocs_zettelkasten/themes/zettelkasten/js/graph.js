@@ -16,6 +16,26 @@
     return cssVar('--graph-node') || '#0066cc';
   };
 
+  let colorMode = 'type';
+
+  const typeColors = {
+    fleeting: '#e8a838',
+    literature: '#5b98d2',
+    permanent: '#6bb86b',
+  };
+
+  const maturityColors = {
+    draft: '#e06c75',
+    developing: '#e8a838',
+    evergreen: '#6bb86b',
+  };
+
+  const nodeColorByMode = (node) => {
+    if (colorMode === 'type' && node.type) return typeColors[node.type] || cssVar('--graph-node') || '#0066cc';
+    if (colorMode === 'maturity' && node.maturity) return maturityColors[node.maturity] || cssVar('--graph-node') || '#0066cc';
+    return nodeColor(node);
+  };
+
   /* ── force simulation ───────────────────────────────────── */
 
   const ForceGraph = (container, data, opts) => {
@@ -188,12 +208,23 @@
         const p = toScreen(n.x, n.y);
         const isCurrent = currentId && n.id === currentId;
         const isHovered = n === hovered;
-        const radius = isCurrent ? r * 1.8 : (isHovered ? r * 1.4 : r);
+        const degScale = Math.min(1 + n._degree * 0.15, 3);
+        const baseR = r * degScale;
+        const radius = isCurrent ? baseR * 1.5 : (isHovered ? baseR * 1.3 : baseR);
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = isCurrent ? currentColor : nodeColor(n);
+        ctx.fillStyle = isCurrent ? currentColor : nodeColorByMode(n);
         ctx.fill();
+
+        /* MOC ring */
+        if (n.role === 'moc') {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, radius + 2, 0, Math.PI * 2);
+          ctx.strokeStyle = currentColor;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
 
         /* label for hovered or current */
         if (isHovered || isCurrent) {
@@ -367,6 +398,250 @@
     };
   };
 
+  /* ── BFS ─────────────────────────────────────────────────── */
+
+  const bfs = (startId, depth, edges, idMap) => {
+    const visited = new Set();
+    visited.add(startId);
+    let frontier = [startId];
+    for (let d = 0; d < depth; d++) {
+      const next = [];
+      for (let f = 0; f < frontier.length; f++) {
+        for (let e = 0; e < edges.length; e++) {
+          const edge = edges[e];
+          if (edge.source.id === frontier[f] && !visited.has(edge.target.id)) {
+            visited.add(edge.target.id);
+            next.push(edge.target.id);
+          }
+          if (edge.target.id === frontier[f] && !visited.has(edge.source.id)) {
+            visited.add(edge.source.id);
+            next.push(edge.source.id);
+          }
+        }
+      }
+      frontier = next;
+    }
+    return visited;
+  };
+
+  /* ── toolbar ──────────────────────────────────────────── */
+
+  const buildToolbar = (graph, data) => {
+    const toolbar = document.getElementById('graph-toolbar');
+    if (!toolbar) return;
+
+    /* collect unique values from data */
+    const types = new Set();
+    const maturities = new Set();
+    const roles = new Set();
+    const tagCounts = {};
+    for (let i = 0; i < data.nodes.length; i++) {
+      const n = data.nodes[i];
+      types.add(n.type || 'unknown');
+      maturities.add(n.maturity || 'unknown');
+      roles.add(n.role || 'regular');
+      const tags = n.tags || [];
+      for (let t = 0; t < tags.length; t++) {
+        tagCounts[tags[t]] = (tagCounts[tags[t]] || 0) + 1;
+      }
+    }
+    const sortedTags = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a]);
+
+    /* filter state — sets of CHECKED values (all checked = show all) */
+    const checked = {
+      types: new Set(types),
+      maturities: new Set(maturities),
+      roles: new Set(roles),
+      tags: new Set(), /* empty = no tag filter */
+      search: '',
+      focusId: null,
+      focusDepth: 2,
+    };
+
+    /* count display */
+    const countEl = document.createElement('span');
+    countEl.className = 'graph-node-count';
+    const updateCount = () => {
+      const vis = graph.nodes.filter(n => n._visible).length;
+      countEl.textContent = vis + '/' + graph.nodes.length + ' notes';
+    };
+
+    /* ── apply all filters ─────────────────────────────── */
+    const applyFilters = () => {
+      let neighborSet = null;
+      if (checked.focusId) {
+        neighborSet = bfs(checked.focusId, checked.focusDepth, graph.resolvedEdges, graph.idMap);
+      }
+      const visibleIds = new Set();
+      for (let i = 0; i < graph.nodes.length; i++) {
+        const n = graph.nodes[i];
+        if (neighborSet && !neighborSet.has(n.id)) continue;
+        if (checked.search && !n.title.toLowerCase().includes(checked.search)) continue;
+        const nType = n.type || 'unknown';
+        const nMat = n.maturity || 'unknown';
+        const nRole = n.role || 'regular';
+        if (types.size > 0 && !checked.types.has(nType)) continue;
+        if (maturities.size > 0 && !checked.maturities.has(nMat)) continue;
+        if (roles.size > 0 && !checked.roles.has(nRole)) continue;
+        if (checked.tags.size > 0) {
+          const nTags = n.tags || [];
+          if (!nTags.some(t => checked.tags.has(t))) continue;
+        }
+        visibleIds.add(n.id);
+      }
+      graph.setVisibility(visibleIds.size === graph.nodes.length ? null : visibleIds);
+      updateCount();
+    };
+
+    /* ── checkbox group builder ────────────────────────── */
+    const makeCheckboxGroup = (label, values, checkedSet) => {
+      if (values.size === 0) return null;
+      const group = document.createElement('div');
+      group.className = 'graph-filter-group';
+      const lbl = document.createElement('span');
+      lbl.className = 'graph-filter-label';
+      lbl.textContent = label;
+      group.appendChild(lbl);
+      const sorted = Array.from(values).sort();
+      for (let i = 0; i < sorted.length; i++) {
+        const val = sorted[i];
+        const lb = document.createElement('label');
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = true;
+        cb.addEventListener('change', () => {
+          if (cb.checked) checkedSet.add(val); else checkedSet.delete(val);
+          applyFilters();
+        });
+        lb.appendChild(cb);
+        lb.appendChild(document.createTextNode(' ' + val));
+        group.appendChild(lb);
+      }
+      return group;
+    };
+
+    const sep = () => { const d = document.createElement('div'); d.className = 'graph-toolbar-sep'; return d; };
+
+    /* ── build groups ──────────────────────────────────── */
+    const typeGroup = makeCheckboxGroup('Type', types, checked.types);
+    const matGroup = makeCheckboxGroup('Maturity', maturities, checked.maturities);
+    const roleGroup = makeCheckboxGroup('Role', roles, checked.roles);
+
+    if (typeGroup) { toolbar.appendChild(typeGroup); toolbar.appendChild(sep()); }
+    if (matGroup) { toolbar.appendChild(matGroup); toolbar.appendChild(sep()); }
+    if (roleGroup) { toolbar.appendChild(roleGroup); toolbar.appendChild(sep()); }
+
+    /* ── tag pills ───────────────────────────────────────── */
+    if (sortedTags.length > 0) {
+      const tagGroup = document.createElement('div');
+      tagGroup.className = 'graph-filter-group';
+      const tagLabel = document.createElement('span');
+      tagLabel.className = 'graph-filter-label';
+      tagLabel.textContent = 'Tags';
+      tagGroup.appendChild(tagLabel);
+      const tagScroll = document.createElement('div');
+      tagScroll.className = 'graph-tag-scroll';
+      for (let i = 0; i < sortedTags.length; i++) {
+        const tag = sortedTags[i];
+        const pill = document.createElement('span');
+        pill.className = 'graph-tag-pill';
+        pill.textContent = '#' + tag;
+        pill.addEventListener('click', () => {
+          if (checked.tags.has(tag)) {
+            checked.tags.delete(tag);
+            pill.classList.remove('active');
+          } else {
+            checked.tags.add(tag);
+            pill.classList.add('active');
+          }
+          applyFilters();
+        });
+        tagScroll.appendChild(pill);
+      }
+      tagGroup.appendChild(tagScroll);
+      toolbar.appendChild(tagGroup);
+      toolbar.appendChild(sep());
+    }
+
+    /* ── search ──────────────────────────────────────────── */
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.id = 'graph-search';
+    searchInput.placeholder = 'Search notes\u2026';
+    let searchTimeout = null;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        checked.search = searchInput.value.trim().toLowerCase();
+        applyFilters();
+        if (checked.search) {
+          const match = graph.nodes.find(n => n._visible);
+          if (match) graph.centerOn(match.id);
+        }
+      }, 200);
+    });
+    toolbar.appendChild(searchInput);
+    toolbar.appendChild(sep());
+
+    /* ── neighborhood focus ──────────────────────────────── */
+    const neighGroup = document.createElement('div');
+    neighGroup.className = 'graph-neighborhood';
+    const depthLabel = document.createElement('label');
+    depthLabel.textContent = 'Depth ';
+    const depthSlider = document.createElement('input');
+    depthSlider.type = 'range';
+    depthSlider.min = '1';
+    depthSlider.max = '5';
+    depthSlider.value = '2';
+    depthSlider.addEventListener('input', () => {
+      checked.focusDepth = parseInt(depthSlider.value, 10);
+      if (checked.focusId) applyFilters();
+    });
+    depthLabel.appendChild(depthSlider);
+    neighGroup.appendChild(depthLabel);
+
+    const clearBtn = document.createElement('button');
+    clearBtn.id = 'graph-clear-focus';
+    clearBtn.textContent = 'Clear focus';
+    clearBtn.style.display = 'none';
+    clearBtn.addEventListener('click', () => {
+      checked.focusId = null;
+      clearBtn.style.display = 'none';
+      applyFilters();
+    });
+    neighGroup.appendChild(clearBtn);
+    toolbar.appendChild(neighGroup);
+    toolbar.appendChild(sep());
+
+    /* ── color mode ──────────────────────────────────────── */
+    const colorGroup = document.createElement('div');
+    colorGroup.className = 'graph-color-mode';
+    const colorLabel = document.createElement('span');
+    colorLabel.className = 'graph-filter-label';
+    colorLabel.textContent = 'Color';
+    colorGroup.appendChild(colorLabel);
+    const colorSelect = document.createElement('select');
+    const modes = [['type', 'By type'], ['maturity', 'By maturity'], ['tag', 'By tag']];
+    for (let i = 0; i < modes.length; i++) {
+      const opt = document.createElement('option');
+      opt.value = modes[i][0];
+      opt.textContent = modes[i][1];
+      colorSelect.appendChild(opt);
+    }
+    colorSelect.addEventListener('change', () => {
+      colorMode = colorSelect.value;
+      graph.draw();
+    });
+    colorGroup.appendChild(colorSelect);
+    toolbar.appendChild(colorGroup);
+    toolbar.appendChild(sep());
+
+    toolbar.appendChild(countEl);
+    updateCount();
+
+    return { checked, applyFilters };
+  };
+
   /* ── init ────────────────────────────────────────────────── */
 
   const initGraph = (container, opts) => {
@@ -384,6 +659,19 @@
 
       container.setAttribute('data-node-count', data.nodes.length);
       const graph = ForceGraph(container, data, opts);
+
+      if (container.id === 'graph-container') {
+        const toolbarState = buildToolbar(graph, data);
+        if (toolbarState) {
+          graph.setOnFocus((nodeId) => {
+            toolbarState.checked.focusId = nodeId;
+            const clearBtn = document.getElementById('graph-clear-focus');
+            if (clearBtn) clearBtn.style.display = '';
+            toolbarState.applyFilters();
+            graph.centerOn(nodeId);
+          });
+        }
+      }
     });
   };
 
