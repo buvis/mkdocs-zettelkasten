@@ -35,6 +35,7 @@ class ZettelService:
         self.mention_service = MentionService()
         self.mentions: dict[int, list[tuple[int, str]]] = {}
         self.sequence_children: dict[int, list[int]] = {}
+        self.suggestions: dict[int, list[dict]] = {}
 
     def configure(self, zettel_config: dict[str, Any]) -> None:
         self.zettel_config = zettel_config

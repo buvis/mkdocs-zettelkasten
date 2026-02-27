@@ -21,6 +21,7 @@ from mkdocs.plugins import BasePlugin
 from mkdocs_zettelkasten.plugin.services.graph_exporter import GraphExporter
 from mkdocs_zettelkasten.plugin.services.page_transformer import PageTransformer
 from mkdocs_zettelkasten.plugin.services.preview_exporter import PreviewExporter
+from mkdocs_zettelkasten.plugin.services.suggestion_service import SuggestionService
 from mkdocs_zettelkasten.plugin.services.tags_service import TagsService
 from mkdocs_zettelkasten.plugin.services.validation_service import ValidationService
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
@@ -69,6 +70,7 @@ class ZettelkastenPlugin(BasePlugin):
         ("file_suffix", config_options.Type(str, default=".md")),
         ("graph_enabled", config_options.Type(bool, default=False)),
         ("preview_enabled", config_options.Type(bool, default=False)),
+        ("suggestions_enabled", config_options.Type(bool, default=False)),
         ("transclusion_strip_heading", config_options.Type(bool, default=True)),
     )
 
@@ -79,6 +81,7 @@ class ZettelkastenPlugin(BasePlugin):
         self.validation_service = ValidationService()
         self.graph_exporter = GraphExporter()
         self.preview_exporter = PreviewExporter()
+        self.suggestion_service = SuggestionService()
         self.page_transformer = PageTransformer()
         self._initialize_logger()
         self.logger.debug("Initialized ZettelkastenPlugin with services and logger.")
@@ -151,6 +154,13 @@ class ZettelkastenPlugin(BasePlugin):
             self._export_graph(files, config)
         if self.config["preview_enabled"]:
             self._export_previews(files, config)
+        if self.config["suggestions_enabled"]:
+            self.zettel_service.suggestions = self.suggestion_service.compute(
+                self.zettel_service.store,
+                self.tags_service.metadata,
+                file_suffix=self.config["file_suffix"],
+            )
+            self._export_suggestions(files, config)
         if self.config["validation_enabled"]:
             self.validation_service.validate(self.zettel_service, files, config)
             config["extra"]["validation_issues_count"] = (
@@ -190,6 +200,42 @@ class ZettelkastenPlugin(BasePlugin):
         files.append(
             File(
                 path="previews.json",
+                src_dir=str(self.tags_service.tags_folder),
+                dest_dir=config["site_dir"],
+                use_directory_urls=False,
+            )
+        )
+
+    def _export_suggestions(self, files: Files, config: MkDocsConfig) -> None:
+        from mkdocs.structure.files import File
+
+        sugg_data = {}
+        store = self.zettel_service.store
+        suffix = self.config["file_suffix"]
+        for zid, suggs in self.zettel_service.suggestions.items():
+            z = store.get_by_id(zid)
+            if not z:
+                continue
+            entries = []
+            for s in suggs:
+                target = store.get_by_id(s["target_id"])
+                if not target:
+                    continue
+                entries.append({
+                    "target_id": str(s["target_id"]),
+                    "target_title": target.title,
+                    "target_url": target.rel_path.removesuffix(suffix) + "/",
+                    "reason": s["reason"],
+                    "confidence": s["confidence"],
+                })
+            if entries:
+                sugg_data[str(zid)] = entries
+
+        sugg_path = self.tags_service.tags_folder / "suggestions.json"
+        sugg_path.write_text(json.dumps(sugg_data), encoding="utf-8")
+        files.append(
+            File(
+                path="suggestions.json",
                 src_dir=str(self.tags_service.tags_folder),
                 dest_dir=config["site_dir"],
                 use_directory_urls=False,

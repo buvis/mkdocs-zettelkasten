@@ -10,6 +10,9 @@ from mkdocs_zettelkasten.plugin.adapters.backlinks_to_page import (
 from mkdocs_zettelkasten.plugin.adapters.mentions_to_page import (
     adapt_mentions_to_page,
 )
+from mkdocs_zettelkasten.plugin.adapters.suggestions_to_page import (
+    adapt_suggestions_to_page,
+)
 from mkdocs_zettelkasten.plugin.adapters.sequence_to_page import (
     adapt_sequence_to_page,
 )
@@ -79,6 +82,12 @@ class PageTransformer:
             page,
             zettel_service.mentions,
             zettel_service.get_zettel_by_id,
+        )
+        adapt_suggestions_to_page(
+            page,
+            zettel_service.suggestions,
+            zettel_service.get_zettel_by_id,
+            file_suffix=zettel_service.file_suffix,
         )
         adapt_sequence_to_page(
             page,

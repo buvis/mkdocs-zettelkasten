@@ -33,6 +33,7 @@ class TestZettelkastenPlugin:
             "file_suffix": ".md",
             "graph_enabled": False,
             "preview_enabled": False,
+            "suggestions_enabled": False,
             "transclusion_strip_heading": True,
         }
         return plugin
