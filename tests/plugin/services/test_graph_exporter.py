@@ -50,6 +50,7 @@ class TestGraphExporter:
             "title": "Install",
             "url": "notes/install/",
             "tags": [],
+            "degree": 0,
         }
         assert result["edges"] == []
 
@@ -181,6 +182,38 @@ class TestGraphExporter:
 
         seq_edges = [e for e in result["edges"] if e.get("type") == "sequence"]
         assert seq_edges == []
+
+    def test_node_degree_with_links(self) -> None:
+        z1 = _make_zettel(1, "/docs/a.md", "a.md", "A", ["b.md"])
+        z2 = _make_zettel(2, "/docs/b.md", "b.md", "B", ["a.md"])
+        store = ZettelStore([z1, z2])
+
+        result = self.exporter.export(store, [], _build_backlinks(store))
+
+        degrees = {n["id"]: n["degree"] for n in result["nodes"]}
+        assert degrees["1"] >= 1
+        assert degrees["2"] >= 1
+
+    def test_node_degree_no_links(self) -> None:
+        z = _make_zettel(1, "/docs/a.md", "a.md", "A", [])
+        store = ZettelStore([z])
+
+        result = self.exporter.export(store, [], {})
+
+        assert result["nodes"][0]["degree"] == 0
+
+    def test_node_degree_counts_sequence_edges(self) -> None:
+        z1 = _make_zettel(1, "/docs/a.md", "a.md", "A", [])
+        z1.sequence_parent_id = None
+        z2 = _make_zettel(2, "/docs/b.md", "b.md", "B", [])
+        z2.sequence_parent_id = 1
+        store = ZettelStore([z1, z2])
+
+        result = self.exporter.export(store, [], _build_backlinks(store))
+
+        degrees = {n["id"]: n["degree"] for n in result["nodes"]}
+        assert degrees["1"] == 1
+        assert degrees["2"] == 1
 
     def test_link_edges_have_no_type(self) -> None:
         z1 = _make_zettel(1, "/docs/a.md", "a.md", "A", ["b.md"])

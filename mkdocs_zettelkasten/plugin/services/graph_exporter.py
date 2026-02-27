@@ -77,4 +77,13 @@ class GraphExporter:
                     "type": "sequence",
                 })
 
+        # Compute node degree
+        degree: dict[str, int] = {}
+        for edge in edges:
+            degree[edge["source"]] = degree.get(edge["source"], 0) + 1
+            degree[edge["target"]] = degree.get(edge["target"], 0) + 1
+
+        for node in nodes:
+            node["degree"] = degree.get(node["id"], 0)
+
         return {"nodes": nodes, "edges": edges}
