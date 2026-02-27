@@ -15,10 +15,11 @@ def test_settings_modal_opens(page, default_site):
 
 
 def test_settings_modal_has_scheme_grid(page, default_site):
+    expected = len(page.request.get(f"{default_site}/css/schemes/registry.json").json())
     page.goto(default_site)
     _open_settings(page)
     cards = page.locator(".scheme-card")
-    assert cards.count() >= 25
+    assert cards.count() == expected
 
 
 def test_settings_modal_has_code_theme_picker(page, default_site):

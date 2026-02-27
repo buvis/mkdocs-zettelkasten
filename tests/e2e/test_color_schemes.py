@@ -7,10 +7,11 @@ def test_gallery_page_loads(page, default_site):
 
 
 def test_gallery_has_all_schemes(page, default_site):
+    expected = len(page.request.get(f"{default_site}/css/schemes/registry.json").json())
     page.goto(f"{default_site}/color-schemes.html")
     page.wait_for_selector(".gallery-card", timeout=3000)
     cards = page.locator(".gallery-card")
-    assert cards.count() >= 25
+    assert cards.count() == expected
 
 
 def test_gallery_has_category_headings(page, default_site):
