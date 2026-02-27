@@ -148,6 +148,24 @@ class TestSequenceOutlines:
         assert result["sequence_outlines"] == []
 
 
+class TestFlattenTree:
+    def setup_method(self):
+        self.service = OutlineService()
+
+    def test_flattens_nested_tree(self):
+        root = _make_zettel(1, "Root", "r.md")
+        child = _make_zettel(2, "Child", "c.md", sequence_parent_id=1)
+        grandchild = _make_zettel(3, "Grand", "g.md", sequence_parent_id=2)
+        store = ZettelStore([root, child, grandchild])
+        seq_children = {1: [2], 2: [3]}
+        result = self.service.compute(store, seq_children, file_suffix=".md")
+        flat = result["sequence_outlines"][0]["flat_entries"]
+        assert len(flat) == 3
+        assert flat[0]["indent"] == 0
+        assert flat[1]["indent"] == 1
+        assert flat[2]["indent"] == 2
+
+
 class TestTransclusionText:
     def setup_method(self):
         self.service = OutlineService()

@@ -146,9 +146,17 @@ class OutlineService:
                 children.append(
                     self._build_tree_node(child, store, sequence_children)
                 )
-        return {
+        node = {
             "id": zettel.id,
             "title": zettel.title,
             "rel_path": zettel.rel_path,
             "children": children,
         }
+        node["flat_entries"] = self._flatten_tree(node)
+        return node
+
+    def _flatten_tree(self, node, depth=0):
+        items = [{"title": node["title"], "rel_path": node["rel_path"], "indent": depth}]
+        for child in node["children"]:
+            items.extend(self._flatten_tree(child, depth + 1))
+        return items
