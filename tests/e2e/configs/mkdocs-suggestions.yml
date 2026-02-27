@@ -1,0 +1,9 @@
+INHERIT: ../../../mkdocs.yml
+
+docs_dir: ../../../docs
+
+plugins:
+  - search
+  - zettelkasten:
+      log_level: DEBUG
+      suggestions_enabled: true
