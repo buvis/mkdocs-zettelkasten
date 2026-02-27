@@ -1,10 +1,18 @@
 from __future__ import annotations
 
+import logging
 from datetime import date
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
+
+from mkdocs_zettelkasten.plugin.utils.jinja_utils import create_jinja_environment
 
 if TYPE_CHECKING:
     from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
+
+logger = logging.getLogger(
+    __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
+)
 
 
 class WorkflowService:
@@ -35,6 +43,31 @@ class WorkflowService:
                 store, mentions, backlink_counts
             ),
         }
+
+    def configure(self, output_folder: Path, site_dir: str) -> None:
+        self.output_folder = output_folder
+        self._site_dir = site_dir
+
+    def generate(self, dashboard: dict[str, Any]) -> None:
+        """Render workflow template to output folder."""
+        env = create_jinja_environment(None)
+        template = env.get_template("workflow.md.j2")
+        content = template.render(**dashboard)
+        output_path = self.output_folder / "workflow.md"
+        output_path.write_text(content, encoding="utf-8")
+        logger.info("Generated workflow dashboard.")
+
+    def add_to_build(self, files: Any) -> None:
+        """Add generated workflow.md to MkDocs file collection."""
+        from mkdocs.structure.files import File
+
+        new_file = File(
+            path="workflow.md",
+            src_dir=str(self.output_folder),
+            dest_dir=self._site_dir,
+            use_directory_urls=False,
+        )
+        files.append(new_file)
 
     def _id_to_date(self, zettel_id: int) -> date:
         s = str(zettel_id)
