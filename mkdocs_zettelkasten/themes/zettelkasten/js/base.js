@@ -379,6 +379,9 @@ const init = () => {
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && sidebarNav.classList.contains('open')) closeSidebar();
         });
+        sidebarNav.querySelectorAll('a.sidebar-link').forEach((link) => {
+            link.addEventListener('click', () => closeSidebar());
+        });
         if (sessionStorage.getItem('sidebar-open') === '1') openSidebar();
     }
 

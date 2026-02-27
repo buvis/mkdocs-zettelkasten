@@ -99,17 +99,18 @@ def test_dropdown_closes_on_toggle_click(page, editor_site):
     expect(page.locator("#zettel-edit-dropdown")).to_have_count(0)
 
 
-def test_forget_token_clears_session_storage(page, editor_site):
+def test_forget_token_clears_cached_token(page, editor_site):
     page.goto(f"{editor_site}/{ZETTEL_INSTALL}/")
-    page.evaluate("sessionStorage.setItem('zettel-pat', 'ghp_test')")
-    page.reload()
-    page.wait_for_load_state("domcontentloaded")
+    # Enter a token via the dialog (sets in-memory cachedToken)
+    page.click("#zettel-edit-btn")
+    page.locator(".zettel-edit-dropdown-item", has_text="Edit here").click()
+    page.fill("#zettel-token-input", "ghp_test")
+    page.click("#zettel-token-submit")
+    # Token is now cached; forget button should be visible
     forget_btn = page.locator("#zettel-forget-token-btn")
-    assert forget_btn.is_visible()
+    forget_btn.wait_for(state="visible", timeout=5000)
     forget_btn.click()
-    val = page.evaluate("sessionStorage.getItem('zettel-pat')")
-    assert val is None
-    assert not forget_btn.is_visible()
+    expect(forget_btn).not_to_be_visible()
 
 
 def test_forget_token_hidden_when_no_token(page, editor_site):

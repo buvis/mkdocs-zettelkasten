@@ -6,18 +6,18 @@ MOBILE_WIDTH = 375
 MOBILE_HEIGHT = 667
 
 
-def test_navbar_collapses_on_mobile(page, default_site):
+def test_navbar_collapses_on_mobile(page, topnav_site):
     page.set_viewport_size({"width": MOBILE_WIDTH, "height": MOBILE_HEIGHT})
-    page.goto(default_site)
+    page.goto(topnav_site)
     # hamburger button visible
     assert page.locator("button.navbar-toggler").is_visible()
     # nav items hidden
     assert not page.locator("#navbar-collapse").is_visible()
 
 
-def test_hamburger_opens_nav(page, default_site):
+def test_hamburger_opens_nav(page, topnav_site):
     page.set_viewport_size({"width": MOBILE_WIDTH, "height": MOBILE_HEIGHT})
-    page.goto(default_site)
+    page.goto(topnav_site)
     page.click("button.navbar-toggler")
     page.locator("#navbar-collapse").wait_for(state="visible")
     assert page.locator("#navbar-collapse").is_visible()
@@ -43,9 +43,9 @@ def test_zettel_card_fits_mobile(page, default_site):
     assert box["width"] <= MOBILE_WIDTH
 
 
-def test_nav_items_accessible_on_mobile(page, default_site):
+def test_nav_items_accessible_on_mobile(page, topnav_site):
     page.set_viewport_size({"width": MOBILE_WIDTH, "height": MOBILE_HEIGHT})
-    page.goto(f"{default_site}/{ZETTEL_DEMO}/")
+    page.goto(f"{topnav_site}/{ZETTEL_DEMO}/")
     page.click("button.navbar-toggler")
     page.locator("#navbar-collapse").wait_for(state="visible")
     # settings button should be accessible in expanded nav

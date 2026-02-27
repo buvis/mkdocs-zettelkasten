@@ -1,11 +1,12 @@
 """E2E tests for validation badges and page (testscript 061)."""
 
-from conftest import ZETTEL_INSTALL
+from conftest import ZETTEL_INSTALL, ZETTEL_PUBLISH
 from playwright.sync_api import expect
 
 
 def test_validation_badge_visible_on_zettel(page, default_site):
-    page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
+    # ZETTEL_PUBLISH has a broken_link (warning), so it gets the badge
+    page.goto(f"{default_site}/{ZETTEL_PUBLISH}/")
     badge = page.locator(".validation-badge")
     assert badge.count() >= 1
     assert badge.first.locator("i.fa.fa-exclamation-triangle").count() == 1
@@ -28,8 +29,8 @@ def test_validation_navbar_icon_visible(page, default_site):
     page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     icon = page.locator(".navbar .fa-exclamation-triangle")
     assert icon.count() == 1
-    link = icon.locator("..")
-    assert "validation.html" in link.get_attribute("href")
+    link = page.locator(".navbar a[href*='validation.html']")
+    assert link.count() == 1
 
 
 def test_validation_navbar_icon_shows_count(page, default_site):
