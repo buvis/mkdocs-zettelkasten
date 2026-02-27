@@ -322,7 +322,8 @@ h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .head
     margin-right: -0.625rem;
 }
 
-.dropdown-submenu:hover > a::after {
+.dropdown-submenu:hover > a::after,
+.dropdown-submenu:focus-within > a::after {
     border-left-color: var(--bg-page);
 }
 

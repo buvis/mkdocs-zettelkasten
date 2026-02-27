@@ -107,6 +107,8 @@
       if (!data) return;
       previews = data;
       bindLinks();
+    }).catch(() => {
+      /* previews unavailable — degrade silently */
     });
   };
 

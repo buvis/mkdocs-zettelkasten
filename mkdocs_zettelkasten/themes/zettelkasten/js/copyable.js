@@ -1,4 +1,4 @@
-(function() {
+(() => {
   async function copyText(value) {
     try {
       await navigator.clipboard.writeText(value);

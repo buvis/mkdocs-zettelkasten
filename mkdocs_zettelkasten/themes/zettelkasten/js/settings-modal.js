@@ -8,6 +8,8 @@
             if (res.ok) return res.json();
         }).then((data) => {
             if (data) callback(data);
+        }).catch(() => {
+            /* registry unavailable — keep current scheme */
         });
     };
 

@@ -17,7 +17,7 @@
                   <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
                 </svg>
                 {% endif %}
-                <strong><span data-tooltip="Copy link to zettel" data-copy-value="{{page.canonical_url}}">{{page.meta['zettel'].id}}</span></strong>
+                <strong><span data-tooltip="Copy link to zettel" data-copy-value="{{page.canonical_url}}" role="button" tabindex="0">{{page.meta['zettel'].id}}<span class="visually-hidden"> — {% trans %}click to copy link{% endtrans %}</span></span></strong>
                 {% if page.meta.validation_issues %}
                   {% set actionable = page.meta.validation_issues|selectattr('severity', 'ne', 'info')|list %}
                   {% if actionable %}

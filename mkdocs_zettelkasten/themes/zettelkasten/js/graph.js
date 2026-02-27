@@ -672,6 +672,8 @@
           });
         }
       }
+    }).catch(() => {
+      container.textContent = 'Failed to load graph data.';
     });
   };
 

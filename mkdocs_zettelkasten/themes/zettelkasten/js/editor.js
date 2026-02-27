@@ -1,19 +1,35 @@
-(function () {
-  var editor = null;
-  var currentSha = null;
+(() => {
+  let editor = null;
+  let currentSha = null;
+  let cachedToken = null;
 
-  function cfg() {
-    return window.__zettelkasten_editor || {};
-  }
+  const utf8ToBase64 = (str) => {
+    const bytes = new TextEncoder().encode(str);
+    let binary = '';
+    for (let i = 0; i < bytes.length; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  };
 
-  function getToken() {
-    var stored = sessionStorage.getItem('zettel-pat');
-    if (stored) return Promise.resolve(stored);
+  const base64ToUtf8 = (b64) => {
+    const binary = atob(b64.replace(/\s/g, ''));
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return new TextDecoder().decode(bytes);
+  };
 
-    return new Promise(function (resolve, reject) {
-      var dialog = document.getElementById('zettel-token-dialog');
-      var input = document.getElementById('zettel-token-input');
-      var submit = document.getElementById('zettel-token-submit');
+  const cfg = () => window.__zettelkasten_editor || {};
+
+  const getToken = () => {
+    if (cachedToken) return Promise.resolve(cachedToken);
+
+    return new Promise((resolve, reject) => {
+      const dialog = document.getElementById('zettel-token-dialog');
+      const input = document.getElementById('zettel-token-input');
+      const submit = document.getElementById('zettel-token-submit');
       if (!dialog || !input || !submit) {
         reject(new Error('Token dialog not found'));
         return;
@@ -23,131 +39,141 @@
       dialog.showModal();
       input.focus();
 
-      function onSubmit() {
-        var val = input.value.trim();
+      const cleanup = () => {
+        submit.removeEventListener('click', onSubmit);
+        input.removeEventListener('keydown', onKeydown);
+        dialog.removeEventListener('close', onClose);
+      };
+
+      const onSubmit = () => {
+        const val = input.value.trim();
         if (!val) return;
-        sessionStorage.setItem('zettel-pat', val);
+        cachedToken = val;
         dialog.close();
         cleanup();
         updateForgetButton();
         resolve(val);
-      }
+      };
 
-      function onKeydown(e) {
+      const onKeydown = (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
           onSubmit();
         }
-      }
+      };
 
-      function onClose() {
+      const onClose = () => {
         cleanup();
         reject(new Error('cancelled'));
-      }
-
-      function cleanup() {
-        submit.removeEventListener('click', onSubmit);
-        input.removeEventListener('keydown', onKeydown);
-        dialog.removeEventListener('close', onClose);
-      }
+      };
 
       submit.addEventListener('click', onSubmit);
       input.addEventListener('keydown', onKeydown);
       dialog.addEventListener('close', onClose);
     });
-  }
+  };
 
-  function forgetToken() {
-    sessionStorage.removeItem('zettel-pat');
+  const forgetToken = () => {
+    cachedToken = null;
     updateForgetButton();
     showToast('Token forgotten');
-  }
+  };
 
-  function updateForgetButton() {
-    var btn = document.getElementById('zettel-forget-token-btn');
+  const updateForgetButton = () => {
+    const btn = document.getElementById('zettel-forget-token-btn');
     if (!btn) return;
-    btn.style.display = sessionStorage.getItem('zettel-pat') ? 'inline-block' : 'none';
-  }
+    btn.style.display = cachedToken ? 'inline-block' : 'none';
+  };
 
-  function showToast(message, type) {
-    var toast = document.createElement('div');
+  const showToast = (message, type) => {
+    const toast = document.createElement('div');
     toast.className = 'zettel-toast' + (type === 'error' ? ' zettel-toast-error' : '');
     toast.textContent = message;
     document.body.appendChild(toast);
-    requestAnimationFrame(function () {
+    requestAnimationFrame(() => {
       toast.classList.add('show');
     });
-    setTimeout(function () {
+    setTimeout(() => {
       toast.classList.remove('show');
-      setTimeout(function () { toast.remove(); }, 300);
+      setTimeout(() => { toast.remove(); }, 300);
     }, 3000);
-  }
+  };
 
-  function repoPath() {
-    var c = cfg();
-    return c.docsPrefix ? c.docsPrefix + "/" + c.srcPath : c.srcPath;
-  }
+  const SAFE_SLUG = /^[\w][\w./-]*$/;
 
-  function fetchFile(path, t) {
-    var c = cfg();
+  const validateCfg = () => {
+    const c = cfg();
+    if (!c.repo || !SAFE_SLUG.test(c.repo)) throw new Error('Invalid repo: ' + c.repo);
+    if (!c.branch || !SAFE_SLUG.test(c.branch)) throw new Error('Invalid branch: ' + c.branch);
+  };
+
+  const repoPath = () => {
+    const c = cfg();
+    return c.docsPrefix ? c.docsPrefix + '/' + c.srcPath : c.srcPath;
+  };
+
+  const fetchFile = (path, t) => {
+    validateCfg();
+    const c = cfg();
     return fetch(
-      "https://api.github.com/repos/" +
+      'https://api.github.com/repos/' +
         c.repo +
-        "/contents/" +
+        '/contents/' +
         path +
-        "?ref=" +
+        '?ref=' +
         c.branch,
-      { headers: { Authorization: "token " + t, Accept: "application/vnd.github.v3+json" } }
-    ).then(function (resp) {
-      if (!resp.ok) throw new Error("GitHub API error: " + resp.status);
+      { headers: { Authorization: 'token ' + t, Accept: 'application/vnd.github.v3+json' } }
+    ).then((resp) => {
+      if (!resp.ok) throw new Error('GitHub API error: ' + resp.status);
       return resp.json();
     });
-  }
+  };
 
-  function saveFile(path, content, sha, t) {
-    var c = cfg();
+  const saveFile = (path, content, sha, t) => {
+    validateCfg();
+    const c = cfg();
     return fetch(
-      "https://api.github.com/repos/" + c.repo + "/contents/" + path,
+      'https://api.github.com/repos/' + c.repo + '/contents/' + path,
       {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          Authorization: "token " + t,
-          "Content-Type": "application/json",
-          Accept: "application/vnd.github.v3+json",
+          Authorization: 'token ' + t,
+          'Content-Type': 'application/json',
+          Accept: 'application/vnd.github.v3+json',
         },
         body: JSON.stringify({
-          message: "Update " + c.srcPath,
-          content: btoa(unescape(encodeURIComponent(content))),
+          message: 'Update ' + c.srcPath,
+          content: utf8ToBase64(content),
           sha: sha,
           branch: c.branch,
         }),
       }
-    ).then(function (resp) {
+    ).then((resp) => {
       if (!resp.ok)
-        return resp.json().then(function (d) {
-          throw new Error(d.message || "Save failed: " + resp.status);
+        return resp.json().then((d) => {
+          throw new Error(d.message || 'Save failed: ' + resp.status);
         });
       return resp.json();
     });
-  }
+  };
 
-  function enterEditMode() {
-    var c = cfg();
+  const enterEditMode = () => {
+    const c = cfg();
     if (!c.repo || !c.srcPath) return;
 
     getToken()
-      .then(function (t) {
-        var path = repoPath();
+      .then((t) => {
+        const path = repoPath();
         return fetchFile(path, t);
       })
-      .then(function (data) {
+      .then((data) => {
         currentSha = data.sha;
-        var content = decodeURIComponent(escape(atob(data.content)));
+        const content = base64ToUtf8(data.content);
 
-        document.querySelector(".file-body").style.display = "none";
-        document.getElementById("zettel-editor").style.display = "block";
+        document.querySelector('.file-body').style.display = 'none';
+        document.getElementById('zettel-editor').style.display = 'block';
 
-        var textarea = document.getElementById("zettel-editor-textarea");
+        const textarea = document.getElementById('zettel-editor-textarea');
         textarea.value = content;
 
         editor = new EasyMDE({
@@ -155,104 +181,102 @@
           spellChecker: false,
           autosave: { enabled: false },
           toolbar: [
-            "bold",
-            "italic",
-            "heading",
-            "|",
-            "quote",
-            "unordered-list",
-            "ordered-list",
-            "|",
-            "link",
-            "image",
-            "|",
-            "preview",
-            "side-by-side",
+            'bold',
+            'italic',
+            'heading',
+            '|',
+            'quote',
+            'unordered-list',
+            'ordered-list',
+            '|',
+            'link',
+            'image',
+            '|',
+            'preview',
+            'side-by-side',
           ],
         });
 
-        document.getElementById("zettel-edit-btn").style.display = "none";
-        document.getElementById("zettel-save-btn").style.display =
-          "inline-block";
-        document.getElementById("zettel-cancel-btn").style.display =
-          "inline-block";
+        document.getElementById('zettel-edit-btn').style.display = 'none';
+        document.getElementById('zettel-save-btn').style.display = 'inline-block';
+        document.getElementById('zettel-cancel-btn').style.display = 'inline-block';
       })
-      .catch(function (err) {
+      .catch((err) => {
         if (err.message === 'cancelled') return;
-        showToast("Failed to load file: " + err.message, 'error');
+        showToast('Failed to load file: ' + err.message, 'error');
       });
-  }
+  };
 
-  function saveEdit() {
+  const saveEdit = () => {
     if (!editor) return;
 
     getToken()
-      .then(function (t) {
-        var content = editor.value();
-        var path = repoPath();
+      .then((t) => {
+        const content = editor.value();
+        const path = repoPath();
         return saveFile(path, content, currentSha, t);
       })
-      .then(function () {
-        showToast("Saved successfully!");
+      .then(() => {
+        showToast('Saved successfully!');
         cancelEdit();
-        setTimeout(function () { location.reload(); }, 1000);
+        setTimeout(() => { location.reload(); }, 1000);
       })
-      .catch(function (err) {
+      .catch((err) => {
         if (err.message === 'cancelled') return;
-        showToast("Save failed: " + err.message, 'error');
+        showToast('Save failed: ' + err.message, 'error');
       });
-  }
+  };
 
-  function cancelEdit() {
+  const cancelEdit = () => {
     if (editor) {
       editor.toTextArea();
       editor = null;
     }
-    document.querySelector(".file-body").style.display = "block";
-    document.getElementById("zettel-editor").style.display = "none";
-    document.getElementById("zettel-edit-btn").style.display = "inline-block";
-    document.getElementById("zettel-save-btn").style.display = "none";
-    document.getElementById("zettel-cancel-btn").style.display = "none";
-  }
+    document.querySelector('.file-body').style.display = 'block';
+    document.getElementById('zettel-editor').style.display = 'none';
+    document.getElementById('zettel-edit-btn').style.display = 'inline-block';
+    document.getElementById('zettel-save-btn').style.display = 'none';
+    document.getElementById('zettel-cancel-btn').style.display = 'none';
+  };
 
-  var onOutsideListener = null;
+  let onOutsideListener = null;
 
-  function closeDropdown() {
-    var existing = document.getElementById("zettel-edit-dropdown");
+  const closeDropdown = () => {
+    const existing = document.getElementById('zettel-edit-dropdown');
     if (existing) existing.remove();
     if (onOutsideListener) {
-      document.removeEventListener("click", onOutsideListener);
+      document.removeEventListener('click', onOutsideListener);
       onOutsideListener = null;
     }
-  }
+  };
 
-  function handleEditClick(e) {
+  const handleEditClick = (e) => {
     e.stopPropagation();
-    var existing = document.getElementById("zettel-edit-dropdown");
+    const existing = document.getElementById('zettel-edit-dropdown');
     if (existing) {
       closeDropdown();
       return;
     }
 
-    var btn = document.getElementById("zettel-edit-btn");
-    var dropdown = document.createElement("div");
-    dropdown.id = "zettel-edit-dropdown";
-    dropdown.className = "zettel-edit-dropdown";
+    const btn = document.getElementById('zettel-edit-btn');
+    const dropdown = document.createElement('div');
+    dropdown.id = 'zettel-edit-dropdown';
+    dropdown.className = 'zettel-edit-dropdown';
 
-    var editHere = document.createElement("button");
-    editHere.textContent = "Edit here";
-    editHere.className = "zettel-edit-dropdown-item";
-    editHere.addEventListener("click", function (ev) {
+    const editHere = document.createElement('button');
+    editHere.textContent = 'Edit here';
+    editHere.className = 'zettel-edit-dropdown-item';
+    editHere.addEventListener('click', (ev) => {
       ev.stopPropagation();
       closeDropdown();
       enterEditMode();
     });
 
-    var editGithub = document.createElement("a");
-    editGithub.textContent = "Edit on GitHub";
-    editGithub.className = "zettel-edit-dropdown-item";
-    editGithub.href = cfg().editUrl || "#";
-    editGithub.addEventListener("click", function () {
+    const editGithub = document.createElement('a');
+    editGithub.textContent = 'Edit on GitHub';
+    editGithub.className = 'zettel-edit-dropdown-item';
+    editGithub.href = cfg().editUrl || '#';
+    editGithub.addEventListener('click', () => {
       closeDropdown();
     });
 
@@ -260,28 +284,28 @@
     dropdown.appendChild(editHere);
     btn.parentNode.appendChild(dropdown);
 
-    onOutsideListener = function () {
+    onOutsideListener = () => {
       closeDropdown();
     };
-    document.addEventListener("click", onOutsideListener);
-  }
+    document.addEventListener('click', onOutsideListener);
+  };
 
-  document.addEventListener("DOMContentLoaded", function () {
-    var editBtn = document.getElementById("zettel-edit-btn");
-    var saveBtn = document.getElementById("zettel-save-btn");
-    var cancelBtn = document.getElementById("zettel-cancel-btn");
-    var forgetBtn = document.getElementById("zettel-forget-token-btn");
+  document.addEventListener('DOMContentLoaded', () => {
+    const editBtn = document.getElementById('zettel-edit-btn');
+    const saveBtn = document.getElementById('zettel-save-btn');
+    const cancelBtn = document.getElementById('zettel-cancel-btn');
+    const forgetBtn = document.getElementById('zettel-forget-token-btn');
 
-    if (editBtn) editBtn.addEventListener("click", handleEditClick);
-    if (saveBtn) saveBtn.addEventListener("click", saveEdit);
-    if (cancelBtn) cancelBtn.addEventListener("click", cancelEdit);
-    if (forgetBtn) forgetBtn.addEventListener("click", forgetToken);
+    if (editBtn) editBtn.addEventListener('click', handleEditClick);
+    if (saveBtn) saveBtn.addEventListener('click', saveEdit);
+    if (cancelBtn) cancelBtn.addEventListener('click', cancelEdit);
+    if (forgetBtn) forgetBtn.addEventListener('click', forgetToken);
 
     updateForgetButton();
 
-    var closeBtn = document.querySelector('#zettel-token-dialog .modal-close');
+    const closeBtn = document.querySelector('#zettel-token-dialog .modal-close');
     if (closeBtn) {
-      closeBtn.addEventListener('click', function () {
+      closeBtn.addEventListener('click', () => {
         document.getElementById('zettel-token-dialog').close();
       });
     }

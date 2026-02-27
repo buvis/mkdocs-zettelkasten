@@ -383,7 +383,8 @@ body {
   margin-left: -0.0625rem;
 }
 
-.dropdown-submenu:hover > .dropdown-menu {
+.dropdown-submenu:hover > .dropdown-menu,
+.dropdown-submenu:focus-within > .dropdown-menu {
   display: block;
 }
 
