@@ -20,6 +20,10 @@ class ZettelStore:
     """Storage for zettels with efficient lookup capabilities."""
 
     def __init__(self, zettels: Iterable[Zettel] = ()) -> None:
+        self._zettels: list[Zettel] = []
+        self._path_index: dict[Path, Zettel] = {}
+        self._id_index: dict[int, Zettel] = {}
+        self._suffix_index: dict[tuple[str, ...], Zettel] = {}
         self.update(zettels)
 
     @property

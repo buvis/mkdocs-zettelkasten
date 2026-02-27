@@ -17,6 +17,7 @@ from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
 from mkdocs_zettelkasten.plugin.utils.frontmatter import parse_frontmatter
 from mkdocs_zettelkasten.plugin.utils.git_utils import GitUtil
 from mkdocs_zettelkasten.plugin.utils.patterns import MD_LINK, WIKI_LINK
+from mkdocs_zettelkasten.plugin.utils.snippet_utils import truncate_around
 
 logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
@@ -183,38 +184,12 @@ class Zettel:
     @staticmethod
     def _make_snippet(paragraph: str, match: re.Match) -> str:
         """Cleans link syntax and trims paragraph to ~200 chars around the link."""
-        # Replace the matched link with its display text wrapped in <mark>
         link_text = match.group("title") or match.group("url")
         marked_text = f"<mark>{link_text}</mark>"
         clean = paragraph[:match.start()] + marked_text + paragraph[match.end():]
-        # Strip remaining link syntax
         clean = WIKI_LINK.sub(lambda m: m.group("title") or m.group("url"), clean)
         clean = MD_LINK.sub(lambda m: m.group("title"), clean)
-
-        link_pos = match.start()
-
-        if len(clean) <= 200:
-            return clean
-
-        # Center a 200-char window on the link
-        half = 100
-        start = max(0, link_pos - half)
-        end = min(len(clean), link_pos + len(marked_text) + half)
-
-        # Expand to word boundaries
-        if start > 0:
-            space = clean.rfind(" ", 0, start)
-            start = space + 1 if space != -1 else start
-        if end < len(clean):
-            space = clean.find(" ", end)
-            end = space if space != -1 else end
-
-        snippet = clean[start:end]
-        if start > 0:
-            snippet = "..." + snippet
-        if end < len(clean):
-            snippet = snippet + "..."
-        return snippet
+        return truncate_around(clean, match.start(), len(marked_text))
 
     def _set_core_metadata(self, meta: dict, alt_title: str) -> None:
         """Sets fundamental metadata fields."""

@@ -3,7 +3,7 @@ from pathlib import Path
 
 from mkdocs.structure.files import File, Files
 
-from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
+from mkdocs_zettelkasten.plugin.entities.zettel import Zettel, ZettelFormatError
 
 logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
@@ -36,7 +36,7 @@ class ZettelParser:
                     file.src_path,
                     zettel_config=zettel_config or {},
                 )
-            except ValueError:
+            except ZettelFormatError:
                 invalid_files.append(file)
                 logger.debug("Ignoring invalid zettel: %s", file.src_path)
             else:

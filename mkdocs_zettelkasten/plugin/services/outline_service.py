@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import logging
-from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from mkdocs_zettelkasten.plugin.utils.jinja_utils import create_jinja_environment
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
+    from mkdocs.structure.files import Files
+
     from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
 
 logger = logging.getLogger(
@@ -44,7 +47,7 @@ class OutlineService:
         output_path.write_text(content, encoding="utf-8")
         logger.info("Generated outline page.")
 
-    def add_to_build(self, files: Any) -> None:
+    def add_to_build(self, files: Files) -> None:
         from mkdocs.structure.files import File
 
         new_file = File(
