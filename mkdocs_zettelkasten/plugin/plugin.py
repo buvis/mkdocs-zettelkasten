@@ -19,6 +19,7 @@ from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 
 from mkdocs_zettelkasten.plugin.services.graph_exporter import GraphExporter
+from mkdocs_zettelkasten.plugin.services.outline_service import OutlineService
 from mkdocs_zettelkasten.plugin.services.page_transformer import PageTransformer
 from mkdocs_zettelkasten.plugin.services.preview_exporter import PreviewExporter
 from mkdocs_zettelkasten.plugin.services.suggestion_service import SuggestionService
@@ -82,6 +83,7 @@ class ZettelkastenPlugin(BasePlugin):
         self.zettel_service = ZettelService()
         self.validation_service = ValidationService()
         self.graph_exporter = GraphExporter()
+        self.outline_service = OutlineService()
         self.preview_exporter = PreviewExporter()
         self.suggestion_service = SuggestionService()
         self.workflow_service = WorkflowService()
@@ -135,6 +137,10 @@ class ZettelkastenPlugin(BasePlugin):
                 config["site_dir"],
             )
             config["extra"]["workflow_enabled"] = True
+        self.outline_service.configure(
+            self.tags_service.tags_folder,
+            config["site_dir"],
+        )
         config["extra"]["transclusion_strip_heading"] = self.config[
             "transclusion_strip_heading"
         ]
@@ -170,6 +176,15 @@ class ZettelkastenPlugin(BasePlugin):
                 file_suffix=self.config["file_suffix"],
             )
             self._export_suggestions(files, config)
+        outlines = self.outline_service.compute(
+            self.zettel_service.store,
+            self.zettel_service.sequence_children,
+            file_suffix=self.config["file_suffix"],
+        )
+        if outlines["moc_outlines"] or outlines["sequence_outlines"]:
+            self.outline_service.generate(outlines)
+            self.outline_service.add_to_build(files)
+            config["extra"]["outline_enabled"] = True
         if self.config["workflow_enabled"]:
             dashboard = self.workflow_service.compute(
                 self.zettel_service.store,
