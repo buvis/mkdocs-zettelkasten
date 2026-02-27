@@ -51,6 +51,7 @@ class Zettel:
         self.link_snippets: dict[str, str] = {}
         self.body: str = ""
         self.unlinked_mentions: list[dict[str, str]] = []
+        self.suggested_links: list[dict[str, str]] = []
         self.sequence_parent_id: int | None = None
         self.sequence_parent: dict[str, str] | None = None
         self.sequence_children: list[dict[str, str]] = []
