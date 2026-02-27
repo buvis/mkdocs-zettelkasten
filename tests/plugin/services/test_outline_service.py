@@ -1,5 +1,5 @@
-from unittest.mock import MagicMock
 from pathlib import PurePosixPath
+from unittest.mock import MagicMock
 
 from mkdocs_zettelkasten.plugin.services.outline_service import OutlineService
 from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore

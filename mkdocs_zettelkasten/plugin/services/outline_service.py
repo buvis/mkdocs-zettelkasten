@@ -133,10 +133,12 @@ class OutlineService:
             if parent and parent.sequence_parent_id is None:
                 roots.append(parent)
         roots.sort(key=lambda z: z.title)
-        return [
-            self._build_tree_node(z, store, sequence_children)
-            for z in roots
-        ]
+        outlines = []
+        for z in roots:
+            node = self._build_tree_node(z, store, sequence_children)
+            node["flat_entries"] = self._flatten_tree(node)
+            outlines.append(node)
+        return outlines
 
     def _build_tree_node(self, zettel, store, sequence_children):
         children = []
@@ -146,14 +148,12 @@ class OutlineService:
                 children.append(
                     self._build_tree_node(child, store, sequence_children)
                 )
-        node = {
+        return {
             "id": zettel.id,
             "title": zettel.title,
             "rel_path": zettel.rel_path,
             "children": children,
         }
-        node["flat_entries"] = self._flatten_tree(node)
-        return node
 
     def _flatten_tree(self, node, depth=0):
         items = [{"title": node["title"], "rel_path": node["rel_path"], "indent": depth}]
