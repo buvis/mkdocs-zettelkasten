@@ -110,7 +110,7 @@ class TestZettelkastenPlugin:
             patch.object(plugin.tags_service, "process_files") as mock_ts,
             patch.object(plugin.validation_service, "validate"),
         ):
-            plugin.on_files(files, config)
+            plugin.on_files(files, config=config)
 
         mock_zs.assert_called_once_with(files, config)
         mock_ts.assert_called_once_with(files)
@@ -127,7 +127,7 @@ class TestZettelkastenPlugin:
             patch.object(plugin.validation_service, "validate"),
             patch.object(plugin.validation_service, "total_actionable_issues", return_value=7),
         ):
-            plugin.on_files(files, config)
+            plugin.on_files(files, config=config)
 
         assert config["extra"]["validation_issues_count"] == 7
 
@@ -142,7 +142,7 @@ class TestZettelkastenPlugin:
             patch.object(plugin.zettel_service, "process_files"),
             patch.object(plugin.tags_service, "process_files"),
         ):
-            plugin.on_files(files, config)
+            plugin.on_files(files, config=config)
 
         assert "validation_issues_count" not in config["extra"]
 
@@ -156,7 +156,7 @@ class TestZettelkastenPlugin:
         with patch.object(
             plugin.page_transformer, "transform", return_value="transformed"
         ):
-            result = plugin.on_page_markdown("original", page, config, files)
+            result = plugin.on_page_markdown("original", page=page, config=config, files=files)
 
         assert result == "transformed"
 
@@ -171,7 +171,7 @@ class TestZettelkastenPlugin:
         with patch.object(
             plugin.page_transformer, "transform", return_value="transformed"
         ):
-            plugin.on_page_markdown("original", page, config, files)
+            plugin.on_page_markdown("original", page=page, config=config, files=files)
 
         assert page.meta["icons"] == {
             "references": "fa fa-book",
@@ -248,7 +248,7 @@ class TestZettelkastenPlugin:
             patch.object(plugin.graph_exporter, "export", return_value={}),
             patch.object(plugin.tags_service, "tags_folder", tmp_path),
         ):
-            plugin.on_files(files, config)
+            plugin.on_files(files, config=config)
 
         assert (tmp_path / "graph.json").exists()
 
@@ -268,7 +268,7 @@ class TestZettelkastenPlugin:
             patch.object(plugin.preview_exporter, "export", return_value={}),
             patch.object(plugin.tags_service, "tags_folder", tmp_path),
         ):
-            plugin.on_files(files, config)
+            plugin.on_files(files, config=config)
 
         assert (tmp_path / "previews.json").exists()
 
@@ -285,7 +285,7 @@ class TestZettelkastenPlugin:
             patch.object(plugin.page_transformer, "transform", return_value="md"),
             patch.object(plugin.validation_service, "get_issues", return_value=issues),
         ):
-            plugin.on_page_markdown("original", page, config, files)
+            plugin.on_page_markdown("original", page=page, config=config, files=files)
 
         assert page.meta["validation_issues"] == issues
 
@@ -300,7 +300,7 @@ class TestZettelkastenPlugin:
         files = MagicMock()
 
         with patch.object(plugin.page_transformer, "transform", return_value="md"):
-            plugin.on_page_markdown("original", page, config, files)
+            plugin.on_page_markdown("original", page=page, config=config, files=files)
 
         assert page.meta["editor"]["repo"] == "https://github.com/test/repo"
         assert page.meta["editor"]["branch"] == "main"

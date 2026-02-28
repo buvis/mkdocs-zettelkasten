@@ -40,8 +40,8 @@ def adapt_mentions_to_page(
                 continue
 
             target_zettel.unlinked_mentions.append({
-                "url": page.url,
-                "title": page.title,
+                "url": str(page.url),
+                "title": str(page.title or ""),
                 "snippet": snippet,
             })
 

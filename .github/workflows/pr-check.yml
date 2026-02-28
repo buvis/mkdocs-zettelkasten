@@ -15,6 +15,7 @@ jobs:
       - run: uv sync --all-extras
       - run: uv run ruff check
       - run: uv run ruff format --check
+      - run: uv run pyright mkdocs_zettelkasten/
 
   test:
     runs-on: ubuntu-latest

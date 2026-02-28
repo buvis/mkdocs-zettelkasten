@@ -162,7 +162,7 @@ class ZettelkastenPlugin(BasePlugin):
             self.logger.error("Invalid timezone '%s', falling back to UTC", tz_name)
             return ZoneInfo("UTC")
 
-    def on_files(self, files: Files, config: MkDocsConfig) -> None:
+    def on_files(self, files: Files, /, *, config: MkDocsConfig) -> None:
         self.zettel_service.process_files(files, config)
         self.tags_service.process_files(files)
         if self.config["graph_enabled"]:
@@ -279,6 +279,8 @@ class ZettelkastenPlugin(BasePlugin):
     def on_page_markdown(
         self,
         markdown: str,
+        /,
+        *,
         page: Page,
         config: MkDocsConfig,
         files: Files,
