@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
     from mkdocs.structure.pages import Page
 
-    from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
+    from mkdocs_zettelkasten.plugin.entities.zettel import LinkRef, Zettel
 
 logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
@@ -34,9 +34,9 @@ def add_backlink_to_target(
     snippet = zettel.link_snippets.get(link) or zettel.link_snippets.get(
         link.removesuffix(".md")
     )
-    backlink = {
-        "url": page.url,
-        "title": page.title,
+    backlink: LinkRef = {
+        "url": str(page.url or ""),
+        "title": str(page.title or ""),
         "snippet": snippet,
     }
     target_zettel.backlinks.append(backlink)

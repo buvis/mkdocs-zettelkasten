@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 import re
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, TypedDict
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -24,6 +24,31 @@ logger = logging.getLogger(
 )
 
 
+class LinkRef(TypedDict):
+    url: str
+    title: str
+    snippet: str | None
+
+
+class SuggestionRef(TypedDict):
+    url: str
+    title: str
+    reason: str
+    confidence: str
+
+
+class SequenceRef(TypedDict):
+    url: str
+    title: str
+
+
+class SequenceTreeNode(TypedDict):
+    url: str
+    title: str
+    current: bool
+    children: list[SequenceTreeNode]
+
+
 class ZettelFormatError(ValueError):
     """Exception raised for invalid zettel file format"""
 
@@ -41,23 +66,23 @@ class Zettel:
         self.title: str = ""
         self.path: Path = abs_src_path
         self.rel_path: str = src_path
-        self.backlinks: list[dict[str, str]] = []
+        self.backlinks: list[LinkRef] = []
         self.links: list[str] = []
         self.last_update_date: str = ""
         self.note_type: str | None = None
         self.maturity: str | None = None
         self.source: str | None = None
         self.role: str | None = None
-        self.moc_parents: list[dict[str, str]] = []
+        self.moc_parents: list[LinkRef] = []
         self.link_snippets: dict[str, str] = {}
         self.body: str = ""
-        self.unlinked_mentions: list[dict[str, str]] = []
-        self.suggested_links: list[dict[str, str]] = []
+        self.unlinked_mentions: list[LinkRef] = []
+        self.suggested_links: list[SuggestionRef] = []
         self.sequence_parent_id: int | None = None
-        self.sequence_parent: dict[str, str] | None = None
-        self.sequence_children: list[dict[str, str]] = []
-        self.sequence_breadcrumb: list[dict[str, str]] = []
-        self.sequence_tree: list[dict] = []
+        self.sequence_parent: SequenceRef | None = None
+        self.sequence_children: list[SequenceRef] = []
+        self.sequence_breadcrumb: list[SequenceRef] = []
+        self.sequence_tree: list[SequenceTreeNode] = []
 
         cfg = zettel_config or {}
         self._id_key = cfg.get("id_key", "id")
