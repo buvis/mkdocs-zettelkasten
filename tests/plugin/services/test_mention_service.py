@@ -142,6 +142,14 @@ class TestMentionDetection:
         assert 1 not in mentions
         assert 2 not in mentions
 
+    def test_exactly_three_char_title_matches(self) -> None:
+        target = _make_zettel(1, "API", "Body.", [])
+        source = _make_zettel(2, "Other", "The API is fast.", [])
+        store = _make_store([target, source])
+
+        mentions = MentionService().find_unlinked_mentions(store)
+        assert 1 in mentions
+
     def test_word_boundary_matching(self) -> None:
         """'Install' should not match inside 'Installation'."""
         target = _make_zettel(1, "Install", "Body.", [])

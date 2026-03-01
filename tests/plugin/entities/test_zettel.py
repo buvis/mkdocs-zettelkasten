@@ -173,6 +173,26 @@ class TestZettelInit:
         assert z.title == "BOM Test"
 
 
+    def test_oserror_raises_zettel_format_error(self, tmp_path: Path) -> None:
+        fp = tmp_path / "test.md"
+        fp.write_text(VALID_ZETTEL)
+        with (
+            patch.object(Path, "read_text", side_effect=OSError("disk failure")),
+            patch.object(Path, "stat", return_value=Mock(st_mtime=0)),
+            patch(
+                "mkdocs_zettelkasten.plugin.entities.zettel.GitUtil.is_tracked",
+                return_value=False,
+            ),
+            pytest.raises(ZettelFormatError, match="read error"),
+        ):
+            Zettel(fp, str(fp.relative_to(tmp_path)))
+
+    def test_yaml_not_dict_raises(self, tmp_path: Path) -> None:
+        content = "---\njust a string\n---\nBody.\n"
+        with pytest.raises(ZettelFormatError, match="Invalid YAML"):
+            _make_zettel(tmp_path, content)
+
+
 class TestTitleFallback:
     def test_title_from_frontmatter(self, tmp_path: Path) -> None:
         z = _make_zettel(tmp_path, VALID_ZETTEL)

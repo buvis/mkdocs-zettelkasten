@@ -53,3 +53,15 @@ class TestAdaptMentionsToPage:
         zettel_lookup = MagicMock(return_value=None)
 
         adapt_mentions_to_page(page, mentions, zettel_lookup)
+
+    def test_skips_when_zettel_meta_missing(self) -> None:
+        page = MagicMock()
+        page.meta = {"is_zettel": True}
+        adapt_mentions_to_page(page, {99: [(1, "snippet")]}, lambda x: None)
+
+    def test_empty_mentions_dict(self) -> None:
+        page = _make_page(zettel_id=1)
+        target = MagicMock()
+        target.unlinked_mentions = []
+        adapt_mentions_to_page(page, {}, MagicMock(return_value=target))
+        assert len(target.unlinked_mentions) == 0

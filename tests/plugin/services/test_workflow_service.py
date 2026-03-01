@@ -210,3 +210,50 @@ class TestMentionHotspots:
         mentions = {20260227000001: [(20260227000002, "s")]}
         result = self.service.compute(store, backlinks, mentions, today=TODAY)
         assert result["mention_hotspots"][0]["backlink_count"] == 1
+
+
+class TestEmptyStore:
+    def setup_method(self):
+        self.service = WorkflowService()
+
+    def test_empty_store_returns_empty_sections(self):
+        store = ZettelStore([])
+        result = self.service.compute(store, {}, {}, today=TODAY)
+        assert result["stats"]["total"] == 0
+        assert result["inbox"] == []
+        assert result["needs_connection"] == []
+        assert result["review_queue"] == []
+        assert result["orphans"] == []
+        assert result["mention_hotspots"] == []
+
+
+class TestMalformedIds:
+    def setup_method(self):
+        self.service = WorkflowService()
+
+    def test_short_id_skipped_in_inbox(self):
+        z = _make_zettel(999, "Short", "s.md", note_type="fleeting")
+        store = ZettelStore([z])
+        result = self.service.compute(store, {}, {}, today=TODAY)
+        assert result["inbox"] == []
+
+    def test_invalid_date_id_skipped_in_inbox(self):
+        """Month=13 should be skipped."""
+        z = _make_zettel(20261301000000, "Bad month", "b.md", note_type="fleeting")
+        store = ZettelStore([z])
+        result = self.service.compute(store, {}, {}, today=TODAY)
+        assert result["inbox"] == []
+
+    def test_invalid_day_id_skipped_in_review(self):
+        """Day=32 should be skipped."""
+        z = _make_zettel(20250132000000, "Bad day", "b.md", maturity="developing")
+        store = ZettelStore([z])
+        result = self.service.compute(store, {}, {}, today=TODAY)
+        assert result["review_queue"] == []
+
+    def test_non_numeric_prefix_skipped(self):
+        """ID whose first 8 chars aren't all digits."""
+        z = _make_zettel(0, "Zero", "z.md", note_type="fleeting")
+        store = ZettelStore([z])
+        result = self.service.compute(store, {}, {}, today=TODAY)
+        assert result["inbox"] == []

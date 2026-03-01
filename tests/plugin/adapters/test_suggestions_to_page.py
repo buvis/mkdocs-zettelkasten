@@ -67,3 +67,8 @@ class TestSuggestionsToPage:
         page, zettel = _make_page(1)
         adapt_suggestions_to_page(page, {}, lambda x: None)
         assert len(zettel.suggested_links) == 0
+
+    def test_skips_when_zettel_meta_missing(self):
+        page = MagicMock()
+        page.meta = {"is_zettel": True}
+        adapt_suggestions_to_page(page, {1: [{"target_id": 2, "reason": "t", "confidence": 0.5}]}, lambda x: None)

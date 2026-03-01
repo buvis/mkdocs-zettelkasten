@@ -256,6 +256,19 @@ class TestValidationService:
         broken = [i for i in vs.get_issues("a.md") if i.check == "broken_sequence"]
         assert len(broken) == 0
 
+    def test_empty_store_produces_zero_issues(self, tmp_path: Path) -> None:
+        svc = self._make_zettel_service([])
+
+        vs = ValidationService()
+        vs.output_folder = tmp_path
+        config = MagicMock()
+        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
+        files = MagicMock()
+
+        vs.validate(svc, files, config)
+
+        assert vs.total_actionable_issues() == 0
+
     def test_report_file_generated(self, tmp_path: Path) -> None:
         svc = self._make_zettel_service([])
 
