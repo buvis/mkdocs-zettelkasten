@@ -1,7 +1,7 @@
 import datetime
 from unittest.mock import MagicMock, patch
 
-from git import InvalidGitRepositoryError
+from git import GitCommandError, InvalidGitRepositoryError
 
 from mkdocs_zettelkasten.plugin.utils.git_utils import GitUtil
 
@@ -54,3 +54,11 @@ class TestIsTracked:
             mock_repo_cls.side_effect = InvalidGitRepositoryError("/not/a/repo")
 
             assert GitUtil.is_tracked("/not/a/repo/file.md") is False
+
+    def test_returns_false_on_git_command_error(self) -> None:
+        with patch("mkdocs_zettelkasten.plugin.utils.git_utils.Repo") as mock_repo_cls:
+            mock_repo = MagicMock()
+            mock_repo.git.ls_files.side_effect = GitCommandError("ls-files")
+            mock_repo_cls.return_value = mock_repo
+
+            assert GitUtil.is_tracked("/repo/some/path.md") is False

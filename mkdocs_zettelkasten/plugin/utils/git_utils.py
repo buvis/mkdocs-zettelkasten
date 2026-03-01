@@ -4,7 +4,7 @@ import datetime
 import logging
 from pathlib import Path
 
-from git import Git, InvalidGitRepositoryError, Repo
+from git import Git, GitCommandError, InvalidGitRepositoryError, Repo
 
 logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
@@ -24,5 +24,5 @@ class GitUtil:
         try:
             repo = Repo(path, search_parent_directories=True)
             return bool(repo.git.ls_files(path))
-        except InvalidGitRepositoryError:
+        except (InvalidGitRepositoryError, GitCommandError):
             return False

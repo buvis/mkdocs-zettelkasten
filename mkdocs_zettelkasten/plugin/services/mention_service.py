@@ -26,13 +26,19 @@ class MentionService:
         for target in store.zettels:
             title = target.title
             id_str = str(target.id)
-            title_pat = re.compile(r"\b" + re.escape(title) + r"\b", re.IGNORECASE) if len(title) >= _MIN_TITLE_LEN else None
+            title_pat = (
+                re.compile(r"\b" + re.escape(title) + r"\b", re.IGNORECASE)
+                if len(title) >= _MIN_TITLE_LEN
+                else None
+            )
             id_pat = re.compile(r"\b" + re.escape(id_str) + r"\b")
 
             for source in store.zettels:
                 if source.id == target.id or self._already_links_to(source, target):
                     continue
-                result = self._find_mention_in_body(source.body, title_pat, title, id_pat, id_str)
+                result = self._find_mention_in_body(
+                    source.body, title_pat, title, id_pat, id_str
+                )
                 if result:
                     mentions[target.id].append((source.id, result))
 
@@ -45,7 +51,9 @@ class MentionService:
 
         for paragraph in self._split_paragraphs(body_clean):
             stripped = self._strip_syntax(paragraph)
-            matched_term = self._match_paragraph(stripped, title_pat, title, id_pat, id_str)
+            matched_term = self._match_paragraph(
+                stripped, title_pat, title, id_pat, id_str
+            )
             if matched_term:
                 orig_paragraph = self._find_original_paragraph(body, paragraph)
                 return self._make_snippet(orig_paragraph, matched_term)
@@ -89,32 +97,18 @@ class MentionService:
             paragraphs.append("\n".join(current))
         return paragraphs
 
-    @staticmethod
-    def _find_original_paragraph(original_body: str, cleaned_paragraph: str) -> str:
+    def _find_original_paragraph(
+        self, original_body: str, cleaned_paragraph: str
+    ) -> str:
         """Find the original paragraph text before code-block stripping."""
-        # The cleaned paragraph has fenced code blocks replaced with spaces.
-        # Find a paragraph in the original body at the same position.
-        # Since we split by blank lines, we can match by position.
-        orig_paragraphs = []
-        current: list[str] = []
-        for line in original_body.splitlines():
-            if line.strip() == "":
-                if current:
-                    orig_paragraphs.append("\n".join(current))
-                    current = []
-            else:
-                current.append(line)
-        if current:
-            orig_paragraphs.append("\n".join(current))
+        orig_paragraphs = self._split_paragraphs(original_body)
+        cleaned_paragraphs = self._split_paragraphs(
+            _FENCED_CODE.sub(lambda m: " " * len(m.group()), original_body)
+        )
 
-        # The cleaned body may have merged paragraphs differently due to
-        # fenced code removal, but in practice the paragraph count should match
-        # because fenced code blocks are replaced with same-length spaces
-        # (preserving newlines structure). Just find the paragraph whose
-        # length matches.
-        for orig in orig_paragraphs:
-            if len(orig) == len(cleaned_paragraph):
-                return orig
+        for i, cp in enumerate(cleaned_paragraphs):
+            if cp == cleaned_paragraph and i < len(orig_paragraphs):
+                return orig_paragraphs[i]
 
         return cleaned_paragraph
 
@@ -127,8 +121,8 @@ class MentionService:
         term_pat = re.compile(r"\b" + re.escape(term) + r"\b", re.IGNORECASE)
         m = term_pat.search(clean)
         if m:
-            marked = f"<mark>{clean[m.start():m.end()]}</mark>"
-            clean = clean[:m.start()] + marked + clean[m.end():]
+            marked = f"<mark>{clean[m.start() : m.end()]}</mark>"
+            clean = clean[: m.start()] + marked + clean[m.end() :]
             mark_start = m.start()
             marker_len = len(marked)
         else:

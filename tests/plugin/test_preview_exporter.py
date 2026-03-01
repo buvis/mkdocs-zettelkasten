@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -160,3 +160,16 @@ class TestPreviewExporter:
         result = self.exporter.export(store)
 
         assert result["11"]["url"] == "notes/nested/url/"
+
+    def test_oserror_logs_warning(self, tmp_path: Path) -> None:
+        z = _make_zettel(12, tmp_path / "missing.md", "missing.md", "Missing")
+        store = ZettelStore([z])
+
+        with patch(
+            "mkdocs_zettelkasten.plugin.services.preview_exporter.logger"
+        ) as mock_logger:
+            result = self.exporter.export(store)
+
+        assert result["12"]["excerpt"] == ""
+        mock_logger.warning.assert_called_once()
+        assert "Cannot read" in mock_logger.warning.call_args[0][0]

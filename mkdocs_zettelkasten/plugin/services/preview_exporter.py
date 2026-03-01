@@ -1,9 +1,14 @@
 from __future__ import annotations
 
+import logging
 import re
 from typing import TYPE_CHECKING
 
 from mkdocs_zettelkasten.plugin.utils.frontmatter import parse_frontmatter
+
+logger = logging.getLogger(
+    __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
+)
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -35,7 +40,8 @@ class PreviewExporter:
         """Read zettel file, skip YAML frontmatter, return first paragraph."""
         try:
             content = path.read_text(encoding="utf-8-sig", errors="strict")
-        except OSError:
+        except OSError as e:
+            logger.warning("Cannot read %s: %s", path, e)
             return ""
 
         _, body = parse_frontmatter(content)
