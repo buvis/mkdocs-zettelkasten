@@ -22,6 +22,10 @@ PREVIEW_LENGTH = 120
 class OutlineService:
     """Computes outline data from MOCs and Folgezettel sequences."""
 
+    def __init__(self) -> None:
+        self.output_folder: Path | None = None
+        self._site_dir: str | None = None
+
     def compute(
         self,
         store: ZettelStore,

@@ -25,6 +25,10 @@ class WorkflowService:
     REVIEW_STALE_DAYS = 30
     MAX_HOTSPOTS = 10
 
+    def __init__(self) -> None:
+        self.output_folder: Path | None = None
+        self._site_dir: str | None = None
+
     def compute(
         self,
         store: ZettelStore,

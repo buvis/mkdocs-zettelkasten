@@ -47,54 +47,58 @@ class PageTransformer:
         Apply all adapters to the markdown and update references.
         """
         logger.debug("Started %s transformations", page.file.src_path)
-        page = zettel_service.add_zettel_to_page(page)
-        markdown = adapt_page_title(markdown, page, page.meta.get("zettel"))
-        markdown = adapt_transclusion(
-            markdown,
-            zettel_service.get_zettel_by_partial_path,
-            site_url=config["site_url"],
-            file_suffix=zettel_service.file_suffix,
-            strip_heading=config.get("extra", {}).get(
-                "transclusion_strip_heading", True
-            ),
-        )
-        markdown = adapt_page_links_to_zettels(
-            markdown,
-            page,
-            config,
-            files,
-            zettel_service.get_zettel_by_partial_path,
-            file_suffix=zettel_service.file_suffix,
-        )
-        processed_md, page.meta["ref"] = get_page_ref(markdown, page, config)
-        page.previous_page, page.next_page = get_prev_next_page(
-            page,
-            files,
-            zettel_service.get_zettels(),
-            file_suffix=zettel_service.file_suffix,
-        )
-        adapt_backlinks_to_page(
-            page,
-            zettel_service.backlinks,
-            zettel_service.get_zettel_by_partial_path,
-        )
-        adapt_mentions_to_page(
-            page,
-            zettel_service.mentions,
-            zettel_service.get_zettel_by_id,
-        )
-        adapt_suggestions_to_page(
-            page,
-            zettel_service.suggestions,
-            zettel_service.get_zettel_by_id,
-            file_suffix=zettel_service.file_suffix,
-        )
-        adapt_sequence_to_page(
-            page,
-            zettel_service.sequence_children,
-            zettel_service.get_zettel_by_id,
-            file_suffix=zettel_service.file_suffix,
-        )
+        try:
+            page = zettel_service.add_zettel_to_page(page)
+            markdown = adapt_page_title(markdown, page, page.meta.get("zettel"))
+            markdown = adapt_transclusion(
+                markdown,
+                zettel_service.get_zettel_by_partial_path,
+                site_url=config["site_url"],
+                file_suffix=zettel_service.file_suffix,
+                strip_heading=config.get("extra", {}).get(
+                    "transclusion_strip_heading", True
+                ),
+            )
+            markdown = adapt_page_links_to_zettels(
+                markdown,
+                page,
+                config,
+                files,
+                zettel_service.get_zettel_by_partial_path,
+                file_suffix=zettel_service.file_suffix,
+            )
+            processed_md, page.meta["ref"] = get_page_ref(markdown, page, config)
+            page.previous_page, page.next_page = get_prev_next_page(
+                page,
+                files,
+                zettel_service.get_zettels(),
+                file_suffix=zettel_service.file_suffix,
+            )
+            adapt_backlinks_to_page(
+                page,
+                zettel_service.backlinks,
+                zettel_service.get_zettel_by_partial_path,
+            )
+            adapt_mentions_to_page(
+                page,
+                zettel_service.mentions,
+                zettel_service.get_zettel_by_id,
+            )
+            adapt_suggestions_to_page(
+                page,
+                zettel_service.suggestions,
+                zettel_service.get_zettel_by_id,
+                file_suffix=zettel_service.file_suffix,
+            )
+            adapt_sequence_to_page(
+                page,
+                zettel_service.sequence_children,
+                zettel_service.get_zettel_by_id,
+                file_suffix=zettel_service.file_suffix,
+            )
+        except Exception:
+            logger.exception("Failed during transformation of %s", page.file.src_path)
+            raise
         logger.debug("Finished %s transformations", page.file.src_path)
 
         return processed_md

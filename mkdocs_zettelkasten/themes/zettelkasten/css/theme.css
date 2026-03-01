@@ -323,7 +323,9 @@ pre:has(> code):hover .copy-btn {
   line-height: 1.4;
 }
 
-.validation-badge:hover .validation-popover {
+.validation-badge:hover .validation-popover,
+.validation-badge:focus .validation-popover,
+.validation-badge:focus-within .validation-popover {
   display: block;
 }
 

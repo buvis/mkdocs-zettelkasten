@@ -11,21 +11,21 @@ from mkdocs_zettelkasten.plugin.entities.zettel import Zettel, ZettelFormatError
 UTC = ZoneInfo("UTC")
 
 LAST_UPDATE_CONTENT = """---
-id: 2020-05-20
+id: 20200520120000
 title: Test with last update in meta
 last_update: 2022-12-31
 ---
 # Test content"""
 
 DATE_CONTENT = """---
-id: 2020-05-20
+id: 20200520120000
 title: Test with date in meta
 date: 2022-11-30
 ---
 # Test content"""
 
 ID_CONTENT = """---
-id: 2023-05-20
+id: 20230520120000
 title: Basic test
 ---
 # Test content"""

@@ -193,12 +193,18 @@ class Zettel:
 
     def _set_core_metadata(self, meta: dict, alt_title: str) -> None:
         """Sets fundamental metadata fields."""
-        if not meta.get(self._id_key):
+        raw_id = meta.get(self._id_key)
+        if not raw_id:
             logger.error("Missing required ID in zettel: %s", self.path)
             msg = "Missing zettel ID"
             raise ZettelFormatError(msg)
 
-        self.id = meta[self._id_key]
+        try:
+            self.id = int(raw_id)
+        except (ValueError, TypeError) as err:
+            logger.error("ID %r is not a valid integer in %s", raw_id, self.path)
+            msg = f"ID {raw_id!r} is not a valid integer"
+            raise ZettelFormatError(msg) from err
 
         if meta.get("title"):
             self.title = meta["title"]

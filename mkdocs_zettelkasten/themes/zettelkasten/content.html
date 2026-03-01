@@ -21,9 +21,9 @@
                 {% if page.meta.validation_issues %}
                   {% set actionable = page.meta.validation_issues|selectattr('severity', 'ne', 'info')|list %}
                   {% if actionable %}
-                  <span class="validation-badge">
+                  <span class="validation-badge" tabindex="0" role="button" aria-label="Validation issues">
                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                    <div class="validation-popover">
+                    <div class="validation-popover" role="tooltip">
                       <ul>
                         {% for issue in actionable %}
                         <li>{{ issue.message }}</li>

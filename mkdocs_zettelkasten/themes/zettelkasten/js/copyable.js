@@ -14,7 +14,14 @@
 
   const init = () => {
     document.querySelectorAll("[data-copy-value]").forEach((el) => {
-      el.addEventListener("click", () => copyText(el.dataset.copyValue));
+      const handler = () => copyText(el.dataset.copyValue);
+      el.addEventListener("click", handler);
+      el.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handler();
+        }
+      });
     });
 
     document.querySelectorAll(".codehilite pre, .highlight pre, pre > code").forEach((el) => {
