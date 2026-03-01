@@ -1,0 +1,363 @@
+html {
+    /* csslint ignore:start */
+    scroll-padding-top: 4.75rem;
+    /* csslint ignore:end */
+}
+
+/* Replacement for `body { background-attachment: fixed; }`, which has
+   performance issues when scrolling on large displays. See #1394. */
+body::before {
+    content: ' ';
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: var(--bg-page);
+    background-image: var(--bg-body-image);
+    background-repeat: repeat-x;
+    will-change: transform;
+    z-index: -1;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text-primary);
+}
+
+a {
+    color: var(--text-link);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--text-link);
+    text-decoration: underline;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+body > .container {
+    margin-top: 1.25rem;
+    min-height: 25rem;
+}
+
+.navbar.fixed-top { /* csslint allow: adjoining-classes */
+    /* csslint ignore:start */
+    position: -webkit-sticky;
+    position: sticky;
+    /* csslint ignore:end */
+}
+
+h1 {
+    color: var(--text-primary);
+    font-weight: 400;
+    font-size: 2.625rem;
+}
+
+h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+    font-weight: 300;
+}
+
+hr {
+    border-top: 1px solid var(--border-hr);
+}
+
+pre {
+    max-width: 100%;
+    background: var(--bg-code);
+    border: solid 1px var(--border-code);
+    color: var(--text-code);
+    overflow-x: auto;
+}
+
+code.code-large {
+    font-size: 90%;
+}
+
+code {
+    padding: 0.125rem 0.3125rem;
+    background: var(--bg-code);
+    border: solid 1px var(--border-code);
+    color: var(--text-code);
+    font-size: 0.8125em;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+pre code {
+    display: block;
+    background: transparent;
+    border: none;
+    white-space: pre;
+    word-wrap: normal;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.75rem;
+}
+
+kbd {
+    padding: 0.125rem 0.25rem;
+    font-size: 90%;
+    color: var(--text-kbd);
+    background-color: var(--bg-kbd);
+    border-radius: 0.1875rem;
+    -webkit-box-shadow: inset 0 -1px 0 rgba(0,0,0,.25);
+    box-shadow: inset 0 -1px 0 rgba(0,0,0,.25);
+}
+
+a code {
+    color: var(--text-link-code);
+}
+
+a:hover code, a:focus code {
+    color: var(--text-link-code-hover);
+}
+
+footer {
+    margin-top: 1.875rem;
+    margin-bottom: 0.625rem;
+    text-align: center;
+    font-weight: 200;
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+.footer-copyright {
+    font-size: 0.65rem;
+}
+
+/*
+ * Side navigation
+ *
+ * Scrollspy and affixed enhanced navigation to highlight sections and secondary
+ * sections of docs content.
+ */
+
+.bs-sidebar.affix { /* csslint allow: adjoining-classes */
+    /* csslint ignore:start */
+    position: -webkit-sticky;
+    position: sticky;
+    /* csslint ignore:end */
+    top: 4.75rem;
+}
+
+.bs-sidebar.card { /* csslint allow: adjoining-classes */
+    padding: 0;
+    max-height: 90%;
+    overflow-y: auto;
+}
+
+/* Toggle (vertically flip) sidebar collapse icon */
+.bs-sidebar .navbar-toggler span {
+    -moz-transform: scale(1, -1);
+    -webkit-transform: scale(1, -1);
+    -o-transform: scale(1, -1);
+    -ms-transform: scale(1, -1);
+    transform: scale(1, -1);
+}
+
+.bs-sidebar .navbar-toggler.collapsed span { /* csslint allow: adjoining-classes */
+    -moz-transform: scale(1, 1);
+    -webkit-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
+    -ms-transform: scale(1, 1);
+    transform: scale(1, 1);
+}
+
+/* First level of nav */
+.bs-sidebar > .navbar-collapse > .nav {
+    padding-top:    0.625rem;
+    padding-bottom: 0.625rem;
+    border-radius: 0.3125rem;
+    width: 100%;
+}
+
+/* All levels of nav */
+.bs-sidebar .nav > li > a {
+    display: block;
+    padding: 0.3125rem 1.25rem;
+    z-index: 1;
+}
+.bs-sidebar .nav > li > a:hover,
+.bs-sidebar .nav > li > a:focus {
+    text-decoration: none;
+    border-right: 1px solid;
+}
+.bs-sidebar .nav > li > a.active,
+.bs-sidebar .nav > li > a.active:hover,
+.bs-sidebar .nav > li > a.active:focus {
+    font-weight: bold;
+    background-color: transparent;
+    border-right: 1px solid;
+}
+
+.bs-sidebar .nav .nav .nav {
+    margin-left: 1em;
+}
+
+.bs-sidebar .nav > li > a {
+    font-weight: bold;
+}
+
+.bs-sidebar .nav .nav > li > a {
+    font-weight: normal;
+}
+
+.headerlink {
+    font-family: FontAwesome;
+    font-size: 0.875rem;
+    display: none;
+    padding-left: .5em;
+}
+
+h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .headerlink, h5:hover .headerlink, h6:hover .headerlink{
+    display:inline-block;
+}
+
+
+
+.admonition {
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    text-align: left;
+    font-size: 0.875rem;
+}
+
+.admonition.note { /* csslint allow: adjoining-classes */
+    color: var(--adm-note-text);
+    background-color: var(--adm-note-bg);
+    border-color: var(--adm-note-border);
+}
+
+.admonition.warning { /* csslint allow: adjoining-classes */
+    color: var(--adm-warning-text);
+    background-color: var(--adm-warning-bg);
+    border-color: var(--adm-warning-border);
+}
+
+.admonition.danger { /* csslint allow: adjoining-classes */
+    color: var(--adm-danger-text);
+    background-color: var(--adm-danger-bg);
+    border-color: var(--adm-danger-border);
+}
+
+.admonition.tip,  /* csslint allow: adjoining-classes */
+.admonition.hint, /* csslint allow: adjoining-classes */
+.admonition.info { /* csslint allow: adjoining-classes */
+    color: var(--adm-note-text);
+    background-color: var(--adm-note-bg);
+    border-color: var(--adm-note-border);
+}
+
+.admonition.important { /* csslint allow: adjoining-classes */
+    color: var(--adm-warning-text);
+    background-color: var(--adm-warning-bg);
+    border-color: var(--adm-warning-border);
+}
+
+.admonition p:last-child {
+    margin-bottom: 0;
+}
+
+.admonition p {
+    margin-bottom: 0.5rem;
+}
+
+.admonition-title {
+    font-weight: 600;
+    text-align: left;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 1199.98px) {
+    .navbar-collapse.show { /* csslint allow: adjoining-classes */
+        overflow-y: auto;
+        max-height: calc(100vh - 3.5rem);
+    }
+
+    .navbar-nav.ml-auto {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 0.25rem;
+        padding: 0.5rem 0;
+        border-top: 1px solid rgba(128, 128, 128, 0.2);
+        margin-top: 0.5rem;
+    }
+}
+
+.dropdown-item.open { /* csslint allow: adjoining-classes */
+    color: var(--bg-page);
+    background-color: var(--text-link);
+}
+
+.dropdown-submenu > .dropdown-menu {
+    margin: 0 0 0 1.5rem;
+    padding: 0;
+    border-width: 0;
+}
+
+.dropdown-submenu > a::after {
+    display: block;
+    content: " ";
+    float: right;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: var(--text-muted);
+    margin-top: 0.3125rem;
+    margin-right: -0.625rem;
+}
+
+.dropdown-submenu:hover > a::after,
+.dropdown-submenu:focus-within > a::after {
+    border-left-color: var(--bg-page);
+}
+
+@media (min-width: 992px) {
+    .dropdown-menu {
+        overflow-y: auto;
+        max-height: calc(100vh - 3.5rem);
+    }
+
+    .dropdown-submenu {
+        position: relative;
+    }
+
+    .dropdown-submenu > .dropdown-menu {
+        /* csslint ignore:start */
+        position: fixed !important;
+        /* csslint ignore:end */
+        margin-top: -0.5625rem;
+        margin-left: -0.125rem;
+        border-width: 1px;
+        padding: 0.5rem 0;
+    }
+
+    .dropdown-submenu.pull-left { /* csslint allow: adjoining-classes */
+        float: none;
+    }
+
+    .dropdown-submenu.pull-left > .dropdown-menu { /* csslint allow: adjoining-classes */
+        left: -100%;
+        margin-left: 0.625rem;
+    }
+}
+
+@media print {
+    /* Remove sidebar when print */
+    .col-md-3 { display: none; }
+}

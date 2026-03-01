@@ -1,0 +1,93 @@
+/* Everforest palette — sainnhe
+   https://github.com/sainnhe/everforest */
+
+[data-color-scheme="everforest"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #fdf6e3;
+  --bg-zettel: #fff;
+  --bg-header: #f4f0d9;
+  --bg-accent: #f4f0d9;
+  --bg-code: #fdf6e3;
+  --bg-tooltip: #2b3339;
+  --bg-kbd: #2b3339;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #5c6a72;
+  --text-link: #3a94c5;
+  --text-header: #5c6a72;
+  --text-code: #5c6a72;
+  --text-muted: #939f91;
+  --text-tooltip: #d3c6aa;
+  --text-kbd: #fdf6e3;
+  --text-link-code: #3a94c5;
+  --text-link-code-hover: #8da101;
+
+  /* Borders */
+  --border-zettel: #e0dcc7;
+  --border-heading: #e0dcc7;
+  --border-accent: #e0dcc7;
+  --border-code: #e0dcc7;
+  --border-hr: #c9c5b2;
+  --border-img: #e0dcc7;
+
+  /* Navbar */
+  --nav-from: #5c6a72;
+  --nav-to: #4b575e;
+
+  /* Admonitions */
+  --adm-note-text: #3a94c5;
+  --adm-note-bg: #e5f0f8;
+  --adm-note-border: #3a94c5;
+  --adm-warning-text: #dfa000;
+  --adm-warning-bg: #faf3d8;
+  --adm-warning-border: #dfa000;
+  --adm-danger-text: #f85552;
+  --adm-danger-bg: #fde5e5;
+  --adm-danger-border: #f85552;
+}
+
+[data-color-scheme="everforest"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #2b3339;
+  --bg-zettel: #323c41;
+  --bg-header: #3a464b;
+  --bg-accent: #2f373c;
+  --bg-code: #323c41;
+  --bg-tooltip: #d3c6aa;
+  --bg-kbd: #56635a;
+  --bg-img: #323c41;
+
+  --text-primary: #d3c6aa;
+  --text-link: #7fbbb3;
+  --text-header: #d3c6aa;
+  --text-code: #d3c6aa;
+  --text-muted: #7a8478;
+  --text-tooltip: #2b3339;
+  --text-kbd: #d3c6aa;
+  --text-link-code: #7fbbb3;
+  --text-link-code-hover: #a7c080;
+
+  --border-zettel: #4a555b;
+  --border-heading: #4a555b;
+  --border-accent: #4a555b;
+  --border-code: #4a555b;
+  --border-hr: #56635a;
+  --border-img: #4a555b;
+
+  --nav-from: #323c41;
+  --nav-to: #2b3339;
+
+  --adm-note-text: #7fbbb3;
+  --adm-note-bg: #323c41;
+  --adm-note-border: #7fbbb3;
+  --adm-warning-text: #dbbc7f;
+  --adm-warning-bg: #323c41;
+  --adm-warning-border: #dbbc7f;
+  --adm-danger-text: #e67e80;
+  --adm-danger-bg: #323c41;
+  --adm-danger-border: #e67e80;
+}

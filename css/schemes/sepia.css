@@ -1,0 +1,93 @@
+/* Sepia palette — warm aged-paper feel for long reading
+   Inspired by Kindle sepia mode and vintage typography */
+
+[data-color-scheme="sepia"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #f4ecd8;
+  --bg-zettel: #f9f2e0;
+  --bg-header: #e8ddc0;
+  --bg-accent: #e2d6b5;
+  --bg-code: #eae0c8;
+  --bg-tooltip: #5b4636;
+  --bg-kbd: #433022;
+  --bg-img: #f9f2e0;
+
+  /* Text */
+  --text-primary: #433422;
+  --text-link: #a05a2c;
+  --text-header: #5b4636;
+  --text-code: #433422;
+  --text-muted: #8b7355;
+  --text-tooltip: #f4ecd8;
+  --text-kbd: #f4ecd8;
+  --text-link-code: #a05a2c;
+  --text-link-code-hover: #804015;
+
+  /* Borders */
+  --border-zettel: #dccbb0;
+  --border-heading: #dccbb0;
+  --border-accent: #c0af90;
+  --border-code: #d0c0a0;
+  --border-hr: #cdba96;
+  --border-img: #dccbb0;
+
+  /* Navbar */
+  --nav-from: #8b7355;
+  --nav-to: #5b4636;
+
+  /* Admonitions */
+  --adm-note-text: #5c7a6e;
+  --adm-note-bg: #e8ede6;
+  --adm-note-border: #5c7a6e;
+  --adm-warning-text: #8a6d3b;
+  --adm-warning-bg: #f5eed6;
+  --adm-warning-border: #8a6d3b;
+  --adm-danger-text: #8b3f3f;
+  --adm-danger-bg: #f2e0de;
+  --adm-danger-border: #8b3f3f;
+}
+
+[data-color-scheme="sepia"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #2a241f;
+  --bg-zettel: #362f28;
+  --bg-header: #3e362e;
+  --bg-accent: #302924;
+  --bg-code: #362f28;
+  --bg-tooltip: #d3c6aa;
+  --bg-kbd: #4e4439;
+  --bg-img: #362f28;
+
+  --text-primary: #d3c6aa;
+  --text-link: #e69875;
+  --text-header: #ebdabb;
+  --text-code: #d3c6aa;
+  --text-muted: #8b7355;
+  --text-tooltip: #2a241f;
+  --text-kbd: #d3c6aa;
+  --text-link-code: #e69875;
+  --text-link-code-hover: #ffad85;
+
+  --border-zettel: #4e4439;
+  --border-heading: #4e4439;
+  --border-accent: #5e5245;
+  --border-code: #4e4439;
+  --border-hr: #5e5245;
+  --border-img: #4e4439;
+
+  --nav-from: #362f28;
+  --nav-to: #2a241f;
+
+  --adm-note-text: #7c9ab3;
+  --adm-note-bg: #362f28;
+  --adm-note-border: #7c9ab3;
+  --adm-warning-text: #c9a960;
+  --adm-warning-bg: #362f28;
+  --adm-warning-border: #c9a960;
+  --adm-danger-text: #c06050;
+  --adm-danger-bg: #362f28;
+  --adm-danger-border: #c06050;
+}

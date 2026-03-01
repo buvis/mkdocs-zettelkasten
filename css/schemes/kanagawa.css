@@ -1,0 +1,93 @@
+/* Kanagawa palette — rebelot
+   https://github.com/rebelot/kanagawa.nvim */
+
+[data-color-scheme="kanagawa"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #f2ecbc;
+  --bg-zettel: #faf5d6;
+  --bg-header: #e5ddb0;
+  --bg-accent: #e5ddb0;
+  --bg-code: #f2ecbc;
+  --bg-tooltip: #1f1f28;
+  --bg-kbd: #1f1f28;
+  --bg-img: #faf5d6;
+
+  /* Text */
+  --text-primary: #545464;
+  --text-link: #4d699b;
+  --text-header: #545464;
+  --text-code: #545464;
+  --text-muted: #8a8980;
+  --text-tooltip: #dcd7ba;
+  --text-kbd: #f2ecbc;
+  --text-link-code: #4d699b;
+  --text-link-code-hover: #6f894e;
+
+  /* Borders */
+  --border-zettel: #d8d2a4;
+  --border-heading: #d8d2a4;
+  --border-accent: #d8d2a4;
+  --border-code: #d8d2a4;
+  --border-hr: #c4be96;
+  --border-img: #d8d2a4;
+
+  /* Navbar */
+  --nav-from: #545464;
+  --nav-to: #43436c;
+
+  /* Admonitions */
+  --adm-note-text: #4d699b;
+  --adm-note-bg: #e4eaf2;
+  --adm-note-border: #4d699b;
+  --adm-warning-text: #cc6d00;
+  --adm-warning-bg: #f8ecd4;
+  --adm-warning-border: #cc6d00;
+  --adm-danger-text: #c84053;
+  --adm-danger-bg: #f5e0e3;
+  --adm-danger-border: #c84053;
+}
+
+[data-color-scheme="kanagawa"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #1f1f28;
+  --bg-zettel: #2a2a37;
+  --bg-header: #363646;
+  --bg-accent: #252535;
+  --bg-code: #2a2a37;
+  --bg-tooltip: #dcd7ba;
+  --bg-kbd: #54546d;
+  --bg-img: #2a2a37;
+
+  --text-primary: #dcd7ba;
+  --text-link: #7e9cd8;
+  --text-header: #dcd7ba;
+  --text-code: #dcd7ba;
+  --text-muted: #727169;
+  --text-tooltip: #1f1f28;
+  --text-kbd: #dcd7ba;
+  --text-link-code: #7e9cd8;
+  --text-link-code-hover: #76946a;
+
+  --border-zettel: #3e3e52;
+  --border-heading: #3e3e52;
+  --border-accent: #3e3e52;
+  --border-code: #3e3e52;
+  --border-hr: #54546d;
+  --border-img: #3e3e52;
+
+  --nav-from: #2a2a37;
+  --nav-to: #1f1f28;
+
+  --adm-note-text: #7e9cd8;
+  --adm-note-bg: #2a2a37;
+  --adm-note-border: #7e9cd8;
+  --adm-warning-text: #c0a36e;
+  --adm-warning-bg: #2a2a37;
+  --adm-warning-border: #c0a36e;
+  --adm-danger-text: #c34043;
+  --adm-danger-bg: #2a2a37;
+  --adm-danger-border: #c34043;
+}

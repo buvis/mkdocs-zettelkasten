@@ -1,0 +1,93 @@
+/* Rose Pine palette — Rose Pine
+   https://rosepinetheme.com */
+
+[data-color-scheme="rose-pine"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #faf4ed;
+  --bg-zettel: #fffaf3;
+  --bg-header: #f2e9e1;
+  --bg-accent: #f2e9e1;
+  --bg-code: #faf4ed;
+  --bg-tooltip: #191724;
+  --bg-kbd: #191724;
+  --bg-img: #fffaf3;
+
+  /* Text */
+  --text-primary: #575279;
+  --text-link: #286983;
+  --text-header: #575279;
+  --text-code: #575279;
+  --text-muted: #9893a5;
+  --text-tooltip: #e0def4;
+  --text-kbd: #faf4ed;
+  --text-link-code: #286983;
+  --text-link-code-hover: #56949f;
+
+  /* Borders */
+  --border-zettel: #dfdad9;
+  --border-heading: #dfdad9;
+  --border-accent: #dfdad9;
+  --border-code: #dfdad9;
+  --border-hr: #cecacd;
+  --border-img: #dfdad9;
+
+  /* Navbar */
+  --nav-from: #575279;
+  --nav-to: #3e3a5e;
+
+  /* Admonitions */
+  --adm-note-text: #286983;
+  --adm-note-bg: #dfeaee;
+  --adm-note-border: #286983;
+  --adm-warning-text: #ea9d34;
+  --adm-warning-bg: #faf0db;
+  --adm-warning-border: #ea9d34;
+  --adm-danger-text: #b4637a;
+  --adm-danger-bg: #f5e4e8;
+  --adm-danger-border: #b4637a;
+}
+
+[data-color-scheme="rose-pine"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #191724;
+  --bg-zettel: #1f1d2e;
+  --bg-header: #26233a;
+  --bg-accent: #1c1a2c;
+  --bg-code: #1f1d2e;
+  --bg-tooltip: #e0def4;
+  --bg-kbd: #403d52;
+  --bg-img: #1f1d2e;
+
+  --text-primary: #e0def4;
+  --text-link: #9ccfd8;
+  --text-header: #e0def4;
+  --text-code: #e0def4;
+  --text-muted: #6e6a86;
+  --text-tooltip: #191724;
+  --text-kbd: #e0def4;
+  --text-link-code: #9ccfd8;
+  --text-link-code-hover: #c4a7e7;
+
+  --border-zettel: #2a283e;
+  --border-heading: #2a283e;
+  --border-accent: #2a283e;
+  --border-code: #2a283e;
+  --border-hr: #403d52;
+  --border-img: #2a283e;
+
+  --nav-from: #1f1d2e;
+  --nav-to: #191724;
+
+  --adm-note-text: #9ccfd8;
+  --adm-note-bg: #1f1d2e;
+  --adm-note-border: #9ccfd8;
+  --adm-warning-text: #f6c177;
+  --adm-warning-bg: #1f1d2e;
+  --adm-warning-border: #f6c177;
+  --adm-danger-text: #eb6f92;
+  --adm-danger-bg: #1f1d2e;
+  --adm-danger-border: #eb6f92;
+}

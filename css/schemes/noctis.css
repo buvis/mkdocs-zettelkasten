@@ -1,0 +1,93 @@
+/* Noctis palette — Liviu Schera
+   https://github.com/liviuschera/noctis */
+
+[data-color-scheme="noctis"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #fef8ec;
+  --bg-zettel: #fffdf5;
+  --bg-header: #f5edd8;
+  --bg-accent: #f5edd8;
+  --bg-code: #fef8ec;
+  --bg-tooltip: #282520;
+  --bg-kbd: #282520;
+  --bg-img: #fffdf5;
+
+  /* Text */
+  --text-primary: #5a4e38;
+  --text-link: #c4762a;
+  --text-header: #5a4e38;
+  --text-code: #5a4e38;
+  --text-muted: #968a74;
+  --text-tooltip: #ccc5b9;
+  --text-kbd: #fef8ec;
+  --text-link-code: #c4762a;
+  --text-link-code-hover: #6e9440;
+
+  /* Borders */
+  --border-zettel: #e5dbc0;
+  --border-heading: #e5dbc0;
+  --border-accent: #e5dbc0;
+  --border-code: #e5dbc0;
+  --border-hr: #d5c8a8;
+  --border-img: #e5dbc0;
+
+  /* Navbar */
+  --nav-from: #5a4e38;
+  --nav-to: #4a3e28;
+
+  /* Admonitions */
+  --adm-note-text: #c4762a;
+  --adm-note-bg: #faecd8;
+  --adm-note-border: #c4762a;
+  --adm-warning-text: #b8a000;
+  --adm-warning-bg: #faf5d4;
+  --adm-warning-border: #b8a000;
+  --adm-danger-text: #c44040;
+  --adm-danger-bg: #fadede;
+  --adm-danger-border: #c44040;
+}
+
+[data-color-scheme="noctis"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #252320;
+  --bg-zettel: #2e2b28;
+  --bg-header: #383430;
+  --bg-accent: #2a2724;
+  --bg-code: #2e2b28;
+  --bg-tooltip: #ccc5b9;
+  --bg-kbd: #3a3735;
+  --bg-img: #2e2b28;
+
+  --text-primary: #c8bfb0;
+  --text-link: #e8a84c;
+  --text-header: #d8d0c0;
+  --text-code: #c8bfb0;
+  --text-muted: #706858;
+  --text-tooltip: #252320;
+  --text-kbd: #c8bfb0;
+  --text-link-code: #e8a84c;
+  --text-link-code-hover: #8cbd6f;
+
+  --border-zettel: #3a3735;
+  --border-heading: #3a3735;
+  --border-accent: #3a3735;
+  --border-code: #3a3735;
+  --border-hr: #4a4540;
+  --border-img: #3a3735;
+
+  --nav-from: #2e2b28;
+  --nav-to: #252320;
+
+  --adm-note-text: #e8a84c;
+  --adm-note-bg: #2e2b28;
+  --adm-note-border: #e8a84c;
+  --adm-warning-text: #d4c760;
+  --adm-warning-bg: #2e2b28;
+  --adm-warning-border: #d4c760;
+  --adm-danger-text: #e06060;
+  --adm-danger-bg: #2e2b28;
+  --adm-danger-border: #e06060;
+}

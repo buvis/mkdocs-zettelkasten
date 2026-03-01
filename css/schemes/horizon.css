@@ -1,0 +1,93 @@
+/* Horizon palette — Jonathan Olaleye
+   https://horizontheme.com */
+
+[data-color-scheme="horizon"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #fdf0ed;
+  --bg-zettel: #fff;
+  --bg-header: #fadad1;
+  --bg-accent: #fadad1;
+  --bg-code: #fdf0ed;
+  --bg-tooltip: #1c1e26;
+  --bg-kbd: #1c1e26;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #1c1e26;
+  --text-link: #e95678;
+  --text-header: #1c1e26;
+  --text-code: #1c1e26;
+  --text-muted: #888;
+  --text-tooltip: #d5d8da;
+  --text-kbd: #fdf0ed;
+  --text-link-code: #e95678;
+  --text-link-code-hover: #26bbd9;
+
+  /* Borders */
+  --border-zettel: #f0d0c8;
+  --border-heading: #f0d0c8;
+  --border-accent: #f0d0c8;
+  --border-code: #f0d0c8;
+  --border-hr: #e0b8ae;
+  --border-img: #f0d0c8;
+
+  /* Navbar */
+  --nav-from: #1c1e26;
+  --nav-to: #16171e;
+
+  /* Admonitions */
+  --adm-note-text: #26bbd9;
+  --adm-note-bg: #ddf2f8;
+  --adm-note-border: #26bbd9;
+  --adm-warning-text: #e5a04b;
+  --adm-warning-bg: #faf0dd;
+  --adm-warning-border: #e5a04b;
+  --adm-danger-text: #e95678;
+  --adm-danger-bg: #fce3e8;
+  --adm-danger-border: #e95678;
+}
+
+[data-color-scheme="horizon"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #1c1e26;
+  --bg-zettel: #232530;
+  --bg-header: #2b2d3a;
+  --bg-accent: #1f212b;
+  --bg-code: #232530;
+  --bg-tooltip: #d5d8da;
+  --bg-kbd: #3d3f50;
+  --bg-img: #232530;
+
+  --text-primary: #d5d8da;
+  --text-link: #e95678;
+  --text-header: #d5d8da;
+  --text-code: #d5d8da;
+  --text-muted: #6c6f93;
+  --text-tooltip: #1c1e26;
+  --text-kbd: #d5d8da;
+  --text-link-code: #e95678;
+  --text-link-code-hover: #26bbd9;
+
+  --border-zettel: #3d3f50;
+  --border-heading: #3d3f50;
+  --border-accent: #3d3f50;
+  --border-code: #3d3f50;
+  --border-hr: #4e5068;
+  --border-img: #3d3f50;
+
+  --nav-from: #232530;
+  --nav-to: #1c1e26;
+
+  --adm-note-text: #26bbd9;
+  --adm-note-bg: #232530;
+  --adm-note-border: #26bbd9;
+  --adm-warning-text: #fac29a;
+  --adm-warning-bg: #232530;
+  --adm-warning-border: #fac29a;
+  --adm-danger-text: #e95678;
+  --adm-danger-bg: #232530;
+  --adm-danger-border: #e95678;
+}

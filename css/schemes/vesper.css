@@ -1,0 +1,93 @@
+/* Vesper palette — Rauno Freiberg
+   https://github.com/raunofreiberg/vesper */
+
+[data-color-scheme="vesper"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #f5f0e8;
+  --bg-zettel: #fffdf8;
+  --bg-header: #ece5d8;
+  --bg-accent: #ece5d8;
+  --bg-code: #f5f0e8;
+  --bg-tooltip: #1c1917;
+  --bg-kbd: #1c1917;
+  --bg-img: #fffdf8;
+
+  /* Text */
+  --text-primary: #3b3228;
+  --text-link: #b34b1f;
+  --text-header: #3b3228;
+  --text-code: #3b3228;
+  --text-muted: #8e8072;
+  --text-tooltip: #d5c4a1;
+  --text-kbd: #f5f0e8;
+  --text-link-code: #b34b1f;
+  --text-link-code-hover: #7a6230;
+
+  /* Borders */
+  --border-zettel: #ddd5c8;
+  --border-heading: #ddd5c8;
+  --border-accent: #ddd5c8;
+  --border-code: #ddd5c8;
+  --border-hr: #cec2b0;
+  --border-img: #ddd5c8;
+
+  /* Navbar */
+  --nav-from: #3b3228;
+  --nav-to: #2a231c;
+
+  /* Admonitions */
+  --adm-note-text: #b34b1f;
+  --adm-note-bg: #fae8dd;
+  --adm-note-border: #b34b1f;
+  --adm-warning-text: #b8860b;
+  --adm-warning-bg: #faf0d4;
+  --adm-warning-border: #b8860b;
+  --adm-danger-text: #c41e3a;
+  --adm-danger-bg: #fadde2;
+  --adm-danger-border: #c41e3a;
+}
+
+[data-color-scheme="vesper"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #101010;
+  --bg-zettel: #1a1a1a;
+  --bg-header: #222222;
+  --bg-accent: #171717;
+  --bg-code: #1a1a1a;
+  --bg-tooltip: #d5c4a1;
+  --bg-kbd: #333333;
+  --bg-img: #1a1a1a;
+
+  --text-primary: #b2b2b2;
+  --text-link: #ffc799;
+  --text-header: #d5d5d5;
+  --text-code: #b2b2b2;
+  --text-muted: #606060;
+  --text-tooltip: #101010;
+  --text-kbd: #b2b2b2;
+  --text-link-code: #ffc799;
+  --text-link-code-hover: #ffdb99;
+
+  --border-zettel: #333333;
+  --border-heading: #333333;
+  --border-accent: #333333;
+  --border-code: #333333;
+  --border-hr: #444444;
+  --border-img: #333333;
+
+  --nav-from: #1a1a1a;
+  --nav-to: #101010;
+
+  --adm-note-text: #ffc799;
+  --adm-note-bg: #1a1a1a;
+  --adm-note-border: #ffc799;
+  --adm-warning-text: #f0c674;
+  --adm-warning-bg: #1a1a1a;
+  --adm-warning-border: #f0c674;
+  --adm-danger-text: #e06c75;
+  --adm-danger-bg: #1a1a1a;
+  --adm-danger-border: #e06c75;
+}

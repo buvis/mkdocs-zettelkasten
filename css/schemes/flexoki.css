@@ -1,0 +1,93 @@
+/* Flexoki palette — Steph Ango
+   https://stephango.com/flexoki */
+
+[data-color-scheme="flexoki"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #fffcf0;
+  --bg-zettel: #fff;
+  --bg-header: #f2f0e5;
+  --bg-accent: #f2f0e5;
+  --bg-code: #f2f0e5;
+  --bg-tooltip: #100f0f;
+  --bg-kbd: #100f0f;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #100f0f;
+  --text-link: #205ea6;
+  --text-header: #100f0f;
+  --text-code: #100f0f;
+  --text-muted: #878580;
+  --text-tooltip: #cecdc3;
+  --text-kbd: #fffcf0;
+  --text-link-code: #205ea6;
+  --text-link-code-hover: #24837b;
+
+  /* Borders */
+  --border-zettel: #e6e4d9;
+  --border-heading: #e6e4d9;
+  --border-accent: #e6e4d9;
+  --border-code: #e6e4d9;
+  --border-hr: #cecdc3;
+  --border-img: #e6e4d9;
+
+  /* Navbar */
+  --nav-from: #343331;
+  --nav-to: #100f0f;
+
+  /* Admonitions */
+  --adm-note-text: #205ea6;
+  --adm-note-bg: #dde6f2;
+  --adm-note-border: #205ea6;
+  --adm-warning-text: #bc5215;
+  --adm-warning-bg: #f6e7da;
+  --adm-warning-border: #bc5215;
+  --adm-danger-text: #af3029;
+  --adm-danger-bg: #f3dedd;
+  --adm-danger-border: #af3029;
+}
+
+[data-color-scheme="flexoki"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #100f0f;
+  --bg-zettel: #1c1b1a;
+  --bg-header: #282726;
+  --bg-accent: #161514;
+  --bg-code: #1c1b1a;
+  --bg-tooltip: #cecdc3;
+  --bg-kbd: #403e3c;
+  --bg-img: #1c1b1a;
+
+  --text-primary: #cecdc3;
+  --text-link: #4385be;
+  --text-header: #cecdc3;
+  --text-code: #cecdc3;
+  --text-muted: #575653;
+  --text-tooltip: #100f0f;
+  --text-kbd: #cecdc3;
+  --text-link-code: #4385be;
+  --text-link-code-hover: #3aa99f;
+
+  --border-zettel: #343331;
+  --border-heading: #343331;
+  --border-accent: #343331;
+  --border-code: #343331;
+  --border-hr: #403e3c;
+  --border-img: #343331;
+
+  --nav-from: #1c1b1a;
+  --nav-to: #100f0f;
+
+  --adm-note-text: #4385be;
+  --adm-note-bg: #1c1b1a;
+  --adm-note-border: #4385be;
+  --adm-warning-text: #da702c;
+  --adm-warning-bg: #1c1b1a;
+  --adm-warning-border: #da702c;
+  --adm-danger-text: #d14d41;
+  --adm-danger-bg: #1c1b1a;
+  --adm-danger-border: #d14d41;
+}

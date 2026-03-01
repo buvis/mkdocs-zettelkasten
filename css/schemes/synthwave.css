@@ -1,0 +1,93 @@
+/* Synthwave '84 palette — Robb Owen
+   https://github.com/robb0wen/synthwave-vscode */
+
+[data-color-scheme="synthwave"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #f8f0f8;
+  --bg-zettel: #fff;
+  --bg-header: #eee2ef;
+  --bg-accent: #eee2ef;
+  --bg-code: #f8f0f8;
+  --bg-tooltip: #262335;
+  --bg-kbd: #262335;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #45384d;
+  --text-link: #d63384;
+  --text-header: #45384d;
+  --text-code: #45384d;
+  --text-muted: #9a8a9e;
+  --text-tooltip: #f8deff;
+  --text-kbd: #f8f0f8;
+  --text-link-code: #d63384;
+  --text-link-code-hover: #2fbfa0;
+
+  /* Borders */
+  --border-zettel: #ddd0de;
+  --border-heading: #ddd0de;
+  --border-accent: #ddd0de;
+  --border-code: #ddd0de;
+  --border-hr: #ccbece;
+  --border-img: #ddd0de;
+
+  /* Navbar */
+  --nav-from: #45384d;
+  --nav-to: #352840;
+
+  /* Admonitions */
+  --adm-note-text: #d63384;
+  --adm-note-bg: #fce0ef;
+  --adm-note-border: #d63384;
+  --adm-warning-text: #c29020;
+  --adm-warning-bg: #faf0d5;
+  --adm-warning-border: #c29020;
+  --adm-danger-text: #8b0000;
+  --adm-danger-bg: #f5d5d5;
+  --adm-danger-border: #8b0000;
+}
+
+[data-color-scheme="synthwave"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #262335;
+  --bg-zettel: #2e2a40;
+  --bg-header: #38344a;
+  --bg-accent: #2a2638;
+  --bg-code: #2e2a40;
+  --bg-tooltip: #f8deff;
+  --bg-kbd: #3e3a50;
+  --bg-img: #2e2a40;
+
+  --text-primary: #f8deff;
+  --text-link: #ff7edb;
+  --text-header: #ffeeff;
+  --text-code: #f8deff;
+  --text-muted: #685e78;
+  --text-tooltip: #262335;
+  --text-kbd: #f8deff;
+  --text-link-code: #ff7edb;
+  --text-link-code-hover: #72f1b8;
+
+  --border-zettel: #3e3a50;
+  --border-heading: #3e3a50;
+  --border-accent: #3e3a50;
+  --border-code: #3e3a50;
+  --border-hr: #4e4a60;
+  --border-img: #3e3a50;
+
+  --nav-from: #2e2a40;
+  --nav-to: #262335;
+
+  --adm-note-text: #ff7edb;
+  --adm-note-bg: #2e2a40;
+  --adm-note-border: #ff7edb;
+  --adm-warning-text: #fede5d;
+  --adm-warning-bg: #2e2a40;
+  --adm-warning-border: #fede5d;
+  --adm-danger-text: #fe4450;
+  --adm-danger-bg: #2e2a40;
+  --adm-danger-border: #fe4450;
+}

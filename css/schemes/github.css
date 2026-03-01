@@ -1,0 +1,93 @@
+/* GitHub Primer palette — GitHub
+   https://primer.style */
+
+[data-color-scheme="github"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #ffffff;
+  --bg-zettel: #fff;
+  --bg-header: #f6f8fa;
+  --bg-accent: #f6f8fa;
+  --bg-code: #f6f8fa;
+  --bg-tooltip: #24292f;
+  --bg-kbd: #24292f;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #24292f;
+  --text-link: #0969da;
+  --text-header: #24292f;
+  --text-code: #24292f;
+  --text-muted: #656d76;
+  --text-tooltip: #f6f8fa;
+  --text-kbd: #ffffff;
+  --text-link-code: #0969da;
+  --text-link-code-hover: #1a7f37;
+
+  /* Borders */
+  --border-zettel: #d0d7de;
+  --border-heading: #d8dee4;
+  --border-accent: #d0d7de;
+  --border-code: #d0d7de;
+  --border-hr: #d0d7de;
+  --border-img: #d0d7de;
+
+  /* Navbar */
+  --nav-from: #24292f;
+  --nav-to: #1b1f23;
+
+  /* Admonitions */
+  --adm-note-text: #0969da;
+  --adm-note-bg: #ddf4ff;
+  --adm-note-border: #0969da;
+  --adm-warning-text: #9a6700;
+  --adm-warning-bg: #fff8c5;
+  --adm-warning-border: #9a6700;
+  --adm-danger-text: #cf222e;
+  --adm-danger-bg: #ffebe9;
+  --adm-danger-border: #cf222e;
+}
+
+[data-color-scheme="github"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #0d1117;
+  --bg-zettel: #161b22;
+  --bg-header: #1c2128;
+  --bg-accent: #131920;
+  --bg-code: #161b22;
+  --bg-tooltip: #c9d1d9;
+  --bg-kbd: #30363d;
+  --bg-img: #161b22;
+
+  --text-primary: #c9d1d9;
+  --text-link: #58a6ff;
+  --text-header: #e6edf3;
+  --text-code: #c9d1d9;
+  --text-muted: #8b949e;
+  --text-tooltip: #0d1117;
+  --text-kbd: #c9d1d9;
+  --text-link-code: #58a6ff;
+  --text-link-code-hover: #3fb950;
+
+  --border-zettel: #30363d;
+  --border-heading: #30363d;
+  --border-accent: #30363d;
+  --border-code: #30363d;
+  --border-hr: #30363d;
+  --border-img: #30363d;
+
+  --nav-from: #161b22;
+  --nav-to: #0d1117;
+
+  --adm-note-text: #58a6ff;
+  --adm-note-bg: #161b22;
+  --adm-note-border: #58a6ff;
+  --adm-warning-text: #d29922;
+  --adm-warning-bg: #161b22;
+  --adm-warning-border: #d29922;
+  --adm-danger-text: #f85149;
+  --adm-danger-bg: #161b22;
+  --adm-danger-border: #f85149;
+}

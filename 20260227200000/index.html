@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <script>(function(){var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);var s=localStorage.getItem('color-scheme')||'solarized';document.documentElement.setAttribute('data-color-scheme',s);window.__zkScheme=s;var ht=localStorage.getItem('hljs-theme-light')||'github';var hd=localStorage.getItem('hljs-theme-dark')||'github-dark';var h=t==='dark'?hd:ht;var hl=document.createElement('link');hl.id='hljs-theme';hl.rel='stylesheet';hl.dataset.lightStyle=ht;hl.dataset.darkStyle=hd;hl.href='../css/vendor/hljs/'+h+'.min.css';document.head.appendChild(hl)})()</script>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Tomáš Bouška">
+        <link rel="canonical" href="https://buvis.github.io/mkdocs-zettelkasten/20260227200000/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Philosophy Overview - MkDocs Zettelkasten</title>
+        <link href="../css/layout.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link href="../css/theme.css" rel="stylesheet">
+        <link id="scheme-css" rel="stylesheet" href="../css/schemes/solarized.css">
+        <script>if(window.__zkScheme){document.getElementById('scheme-css').href='../css/schemes/'+window.__zkScheme+'.css'}</script>
+        <link rel="stylesheet" href="../css/embed.css">
+        <script src="../js/vendor/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body><div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+<nav id="sidebar-nav" class="sidebar-nav">
+    <div class="sidebar-header">
+        <span class="sidebar-title">MkDocs Zettelkasten</span>
+        <button class="sidebar-close" aria-label="Close navigation">&times;</button>
+    </div>
+    <ul class="sidebar-tree">
+        
+<li class="sidebar-leaf">
+    <a href="../20211122194827/" class="sidebar-link">Install</a>
+</li>
+        
+<li class="sidebar-leaf">
+    <a href="../20211122195311/" class="sidebar-link">Run a demo</a>
+</li>
+        
+<li class="sidebar-leaf">
+    <a href="../20211122195910/" class="sidebar-link">Requirements</a>
+</li>
+        
+<li class="sidebar-leaf">
+    <a href="../features/" class="sidebar-link">Features</a>
+</li>
+        
+<li class="sidebar-leaf">
+    <a href="../20260224072143/" class="sidebar-link">Configuration</a>
+</li>
+        
+<li class="sidebar-leaf">
+    <a href="../20260224141223/" class="sidebar-link">Color Schemes</a>
+</li>
+    </ul>
+</nav>
+
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary sidebar-mode">
+            <div class="container">
+                <button id="sidebar-toggle" class="sidebar-toggle" aria-expanded="false" aria-label="Open navigation" aria-controls="sidebar-nav">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+                <a class="navbar-brand" href="..">MkDocs Zettelkasten</a>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i>
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../20260227100200/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" class="nav-link disabled">
+                                    <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                        <li class="nav-item">
+                          <a href="../tags.html" class="nav-link">
+                            <i class="fa fa-tags"></i>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a href="../validation.html" class="nav-link" title="Validation issues: 6">
+                            <span class="nav-icon-badge">
+                              <i class="fa fa-exclamation-triangle"></i>
+                              <span class="badge badge-warning">6</span>
+                            </span>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a href="../outline.html" class="nav-link" title="Outlines">
+                            <span class="nav-icon-badge">
+                              <i class="fa fa-file-text-o"></i>
+                            </span>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_settings_modal" aria-label="Settings">
+                            <i class="fa fa-cog"></i>
+                          </a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container col-md-8">
+              <div class="zettel">
+    
+    <div class="file-header">
+      <div class="row align-items-center">
+        <div class="col-8">
+          
+            <div class="row align-items-center">
+              <span>
+                
+                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M11.536 3.464a5 5 0 010 7.072L8 14.07l-3.536-3.535a5 5 0 117.072-7.072v.001zm1.06 8.132a6.5 6.5 0 10-9.192 0l3.535 3.536a1.5 1.5 0 002.122 0l3.535-3.536zM8 9a2 2 0 100-4 2 2 0 000 4z"/>
+                </svg>
+                
+                <strong><span data-tooltip="Copy link to zettel" data-copy-value="https://buvis.github.io/mkdocs-zettelkasten/20260227200000/" role="button" tabindex="0">20260227200000<span class="visually-hidden"> — click to copy link</span></span></strong>
+                
+                  
+                  
+                
+              </span>
+            </div>
+            
+            <div class="row align-items-center">
+              <span class="moc-link-count">3 notes in this map</span>
+            </div>
+            
+            
+            <div class="row align-items-center">
+              <span class="zettel-badges">
+                
+                  <span class="zettel-type-badge" data-type="permanent">
+                    
+                      <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3.1.7a.5.5 0 0 1 .4-.2h9a.5.5 0 0 1 .4.2l2.976 3.974c.149.185.156.45.01.644L8.4 15.3a.5.5 0 0 1-.8 0L.1 5.3a.5.5 0 0 1 0-.6l3-4zm11.386 3.785l-1.806-2.41-.776 2.413 2.582-.003zm-3.633.004l.961-2.989H4.186l.963 2.995 5.704-.006zM5.47 5.495L8 13.366l2.532-7.876-5.062.005zm-1.371-.999l-.78-2.422-1.818 2.425 2.598-.003zM1.499 5.5l5.113 6.817-2.192-6.82L1.5 5.5zm7.889 6.817l5.123-6.83-2.928.002-2.195 6.828z"/></svg>
+                    
+                    permanent
+                  </span>
+                
+                
+              </span>
+            </div>
+            
+            
+            
+            
+            <div class="row align-items-center">
+              <span>
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-tags" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M3 2v4.586l7 7L14.586 9l-7-7H3zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586V2z"/>
+                  <path fill-rule="evenodd" d="M5.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+                  <path d="M1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1v5.086z"/>
+                </svg>
+                <a href="../tags.html#philosophy">#philosophy</a> 
+              </span>
+            </div>
+          
+        </div>
+        <div class="col-4 text-right date">
+          
+            
+              <a href="https://github.com/buvis/mkdocs-zettelkasten/edit/master/docs/20260227200000.md" class="hidden-hyperlink" data-tooltip="Edit zettel's source">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil clickable" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                </svg>
+              </a>
+            
+            2026-02-27
+          
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="file-body">
+      <h1 id="philosophy-overview">Philosophy Overview</h1>
+<p>A map of philosophical topics explored in this zettelkasten.</p>
+<ul>
+<li><a href="https://buvis.github.io/mkdocs-zettelkasten/20260225100000/">Epistemology</a></li>
+<li><a href="https://buvis.github.io/mkdocs-zettelkasten/20260225100100/">JTB Theory</a></li>
+<li><a href="https://buvis.github.io/mkdocs-zettelkasten/20260225100200/">Gettier Problems</a></li>
+</ul>
+    </div>
+    
+    
+    
+  </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p><a href="https://github.com/buvis/mkdocs-zettelkasten">MkDocs Zettelkasten</a> v0.6.2.dev97</p>
+                <p class="footer-copyright">Copyright &copy; 2026 Tomáš Bouška</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+        <script src="../js/settings-modal.js" defer></script>
+        <script src="../js/copyable.js" defer></script>
+          <script src="../search/main.js"></script>
+
+        <dialog id="mkdocs_search_modal" class="modal-lg" aria-labelledby="searchModalLabel">
+    <div class="modal-header">
+        <h4 class="modal-title" id="searchModalLabel">Search</h4>
+        <button type="button" class="modal-close" aria-label="Close"><span aria-hidden="true">&times;</span><span class="visually-hidden">Close</span></button>
+    </div>
+    <div class="modal-body">
+                <p>From here you can search the entire zettelkasten. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+    <div class="modal-footer">
+    </div>
+</dialog><dialog id="mkdocs_keyboard_modal" aria-labelledby="keyboardModalLabel">
+    <div class="modal-header">
+        <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+        <button type="button" class="modal-close" aria-label="Close"><span aria-hidden="true">&times;</span><span class="visually-hidden">Close</span></button>
+    </div>
+    <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd> / <kbd>&rarr;</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd> / <kbd>&larr;</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+    <div class="modal-footer">
+    </div>
+</dialog><dialog id="mkdocs_settings_modal" class="modal-lg" aria-labelledby="settingsModalLabel">
+    <div class="modal-header">
+        <h4 class="modal-title" id="settingsModalLabel">Settings</h4>
+        <button type="button" class="modal-close" aria-label="Close"><span aria-hidden="true">&times;</span><span class="visually-hidden">Close</span></button>
+    </div>
+    <div class="modal-body">
+                <div class="settings-section-header">
+                    <h5>Color Scheme</h5>
+                    <div class="dark-mode-toggle-group">
+                        <span class="toggle-label">Light</span>
+                        <label class="dark-mode-toggle" title="Toggle dark mode">
+                            <input type="checkbox" id="dark-mode-toggle" aria-label="Toggle dark mode">
+                            <span class="toggle-track">
+                                <span class="toggle-icon toggle-sun">&#9788;</span>
+                                <span class="toggle-icon toggle-moon">&#9789;</span>
+                                <span class="toggle-thumb"></span>
+                            </span>
+                        </label>
+                        <span class="toggle-label">Dark</span>
+                    </div>
+                </div>
+                <div id="scheme-grid" class="scheme-grid"></div>
+
+                <div class="settings-section-header code-theme-header">
+                    <h5>Code Theme</h5>
+                    <select id="hljs-theme-select" class="form-control">
+                        <option value="github">GitHub</option>
+                        <option value="github-dark">GitHub Dark</option>
+                        <option value="monokai">Monokai</option>
+                        <option value="solarized-light">Solarized Light</option>
+                        <option value="solarized-dark">Solarized Dark</option>
+                        <option value="nord">Nord</option>
+                        <option value="atom-one-light">Atom One Light</option>
+                        <option value="atom-one-dark">Atom One Dark</option>
+                        <option value="dracula">Dracula</option>
+                        <option value="gruvbox-light">Gruvbox Light</option>
+                        <option value="gruvbox-dark">Gruvbox Dark</option>
+                        <option value="tokyo-night-dark">Tokyo Night Dark</option>
+                        <option value="tokyo-night-light">Tokyo Night Light</option>
+                        <option value="a11y-light">A11y Light</option>
+                        <option value="a11y-dark">A11y Dark</option>
+                        <option value="base16/catppuccin-latte">Catppuccin Latte</option>
+                        <option value="base16/catppuccin-mocha">Catppuccin Mocha</option>
+                        <option value="base16/rose-pine">Rose Pine</option>
+                        <option value="base16/rose-pine-dawn">Rose Pine Dawn</option>
+                        <option value="base16/everforest">Everforest</option>
+                        <option value="base16/kanagawa">Kanagawa</option>
+                        <option value="base16/material">Material</option>
+                        <option value="base16/material-lighter">Material Lighter</option>
+                        <option value="base16/nord">Nord (base16)</option>
+                        <option value="base16/papercolor-light">PaperColor Light</option>
+                        <option value="base16/papercolor-dark">PaperColor Dark</option>
+                        <option value="base16/zenburn">Zenburn</option>
+                        <option value="eink-light">E-ink Light</option>
+                        <option value="eink-dark">E-ink Dark</option>
+                    </select>
+                </div>
+                <pre id="hljs-preview" class="hljs-preview"><code class="language-python">def greet(name: str) -> str:
+    """Return a greeting."""
+    return f"Hello, {name}!"
+
+print(greet("Zettelkasten"))</code></pre>
+            </div>
+    <div class="modal-footer">
+    </div>
+</dialog>
+
+    </body>
+</html>

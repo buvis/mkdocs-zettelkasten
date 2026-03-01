@@ -1,0 +1,29 @@
+.zettel-embed {
+  margin: 1em 0;
+  padding: 0 1em 0.5em;
+  border-left: 3px solid var(--border-zettel);
+  background: var(--bg-tooltip);
+  border-radius: 0.25rem;
+}
+
+.zettel-embed-header {
+  font-size: 0.85em;
+  padding: 0.4em 0;
+  border-bottom: 1px solid var(--border-zettel);
+  margin-bottom: 0.5em;
+}
+
+.zettel-embed-header a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.zettel-embed-header a:hover {
+  color: var(--text-link);
+}
+
+.zettel-embed .zettel-embed {
+  margin-left: 0.5em;
+  border-left-color: var(--text-muted);
+  opacity: 0.9;
+}

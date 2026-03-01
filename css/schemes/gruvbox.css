@@ -1,0 +1,93 @@
+/* Gruvbox palette — morhetz
+   https://github.com/morhetz/gruvbox */
+
+[data-color-scheme="gruvbox"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #fbf1c7;
+  --bg-zettel: #fff;
+  --bg-header: #ebdbb2;
+  --bg-accent: #ebdbb2;
+  --bg-code: #fbf1c7;
+  --bg-tooltip: #282828;
+  --bg-kbd: #282828;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #3c3836;
+  --text-link: #458588;
+  --text-header: #3c3836;
+  --text-code: #3c3836;
+  --text-muted: #928374;
+  --text-tooltip: #ebdbb2;
+  --text-kbd: #fbf1c7;
+  --text-link-code: #458588;
+  --text-link-code-hover: #98971a;
+
+  /* Borders */
+  --border-zettel: #d5c4a1;
+  --border-heading: #d5c4a1;
+  --border-accent: #d5c4a1;
+  --border-code: #d5c4a1;
+  --border-hr: #bdae93;
+  --border-img: #d5c4a1;
+
+  /* Navbar */
+  --nav-from: #504945;
+  --nav-to: #3c3836;
+
+  /* Admonitions */
+  --adm-note-text: #458588;
+  --adm-note-bg: #e5eef0;
+  --adm-note-border: #458588;
+  --adm-warning-text: #d79921;
+  --adm-warning-bg: #faf2d7;
+  --adm-warning-border: #d79921;
+  --adm-danger-text: #cc241d;
+  --adm-danger-bg: #f9e2e1;
+  --adm-danger-border: #cc241d;
+}
+
+[data-color-scheme="gruvbox"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #282828;
+  --bg-zettel: #3c3836;
+  --bg-header: #504945;
+  --bg-accent: #32302f;
+  --bg-code: #3c3836;
+  --bg-tooltip: #ebdbb2;
+  --bg-kbd: #665c54;
+  --bg-img: #3c3836;
+
+  --text-primary: #ebdbb2;
+  --text-link: #83a598;
+  --text-header: #ebdbb2;
+  --text-code: #ebdbb2;
+  --text-muted: #928374;
+  --text-tooltip: #282828;
+  --text-kbd: #ebdbb2;
+  --text-link-code: #83a598;
+  --text-link-code-hover: #b8bb26;
+
+  --border-zettel: #504945;
+  --border-heading: #504945;
+  --border-accent: #504945;
+  --border-code: #504945;
+  --border-hr: #665c54;
+  --border-img: #504945;
+
+  --nav-from: #3c3836;
+  --nav-to: #282828;
+
+  --adm-note-text: #83a598;
+  --adm-note-bg: #3c3836;
+  --adm-note-border: #83a598;
+  --adm-warning-text: #fabd2f;
+  --adm-warning-bg: #3c3836;
+  --adm-warning-border: #fabd2f;
+  --adm-danger-text: #fb4934;
+  --adm-danger-bg: #3c3836;
+  --adm-danger-border: #fb4934;
+}

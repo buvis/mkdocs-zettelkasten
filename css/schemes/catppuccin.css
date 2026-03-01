@@ -1,0 +1,93 @@
+/* Catppuccin palette (Peach accent) — Catppuccin
+   https://github.com/catppuccin/catppuccin */
+
+[data-color-scheme="catppuccin"] {
+  color-scheme: light;
+
+  /* Page backgrounds */
+  --bg-page: #eff1f5;
+  --bg-zettel: #fff;
+  --bg-header: #e6e9ef;
+  --bg-accent: #e6e9ef;
+  --bg-code: #eff1f5;
+  --bg-tooltip: #1e1e2e;
+  --bg-kbd: #1e1e2e;
+  --bg-img: #fff;
+
+  /* Text */
+  --text-primary: #4c4f69;
+  --text-link: #fe640b;
+  --text-header: #4c4f69;
+  --text-code: #4c4f69;
+  --text-muted: #8c8fa1;
+  --text-tooltip: #cdd6f4;
+  --text-kbd: #eff1f5;
+  --text-link-code: #fe640b;
+  --text-link-code-hover: #40a02b;
+
+  /* Borders */
+  --border-zettel: #ccd0da;
+  --border-heading: #ccd0da;
+  --border-accent: #ccd0da;
+  --border-code: #ccd0da;
+  --border-hr: #bcc0cc;
+  --border-img: #ccd0da;
+
+  /* Navbar */
+  --nav-from: #4c4f69;
+  --nav-to: #3c3f57;
+
+  /* Admonitions */
+  --adm-note-text: #fe640b;
+  --adm-note-bg: #fde8d8;
+  --adm-note-border: #fe640b;
+  --adm-warning-text: #df8e1d;
+  --adm-warning-bg: #faf0dd;
+  --adm-warning-border: #df8e1d;
+  --adm-danger-text: #d20f39;
+  --adm-danger-bg: #fadddd;
+  --adm-danger-border: #d20f39;
+}
+
+[data-color-scheme="catppuccin"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #1e1e2e;
+  --bg-zettel: #313244;
+  --bg-header: #3b3c50;
+  --bg-accent: #27273a;
+  --bg-code: #313244;
+  --bg-tooltip: #cdd6f4;
+  --bg-kbd: #45475a;
+  --bg-img: #313244;
+
+  --text-primary: #cdd6f4;
+  --text-link: #fab387;
+  --text-header: #cdd6f4;
+  --text-code: #cdd6f4;
+  --text-muted: #6c7086;
+  --text-tooltip: #1e1e2e;
+  --text-kbd: #cdd6f4;
+  --text-link-code: #fab387;
+  --text-link-code-hover: #a6e3a1;
+
+  --border-zettel: #45475a;
+  --border-heading: #45475a;
+  --border-accent: #45475a;
+  --border-code: #45475a;
+  --border-hr: #585b70;
+  --border-img: #45475a;
+
+  --nav-from: #313244;
+  --nav-to: #1e1e2e;
+
+  --adm-note-text: #fab387;
+  --adm-note-bg: #313244;
+  --adm-note-border: #fab387;
+  --adm-warning-text: #f9e2af;
+  --adm-warning-bg: #313244;
+  --adm-warning-border: #f9e2af;
+  --adm-danger-text: #f38ba8;
+  --adm-danger-bg: #313244;
+  --adm-danger-border: #f38ba8;
+}
