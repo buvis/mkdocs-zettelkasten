@@ -33,7 +33,7 @@ class WorkflowService:
         self,
         store: ZettelStore,
         backlinks: dict[str, list],
-        mentions: dict[int, list[tuple[int, str]]],
+        unlinked_mentions: dict[int, list[tuple[int, str]]],
         file_suffix: str = ".md",
         today: date | None = None,
     ) -> dict[str, Any]:
@@ -42,13 +42,13 @@ class WorkflowService:
             store, backlinks, file_suffix
         )
         return {
-            "stats": self._stats(store, backlinks, mentions),
+            "stats": self._stats(store, backlinks, unlinked_mentions),
             "inbox": self._inbox(store, today),
             "needs_connection": self._needs_connection(store),
             "review_queue": self._review_queue(store, today),
             "orphans": self._orphans(store, backlinked_ids),
             "mention_hotspots": self._mention_hotspots(
-                store, mentions, backlink_counts
+                store, unlinked_mentions, backlink_counts
             ),
         }
 
@@ -98,7 +98,7 @@ class WorkflowService:
             counts[target.id] = counts.get(target.id, 0) + len(linkers)
         return ids, counts
 
-    def _stats(self, store, backlinks, mentions):
+    def _stats(self, store, backlinks, unlinked_mentions):
         zettels = store.zettels
         by_type = {"fleeting": 0, "literature": 0, "permanent": 0, "unset": 0}
         by_maturity = {"draft": 0, "developing": 0, "evergreen": 0, "unset": 0}
@@ -115,7 +115,7 @@ class WorkflowService:
             "by_maturity": by_maturity,
             "total_links": total_links,
             "total_backlinks": sum(len(v) for v in backlinks.values()),
-            "total_mentions": sum(len(v) for v in mentions.values()),
+            "total_mentions": sum(len(v) for v in unlinked_mentions.values()),
         }
 
     def _inbox(self, store, today):
@@ -192,9 +192,9 @@ class WorkflowService:
             )
         return sorted(items, key=lambda x: x["title"])
 
-    def _mention_hotspots(self, store, mentions, backlink_counts):
+    def _mention_hotspots(self, store, unlinked_mentions, backlink_counts):
         items = []
-        for zid, mention_list in mentions.items():
+        for zid, mention_list in unlinked_mentions.items():
             if not mention_list:
                 continue
             z = store.get_by_id(zid)

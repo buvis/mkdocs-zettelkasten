@@ -81,7 +81,7 @@ class PageTransformer:
             )
             adapt_mentions_to_page(
                 page,
-                zettel_service.mentions,
+                zettel_service.unlinked_mentions,
                 zettel_service.get_zettel_by_id,
             )
             adapt_suggestions_to_page(

@@ -596,7 +596,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "debugpy", specifier = ">=1.8,<2" },
-    { name = "pyright", specifier = ">=1.1.408" },
+    { name = "pyright", specifier = ">=1.1.408,<1.2" },
     { name = "pytest", marker = "python_full_version >= '3.10'", specifier = ">=9,<10" },
     { name = "pytest-cov", marker = "python_full_version >= '3.10'", specifier = ">=6,<7" },
     { name = "pytest-playwright", marker = "python_full_version >= '3.10'", specifier = ">=0.7,<1" },

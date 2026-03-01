@@ -1,4 +1,4 @@
-.PHONY: install update test test-e2e run run-selenized run-editor run-no-validation run-graph run-preview run-math clean
+.PHONY: install update test test-e2e lint typecheck check run run-selenized run-editor run-no-validation run-graph run-preview run-math clean
 
 install:
 	uv sync
@@ -12,6 +12,14 @@ test:
 
 test-e2e:
 	uv run pytest tests/e2e/ -v
+
+lint:
+	uv run ruff check . && uv run ruff format --check .
+
+typecheck:
+	uv run pyright mkdocs_zettelkasten/
+
+check: lint typecheck test
 
 run:
 	uv run mkdocs serve --livereload

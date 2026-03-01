@@ -189,7 +189,7 @@ class ZettelkastenPlugin(BasePlugin):
             dashboard = self.workflow_service.compute(
                 self.zettel_service.store,
                 self.zettel_service.backlinks,
-                self.zettel_service.mentions,
+                self.zettel_service.unlinked_mentions,
                 file_suffix=self.config["file_suffix"],
             )
             self.workflow_service.generate(dashboard)

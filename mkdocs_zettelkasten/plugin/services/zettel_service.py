@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 import logging
 
 from .backlink_processor import BacklinkProcessor
-from .mention_service import MentionService
 from .sequence_service import SequenceService
+from .unlinked_mention_service import UnlinkedMentionService
 from .zettel_parser import ZettelParser
 from .zettel_store import ZettelStore
 
@@ -32,8 +32,8 @@ class ZettelService:
         self.invalid_files: list = []
         self.zettel_config: dict[str, Any] = {}
         self.file_suffix: str = ".md"
-        self.mention_service = MentionService()
-        self.mentions: dict[int, list[tuple[int, str]]] = {}
+        self.unlinked_mention_service = UnlinkedMentionService()
+        self.unlinked_mentions: dict[int, list[tuple[int, str]]] = {}
         self.sequence_children: dict[int, list[int]] = {}
         self.suggestions: dict[int, list[dict]] = {}
 
@@ -53,7 +53,9 @@ class ZettelService:
         self.backlinks = BacklinkProcessor.process(
             self.store, file_suffix=self.file_suffix
         )
-        self.mentions = self.mention_service.find_unlinked_mentions(self.store)
+        self.unlinked_mentions = self.unlinked_mention_service.find_unlinked_mentions(
+            self.store
+        )
         self.sequence_children = SequenceService.build_tree(self.store)
 
     def add_zettel_to_page(self, page: Page) -> Page:

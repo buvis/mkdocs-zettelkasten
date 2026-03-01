@@ -16,7 +16,7 @@ _FENCED_CODE = re.compile(r"```.*?```", re.DOTALL)
 _INLINE_CODE = re.compile(r"`[^`]+`")
 
 
-class MentionService:
+class UnlinkedMentionService:
     """Detects unlinked mentions of zettel titles/IDs across the store."""
 
     def find_unlinked_mentions(self, store) -> dict[int, list[tuple[int, str]]]:

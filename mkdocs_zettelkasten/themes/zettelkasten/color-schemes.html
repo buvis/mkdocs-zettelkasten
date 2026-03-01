@@ -70,44 +70,41 @@
     }
 
     function init() {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', REGISTRY_URL);
-        xhr.onload = function() {
-            if (xhr.status !== 200) return;
-            var schemes = JSON.parse(xhr.responseText);
-            var grid = document.getElementById('gallery-grid');
+        fetch(REGISTRY_URL)
+            .then(function(r) { return r.json(); })
+            .then(function(schemes) {
+                var grid = document.getElementById('gallery-grid');
 
-            var categories = {};
-            schemes.forEach(function(s) {
-                if (!categories[s.category]) categories[s.category] = [];
-                categories[s.category].push(s);
-            });
-
-            var order = ['classic', 'nature', 'modern', 'accessibility', 'aesthetic'];
-            var labels = {
-                classic: 'Classic',
-                nature: 'Nature & Earth',
-                modern: 'Modern Standards',
-                accessibility: 'High Accessibility',
-                aesthetic: 'Aesthetic & Vibrant'
-            };
-
-            order.forEach(function(cat) {
-                if (!categories[cat]) return;
-                var heading = document.createElement('h2');
-                heading.textContent = labels[cat] || cat;
-                heading.style.marginTop = '1.5em';
-                grid.appendChild(heading);
-
-                var section = document.createElement('div');
-                section.className = 'gallery-section';
-                categories[cat].forEach(function(scheme) {
-                    section.appendChild(createPreviewCard(scheme));
+                var categories = {};
+                schemes.forEach(function(s) {
+                    if (!categories[s.category]) categories[s.category] = [];
+                    categories[s.category].push(s);
                 });
-                grid.appendChild(section);
+
+                var order = ['classic', 'nature', 'modern', 'accessibility', 'aesthetic'];
+                var labels = {
+                    classic: 'Classic',
+                    nature: 'Nature & Earth',
+                    modern: 'Modern Standards',
+                    accessibility: 'High Accessibility',
+                    aesthetic: 'Aesthetic & Vibrant'
+                };
+
+                order.forEach(function(cat) {
+                    if (!categories[cat]) return;
+                    var heading = document.createElement('h2');
+                    heading.textContent = labels[cat] || cat;
+                    heading.style.marginTop = '1.5em';
+                    grid.appendChild(heading);
+
+                    var section = document.createElement('div');
+                    section.className = 'gallery-section';
+                    categories[cat].forEach(function(scheme) {
+                        section.appendChild(createPreviewCard(scheme));
+                    });
+                    grid.appendChild(section);
+                });
             });
-        };
-        xhr.send();
     }
 
     if (document.readyState === 'loading') {

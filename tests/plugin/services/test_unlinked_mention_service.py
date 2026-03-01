@@ -1,6 +1,8 @@
 from unittest.mock import MagicMock
 
-from mkdocs_zettelkasten.plugin.services.mention_service import MentionService
+from mkdocs_zettelkasten.plugin.services.unlinked_mention_service import (
+    UnlinkedMentionService,
+)
 from tests.plugin.conftest import _make_zettel_mock
 
 
@@ -22,7 +24,7 @@ class TestMentionDetection:
         )
         store = _make_store([target, source])
 
-        service = MentionService()
+        service = UnlinkedMentionService()
         mentions = service.find_unlinked_mentions(store)
 
         assert 1 in mentions
@@ -36,14 +38,14 @@ class TestMentionDetection:
         source = _make_zettel(2, "Other", "EPISTEMOLOGY is discussed here.", [])
         store = _make_store([target, source])
 
-        mentions = MentionService().find_unlinked_mentions(store)
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         assert 1 in mentions
 
     def test_skips_self_mention(self) -> None:
         z = _make_zettel(1, "Epistemology", "This note about epistemology.", [])
         store = _make_store([z])
 
-        mentions = MentionService().find_unlinked_mentions(store)
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         assert 1 not in mentions
 
     def test_skips_already_linked(self) -> None:
@@ -51,7 +53,7 @@ class TestMentionDetection:
         source = _make_zettel(2, "Other", "Epistemology is discussed.", ["1"])
         store = _make_store([target, source])
 
-        mentions = MentionService().find_unlinked_mentions(store)
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         assert 1 not in mentions
 
     def test_skips_mention_inside_wiki_link(self) -> None:
@@ -59,7 +61,7 @@ class TestMentionDetection:
         source = _make_zettel(2, "Other", "See [[1|Epistemology]] for details.", ["1"])
         store = _make_store([target, source])
 
-        mentions = MentionService().find_unlinked_mentions(store)
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         assert 1 not in mentions
 
     def test_skips_mention_inside_md_link(self) -> None:
@@ -69,7 +71,7 @@ class TestMentionDetection:
         )
         store = _make_store([target, source])
 
-        mentions = MentionService().find_unlinked_mentions(store)
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         assert 1 not in mentions
 
     def test_skips_mention_inside_inline_code(self) -> None:
@@ -77,7 +79,7 @@ class TestMentionDetection:
         source = _make_zettel(2, "Other", "The variable `epistemology` is set.", [])
         store = _make_store([target, source])
 
-        mentions = MentionService().find_unlinked_mentions(store)
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         assert 1 not in mentions
 
     def test_skips_mention_inside_fenced_code(self) -> None:
@@ -87,7 +89,7 @@ class TestMentionDetection:
         )
         store = _make_store([target, source])
 
-        mentions = MentionService().find_unlinked_mentions(store)
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         assert 1 not in mentions
 
     def test_finds_id_mention(self) -> None:
@@ -97,7 +99,7 @@ class TestMentionDetection:
         )
         store = _make_store([target, source])
 
-        mentions = MentionService().find_unlinked_mentions(store)
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         assert 20240101120000 in mentions
 
     def test_skips_short_title(self) -> None:
@@ -105,7 +107,7 @@ class TestMentionDetection:
         source = _make_zettel(2, "Other", "AI is discussed here.", [])
         store = _make_store([target, source])
 
-        mentions = MentionService().find_unlinked_mentions(store)
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         assert 1 not in mentions
 
     def test_snippet_has_mark_tag(self) -> None:
@@ -113,7 +115,7 @@ class TestMentionDetection:
         source = _make_zettel(2, "Other", "The study of epistemology is ancient.", [])
         store = _make_store([target, source])
 
-        mentions = MentionService().find_unlinked_mentions(store)
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         _, snippet = mentions[1][0]
         assert "<mark>" in snippet
 
@@ -123,7 +125,7 @@ class TestMentionDetection:
         source_b = _make_zettel(3, "B", "Epistemology again.", [])
         store = _make_store([target, source_a, source_b])
 
-        mentions = MentionService().find_unlinked_mentions(store)
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         assert len(mentions[1]) == 2
 
     def test_no_mentions_returns_empty(self) -> None:
@@ -131,7 +133,7 @@ class TestMentionDetection:
         z2 = _make_zettel(2, "Beta", "Body two.", [])
         store = _make_store([z1, z2])
 
-        mentions = MentionService().find_unlinked_mentions(store)
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         assert 1 not in mentions
         assert 2 not in mentions
 
@@ -140,7 +142,7 @@ class TestMentionDetection:
         source = _make_zettel(2, "Other", "The API is fast.", [])
         store = _make_store([target, source])
 
-        mentions = MentionService().find_unlinked_mentions(store)
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         assert 1 in mentions
 
     def test_word_boundary_matching(self) -> None:
@@ -149,5 +151,5 @@ class TestMentionDetection:
         source = _make_zettel(2, "Other", "Installation is easy.", [])
         store = _make_store([target, source])
 
-        mentions = MentionService().find_unlinked_mentions(store)
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         assert 1 not in mentions
