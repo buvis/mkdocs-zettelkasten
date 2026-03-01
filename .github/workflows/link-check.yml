@@ -15,7 +15,8 @@ jobs:
           enable-cache: true
       - run: uv sync
       - run: uv run mkdocs build
+      - run: mkdir _lychee_root && ln -s ../site _lychee_root/mkdocs-zettelkasten
       - uses: lycheeverse/lychee-action@8646ba30535128ac92d33dfc9133794bfdd9b411 # v2
         with:
-          args: --verbose --no-progress ./site
+          args: --verbose --no-progress --root-dir _lychee_root ./site
           fail: true
