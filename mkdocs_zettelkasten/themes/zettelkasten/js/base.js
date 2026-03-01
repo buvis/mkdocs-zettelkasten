@@ -1,5 +1,6 @@
 /* Theme & scheme switching */
 (() => {
+    const root = (typeof base_url !== 'undefined' && base_url) || '';
     const getTheme = () => document.documentElement.getAttribute('data-theme') || 'light';
 
     const getScheme = () => document.documentElement.getAttribute('data-color-scheme') || 'solarized';
@@ -15,7 +16,7 @@
         localStorage.setItem('color-scheme', scheme);
         const link = document.getElementById('scheme-css');
         if (link) {
-            link.href = `${base_url}/css/schemes/${scheme}.css`;
+            link.href = `${root}/css/schemes/${scheme}.css`;
         }
     };
 
@@ -23,7 +24,7 @@
         const link = document.getElementById('hljs-theme');
         if (!link) return;
         const style = getTheme() === 'dark' ? link.dataset.darkStyle : link.dataset.lightStyle;
-        link.href = `${base_url}/css/vendor/hljs/${style}.min.css`;
+        link.href = `${root}/css/vendor/hljs/${style}.min.css`;
     };
 
     window.zkTheme = {
@@ -181,12 +182,13 @@ const init = () => {
     }
 
     // Populate keyboard modal with proper Keys
+    const sc = (typeof shortcuts !== 'undefined' && shortcuts) || {};
     if (keyboardModal) {
         const kbdMap = [
-            {sel: '.help.shortcut kbd', key: shortcuts.help},
-            {sel: '.prev.shortcut kbd', key: shortcuts.previous},
-            {sel: '.next.shortcut kbd', key: shortcuts.next},
-            {sel: '.search.shortcut kbd', key: shortcuts.search}
+            {sel: '.help.shortcut kbd', key: sc.help},
+            {sel: '.prev.shortcut kbd', key: sc.previous},
+            {sel: '.next.shortcut kbd', key: sc.next},
+            {sel: '.search.shortcut kbd', key: sc.search}
         ];
         kbdMap.forEach((item) => {
             const el = keyboardModal.querySelector(item.sel);
@@ -200,17 +202,17 @@ const init = () => {
         const key = e.which || e.keyCode;
         let page;
         switch (key) {
-            case shortcuts.next:
+            case sc.next:
             case 39: // right arrow
                 const nextLink = document.querySelector('.navbar a[rel="next"]');
                 if (nextLink) page = nextLink.href;
                 break;
-            case shortcuts.previous:
+            case sc.previous:
             case 37: // left arrow
                 const prevLink = document.querySelector('.navbar a[rel="prev"]');
                 if (prevLink) page = prevLink.href;
                 break;
-            case shortcuts.search:
+            case sc.search:
                 e.preventDefault();
                 if (keyboardModal) keyboardModal.close();
                 if (searchModal) {
@@ -219,7 +221,7 @@ const init = () => {
                     if (qi) qi.focus();
                 }
                 break;
-            case shortcuts.help:
+            case sc.help:
                 if (searchModal) searchModal.close();
                 if (keyboardModal) keyboardModal.showModal();
                 break;
@@ -414,6 +416,10 @@ const init = () => {
         }, {rootMargin: '-100px 0px -66% 0px'});
 
         headings.forEach((h) => { observer.observe(h.el); });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') observer.disconnect();
+        }, {once: true});
     })();
 
 };

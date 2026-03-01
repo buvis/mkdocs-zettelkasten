@@ -95,9 +95,10 @@
   /* ── init ────────────────────────────────────────────────── */
 
   const initPreviews = () => {
-    let url = `${base_url}/previews.json`;
-    if (base_url.slice(-1) === '/') {
-       url = `${base_url}previews.json`;
+    const root = (typeof base_url !== 'undefined' && base_url) || '';
+    let url = `${root}/previews.json`;
+    if (root.slice(-1) === '/') {
+       url = `${root}previews.json`;
     }
 
     fetch(url).then((res) => {

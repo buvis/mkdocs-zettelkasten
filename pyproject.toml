@@ -50,11 +50,15 @@ local_scheme = "no-local-version"
 [dependency-groups]
 dev = [
   "pytest>=9,<10; python_version >= '3.10'",
+  "pytest-cov>=6,<7; python_version >= '3.10'",
   "pytest-playwright>=0.7,<1; python_version >= '3.10'",
   "debugpy>=1.8,<2",
   "ruff>=0.11,<1",
   "pyright>=1.1.408",
 ]
+
+[tool.pytest.ini_options]
+addopts = "--cov=mkdocs_zettelkasten --cov-report=term-missing"
 
 [tool.ruff.lint]
 select = ["ALL"]

@@ -100,7 +100,8 @@
           const moved = Math.abs(hit.vx) + Math.abs(hit.vy);
           if (moved < 0.1) {
             clearTimeout(navTimeout);
-            navTimeout = setTimeout(() => { window.location.href = base_url + hit.url; }, 250);
+            const root = (typeof base_url !== 'undefined' && base_url) || '';
+            navTimeout = setTimeout(() => { window.location.href = root + hit.url; }, 250);
           }
         }
         dragging = null;
@@ -672,7 +673,7 @@
       if (!res.ok) return;
       return res.json();
     }).then((data) => {
-      if (!data) return;
+      if (!data || !Array.isArray(data.nodes) || !Array.isArray(data.edges)) return;
       if (opts && opts.currentId) {
         data = filterNeighborhood(data, opts.currentId);
       }
