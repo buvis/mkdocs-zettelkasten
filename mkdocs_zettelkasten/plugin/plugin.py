@@ -255,13 +255,15 @@ class ZettelkastenPlugin(BasePlugin):
                 target = store.get_by_id(s["target_id"])
                 if not target:
                     continue
-                entries.append({
-                    "target_id": str(s["target_id"]),
-                    "target_title": target.title,
-                    "target_url": target.rel_path.removesuffix(suffix) + "/",
-                    "reason": s["reason"],
-                    "confidence": s["confidence"],
-                })
+                entries.append(
+                    {
+                        "target_id": str(s["target_id"]),
+                        "target_title": target.title,
+                        "target_url": target.rel_path.removesuffix(suffix) + "/",
+                        "reason": s["reason"],
+                        "confidence": s["confidence"],
+                    }
+                )
             if entries:
                 sugg_data[str(zid)] = entries
 

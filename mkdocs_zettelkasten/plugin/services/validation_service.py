@@ -43,7 +43,9 @@ class ValidationService:
         if not self.output_folder.exists():
             self.output_folder.mkdir(parents=True)
 
-    def validate(self, zettel_service: ZettelService, files: Files, config: MkDocsConfig) -> None:
+    def validate(
+        self, zettel_service: ZettelService, files: Files, config: MkDocsConfig
+    ) -> None:
         from .backlink_processor import BacklinkProcessor
 
         self.issues.clear()
@@ -197,7 +199,8 @@ class ValidationService:
         sections = [
             {"title": self._CHECK_LABELS.get(check, (check, 99))[0], "issues": issues}
             for check, issues in sorted(
-                by_check.items(), key=lambda kv: self._CHECK_LABELS.get(kv[0], (kv[0], 99))[1]
+                by_check.items(),
+                key=lambda kv: self._CHECK_LABELS.get(kv[0], (kv[0], 99))[1],
             )
         ]
 

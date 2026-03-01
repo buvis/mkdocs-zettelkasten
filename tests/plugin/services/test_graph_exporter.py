@@ -10,7 +10,11 @@ def _make_zettel(
     zettel_id: int, path: str, rel_path: str, title: str, links: list[str]
 ):
     return _make_zettel_mock(
-        zettel_id, title=title, rel_path=rel_path, path=Path(path), links=links,
+        zettel_id,
+        title=title,
+        rel_path=rel_path,
+        path=Path(path),
+        links=links,
     )
 
 

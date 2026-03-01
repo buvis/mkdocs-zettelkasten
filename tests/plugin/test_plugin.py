@@ -125,7 +125,9 @@ class TestZettelkastenPlugin:
             patch.object(plugin.zettel_service, "process_files"),
             patch.object(plugin.tags_service, "process_files"),
             patch.object(plugin.validation_service, "validate"),
-            patch.object(plugin.validation_service, "total_actionable_issues", return_value=7),
+            patch.object(
+                plugin.validation_service, "total_actionable_issues", return_value=7
+            ),
         ):
             plugin.on_files(files, config=config)
 
@@ -156,7 +158,9 @@ class TestZettelkastenPlugin:
         with patch.object(
             plugin.page_transformer, "transform", return_value="transformed"
         ):
-            result = plugin.on_page_markdown("original", page=page, config=config, files=files)
+            result = plugin.on_page_markdown(
+                "original", page=page, config=config, files=files
+            )
 
         assert result == "transformed"
 

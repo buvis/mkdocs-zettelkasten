@@ -8,12 +8,22 @@ TODAY = date(2026, 2, 27)
 
 
 def _make_zettel(
-    zettel_id, title, rel_path, note_type=None, maturity=None,
-    links=None, sequence_parent_id=None,
+    zettel_id,
+    title,
+    rel_path,
+    note_type=None,
+    maturity=None,
+    links=None,
+    sequence_parent_id=None,
 ):
     return _make_zettel_mock(
-        zettel_id, title=title, rel_path=rel_path, note_type=note_type,
-        maturity=maturity, links=links, sequence_parent_id=sequence_parent_id,
+        zettel_id,
+        title=title,
+        rel_path=rel_path,
+        note_type=note_type,
+        maturity=maturity,
+        links=links,
+        sequence_parent_id=sequence_parent_id,
     )
 
 
@@ -30,7 +40,10 @@ class TestStats:
         store = ZettelStore(zettels)
         result = self.service.compute(store, {}, {}, today=TODAY)
         assert result["stats"]["by_type"] == {
-            "fleeting": 1, "literature": 0, "permanent": 1, "unset": 1,
+            "fleeting": 1,
+            "literature": 0,
+            "permanent": 1,
+            "unset": 1,
         }
 
     def test_counts_by_maturity(self):
@@ -42,7 +55,10 @@ class TestStats:
         store = ZettelStore(zettels)
         result = self.service.compute(store, {}, {}, today=TODAY)
         assert result["stats"]["by_maturity"] == {
-            "draft": 1, "developing": 0, "evergreen": 1, "unset": 1,
+            "draft": 1,
+            "developing": 0,
+            "evergreen": 1,
+            "unset": 1,
         }
 
     def test_total_and_connection_counts(self):
@@ -103,13 +119,21 @@ class TestNeedsConnection:
         assert len(result["needs_connection"]) == 1
 
     def test_permanent_one_link(self):
-        z = _make_zettel(20260227000000, "One", "o.md", note_type="permanent", links=["x.md"])
+        z = _make_zettel(
+            20260227000000, "One", "o.md", note_type="permanent", links=["x.md"]
+        )
         store = ZettelStore([z])
         result = self.service.compute(store, {}, {}, today=TODAY)
         assert len(result["needs_connection"]) == 1
 
     def test_excludes_well_connected(self):
-        z = _make_zettel(20260227000000, "Connected", "c.md", note_type="permanent", links=["x.md", "y.md"])
+        z = _make_zettel(
+            20260227000000,
+            "Connected",
+            "c.md",
+            note_type="permanent",
+            links=["x.md", "y.md"],
+        )
         store = ZettelStore([z])
         result = self.service.compute(store, {}, {}, today=TODAY)
         assert len(result["needs_connection"]) == 0

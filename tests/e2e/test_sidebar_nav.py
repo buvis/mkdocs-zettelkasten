@@ -85,7 +85,9 @@ def test_sidebar_active_section_preexpanded(page, default_site):
     active_link = page.locator(".sidebar-link.active")
     if active_link.count() > 0:
         # The subtree containing the active link should have .expanded
-        parent_subtree = active_link.locator("xpath=ancestor::ul[contains(@class, 'sidebar-subtree')]").first
+        parent_subtree = active_link.locator(
+            "xpath=ancestor::ul[contains(@class, 'sidebar-subtree')]"
+        ).first
         if parent_subtree.count() > 0:
             assert "expanded" in (parent_subtree.get_attribute("class") or "")
 

@@ -39,11 +39,13 @@ def adapt_mentions_to_page(
             if not target_zettel:
                 continue
 
-            target_zettel.unlinked_mentions.append({
-                "url": str(page.url),
-                "title": str(page.title or ""),
-                "snippet": snippet,
-            })
+            target_zettel.unlinked_mentions.append(
+                {
+                    "url": str(page.url),
+                    "title": str(page.title or ""),
+                    "snippet": snippet,
+                }
+            )
 
             logger.debug(
                 "Added unlinked mention from %s to zettel %s",

@@ -42,10 +42,12 @@ def adapt_sequence_to_page(
     for child_id in sequence_children.get(zettel.id, []):
         child = zettel_lookup(child_id)
         if child:
-            zettel.sequence_children.append({
-                "url": child.rel_path.removesuffix(file_suffix) + "/",
-                "title": child.title,
-            })
+            zettel.sequence_children.append(
+                {
+                    "url": child.rel_path.removesuffix(file_suffix) + "/",
+                    "title": child.title,
+                }
+            )
 
     # Breadcrumb (walk ancestors root-ward, then reverse)
     breadcrumb = []
@@ -56,10 +58,12 @@ def adapt_sequence_to_page(
         ancestor = zettel_lookup(current_id)
         if not ancestor:
             break
-        breadcrumb.append({
-            "url": ancestor.rel_path.removesuffix(file_suffix) + "/",
-            "title": ancestor.title,
-        })
+        breadcrumb.append(
+            {
+                "url": ancestor.rel_path.removesuffix(file_suffix) + "/",
+                "title": ancestor.title,
+            }
+        )
         current_id = ancestor.sequence_parent_id
     breadcrumb.reverse()
     zettel.sequence_breadcrumb = breadcrumb
@@ -68,8 +72,12 @@ def adapt_sequence_to_page(
     if zettel.sequence_parent_id is not None or zettel.id in sequence_children:
         root_id = _find_sequence_root(zettel.id, zettel_lookup)
         tree_node = _build_tree_node(
-            root_id, sequence_children, zettel_lookup,
-            zettel.id, file_suffix, set(),
+            root_id,
+            sequence_children,
+            zettel_lookup,
+            zettel.id,
+            file_suffix,
+            set(),
         )
         zettel.sequence_tree = [tree_node] if tree_node else []
 
@@ -115,8 +123,12 @@ def _build_tree_node(
     children = []
     for child_id in sequence_children.get(zettel_id, []):
         child_node = _build_tree_node(
-            child_id, sequence_children, zettel_lookup,
-            current_id, file_suffix, visited,
+            child_id,
+            sequence_children,
+            zettel_lookup,
+            current_id,
+            file_suffix,
+            visited,
         )
         if child_node:
             children.append(child_node)

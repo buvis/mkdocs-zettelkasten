@@ -13,7 +13,9 @@ def _make_zettel_obj(
     sequence_parent_id: int | None = None,
 ):
     return _make_zettel_mock(
-        zettel_id, title=title, rel_path=rel_path,
+        zettel_id,
+        title=title,
+        rel_path=rel_path,
         sequence_parent_id=sequence_parent_id,
     )
 

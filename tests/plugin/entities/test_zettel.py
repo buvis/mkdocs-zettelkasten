@@ -172,7 +172,6 @@ class TestZettelInit:
         assert z.id == 20240101120000
         assert z.title == "BOM Test"
 
-
     def test_oserror_raises_zettel_format_error(self, tmp_path: Path) -> None:
         fp = tmp_path / "test.md"
         fp.write_text(VALID_ZETTEL)

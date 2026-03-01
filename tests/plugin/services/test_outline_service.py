@@ -4,12 +4,25 @@ from tests.plugin.conftest import _make_zettel_mock
 
 
 def _make_zettel(
-    zettel_id, title, rel_path, note_type=None, maturity=None,
-    links=None, role=None, body="", sequence_parent_id=None,
+    zettel_id,
+    title,
+    rel_path,
+    note_type=None,
+    maturity=None,
+    links=None,
+    role=None,
+    body="",
+    sequence_parent_id=None,
 ):
     return _make_zettel_mock(
-        zettel_id, title=title, rel_path=rel_path, note_type=note_type,
-        maturity=maturity, links=links, role=role, body=body,
+        zettel_id,
+        title=title,
+        rel_path=rel_path,
+        note_type=note_type,
+        maturity=maturity,
+        links=links,
+        role=role,
+        body=body,
         sequence_parent_id=sequence_parent_id,
     )
 
@@ -19,8 +32,7 @@ class TestMocOutlines:
         self.service = OutlineService()
 
     def test_moc_entries_in_document_order(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc",
-                           links=["b.md", "a.md"])
+        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["b.md", "a.md"])
         a = _make_zettel(10, "A", "a.md")
         b = _make_zettel(20, "B", "b.md")
         store = ZettelStore([moc, a, b])
@@ -37,8 +49,7 @@ class TestMocOutlines:
 
     def test_entry_metadata(self):
         moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["a.md"])
-        a = _make_zettel(10, "A", "a.md", note_type="permanent",
-                         maturity="evergreen")
+        a = _make_zettel(10, "A", "a.md", note_type="permanent", maturity="evergreen")
         store = ZettelStore([moc, a])
         result = self.service.compute(store, {}, file_suffix=".md")
         entry = result["moc_outlines"][0]["entries"][0]
@@ -46,8 +57,7 @@ class TestMocOutlines:
         assert entry["maturity"] == "evergreen"
 
     def test_skips_unresolvable_links(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc",
-                           links=["missing.md", "a.md"])
+        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["missing.md", "a.md"])
         a = _make_zettel(10, "A", "a.md")
         store = ZettelStore([moc, a])
         result = self.service.compute(store, {}, file_suffix=".md")
@@ -60,8 +70,7 @@ class TestMocOutlines:
         assert result["moc_outlines"] == []
 
     def test_moc_with_no_resolvable_links_excluded(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc",
-                           links=["missing.md"])
+        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["missing.md"])
         store = ZettelStore([moc])
         result = self.service.compute(store, {}, file_suffix=".md")
         assert result["moc_outlines"] == []
@@ -72,8 +81,7 @@ class TestGapDetection:
         self.service = OutlineService()
 
     def test_gap_when_no_mutual_links(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc",
-                           links=["a.md", "b.md"])
+        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["a.md", "b.md"])
         a = _make_zettel(10, "A", "a.md")
         b = _make_zettel(20, "B", "b.md")
         store = ZettelStore([moc, a, b])
@@ -83,8 +91,7 @@ class TestGapDetection:
         assert entries[1]["gap_before"] is True
 
     def test_no_gap_when_linked(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc",
-                           links=["a.md", "b.md"])
+        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["a.md", "b.md"])
         a = _make_zettel(10, "A", "a.md", links=["b.md"])
         b = _make_zettel(20, "B", "b.md")
         store = ZettelStore([moc, a, b])
@@ -93,8 +100,7 @@ class TestGapDetection:
         assert entries[1]["gap_before"] is False
 
     def test_no_gap_when_reverse_linked(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc",
-                           links=["a.md", "b.md"])
+        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["a.md", "b.md"])
         a = _make_zettel(10, "A", "a.md")
         b = _make_zettel(20, "B", "b.md", links=["a.md"])
         store = ZettelStore([moc, a, b])
@@ -159,8 +165,7 @@ class TestTransclusionText:
         self.service = OutlineService()
 
     def test_moc_transclusion_text(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc",
-                           links=["a.md", "b.md"])
+        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["a.md", "b.md"])
         a = _make_zettel(10, "A", "a.md")
         b = _make_zettel(20, "B", "b.md")
         store = ZettelStore([moc, a, b])

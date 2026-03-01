@@ -53,7 +53,9 @@ def _make_zettel_mock(
     z.suggested_links = suggested_links if suggested_links is not None else []
     z.sequence_parent = sequence_parent
     z.sequence_children = sequence_children if sequence_children is not None else []
-    z.sequence_breadcrumb = sequence_breadcrumb if sequence_breadcrumb is not None else []
+    z.sequence_breadcrumb = (
+        sequence_breadcrumb if sequence_breadcrumb is not None else []
+    )
     z.sequence_tree = sequence_tree if sequence_tree is not None else []
     z.last_update_date = last_update_date
 

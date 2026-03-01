@@ -17,7 +17,9 @@ def _make_store(zettels):
 class TestMentionDetection:
     def test_finds_title_mention(self) -> None:
         target = _make_zettel(1, "Epistemology", "Body of target.", [])
-        source = _make_zettel(2, "Knowledge", "The study of epistemology is ancient.", [])
+        source = _make_zettel(
+            2, "Knowledge", "The study of epistemology is ancient.", []
+        )
         store = _make_store([target, source])
 
         service = MentionService()
@@ -54,9 +56,7 @@ class TestMentionDetection:
 
     def test_skips_mention_inside_wiki_link(self) -> None:
         target = _make_zettel(1, "Epistemology", "Body.", [])
-        source = _make_zettel(
-            2, "Other", "See [[1|Epistemology]] for details.", ["1"]
-        )
+        source = _make_zettel(2, "Other", "See [[1|Epistemology]] for details.", ["1"])
         store = _make_store([target, source])
 
         mentions = MentionService().find_unlinked_mentions(store)
@@ -110,9 +110,7 @@ class TestMentionDetection:
 
     def test_snippet_has_mark_tag(self) -> None:
         target = _make_zettel(1, "Epistemology", "Body.", [])
-        source = _make_zettel(
-            2, "Other", "The study of epistemology is ancient.", []
-        )
+        source = _make_zettel(2, "Other", "The study of epistemology is ancient.", [])
         store = _make_store([target, source])
 
         mentions = MentionService().find_unlinked_mentions(store)

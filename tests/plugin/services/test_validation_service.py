@@ -9,11 +9,17 @@ from tests.plugin.conftest import _make_zettel_mock
 
 class TestValidationService:
     def _make_zettel(
-        self, zettel_id: int, rel_path: str, links: list[str] | None = None,
+        self,
+        zettel_id: int,
+        rel_path: str,
+        links: list[str] | None = None,
         note_type: str | None = "permanent",
     ):
         return _make_zettel_mock(
-            zettel_id, rel_path=rel_path, links=links, note_type=note_type,
+            zettel_id,
+            rel_path=rel_path,
+            links=links,
+            note_type=note_type,
         )
 
     def _make_zettel_service(self, zettels, backlinks=None, invalid_files=None):
@@ -233,7 +239,9 @@ class TestValidationService:
         z1.sequence_parent_id = 2
         z2 = self._make_zettel(2, "b.md")
 
-        svc = self._make_zettel_service([z1, z2], backlinks={"a.md": [z1], "b.md": [z2]})
+        svc = self._make_zettel_service(
+            [z1, z2], backlinks={"a.md": [z1], "b.md": [z2]}
+        )
         svc.get_zettel_by_id.side_effect = lambda zid: z2 if zid == 2 else None
 
         vs = ValidationService()

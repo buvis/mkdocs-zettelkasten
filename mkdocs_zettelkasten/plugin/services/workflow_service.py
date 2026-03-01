@@ -127,13 +127,15 @@ class WorkflowService:
             if not created:
                 continue
             age = (today - created).days
-            items.append({
-                "id": z.id,
-                "title": z.title,
-                "rel_path": z.rel_path,
-                "age_days": age,
-                "stale": age > self.FLEETING_STALE_DAYS,
-            })
+            items.append(
+                {
+                    "id": z.id,
+                    "title": z.title,
+                    "rel_path": z.rel_path,
+                    "age_days": age,
+                    "stale": age > self.FLEETING_STALE_DAYS,
+                }
+            )
         return sorted(items, key=lambda x: x["id"], reverse=True)
 
     def _needs_connection(self, store):
@@ -143,12 +145,14 @@ class WorkflowService:
                 continue
             if len(z.links) > 1:
                 continue
-            items.append({
-                "id": z.id,
-                "title": z.title,
-                "rel_path": z.rel_path,
-                "link_count": len(z.links),
-            })
+            items.append(
+                {
+                    "id": z.id,
+                    "title": z.title,
+                    "rel_path": z.rel_path,
+                    "link_count": len(z.links),
+                }
+            )
         return sorted(items, key=lambda x: x["link_count"])
 
     def _review_queue(self, store, today):
@@ -162,12 +166,14 @@ class WorkflowService:
             age = (today - created).days
             if age <= self.REVIEW_STALE_DAYS:
                 continue
-            items.append({
-                "id": z.id,
-                "title": z.title,
-                "rel_path": z.rel_path,
-                "days_since_creation": age,
-            })
+            items.append(
+                {
+                    "id": z.id,
+                    "title": z.title,
+                    "rel_path": z.rel_path,
+                    "days_since_creation": age,
+                }
+            )
         return sorted(items, key=lambda x: x["days_since_creation"], reverse=True)
 
     def _orphans(self, store, backlinked_ids):
@@ -177,11 +183,13 @@ class WorkflowService:
                 continue
             if z.sequence_parent_id is not None:
                 continue
-            items.append({
-                "id": z.id,
-                "title": z.title,
-                "rel_path": z.rel_path,
-            })
+            items.append(
+                {
+                    "id": z.id,
+                    "title": z.title,
+                    "rel_path": z.rel_path,
+                }
+            )
         return sorted(items, key=lambda x: x["title"])
 
     def _mention_hotspots(self, store, mentions, backlink_counts):
@@ -192,12 +200,14 @@ class WorkflowService:
             z = store.get_by_id(zid)
             if not z:
                 continue
-            items.append({
-                "id": z.id,
-                "title": z.title,
-                "rel_path": z.rel_path,
-                "mention_count": len(mention_list),
-                "backlink_count": backlink_counts.get(z.id, 0),
-            })
+            items.append(
+                {
+                    "id": z.id,
+                    "title": z.title,
+                    "rel_path": z.rel_path,
+                    "mention_count": len(mention_list),
+                    "backlink_count": backlink_counts.get(z.id, 0),
+                }
+            )
         items.sort(key=lambda x: x["mention_count"], reverse=True)
         return items[: self.MAX_HOTSPOTS]

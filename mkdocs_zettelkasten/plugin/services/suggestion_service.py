@@ -42,10 +42,7 @@ class SuggestionService:
 
     def _build_tag_sets(self, store, tags_metadata):
         """Map each zettel ID to its set of tags."""
-        tags_by_path = {
-            m["src_path"]: set(m.get("tags", []))
-            for m in tags_metadata
-        }
+        tags_by_path = {m["src_path"]: set(m.get("tags", [])) for m in tags_metadata}
         tag_sets: dict[int, set[str]] = {}
         for z in store.zettels:
             tag_sets[z.id] = tags_by_path.get(z.rel_path, set())
@@ -88,11 +85,19 @@ class SuggestionService:
                     continue
                 n = len(intersection)
                 reason = f"{n} shared link{'s' if n != 1 else ''}"
-                entry = {"target_id": other.id, "reason": reason, "confidence": round(jaccard, 2)}
+                entry = {
+                    "target_id": other.id,
+                    "reason": reason,
+                    "confidence": round(jaccard, 2),
+                }
                 candidates.append(entry)
                 # Also add reverse
                 suggestions.setdefault(other.id, []).append(
-                    {"target_id": z.id, "reason": reason, "confidence": round(jaccard, 2)}
+                    {
+                        "target_id": z.id,
+                        "reason": reason,
+                        "confidence": round(jaccard, 2),
+                    }
                 )
             suggestions.setdefault(z.id, []).extend(candidates)
         return suggestions
@@ -123,10 +128,18 @@ class SuggestionService:
                     continue
                 n = len(shared)
                 reason = f"{n} shared tag{'s' if n != 1 else ''}"
-                entry = {"target_id": other.id, "reason": reason, "confidence": round(jaccard, 2)}
+                entry = {
+                    "target_id": other.id,
+                    "reason": reason,
+                    "confidence": round(jaccard, 2),
+                }
                 candidates.append(entry)
                 suggestions.setdefault(other.id, []).append(
-                    {"target_id": z.id, "reason": reason, "confidence": round(jaccard, 2)}
+                    {
+                        "target_id": z.id,
+                        "reason": reason,
+                        "confidence": round(jaccard, 2),
+                    }
                 )
             suggestions.setdefault(z.id, []).extend(candidates)
         return suggestions
@@ -143,6 +156,8 @@ class SuggestionService:
                 if tid not in best or s["confidence"] > best[tid]["confidence"]:
                     best[tid] = s
             # Sort by confidence desc, limit
-            sorted_suggs = sorted(best.values(), key=lambda x: x["confidence"], reverse=True)
-            merged[zid] = sorted_suggs[:self.MAX_SUGGESTIONS]
+            sorted_suggs = sorted(
+                best.values(), key=lambda x: x["confidence"], reverse=True
+            )
+            merged[zid] = sorted_suggs[: self.MAX_SUGGESTIONS]
         return merged

@@ -211,7 +211,7 @@ class Zettel:
         """Cleans link syntax and trims paragraph to ~200 chars around the link."""
         link_text = match.group("title") or match.group("url")
         marked_text = f"<mark>{link_text}</mark>"
-        clean = paragraph[:match.start()] + marked_text + paragraph[match.end():]
+        clean = paragraph[: match.start()] + marked_text + paragraph[match.end() :]
         clean = WIKI_LINK.sub(lambda m: m.group("title") or m.group("url"), clean)
         clean = MD_LINK.sub(lambda m: m.group("title"), clean)
         return truncate_around(clean, match.start(), len(marked_text))

@@ -21,7 +21,9 @@ class GraphExporter:
         nodes, id_set = self._build_nodes(store, tags_by_path, file_suffix)
 
         seen_edges: set[tuple[str, str]] = set()
-        edges = self._build_backlink_edges(store, backlinks, id_set, seen_edges, file_suffix)
+        edges = self._build_backlink_edges(
+            store, backlinks, id_set, seen_edges, file_suffix
+        )
         edges += self._build_sequence_edges(store, id_set, seen_edges)
 
         degree: dict[str, int] = {}
@@ -102,5 +104,7 @@ class GraphExporter:
             pair = (child_id, parent_id)
             if pair not in seen:
                 seen.add(pair)
-                edges.append({"source": child_id, "target": parent_id, "type": "sequence"})
+                edges.append(
+                    {"source": child_id, "target": parent_id, "type": "sequence"}
+                )
         return edges

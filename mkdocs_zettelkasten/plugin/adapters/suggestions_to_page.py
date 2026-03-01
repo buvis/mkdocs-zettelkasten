@@ -38,12 +38,14 @@ def adapt_suggestions_to_page(
             continue
 
         url = target.rel_path.removesuffix(file_suffix) + "/"
-        zettel.suggested_links.append({
-            "url": url,
-            "title": target.title,
-            "reason": sugg["reason"],
-            "confidence": f"{int(sugg['confidence'] * 100)}%",
-        })
+        zettel.suggested_links.append(
+            {
+                "url": url,
+                "title": target.title,
+                "reason": sugg["reason"],
+                "confidence": f"{int(sugg['confidence'] * 100)}%",
+            }
+        )
 
     logger.debug(
         "Attached %d suggestions to zettel %s",

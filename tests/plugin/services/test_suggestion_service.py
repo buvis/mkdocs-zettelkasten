@@ -109,13 +109,19 @@ class TestMergeAndLimits:
 
     def test_below_threshold_excluded(self):
         """Two notes share 1 link target but also have 5 non-shared targets -> low Jaccard."""
-        a = _make_zettel(1, "A", "a.md", ["shared.md", "x1.md", "x2.md", "x3.md", "x4.md"])
-        b = _make_zettel(2, "B", "b.md", ["shared.md", "y1.md", "y2.md", "y3.md", "y4.md"])
+        a = _make_zettel(
+            1, "A", "a.md", ["shared.md", "x1.md", "x2.md", "x3.md", "x4.md"]
+        )
+        b = _make_zettel(
+            2, "B", "b.md", ["shared.md", "y1.md", "y2.md", "y3.md", "y4.md"]
+        )
         # Create all target zettels
-        targets = [_make_zettel(i, f"T{i}", f"{name}.md")
-                   for i, name in enumerate(
-                       ["shared", "x1", "x2", "x3", "x4", "y1", "y2", "y3", "y4"],
-                       start=10)]
+        targets = [
+            _make_zettel(i, f"T{i}", f"{name}.md")
+            for i, name in enumerate(
+                ["shared", "x1", "x2", "x3", "x4", "y1", "y2", "y3", "y4"], start=10
+            )
+        ]
         store = _make_store([a, b, *targets])
         result = self.service.compute(store, [])
         sugg_for_a = result.get(1, [])
@@ -128,7 +134,9 @@ class TestMergeAndLimits:
         others = [_make_zettel(i, f"Other{i}", f"other{i}.md") for i in range(2, 9)]
         store = _make_store([main, *others])
         tags_meta = [{"src_path": "main.md", "tags": ["a", "b"]}]
-        tags_meta += [{"src_path": f"other{i}.md", "tags": ["a", "b"]} for i in range(2, 9)]
+        tags_meta += [
+            {"src_path": f"other{i}.md", "tags": ["a", "b"]} for i in range(2, 9)
+        ]
         result = self.service.compute(store, tags_meta)
         assert len(result.get(1, [])) <= 5
 

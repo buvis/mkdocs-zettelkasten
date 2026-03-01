@@ -34,9 +34,7 @@ class OutlineService:
     ) -> dict[str, Any]:
         return {
             "moc_outlines": self._moc_outlines(store, file_suffix),
-            "sequence_outlines": self._sequence_outlines(
-                store, sequence_children
-            ),
+            "sequence_outlines": self._sequence_outlines(store, sequence_children),
         }
 
     def configure(self, output_folder: Path, site_dir: str) -> None:
@@ -71,16 +69,16 @@ class OutlineService:
             if not entries:
                 continue
             self._mark_gaps(entries)
-            transclusion = "\n".join(
-                f"![[{e['id']}|{e['title']}]]" for e in entries
+            transclusion = "\n".join(f"![[{e['id']}|{e['title']}]]" for e in entries)
+            outlines.append(
+                {
+                    "id": z.id,
+                    "title": z.title,
+                    "rel_path": z.rel_path,
+                    "entries": entries,
+                    "transclusion_text": transclusion,
+                }
             )
-            outlines.append({
-                "id": z.id,
-                "title": z.title,
-                "rel_path": z.rel_path,
-                "entries": entries,
-                "transclusion_text": transclusion,
-            })
         return outlines
 
     def _resolve_moc_entries(self, moc, store, file_suffix):
@@ -89,16 +87,18 @@ class OutlineService:
             target = store.get_by_partial_path(link_url, file_suffix)
             if not target or target.id == moc.id:
                 continue
-            entries.append({
-                "id": target.id,
-                "title": target.title,
-                "rel_path": target.rel_path,
-                "note_type": target.note_type,
-                "maturity": target.maturity,
-                "preview": self._preview(target.body),
-                "gap_before": False,
-                "_linked_ids": self._linked_ids(target, store, file_suffix),
-            })
+            entries.append(
+                {
+                    "id": target.id,
+                    "title": target.title,
+                    "rel_path": target.rel_path,
+                    "note_type": target.note_type,
+                    "maturity": target.maturity,
+                    "preview": self._preview(target.body),
+                    "gap_before": False,
+                    "_linked_ids": self._linked_ids(target, store, file_suffix),
+                }
+            )
         return entries
 
     def _mark_gaps(self, entries):
@@ -106,8 +106,7 @@ class OutlineService:
             prev = entries[i - 1]
             curr = entries[i]
             has_link = (
-                curr["id"] in prev["_linked_ids"]
-                or prev["id"] in curr["_linked_ids"]
+                curr["id"] in prev["_linked_ids"] or prev["id"] in curr["_linked_ids"]
             )
             curr["gap_before"] = not has_link
         for e in entries:
@@ -152,9 +151,7 @@ class OutlineService:
         for child_id in sequence_children.get(zettel.id, []):
             child = store.get_by_id(child_id)
             if child:
-                children.append(
-                    self._build_tree_node(child, store, sequence_children)
-                )
+                children.append(self._build_tree_node(child, store, sequence_children))
         return {
             "id": zettel.id,
             "title": zettel.title,
@@ -163,7 +160,9 @@ class OutlineService:
         }
 
     def _flatten_tree(self, node, depth=0):
-        items = [{"title": node["title"], "rel_path": node["rel_path"], "indent": depth}]
+        items = [
+            {"title": node["title"], "rel_path": node["rel_path"], "indent": depth}
+        ]
         for child in node["children"]:
             items.extend(self._flatten_tree(child, depth + 1))
         return items
