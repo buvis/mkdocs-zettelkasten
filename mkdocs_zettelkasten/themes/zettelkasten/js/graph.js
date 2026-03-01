@@ -139,29 +139,92 @@
     const CENTER_GRAVITY = 0.01;
     const DAMPING = 0.9;
     const NODE_RADIUS = 5;
+    const BH_THETA = 0.5;
+
+    /* Barnes-Hut quadtree for O(n log n) repulsion */
+    const buildQuadtree = (pts) => {
+      if (pts.length === 0) return null;
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i];
+        if (p.x < minX) minX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y > maxY) maxY = p.y;
+      }
+      const pad = 1;
+      const size = Math.max(maxX - minX, maxY - minY) + pad;
+      const cx = (minX + maxX) / 2;
+      const cy = (minY + maxY) / 2;
+      const root = { cx, cy, size, mass: 0, comX: 0, comY: 0, body: null, children: null };
+      for (let i = 0; i < pts.length; i++) insert(root, pts[i]);
+      return root;
+    };
+
+    const insert = (quad, p) => {
+      if (quad.mass === 0) {
+        quad.body = p;
+        quad.mass = 1;
+        quad.comX = p.x;
+        quad.comY = p.y;
+        return;
+      }
+      if (quad.children === null) {
+        quad.children = subdivide(quad);
+        const old = quad.body;
+        quad.body = null;
+        insert(childFor(quad, old), old);
+      }
+      quad.comX = (quad.comX * quad.mass + p.x) / (quad.mass + 1);
+      quad.comY = (quad.comY * quad.mass + p.y) / (quad.mass + 1);
+      quad.mass += 1;
+      insert(childFor(quad, p), p);
+    };
+
+    const subdivide = (q) => {
+      const hs = q.size / 2;
+      const qs = hs / 2;
+      return [
+        { cx: q.cx - qs, cy: q.cy - qs, size: hs, mass: 0, comX: 0, comY: 0, body: null, children: null },
+        { cx: q.cx + qs, cy: q.cy - qs, size: hs, mass: 0, comX: 0, comY: 0, body: null, children: null },
+        { cx: q.cx - qs, cy: q.cy + qs, size: hs, mass: 0, comX: 0, comY: 0, body: null, children: null },
+        { cx: q.cx + qs, cy: q.cy + qs, size: hs, mass: 0, comX: 0, comY: 0, body: null, children: null },
+      ];
+    };
+
+    const childFor = (quad, p) => {
+      const i = (p.x > quad.cx ? 1 : 0) + (p.y > quad.cy ? 2 : 0);
+      return quad.children[i];
+    };
+
+    const applyRepulsion = (node, quad) => {
+      if (quad === null || quad.mass === 0) return;
+      if (quad.body === node) return;
+      const dx = node.x - quad.comX;
+      const dy = node.y - quad.comY;
+      const d2 = dx * dx + dy * dy || 1;
+      if (quad.body !== null || quad.size * quad.size / d2 < BH_THETA * BH_THETA) {
+        const f = REPULSION * quad.mass / d2;
+        node.vx += dx * f;
+        node.vy += dy * f;
+        return;
+      }
+      for (let c = 0; c < 4; c++) applyRepulsion(node, quad.children[c]);
+    };
 
     const tick = () => {
       if (alpha < 0.001) { alpha = 0; return; }
       alpha *= 0.995;
 
+      const qt = buildQuadtree(nodes);
       for (let i = 0; i < nodes.length; i++) {
         const a = nodes[i];
         /* center gravity */
         a.vx -= a.x * CENTER_GRAVITY;
         a.vy -= a.y * CENTER_GRAVITY;
 
-        /* repulsion */
-        for (let j = i + 1; j < nodes.length; j++) {
-          const b = nodes[j];
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const d2 = dx * dx + dy * dy || 1;
-          const f = REPULSION / d2;
-          a.vx += dx * f;
-          a.vy += dy * f;
-          b.vx -= dx * f;
-          b.vy -= dy * f;
-        }
+        /* repulsion (Barnes-Hut) */
+        applyRepulsion(a, qt);
       }
 
       /* attraction along edges */
