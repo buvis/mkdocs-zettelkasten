@@ -1,29 +1,17 @@
-from pathlib import PurePosixPath
-from unittest.mock import MagicMock
-
 from mkdocs_zettelkasten.plugin.services.outline_service import OutlineService
 from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
+from tests.plugin.conftest import _make_zettel_mock
 
 
 def _make_zettel(
     zettel_id, title, rel_path, note_type=None, maturity=None,
     links=None, role=None, body="", sequence_parent_id=None,
 ):
-    z = MagicMock()
-    z.id = zettel_id
-    z.title = title
-    z.path = PurePosixPath(rel_path)
-    z.rel_path = rel_path
-    z.note_type = note_type
-    z.maturity = maturity
-    z.links = links or []
-    z.role = role
-    z.is_moc = role in ("moc", "index", "hub", "structure") if role else False
-    z.body = body
-    z.sequence_parent_id = sequence_parent_id
-    z.__hash__ = lambda self: hash(zettel_id)
-    z.__eq__ = lambda self, other: getattr(other, "id", None) == zettel_id
-    return z
+    return _make_zettel_mock(
+        zettel_id, title=title, rel_path=rel_path, note_type=note_type,
+        maturity=maturity, links=links, role=role, body=body,
+        sequence_parent_id=sequence_parent_id,
+    )
 
 
 class TestMocOutlines:

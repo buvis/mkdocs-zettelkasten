@@ -1,19 +1,17 @@
 from pathlib import Path
-from unittest.mock import MagicMock
 
 from mkdocs_zettelkasten.plugin.services.sequence_service import SequenceService
 from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
+from tests.plugin.conftest import _make_zettel_mock
 
 
-def _make_zettel(zettel_id: int, sequence_parent_id: int | None = None) -> MagicMock:
-    z = MagicMock()
-    z.id = zettel_id
-    z.path = Path(f"/docs/{zettel_id}.md")
-    z.rel_path = f"{zettel_id}.md"
-    z.sequence_parent_id = sequence_parent_id
-    z.__hash__ = lambda self: hash(zettel_id)
-    z.__eq__ = lambda self, other: getattr(other, "id", None) == zettel_id
-    return z
+def _make_zettel(zettel_id: int, sequence_parent_id: int | None = None):
+    return _make_zettel_mock(
+        zettel_id,
+        path=Path(f"/docs/{zettel_id}.md"),
+        rel_path=f"{zettel_id}.md",
+        sequence_parent_id=sequence_parent_id,
+    )
 
 
 class TestSequenceService:

@@ -1,16 +1,11 @@
 from pathlib import Path
-from unittest.mock import MagicMock
 
 from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
+from tests.plugin.conftest import _make_zettel_mock
 
 
-def _make_zettel(zettel_id: int, path: str = "/docs/note.md") -> MagicMock:
-    z = MagicMock()
-    z.id = zettel_id
-    z.path = Path(path)
-    z.__hash__ = lambda self: hash(zettel_id)
-    z.__eq__ = lambda self, other: getattr(other, "id", None) == zettel_id
-    return z
+def _make_zettel(zettel_id: int, path: str = "/docs/note.md"):
+    return _make_zettel_mock(zettel_id, path=Path(path))
 
 
 class TestZettelStore:

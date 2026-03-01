@@ -1,22 +1,18 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 if TYPE_CHECKING:
     from pathlib import Path
 
 from mkdocs_zettelkasten.plugin.services.preview_exporter import PreviewExporter
 from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
+from tests.plugin.conftest import _make_zettel_mock
 
 
-def _make_zettel(zettel_id: int, path: Path, rel_path: str, title: str) -> MagicMock:
-    z = MagicMock()
-    z.id = zettel_id
-    z.path = path
-    z.rel_path = rel_path
-    z.title = title
-    return z
+def _make_zettel(zettel_id: int, path: Path, rel_path: str, title: str):
+    return _make_zettel_mock(zettel_id, title=title, path=path, rel_path=rel_path)
 
 
 def _write_zettel(

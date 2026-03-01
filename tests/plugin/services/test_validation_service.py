@@ -4,18 +4,17 @@ from unittest.mock import MagicMock
 from mkdocs_zettelkasten.plugin.services.validation_service import (
     ValidationService,
 )
+from tests.plugin.conftest import _make_zettel_mock
 
 
 class TestValidationService:
     def _make_zettel(
-        self, zettel_id: int, rel_path: str, links: list[str] | None = None
+        self, zettel_id: int, rel_path: str, links: list[str] | None = None,
+        note_type: str | None = "permanent",
     ):
-        z = MagicMock()
-        z.id = zettel_id
-        z.rel_path = rel_path
-        z.links = links or []
-        z.sequence_parent_id = None
-        return z
+        return _make_zettel_mock(
+            zettel_id, rel_path=rel_path, links=links, note_type=note_type,
+        )
 
     def _make_zettel_service(self, zettels, backlinks=None, invalid_files=None):
         svc = MagicMock()
@@ -128,8 +127,7 @@ class TestValidationService:
         assert len(broken) == 0
 
     def test_stale_fleeting_detected(self, tmp_path: Path) -> None:
-        z1 = self._make_zettel(20200101120000, "a.md")
-        z1.note_type = "fleeting"
+        z1 = self._make_zettel(20200101120000, "a.md", note_type="fleeting")
 
         svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
 
@@ -146,8 +144,7 @@ class TestValidationService:
         assert stale[0].severity == "info"
 
     def test_recent_fleeting_not_flagged(self, tmp_path: Path) -> None:
-        z1 = self._make_zettel(20991231120000, "a.md")
-        z1.note_type = "fleeting"
+        z1 = self._make_zettel(20991231120000, "a.md", note_type="fleeting")
 
         svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
 
@@ -164,7 +161,6 @@ class TestValidationService:
 
     def test_permanent_note_not_flagged_as_stale(self, tmp_path: Path) -> None:
         z1 = self._make_zettel(20200101120000, "a.md")
-        z1.note_type = "permanent"
 
         svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
 
@@ -180,8 +176,7 @@ class TestValidationService:
         assert len(stale) == 0
 
     def test_missing_type_detected(self, tmp_path: Path) -> None:
-        z1 = self._make_zettel(1, "a.md")
-        z1.note_type = None
+        z1 = self._make_zettel(1, "a.md", note_type=None)
 
         svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
 
@@ -199,7 +194,6 @@ class TestValidationService:
 
     def test_typed_note_not_flagged_as_missing(self, tmp_path: Path) -> None:
         z1 = self._make_zettel(1, "a.md")
-        z1.note_type = "permanent"
 
         svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
 
@@ -216,7 +210,6 @@ class TestValidationService:
 
     def test_broken_sequence_detected(self, tmp_path: Path) -> None:
         z1 = self._make_zettel(1, "a.md")
-        z1.note_type = "permanent"
         z1.sequence_parent_id = 999
 
         svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
@@ -237,10 +230,8 @@ class TestValidationService:
 
     def test_valid_sequence_not_flagged(self, tmp_path: Path) -> None:
         z1 = self._make_zettel(1, "a.md")
-        z1.note_type = "permanent"
         z1.sequence_parent_id = 2
         z2 = self._make_zettel(2, "b.md")
-        z2.note_type = "permanent"
 
         svc = self._make_zettel_service([z1, z2], backlinks={"a.md": [z1], "b.md": [z2]})
         svc.get_zettel_by_id.side_effect = lambda zid: z2 if zid == 2 else None

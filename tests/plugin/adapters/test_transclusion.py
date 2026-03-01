@@ -7,6 +7,7 @@ from mkdocs_zettelkasten.plugin.adapters.transclusion import (
     _read_zettel_body,
     adapt_transclusion,
 )
+from tests.plugin.conftest import _make_zettel_mock
 
 
 class TestReadZettelBody:
@@ -50,12 +51,8 @@ class TestExtractSection:
         assert _extract_section(body, "Nonexistent") is None
 
 
-def _make_zettel(title: str, path: Path) -> MagicMock:
-    z = MagicMock()
-    z.title = title
-    z.path = path
-    z.rel_path = str(path.name)
-    return z
+def _make_zettel(title: str, path: Path):
+    return _make_zettel_mock(0, title=title, path=path, rel_path=str(path.name))
 
 
 class TestAdaptTransclusion:

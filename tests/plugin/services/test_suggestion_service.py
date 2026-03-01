@@ -1,20 +1,10 @@
-from pathlib import PurePosixPath
-from unittest.mock import MagicMock
-
 from mkdocs_zettelkasten.plugin.services.suggestion_service import SuggestionService
 from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
+from tests.plugin.conftest import _make_zettel_mock
 
 
 def _make_zettel(zettel_id, title, rel_path, links=None):
-    z = MagicMock()
-    z.id = zettel_id
-    z.title = title
-    z.path = PurePosixPath(rel_path)
-    z.rel_path = rel_path
-    z.links = links or []
-    z.__hash__ = lambda self: hash(zettel_id)
-    z.__eq__ = lambda self, other: getattr(other, "id", None) == zettel_id
-    return z
+    return _make_zettel_mock(zettel_id, title=title, rel_path=rel_path, links=links)
 
 
 def _make_store(zettels):

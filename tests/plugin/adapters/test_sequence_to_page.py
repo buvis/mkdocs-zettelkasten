@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 from mkdocs_zettelkasten.plugin.adapters.sequence_to_page import (
     adapt_sequence_to_page,
 )
+from tests.plugin.conftest import _make_zettel_mock
 
 
 def _make_zettel_obj(
@@ -10,17 +11,11 @@ def _make_zettel_obj(
     title: str,
     rel_path: str,
     sequence_parent_id: int | None = None,
-) -> MagicMock:
-    z = MagicMock()
-    z.id = zettel_id
-    z.title = title
-    z.rel_path = rel_path
-    z.sequence_parent_id = sequence_parent_id
-    z.sequence_parent = None
-    z.sequence_children = []
-    z.sequence_breadcrumb = []
-    z.sequence_tree = []
-    return z
+):
+    return _make_zettel_mock(
+        zettel_id, title=title, rel_path=rel_path,
+        sequence_parent_id=sequence_parent_id,
+    )
 
 
 def _make_page(zettel: MagicMock | None) -> MagicMock:

@@ -1,18 +1,12 @@
 from pathlib import Path
-from unittest.mock import MagicMock
 
 from mkdocs_zettelkasten.plugin.services.backlink_processor import BacklinkProcessor
 from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
+from tests.plugin.conftest import _make_zettel_mock
 
 
-def _make_zettel(zettel_id: int, path: str, links: list[str]) -> MagicMock:
-    z = MagicMock()
-    z.id = zettel_id
-    z.path = Path(path)
-    z.links = links
-    z.__hash__ = lambda self: hash(zettel_id)
-    z.__eq__ = lambda self, other: getattr(other, "id", None) == zettel_id
-    return z
+def _make_zettel(zettel_id: int, path: str, links: list[str]):
+    return _make_zettel_mock(zettel_id, path=Path(path), links=links)
 
 
 class TestBacklinkProcessor:

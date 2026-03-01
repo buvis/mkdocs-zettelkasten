@@ -1,9 +1,8 @@
 from datetime import date
-from pathlib import PurePosixPath
-from unittest.mock import MagicMock
 
 from mkdocs_zettelkasten.plugin.services.workflow_service import WorkflowService
 from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
+from tests.plugin.conftest import _make_zettel_mock
 
 TODAY = date(2026, 2, 27)
 
@@ -12,18 +11,10 @@ def _make_zettel(
     zettel_id, title, rel_path, note_type=None, maturity=None,
     links=None, sequence_parent_id=None,
 ):
-    z = MagicMock()
-    z.id = zettel_id
-    z.title = title
-    z.path = PurePosixPath(rel_path)
-    z.rel_path = rel_path
-    z.note_type = note_type
-    z.maturity = maturity
-    z.links = links or []
-    z.sequence_parent_id = sequence_parent_id
-    z.__hash__ = lambda self: hash(zettel_id)
-    z.__eq__ = lambda self, other: getattr(other, "id", None) == zettel_id
-    return z
+    return _make_zettel_mock(
+        zettel_id, title=title, rel_path=rel_path, note_type=note_type,
+        maturity=maturity, links=links, sequence_parent_id=sequence_parent_id,
+    )
 
 
 class TestStats:

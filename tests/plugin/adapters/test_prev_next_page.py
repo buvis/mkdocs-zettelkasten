@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 from mkdocs.structure.files import File
 
 from mkdocs_zettelkasten.plugin.adapters.prev_next_page import get_prev_next_page
+from tests.plugin.conftest import _make_zettel_mock
 
 
 def _make_file(src_path: str, abs_src_path: str | None = None) -> MagicMock:
@@ -13,11 +14,8 @@ def _make_file(src_path: str, abs_src_path: str | None = None) -> MagicMock:
     return f
 
 
-def _make_zettel(zettel_id: int, path: str) -> MagicMock:
-    z = MagicMock()
-    z.id = zettel_id
-    z.path = path
-    return z
+def _make_zettel(zettel_id: int, path: str):
+    return _make_zettel_mock(zettel_id, path=path)
 
 
 def _make_page(src_path: str, is_zettel: bool = True, zettel_id: int = 1) -> MagicMock:

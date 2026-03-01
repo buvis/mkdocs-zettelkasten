@@ -1,16 +1,11 @@
 from unittest.mock import MagicMock
 
 from mkdocs_zettelkasten.plugin.services.mention_service import MentionService
+from tests.plugin.conftest import _make_zettel_mock
 
 
 def _make_zettel(zettel_id, title, body, links=None):
-    z = MagicMock()
-    z.id = zettel_id
-    z.title = title
-    z.body = body
-    z.links = links or []
-    z.unlinked_mentions = []
-    return z
+    return _make_zettel_mock(zettel_id, title=title, body=body, links=links)
 
 
 def _make_store(zettels):
