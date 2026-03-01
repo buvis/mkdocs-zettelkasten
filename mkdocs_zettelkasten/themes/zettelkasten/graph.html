@@ -4,6 +4,14 @@
 <title>Graph View - {{ config.site_name }}</title>
 {% endblock %}
 
+{% block page_styles %}
+<link rel="stylesheet" href="{{ 'css/graph.css'|url }}">
+{% endblock %}
+
+{% block page_scripts %}
+<script src="{{ 'js/graph.js'|url }}" defer></script>
+{% endblock %}
+
 {% block content %}
 <div id="graph-toolbar"></div>
 <div id="graph-container" data-graph-url="{{ 'graph.json'|url }}"></div>

@@ -24,15 +24,16 @@
         <link href="{{ 'css/theme.css'|url }}" rel="stylesheet">
         <link id="scheme-css" rel="stylesheet" href="{{ 'css/schemes/'|url }}{{ config.theme.color_scheme }}.css">
         <script>if(window.__zkScheme){document.getElementById('scheme-css').href='{{ "css/schemes/"|url }}'+window.__zkScheme+'.css'}</script>
-        {%- if config.extra.editor_enabled %}
+        {%- if page and page.meta.editor %}
         <link rel="stylesheet" href="{{ 'css/vendor/easymde.min.css'|url }}">
         {%- endif %}
-        {%- if config.extra.graph_enabled is defined and config.extra.graph_enabled %}
+        {%- if page and page.meta.is_zettel and config.extra.graph_enabled %}
         <link rel="stylesheet" href="{{ 'css/graph.css'|url }}">
         {%- endif %}
-        {%- if config.extra.preview_enabled is defined and config.extra.preview_enabled %}
+        {%- if page and config.extra.preview_enabled %}
         <link rel="stylesheet" href="{{ 'css/preview.css'|url }}">
         {%- endif %}
+        {%- block page_styles %}{% endblock %}
         <link rel="stylesheet" href="{{ 'css/embed.css'|url }}">
         {%- if config.theme.math_support %}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.32/dist/katex.min.css" integrity="sha384-8K5tjYRcv7hr4uuSd0QJJchz//nSR63itKQtnYvhozplQjQG85jQyfkH1YIMAkUv" crossorigin="anonymous">
@@ -263,16 +264,17 @@
         <script src="{{ 'js/base.js'|url }}" defer></script>
         <script src="{{ 'js/settings-modal.js'|url }}" defer></script>
         <script src="{{ 'js/copyable.js'|url }}" defer></script>
-        {%- if config.extra.editor_enabled %}
+        {%- if page and page.meta.editor %}
         <script src="{{ 'js/vendor/easymde.min.js'|url }}"></script>
         <script src="{{ 'js/editor.js'|url }}" defer></script>
         {%- endif %}
-        {%- if config.extra.graph_enabled is defined and config.extra.graph_enabled %}
+        {%- if page and page.meta.is_zettel and config.extra.graph_enabled %}
         <script src="{{ 'js/graph.js'|url }}" defer></script>
         {%- endif %}
-        {%- if config.extra.preview_enabled is defined and config.extra.preview_enabled %}
+        {%- if page and config.extra.preview_enabled %}
         <script src="{{ 'js/preview.js'|url }}" defer></script>
         {%- endif %}
+        {%- block page_scripts %}{% endblock %}
         {%- for script in config.extra_javascript %}
           {{ script | script_tag }}
         {%- endfor %}
