@@ -89,6 +89,25 @@
     let onFocusCb = null;
     let navTimeout = null;
 
+    /* event handlers (stored for cleanup) */
+    const onMouseUp = (ev) => {
+      if (dragging) {
+        const rect = canvas.getBoundingClientRect();
+        const sx = ev.clientX - rect.left;
+        const sy = ev.clientY - rect.top;
+        const hit = nodeAt(sx, sy);
+        if (hit === dragging) {
+          const moved = Math.abs(hit.vx) + Math.abs(hit.vy);
+          if (moved < 0.1) {
+            clearTimeout(navTimeout);
+            navTimeout = setTimeout(() => { window.location.href = base_url + hit.url; }, 250);
+          }
+        }
+        dragging = null;
+      }
+      panning = false;
+    };
+
     /* sizing */
     const resize = () => {
       dpr = window.devicePixelRatio || 1;
@@ -301,24 +320,7 @@
       }
     });
 
-    window.addEventListener('mouseup', (ev) => {
-      if (dragging) {
-        /* click = navigate, drag = reposition */
-        const rect = canvas.getBoundingClientRect();
-        const sx = ev.clientX - rect.left;
-        const sy = ev.clientY - rect.top;
-        const hit = nodeAt(sx, sy);
-        if (hit === dragging) {
-          const moved = Math.abs(hit.vx) + Math.abs(hit.vy);
-          if (moved < 0.1) {
-            clearTimeout(navTimeout);
-            navTimeout = setTimeout(() => { window.location.href = base_url + hit.url; }, 250);
-          }
-        }
-        dragging = null;
-      }
-      panning = false;
-    });
+    window.addEventListener('mouseup', onMouseUp);
 
     canvas.addEventListener('wheel', (ev) => {
       ev.preventDefault();
@@ -369,6 +371,9 @@
       cam.zoom = Math.min(W / (rangeX + 80), H / (rangeY + 80), 2);
     };
 
+    /* pre-compute adjacency for BFS */
+    const adjacency = buildAdjacency(resolvedEdges);
+
     /* run warmup then fit */
     for (let w = 0; w < 200; w++) tick();
     autoFit();
@@ -377,6 +382,7 @@
     return {
       nodes,
       resolvedEdges,
+      adjacency,
       draw,
       ensureRunning,
       setVisibility: (visibleIds) => {
@@ -395,27 +401,41 @@
       },
       idMap,
       setOnFocus: (cb) => { onFocusCb = cb; },
+      destroy: () => {
+        if (animId) { cancelAnimationFrame(animId); animId = null; }
+        window.removeEventListener('resize', resize);
+        window.removeEventListener('mouseup', onMouseUp);
+        canvas.remove();
+        tooltip.remove();
+      },
     };
   };
 
   /* ── BFS ─────────────────────────────────────────────────── */
 
-  const bfs = (startId, depth, edges, idMap) => {
+  const buildAdjacency = (edges) => {
+    const adj = {};
+    for (let e = 0; e < edges.length; e++) {
+      const s = edges[e].source.id;
+      const t = edges[e].target.id;
+      (adj[s] || (adj[s] = [])).push(t);
+      (adj[t] || (adj[t] = [])).push(s);
+    }
+    return adj;
+  };
+
+  const bfs = (startId, depth, adj) => {
     const visited = new Set();
     visited.add(startId);
     let frontier = [startId];
     for (let d = 0; d < depth; d++) {
       const next = [];
       for (let f = 0; f < frontier.length; f++) {
-        for (let e = 0; e < edges.length; e++) {
-          const edge = edges[e];
-          if (edge.source.id === frontier[f] && !visited.has(edge.target.id)) {
-            visited.add(edge.target.id);
-            next.push(edge.target.id);
-          }
-          if (edge.target.id === frontier[f] && !visited.has(edge.source.id)) {
-            visited.add(edge.source.id);
-            next.push(edge.source.id);
+        const neighbors = adj[frontier[f]] || [];
+        for (let n = 0; n < neighbors.length; n++) {
+          if (!visited.has(neighbors[n])) {
+            visited.add(neighbors[n]);
+            next.push(neighbors[n]);
           }
         }
       }
@@ -470,7 +490,7 @@
     const applyFilters = () => {
       let neighborSet = null;
       if (checked.focusId) {
-        neighborSet = bfs(checked.focusId, checked.focusDepth, graph.resolvedEdges, graph.idMap);
+        neighborSet = bfs(checked.focusId, checked.focusDepth, graph.adjacency);
       }
       const visibleIds = new Set();
       for (let i = 0; i < graph.nodes.length; i++) {

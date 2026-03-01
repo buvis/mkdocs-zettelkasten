@@ -126,10 +126,12 @@
       const href = link.href;
       if (!href) continue;
 
+      if (link.hasAttribute('data-preview-bound')) continue;
       const match = href.match(idRegex);
       if (match) {
         const id = match[1];
         if (previews[id]) {
+          link.setAttribute('data-preview-bound', '');
           ((l, d) => {
             l.addEventListener('mouseenter', () => {
               if (showTimer) clearTimeout(showTimer);

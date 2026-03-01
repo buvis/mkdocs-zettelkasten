@@ -641,9 +641,6 @@ dialog.modal-lg {
   border-radius: 0.25rem;
 }
 
-.bg-secondary {
-  background-color: var(--bg-accent) !important;
-}
 
 /* Utilities */
 .show {
