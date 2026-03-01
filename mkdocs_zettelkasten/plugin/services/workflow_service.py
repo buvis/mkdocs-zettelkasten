@@ -58,6 +58,7 @@ class WorkflowService:
 
     def generate(self, dashboard: dict[str, Any]) -> None:
         """Render workflow template to output folder."""
+        assert self.output_folder is not None
         env = create_jinja_environment(None)
         template = env.get_template("workflow.md.j2")
         content = template.render(**dashboard)
@@ -67,6 +68,8 @@ class WorkflowService:
 
     def add_to_build(self, files: Files) -> None:
         """Add generated workflow.md to MkDocs file collection."""
+        assert self.output_folder is not None
+        assert self._site_dir is not None
         from mkdocs.structure.files import File
 
         new_file = File(
