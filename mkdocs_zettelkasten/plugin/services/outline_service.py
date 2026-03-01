@@ -42,7 +42,9 @@ class OutlineService:
         self._site_dir = site_dir
 
     def generate(self, outlines: dict[str, Any]) -> None:
-        assert self.output_folder is not None
+        if self.output_folder is None:
+            msg = "configure() must be called before generate()"
+            raise RuntimeError(msg)
         env = create_jinja_environment(None)
         template = env.get_template("outline.md.j2")
         content = template.render(**outlines)
@@ -51,8 +53,9 @@ class OutlineService:
         logger.info("Generated outline page.")
 
     def add_to_build(self, files: Files) -> None:
-        assert self.output_folder is not None
-        assert self._site_dir is not None
+        if self.output_folder is None or self._site_dir is None:
+            msg = "configure() must be called before add_to_build()"
+            raise RuntimeError(msg)
         from mkdocs.structure.files import File
 
         new_file = File(
