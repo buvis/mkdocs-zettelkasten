@@ -173,16 +173,16 @@ body {
   background-repeat: no-repeat;
 }
 
-.bg-light {
-  background-color: var(--bg-page) !important;
+body .bg-light {
+  background-color: var(--bg-page);
 }
 
-.bg-dark {
-  background-color: var(--bg-header) !important;
+body .bg-dark {
+  background-color: var(--bg-header);
 }
 
-.ml-auto {
-  margin-left: auto !important;
+body .ml-auto {
+  margin-left: auto;
 }
 
 /* Navbar Expand LG */
@@ -200,8 +200,8 @@ body {
     flex-direction: row;
     align-items: center;
   }
-  .navbar-expand-lg .navbar-collapse {
-    display: flex !important;
+  body .navbar-expand-lg .navbar-collapse {
+    display: flex;
     flex-basis: auto;
   }
   /* Brand left, nav centered, controls right */
@@ -229,8 +229,8 @@ body {
   .navbar-expand-md .navbar-nav {
     flex-direction: row;
   }
-  .navbar-expand-md .navbar-collapse {
-    display: flex !important;
+  body .navbar-expand-md .navbar-collapse {
+    display: flex;
     flex-basis: auto;
   }
   .navbar-expand-md .navbar-toggler {
@@ -291,12 +291,12 @@ body {
   }
 }
 
-.align-items-center {
-  align-items: center !important;
+body .align-items-center {
+  align-items: center;
 }
 
-.text-right {
-  text-align: right !important;
+body .text-right {
+  text-align: right;
 }
 
 /* Dropdowns */
@@ -643,8 +643,8 @@ dialog.modal-lg {
 
 
 /* Utilities */
-.show {
-  display: block !important;
+body .show {
+  display: block;
 }
 
 .active {
@@ -668,8 +668,8 @@ dialog.modal-lg {
   border: 0 !important;
 }
 
-.flex-column {
-  flex-direction: column !important;
+body .flex-column {
+  flex-direction: column;
 }
 
 @media print {
@@ -883,8 +883,8 @@ dialog.modal-lg {
   flex-wrap: nowrap;
 }
 
-.navbar.sidebar-mode .navbar-collapse {
-  display: flex !important;
+body .navbar.sidebar-mode .navbar-collapse {
+  display: flex;
   flex-basis: auto;
 }
 
