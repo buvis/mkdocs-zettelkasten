@@ -7,6 +7,7 @@ from mkdocs_zettelkasten.plugin.services.zettel_parser import ZettelParser
 
 VALID_CONTENT = "---\nid: 1\ndate: 2024-01-01\n---\n# Title\nBody\n"
 INVALID_CONTENT = "---\ntitle: No ID\n---\n# Title\n"
+PERMISSIVE_CONFIG = {"id_format": r"^\d+$"}
 
 
 def _make_file(src_path: str, abs_src_path: str, is_doc: bool = True) -> MagicMock:
@@ -30,7 +31,9 @@ class TestZettelParser:
             "mkdocs_zettelkasten.plugin.entities.zettel.GitUtil.is_tracked",
             return_value=False,
         ):
-            valid, invalid = ZettelParser.parse_files(files)
+            valid, invalid = ZettelParser.parse_files(
+                files, zettel_config=PERMISSIVE_CONFIG
+            )
 
         assert len(valid) == 1
         assert len(invalid) == 0
@@ -48,7 +51,9 @@ class TestZettelParser:
             "mkdocs_zettelkasten.plugin.entities.zettel.GitUtil.is_tracked",
             return_value=False,
         ):
-            valid, invalid = ZettelParser.parse_files(files)
+            valid, invalid = ZettelParser.parse_files(
+                files, zettel_config=PERMISSIVE_CONFIG
+            )
 
         assert len(valid) == 0
         assert len(invalid) == 1
@@ -76,7 +81,8 @@ class TestZettelParser:
             return_value=False,
         ):
             valid, _ = ZettelParser.parse_files(
-                files, zettel_config={"id_key": "zettel_id"}
+                files,
+                zettel_config={"id_key": "zettel_id", "id_format": r"^\d+$"},
             )
 
         assert len(valid) == 1

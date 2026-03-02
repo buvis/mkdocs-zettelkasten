@@ -138,6 +138,11 @@ def _make_zettel(tmp_path: Path, content: str, **kwargs) -> Zettel:
     fp.write_text(content)
     mock_stat = Mock()
     mock_stat.st_mtime = 1704067200.0  # 2024-01-01
+    # Default to permissive id_format so tests that don't care about ID
+    # validation can use short IDs like "1" without tripping the check.
+    cfg = kwargs.get("zettel_config") or {}
+    cfg.setdefault("id_format", r"^\d+$")
+    kwargs["zettel_config"] = cfg
     with (
         patch.object(Path, "stat", return_value=mock_stat),
         patch(
@@ -190,6 +195,17 @@ class TestZettelInit:
         content = "---\njust a string\n---\nBody.\n"
         with pytest.raises(ZettelFormatError, match="Invalid YAML"):
             _make_zettel(tmp_path, content)
+
+    def test_id_format_mismatch_raises(self, tmp_path: Path) -> None:
+        content = "---\nid: 999\ndate: 2024-01-01\n---\nBody.\n"
+        with pytest.raises(ZettelFormatError, match="does not match format"):
+            _make_zettel(tmp_path, content, zettel_config={"id_format": r"^\d{14}$"})
+
+    def test_id_format_match_passes(self, tmp_path: Path) -> None:
+        z = _make_zettel(
+            tmp_path, VALID_ZETTEL, zettel_config={"id_format": r"^\d{14}$"}
+        )
+        assert z.id == 20240101120000
 
 
 class TestTitleFallback:

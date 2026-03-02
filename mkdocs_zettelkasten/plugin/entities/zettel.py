@@ -231,6 +231,16 @@ class Zettel:
             msg = f"ID {raw_id!r} is not a valid integer"
             raise ZettelFormatError(msg) from err
 
+        if not re.fullmatch(self._id_format, str(raw_id)):
+            logger.error(
+                "ID %r does not match format %s in %s",
+                raw_id,
+                self._id_format,
+                self.path,
+            )
+            msg = f"ID {raw_id!r} does not match format {self._id_format}"
+            raise ZettelFormatError(msg)
+
         if meta.get("title"):
             self.title = meta["title"]
         elif alt_title:

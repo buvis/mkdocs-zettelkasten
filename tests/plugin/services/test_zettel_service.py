@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
 
 VALID_MD = "---\nid: 1\ndate: 2024-01-01\n---\n# Title\nBody\n"
+PERMISSIVE_CONFIG = {"id_format": r"^\d+$"}
 
 
 class TestZettelService:
@@ -29,6 +30,7 @@ class TestZettelService:
         config.__getitem__ = lambda self, key: {"docs_dir": str(tmp_path)}[key]
 
         svc = ZettelService()
+        svc.configure(PERMISSIVE_CONFIG)
         with patch(
             "mkdocs_zettelkasten.plugin.entities.zettel.GitUtil.is_tracked",
             return_value=False,
@@ -53,6 +55,7 @@ class TestZettelService:
         config.__getitem__ = lambda self, key: {"docs_dir": str(tmp_path)}[key]
 
         svc = ZettelService()
+        svc.configure(PERMISSIVE_CONFIG)
         with patch(
             "mkdocs_zettelkasten.plugin.entities.zettel.GitUtil.is_tracked",
             return_value=False,

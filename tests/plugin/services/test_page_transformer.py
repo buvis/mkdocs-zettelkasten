@@ -1,4 +1,7 @@
+import logging
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 from mkdocs_zettelkasten.plugin.services.page_transformer import PageTransformer
 
@@ -80,3 +83,17 @@ class TestPageTransformer:
         assert m_ref.call_args[0][0] == "after_links"
         # final result is ref output
         assert result == "after_ref"
+
+    def test_exception_logs_adapter_name(self, caplog) -> None:
+        transformer, page, config, files, zettel_service = _make_transform_fixtures()
+
+        with (
+            patch(f"{MODULE}.adapt_page_title", return_value="md1"),
+            patch(f"{MODULE}.adapt_transclusion", side_effect=ValueError("boom")),
+            caplog.at_level(logging.ERROR),
+            pytest.raises(ValueError, match="boom"),
+        ):
+            transformer.transform("original", page, config, files, zettel_service)
+
+        assert "adapt_transclusion" in caplog.text
+        assert "test.md" in caplog.text

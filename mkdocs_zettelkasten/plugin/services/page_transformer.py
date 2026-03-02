@@ -46,59 +46,88 @@ class PageTransformer:
         """
         Apply all adapters to the markdown and update references.
         """
-        logger.debug("Started %s transformations", page.file.src_path)
-        try:
-            page = zettel_service.add_zettel_to_page(page)
-            markdown = adapt_page_title(markdown, page, page.meta.get("zettel"))
-            markdown = adapt_transclusion(
-                markdown,
-                zettel_service.get_zettel_by_partial_path,
-                site_url=config["site_url"],
-                file_suffix=zettel_service.file_suffix,
-                strip_heading=config.get("extra", {}).get(
-                    "transclusion_strip_heading", True
-                ),
-            )
-            markdown = adapt_page_links_to_zettels(
-                markdown,
-                page,
-                config,
-                files,
-                zettel_service.get_zettel_by_partial_path,
-                file_suffix=zettel_service.file_suffix,
-            )
-            processed_md, page.meta["ref"] = get_page_ref(markdown, page, config)
-            page.previous_page, page.next_page = get_prev_next_page(
-                page,
-                files,
-                zettel_service.get_zettels(),
-                file_suffix=zettel_service.file_suffix,
-            )
-            adapt_backlinks_to_page(
-                page,
-                zettel_service.backlinks,
-                zettel_service.get_zettel_by_partial_path,
-            )
-            adapt_mentions_to_page(
-                page,
-                zettel_service.unlinked_mentions,
-                zettel_service.get_zettel_by_id,
-            )
-            adapt_suggestions_to_page(
-                page,
-                zettel_service.suggestions,
-                zettel_service.get_zettel_by_id,
-                file_suffix=zettel_service.file_suffix,
-            )
-            adapt_sequence_to_page(
-                page,
-                zettel_service.sequence_children,
-                zettel_service.get_zettel_by_id,
-                file_suffix=zettel_service.file_suffix,
-            )
-        except Exception:
-            logger.exception("Failed during transformation of %s", page.file.src_path)
-            raise
-        logger.debug("Finished %s transformations", page.file.src_path)
+        src = page.file.src_path
+        logger.debug("Started %s transformations", src)
 
+        def _run(name: str, fn, *args, **kwargs):
+            try:
+                return fn(*args, **kwargs)
+            except Exception:
+                logger.exception("Adapter %s failed on %s", name, src)
+                raise
+
+        page = _run(
+            "add_zettel_to_page", zettel_service.add_zettel_to_page, page
+        )
+        markdown = _run(
+            "adapt_page_title",
+            adapt_page_title,
+            markdown,
+            page,
+            page.meta.get("zettel"),
+        )
+        markdown = _run(
+            "adapt_transclusion",
+            adapt_transclusion,
+            markdown,
+            zettel_service.get_zettel_by_partial_path,
+            site_url=config["site_url"],
+            file_suffix=zettel_service.file_suffix,
+            strip_heading=config.get("extra", {}).get(
+                "transclusion_strip_heading", True
+            ),
+        )
+        markdown = _run(
+            "adapt_page_links_to_zettels",
+            adapt_page_links_to_zettels,
+            markdown,
+            page,
+            config,
+            files,
+            zettel_service.get_zettel_by_partial_path,
+            file_suffix=zettel_service.file_suffix,
+        )
+        processed_md, page.meta["ref"] = _run(
+            "get_page_ref", get_page_ref, markdown, page, config
+        )
+        page.previous_page, page.next_page = _run(
+            "get_prev_next_page",
+            get_prev_next_page,
+            page,
+            files,
+            zettel_service.get_zettels(),
+            file_suffix=zettel_service.file_suffix,
+        )
+        _run(
+            "adapt_backlinks_to_page",
+            adapt_backlinks_to_page,
+            page,
+            zettel_service.backlinks,
+            zettel_service.get_zettel_by_partial_path,
+        )
+        _run(
+            "adapt_mentions_to_page",
+            adapt_mentions_to_page,
+            page,
+            zettel_service.unlinked_mentions,
+            zettel_service.get_zettel_by_id,
+        )
+        _run(
+            "adapt_suggestions_to_page",
+            adapt_suggestions_to_page,
+            page,
+            zettel_service.suggestions,
+            zettel_service.get_zettel_by_id,
+            file_suffix=zettel_service.file_suffix,
+        )
+        _run(
+            "adapt_sequence_to_page",
+            adapt_sequence_to_page,
+            page,
+            zettel_service.sequence_children,
+            zettel_service.get_zettel_by_id,
+            file_suffix=zettel_service.file_suffix,
+        )
+
+        logger.debug("Finished %s transformations", src)
         return processed_md

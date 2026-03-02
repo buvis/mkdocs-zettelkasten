@@ -17,6 +17,9 @@ def zettel_factory(tmp_path: Path) -> Callable[..., Zettel]:
         mock_stat = Mock()
         mock_stat.st_mtime = mtime
 
+        cfg = zettel_config or {}
+        cfg.setdefault("id_format", r"^\d+$")
+
         with (
             patch.object(Path, "stat", return_value=mock_stat),
             patch(
@@ -25,7 +28,7 @@ def zettel_factory(tmp_path: Path) -> Callable[..., Zettel]:
             ),
         ):
             return Zettel(
-                file_path, str(file_path.relative_to(tmp_path)), zettel_config
+                file_path, str(file_path.relative_to(tmp_path)), cfg
             )
 
     return _factory
