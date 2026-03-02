@@ -36,6 +36,7 @@ class TestZettelkastenPlugin:
             "suggestions_enabled": False,
             "workflow_enabled": False,
             "transclusion_strip_heading": True,
+            "minify_js": True,
         }
         return plugin
 
@@ -312,3 +313,58 @@ class TestZettelkastenPlugin:
     def test_config_scheme_has_sequence_key(self) -> None:
         keys = [name for name, _ in ZettelkastenPlugin.config_scheme]
         assert "sequence_key" in keys
+
+    def test_on_startup_sets_serve_flag(self) -> None:
+        plugin = self._make_plugin()
+        plugin.on_startup(command="serve", dirty=False)
+        assert plugin._is_serve is True
+
+    def test_on_startup_clears_serve_flag_for_build(self) -> None:
+        plugin = self._make_plugin()
+        plugin._is_serve = True
+        plugin.on_startup(command="build", dirty=False)
+        assert plugin._is_serve is False
+
+    def test_on_post_build_minifies_js(self, tmp_path) -> None:
+        plugin = self._make_plugin()
+        js_dir = tmp_path / "js"
+        js_dir.mkdir()
+        (js_dir / "app.js").write_text("var x  =  1 ;  /* comment */")
+        config = {"site_dir": str(tmp_path)}
+        plugin.on_post_build(config=config)
+        result = (js_dir / "app.js").read_text()
+        assert "/* comment */" not in result
+        assert len(result) < len("var x  =  1 ;  /* comment */")
+
+    def test_on_post_build_skips_during_serve(self, tmp_path) -> None:
+        plugin = self._make_plugin()
+        plugin._is_serve = True
+        js_dir = tmp_path / "js"
+        js_dir.mkdir()
+        original = "var x  =  1 ;  /* comment */"
+        (js_dir / "app.js").write_text(original)
+        config = {"site_dir": str(tmp_path)}
+        plugin.on_post_build(config=config)
+        assert (js_dir / "app.js").read_text() == original
+
+    def test_on_post_build_skips_when_disabled(self, tmp_path) -> None:
+        plugin = self._make_plugin()
+        plugin.config["minify_js"] = False
+        js_dir = tmp_path / "js"
+        js_dir.mkdir()
+        original = "var x  =  1 ;  /* comment */"
+        (js_dir / "app.js").write_text(original)
+        config = {"site_dir": str(tmp_path)}
+        plugin.on_post_build(config=config)
+        assert (js_dir / "app.js").read_text() == original
+
+    def test_on_post_build_skips_vendor_subdir(self, tmp_path) -> None:
+        plugin = self._make_plugin()
+        js_dir = tmp_path / "js"
+        vendor_dir = js_dir / "vendor"
+        vendor_dir.mkdir(parents=True)
+        original = "var x  =  1 ;  /* comment */"
+        (vendor_dir / "lib.js").write_text(original)
+        config = {"site_dir": str(tmp_path)}
+        plugin.on_post_build(config=config)
+        assert (vendor_dir / "lib.js").read_text() == original

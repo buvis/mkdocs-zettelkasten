@@ -75,6 +75,7 @@ class ZettelkastenPlugin(BasePlugin):
         ("suggestions_enabled", config_options.Type(bool, default=False)),
         ("workflow_enabled", config_options.Type(bool, default=False)),
         ("transclusion_strip_heading", config_options.Type(bool, default=True)),
+        ("minify_js", config_options.Type(bool, default=True)),
     )
 
     def __init__(self) -> None:
@@ -88,8 +89,12 @@ class ZettelkastenPlugin(BasePlugin):
         self.suggestion_service = SuggestionService()
         self.workflow_service = WorkflowService()
         self.page_transformer = PageTransformer()
+        self._is_serve = False
         self._initialize_logger()
         self.logger.debug("Initialized ZettelkastenPlugin with services and logger.")
+
+    def on_startup(self, *, command: str, dirty: bool) -> None:  # noqa: ARG002
+        self._is_serve = command == "serve"
 
     def on_config(self, config: MkDocsConfig) -> None:
         self.logger.setLevel(self.config["log_level"])
@@ -341,3 +346,24 @@ class ZettelkastenPlugin(BasePlugin):
         handler.setFormatter(formatter)
 
         return handler
+
+    def on_post_build(self, *, config: MkDocsConfig) -> None:
+        if self._is_serve or not self.config["minify_js"]:
+            return
+        import rjsmin
+
+        js_dir = os.path.join(config["site_dir"], "js")
+        if not os.path.isdir(js_dir):
+            return
+        for name in os.listdir(js_dir):
+            if not name.endswith(".js"):
+                continue
+            path = os.path.join(js_dir, name)
+            if not os.path.isfile(path):
+                continue
+            with open(path) as f:
+                source = f.read()
+            minified = rjsmin.jsmin(source)
+            with open(path, "w") as f:
+                f.write(minified)
+            self.logger.debug("Minified %s (%d → %d bytes)", name, len(source), len(minified))
