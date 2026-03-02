@@ -7,8 +7,8 @@ from mkdocs.structure.pages import Page
 from mkdocs_zettelkasten.plugin.adapters.backlinks_to_page import (
     adapt_backlinks_to_page,
 )
-from mkdocs_zettelkasten.plugin.adapters.mentions_to_page import (
-    adapt_mentions_to_page,
+from mkdocs_zettelkasten.plugin.adapters.unlinked_mentions_to_page import (
+    adapt_unlinked_mentions_to_page,
 )
 from mkdocs_zettelkasten.plugin.adapters.page_links_to_zettels import (
     adapt_page_links_to_zettels,
@@ -106,8 +106,8 @@ class PageTransformer:
             zettel_service.get_zettel_by_partial_path,
         )
         _run(
-            "adapt_mentions_to_page",
-            adapt_mentions_to_page,
+            "adapt_unlinked_mentions_to_page",
+            adapt_unlinked_mentions_to_page,
             page,
             zettel_service.unlinked_mentions,
             zettel_service.get_zettel_by_id,

@@ -71,7 +71,7 @@ class TestStats:
         assert result["stats"]["total"] == 2
         assert result["stats"]["total_links"] == 2
         assert result["stats"]["total_backlinks"] == 1
-        assert result["stats"]["total_mentions"] == 1
+        assert result["stats"]["total_unlinked_mentions"] == 1
 
 
 class TestInbox:
@@ -194,7 +194,7 @@ class TestOrphans:
         assert len(result["orphans"]) == 0
 
 
-class TestMentionHotspots:
+class TestUnlinkedMentionHotspots:
     def setup_method(self):
         self.service = WorkflowService()
 

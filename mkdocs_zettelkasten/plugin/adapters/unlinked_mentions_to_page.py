@@ -15,9 +15,9 @@ logger = logging.getLogger(
 )
 
 
-def adapt_mentions_to_page(
+def adapt_unlinked_mentions_to_page(
     page: Page,
-    mentions: dict[int, list[tuple[int, str]]],
+    unlinked_mentions: dict[int, list[tuple[int, str]]],
     zettel_lookup: Callable[[int], Zettel | None],
 ) -> None:
     """Add unlinked mentions to target zettels when the source page matches."""
@@ -30,7 +30,7 @@ def adapt_mentions_to_page(
 
     source_id = zettel_meta.id
 
-    for target_id, source_list in mentions.items():
+    for target_id, source_list in unlinked_mentions.items():
         for src_id, snippet in source_list:
             if src_id != source_id:
                 continue

@@ -21,7 +21,7 @@ class UnlinkedMentionService:
 
     def find_unlinked_mentions(self, store) -> dict[int, list[tuple[int, str]]]:
         """Return {target_id: [(source_id, snippet), ...]} for unlinked mentions."""
-        mentions: dict[int, list[tuple[int, str]]] = defaultdict(list)
+        unlinked_mentions: dict[int, list[tuple[int, str]]] = defaultdict(list)
 
         for target in store.zettels:
             title = target.title
@@ -40,10 +40,10 @@ class UnlinkedMentionService:
                     source.body, title_pat, title, id_pat, id_str
                 )
                 if result:
-                    mentions[target.id].append((source.id, result))
+                    unlinked_mentions[target.id].append((source.id, result))
 
-        logger.debug("Found unlinked mentions for %d targets", len(mentions))
-        return dict(mentions)
+        logger.debug("Found unlinked mentions for %d targets", len(unlinked_mentions))
+        return dict(unlinked_mentions)
 
     def _find_mention_in_body(self, body, title_pat, title, id_pat, id_str):
         """Search body paragraphs for a mention, return snippet or None."""

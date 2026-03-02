@@ -1,4 +1,4 @@
-"""Shared snippet truncation logic for backlinks and mentions."""
+"""Shared snippet truncation logic for backlinks and unlinked mentions."""
 
 _MAX_LEN = 200
 

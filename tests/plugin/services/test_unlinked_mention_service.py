@@ -16,7 +16,7 @@ def _make_store(zettels):
     return store
 
 
-class TestMentionDetection:
+class TestUnlinkedMentionDetection:
     def test_finds_title_mention(self) -> None:
         target = _make_zettel(1, "Epistemology", "Body of target.", [])
         source = _make_zettel(

@@ -47,7 +47,7 @@ class WorkflowService:
             "needs_connection": self._needs_connection(store),
             "review_queue": self._review_queue(store, today),
             "orphans": self._orphans(store, backlinked_ids),
-            "mention_hotspots": self._mention_hotspots(
+            "mention_hotspots": self._unlinked_mention_hotspots(
                 store, unlinked_mentions, backlink_counts
             ),
         }
@@ -121,7 +121,7 @@ class WorkflowService:
             "by_maturity": by_maturity,
             "total_links": total_links,
             "total_backlinks": sum(len(v) for v in backlinks.values()),
-            "total_mentions": sum(len(v) for v in unlinked_mentions.values()),
+            "total_unlinked_mentions": sum(len(v) for v in unlinked_mentions.values()),
         }
 
     def _inbox(self, store, today):
@@ -198,7 +198,7 @@ class WorkflowService:
             )
         return sorted(items, key=lambda x: x["title"])
 
-    def _mention_hotspots(self, store, unlinked_mentions, backlink_counts):
+    def _unlinked_mention_hotspots(self, store, unlinked_mentions, backlink_counts):
         items = []
         for zid, mention_list in unlinked_mentions.items():
             if not mention_list:
