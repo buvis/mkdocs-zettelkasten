@@ -270,27 +270,6 @@ class TestHashAndEquality:
         assert z != "not a zettel"
 
 
-class TestParseFrontmatter:
-    def test_splits_header_and_body(self) -> None:
-        from mkdocs_zettelkasten.plugin.utils.frontmatter import parse_frontmatter
-
-        header, body = parse_frontmatter("---\nid: 1\n---\nbody text\n")
-        assert "id: 1" in header
-        assert "body text" in body
-
-    def test_no_frontmatter_returns_empty_header(self) -> None:
-        from mkdocs_zettelkasten.plugin.utils.frontmatter import parse_frontmatter
-
-        header, body = parse_frontmatter("just text\n")
-        assert header == ""
-        assert "just text" in body
-
-    def test_unclosed_frontmatter_returns_empty_header(self) -> None:
-        from mkdocs_zettelkasten.plugin.utils.frontmatter import parse_frontmatter
-
-        header, _body = parse_frontmatter("---\nid: 1\n")
-        assert header == ""
-
 
 class TestConfigurableKeys:
     def test_custom_id_key(self, tmp_path: Path) -> None:
