@@ -363,6 +363,8 @@ const init = () => {
     const sidebarBackdrop = document.getElementById('sidebar-backdrop');
     const sidebarClose = sidebarNav && sidebarNav.querySelector('.sidebar-close');
     if (sidebarToggle && sidebarNav) {
+        const sidebarAC = new AbortController();
+        const sOpt = {signal: sidebarAC.signal};
         const openSidebar = () => {
             sidebarNav.classList.add('open');
             if (sidebarBackdrop) sidebarBackdrop.classList.add('open');
@@ -375,16 +377,17 @@ const init = () => {
             sidebarToggle.setAttribute('aria-expanded', 'false');
             sessionStorage.setItem('sidebar-open', '0');
         };
-        sidebarToggle.addEventListener('click', openSidebar);
-        if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
-        if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+        sidebarToggle.addEventListener('click', openSidebar, sOpt);
+        if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar, sOpt);
+        if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar, sOpt);
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && sidebarNav.classList.contains('open')) closeSidebar();
-        });
+        }, sOpt);
         sidebarNav.querySelectorAll('a.sidebar-link').forEach((link) => {
-            link.addEventListener('click', () => closeSidebar());
+            link.addEventListener('click', () => closeSidebar(), sOpt);
         });
         if (sessionStorage.getItem('sidebar-open') === '1') openSidebar();
+        window.addEventListener('pagehide', () => sidebarAC.abort(), {once: true});
     }
 
     // Scrollspy via IntersectionObserver

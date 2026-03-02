@@ -8,6 +8,7 @@
   let showTimer = null;
   let hideTimer = null;
   let previews = {};
+  const linkAC = new AbortController();
 
   /* ── helpers ─────────────────────────────────────────────── */
 
@@ -23,11 +24,11 @@
         clearTimeout(hideTimer);
         hideTimer = null;
       }
-    });
+    }, {signal: linkAC.signal});
 
     tooltip.addEventListener('mouseleave', () => {
       hide();
-    });
+    }, {signal: linkAC.signal});
   };
 
   const show = (link, data) => {
@@ -134,17 +135,18 @@
         if (previews[id]) {
           link.setAttribute('data-preview-bound', '');
           ((l, d) => {
+            const lOpt = {signal: linkAC.signal};
             l.addEventListener('mouseenter', () => {
               if (showTimer) clearTimeout(showTimer);
               showTimer = setTimeout(() => {
                 show(l, d);
               }, POP_DELAY);
-            });
+            }, lOpt);
 
             l.addEventListener('mouseleave', () => {
               if (showTimer) clearTimeout(showTimer);
               hide();
-            });
+            }, lOpt);
           })(link, previews[id]);
         }
       }
@@ -156,5 +158,11 @@
   } else {
     initPreviews();
   }
+
+  window.addEventListener('pagehide', () => {
+    linkAC.abort();
+    if (tooltip && tooltip.parentNode) tooltip.parentNode.removeChild(tooltip);
+    tooltip = null;
+  }, {once: true});
 
 })();

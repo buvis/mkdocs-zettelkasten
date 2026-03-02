@@ -58,15 +58,6 @@ def adapt_page_links_to_zettels(
 
                 return f"[{title}]({new_url})"
 
-        if f"[{title}]({url})" != m.group():
-            logger.debug(
-                "Transformed link %s to [%s](%s) in %s",
-                m.group(),
-                title,
-                url,
-                page.file.src_path,
-            )
-
         return f"[{title}]({url})"
 
     # Split markdown into alternating segments (non-code/code)
