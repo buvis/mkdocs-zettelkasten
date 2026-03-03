@@ -24,10 +24,10 @@ def test_index_page_renders_without_errors(page, default_site):
     assert page.locator("body").inner_text() != ""
 
 
-def test_graph_page_absent_when_disabled(page, default_site):
-    """Graph page returns 404 when graph_enabled=false."""
-    resp = page.goto(f"{default_site}/graph.html")
-    assert resp.status == 404
+def test_graph_nav_hidden_when_disabled(page, default_site):
+    """Graph nav link absent when graph_enabled=false."""
+    page.goto(default_site)
+    assert page.locator("a[href*='graph.html']").count() == 0
 
 
 def test_preview_popover_absent_when_disabled(page, default_site):
