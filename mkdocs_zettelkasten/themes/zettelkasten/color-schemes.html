@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-<div style="padding-top: 2em;">
+<div class="gallery-page">
     <h1>Color Schemes</h1>
     <p>Browse all available color schemes. Click "Apply" to switch.</p>
 
@@ -34,7 +34,6 @@
 
         var title = document.createElement('h3');
         title.textContent = scheme.name;
-        title.style.marginBottom = '0.5em';
         card.appendChild(title);
 
         var category = document.createElement('span');
@@ -44,22 +43,19 @@
 
         var lightLabel = document.createElement('div');
         lightLabel.textContent = 'Light';
-        lightLabel.style.fontSize = '0.8em';
-        lightLabel.style.marginTop = '0.5em';
+        lightLabel.className = 'gallery-label';
         card.appendChild(lightLabel);
         card.appendChild(createSwatch(scheme.preview.light));
 
         var darkLabel = document.createElement('div');
         darkLabel.textContent = 'Dark';
-        darkLabel.style.fontSize = '0.8em';
-        darkLabel.style.marginTop = '0.3em';
+        darkLabel.className = 'gallery-label gallery-label--dark';
         card.appendChild(darkLabel);
         card.appendChild(createSwatch(scheme.preview.dark));
 
         var btn = document.createElement('button');
         btn.className = 'btn btn-sm btn-primary';
         btn.textContent = 'Apply';
-        btn.style.marginTop = '0.5em';
         btn.addEventListener('click', function() {
             window.zkTheme.setScheme(scheme.id);
             window.location.href = '{{ nav.homepage.url|url }}';
@@ -94,7 +90,6 @@
                     if (!categories[cat]) return;
                     var heading = document.createElement('h2');
                     heading.textContent = labels[cat] || cat;
-                    heading.style.marginTop = '1.5em';
                     grid.appendChild(heading);
 
                     var section = document.createElement('div');

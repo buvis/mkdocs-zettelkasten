@@ -358,6 +358,58 @@ class TestZettelkastenPlugin:
         plugin.on_post_build(config=config)
         assert (js_dir / "app.js").read_text() == original
 
+    def test_on_config_sets_both_graph_and_workflow_extra(self) -> None:
+        plugin = self._make_plugin()
+        plugin.config["graph_enabled"] = True
+        plugin.config["workflow_enabled"] = True
+        extra = {}
+        config = MagicMock()
+        config.__getitem__ = lambda self_mock, key: (
+            extra if key == "extra" else MagicMock()
+        )
+
+        with (
+            patch.object(plugin.zettel_service, "configure"),
+            patch.object(plugin.tags_service, "configure"),
+            patch.object(plugin.workflow_service, "configure"),
+        ):
+            plugin.on_config(config)
+
+        assert extra["graph_enabled"] is True
+        assert extra["workflow_enabled"] is True
+
+    def test_on_config_propagates_custom_file_suffix(self) -> None:
+        plugin = self._make_plugin()
+        plugin.config["file_suffix"] = ".txt"
+        config = MagicMock()
+
+        with (
+            patch.object(plugin.zettel_service, "configure") as mock_zcfg,
+            patch.object(plugin.tags_service, "configure") as mock_tcfg,
+        ):
+            plugin.on_config(config)
+
+        assert mock_zcfg.call_args[0][0]["file_suffix"] == ".txt"
+        mock_tcfg.assert_called_once_with(
+            config, tags_key="tags", file_suffix=".txt", role_key="role"
+        )
+
+    def test_on_config_propagates_custom_suffix_to_validation(self) -> None:
+        plugin = self._make_plugin()
+        plugin.config["file_suffix"] = ".txt"
+        config = MagicMock()
+
+        with (
+            patch.object(plugin.zettel_service, "configure"),
+            patch.object(plugin.tags_service, "configure"),
+            patch.object(
+                plugin.validation_service, "configure"
+            ) as mock_vcfg,
+        ):
+            plugin.on_config(config)
+
+        mock_vcfg.assert_called_once_with(config, file_suffix=".txt")
+
     def test_on_post_build_skips_vendor_subdir(self, tmp_path) -> None:
         plugin = self._make_plugin()
         js_dir = tmp_path / "js"

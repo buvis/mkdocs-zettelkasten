@@ -711,6 +711,31 @@ pre:has(> code):hover .copy-btn {
   background: var(--bg-zettel);
 }
 
+.gallery-page {
+  padding-top: 2em;
+}
+
+.gallery-card h3 {
+  margin-bottom: 0.5em;
+}
+
+.gallery-label {
+  font-size: 0.8em;
+  margin-top: 0.5em;
+}
+
+.gallery-label--dark {
+  margin-top: 0.3em;
+}
+
+.gallery-card .btn {
+  margin-top: 0.5em;
+}
+
+#gallery-grid > h2 {
+  margin-top: 1.5em;
+}
+
 .gallery-category {
   display: inline-block;
   font-size: 0.7em;

@@ -30,6 +30,7 @@ def _build_site(config_file: Path, output_dir: Path) -> Path:
         cwd=str(ROOT),
         check=True,
         capture_output=True,
+        timeout=120,
     )
     return output_dir
 

@@ -1,49 +1,61 @@
+import pytest
 from playwright.sync_api import Page
+
+TRANSCLUSION_PAGE = "20260223131905"
+TARGET_ID = "20260223124437"
 
 
 class TestTransclusion:
-    def test_full_embed_renders_content(self, page: Page, default_site: str) -> None:
-        page.goto(f"{default_site}/20260223131905/")
-        embed = page.locator(".zettel-embed").first
+    @pytest.mark.parametrize(
+        ("index", "check"),
+        [
+            (0, "introduction section"),
+            (1, "introduction section"),
+        ],
+        ids=["full-embed", "section-embed"],
+    )
+    def test_embed_renders_expected_content(
+        self, page: Page, default_site: str, index: int, check: str
+    ) -> None:
+        page.goto(f"{default_site}/{TRANSCLUSION_PAGE}/")
+        embed = page.locator(".zettel-embed").nth(index)
         assert embed.is_visible()
-        assert "introduction section" in embed.inner_text().lower()
+        assert check in embed.inner_text().lower()
+
+    def test_section_embed_excludes_other_sections(
+        self, page: Page, default_site: str
+    ) -> None:
+        page.goto(f"{default_site}/{TRANSCLUSION_PAGE}/")
+        content = (
+            page.locator(".zettel-embed")
+            .nth(1)
+            .locator(".zettel-embed-content")
+            .inner_text()
+        )
+        assert "details" not in content.lower()
 
     def test_full_embed_has_header_link(self, page: Page, default_site: str) -> None:
-        page.goto(f"{default_site}/20260223131905/")
+        page.goto(f"{default_site}/{TRANSCLUSION_PAGE}/")
         header_link = page.locator(".zettel-embed-header a").first
         assert header_link.is_visible()
         assert "Embed Target Note" in header_link.inner_text()
-        assert "20260223124437" in header_link.get_attribute("href")
-
-    def test_section_embed_only_shows_section(
-        self, page: Page, default_site: str
-    ) -> None:
-        page.goto(f"{default_site}/20260223131905/")
-        embeds = page.locator(".zettel-embed")
-        # Second embed is the section embed
-        section_embed = embeds.nth(1)
-        content = section_embed.locator(".zettel-embed-content").inner_text()
-        assert "introduction section" in content.lower()
-        assert "details" not in content.lower()
+        assert TARGET_ID in header_link.get_attribute("href")
 
     def test_alias_shows_custom_title(self, page: Page, default_site: str) -> None:
-        page.goto(f"{default_site}/20260223131905/")
-        embeds = page.locator(".zettel-embed")
-        # Third embed has alias
-        alias_embed = embeds.nth(2)
-        header = alias_embed.locator(".zettel-embed-header a")
+        page.goto(f"{default_site}/{TRANSCLUSION_PAGE}/")
+        header = page.locator(".zettel-embed").nth(2).locator(".zettel-embed-header a")
         assert "Custom Title" in header.inner_text()
 
     def test_unresolved_embed_shows_warning(
         self, page: Page, default_site: str
     ) -> None:
-        page.goto(f"{default_site}/20260223131905/")
+        page.goto(f"{default_site}/{TRANSCLUSION_PAGE}/")
         warning = page.locator(".admonition.warning")
         assert warning.count() > 0
         assert "nonexistent99" in warning.first.inner_text()
 
     def test_embed_has_styled_container(self, page: Page, default_site: str) -> None:
-        page.goto(f"{default_site}/20260223131905/")
+        page.goto(f"{default_site}/{TRANSCLUSION_PAGE}/")
         embed = page.locator(".zettel-embed").first
         assert embed.is_visible()
         content = embed.locator(".zettel-embed-content")
