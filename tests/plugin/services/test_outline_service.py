@@ -1,3 +1,10 @@
+from pathlib import Path
+from unittest.mock import MagicMock
+
+import pytest
+
+from mkdocs.structure.files import Files
+
 from mkdocs_zettelkasten.plugin.services.outline_service import OutlineService
 from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
 from tests.plugin.conftest import _make_zettel_mock
@@ -25,6 +32,81 @@ def _make_zettel(
         body=body,
         sequence_parent_id=sequence_parent_id,
     )
+
+
+class TestConfigure:
+    def test_sets_output_folder_and_site_dir(self):
+        svc = OutlineService()
+        folder = Path("/tmp/outline")
+        svc.configure(folder, "/tmp/site")
+        assert svc.output_folder == folder
+        assert svc._site_dir == "/tmp/site"
+
+    def test_overwrites_previous_config(self):
+        svc = OutlineService()
+        svc.configure(Path("/old"), "/old-site")
+        svc.configure(Path("/new"), "/new-site")
+        assert svc.output_folder == Path("/new")
+        assert svc._site_dir == "/new-site"
+
+
+class TestGenerate:
+    def test_raises_before_configure(self):
+        svc = OutlineService()
+        with pytest.raises(RuntimeError, match="configure"):
+            svc.generate({"moc_outlines": [], "sequence_outlines": []})
+
+    def test_writes_outline_file(self, tmp_path):
+        svc = OutlineService()
+        svc.configure(tmp_path, str(tmp_path))
+        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["a.md"])
+        a = _make_zettel(10, "A", "a.md", body="Preview text here.")
+        store = ZettelStore([moc, a])
+        outlines = svc.compute(store, {}, file_suffix=".md")
+        svc.generate(outlines)
+        output = (tmp_path / "outline.md").read_text()
+        assert "# Outlines" in output
+        assert "MOC" in output
+        assert "[A]" in output
+
+    def test_renders_sequence_outlines(self, tmp_path):
+        svc = OutlineService()
+        svc.configure(tmp_path, str(tmp_path))
+        root = _make_zettel(1, "Root", "r.md")
+        child = _make_zettel(2, "Child", "c.md", sequence_parent_id=1)
+        store = ZettelStore([root, child])
+        outlines = svc.compute(store, {1: [2]}, file_suffix=".md")
+        svc.generate(outlines)
+        output = (tmp_path / "outline.md").read_text()
+        assert "Sequence: Root" in output
+        assert "[Child]" in output
+
+
+class TestAddToBuild:
+    def test_raises_before_configure(self):
+        svc = OutlineService()
+        files = MagicMock(spec=Files)
+        with pytest.raises(RuntimeError, match="configure"):
+            svc.add_to_build(files)
+
+    def test_appends_outline_file(self, tmp_path):
+        svc = OutlineService()
+        svc.configure(tmp_path, str(tmp_path))
+        files = Files([])
+        svc.add_to_build(files)
+        paths = [f.src_path for f in files]
+        assert "outline.md" in paths
+
+    def test_file_points_to_configured_dirs(self, tmp_path):
+        svc = OutlineService()
+        site_dir = str(tmp_path / "site")
+        src_dir = tmp_path / "src"
+        svc.configure(src_dir, site_dir)
+        files = Files([])
+        svc.add_to_build(files)
+        added = list(files)[0]
+        assert added.abs_src_path == str(src_dir / "outline.md")
+        assert added.abs_dest_path.startswith(site_dir)
 
 
 class TestMocOutlines:
