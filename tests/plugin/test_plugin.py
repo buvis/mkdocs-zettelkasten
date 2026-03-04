@@ -187,7 +187,6 @@ class TestZettelkastenPlugin:
         plugin = self._make_plugin()
         plugin.config["graph_enabled"] = True
         config = MagicMock()
-        config.__getitem__ = MagicMock(side_effect={"extra": {}}.get)
         extra = {}
         config.__getitem__ = lambda self_mock, key: (
             extra if key == "extra" else MagicMock()
