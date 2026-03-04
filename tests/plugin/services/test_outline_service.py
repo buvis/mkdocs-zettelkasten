@@ -2,7 +2,6 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
-
 from mkdocs.structure.files import Files
 
 from mkdocs_zettelkasten.plugin.services.outline_service import OutlineService
@@ -86,7 +85,7 @@ class TestAddToBuild:
         svc.configure(src_dir, site_dir)
         files = Files([])
         svc.add_to_build(files)
-        added = list(files)[0]
+        added = next(iter(files))
         assert added.abs_src_path == str(src_dir / "outline.md")
         assert added.abs_dest_path.startswith(site_dir)
 
