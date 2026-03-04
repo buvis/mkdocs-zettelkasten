@@ -45,7 +45,7 @@ class TestParseFrontmatter:
     def test_bom_before_first_divider(self) -> None:
         # BOM (\ufeff) before the opening --- makes the divider line "\ufeff---"
         # which doesn't match "---", so frontmatter is not detected.
-        header, body = parse_frontmatter("\ufeff---\nid: 1\n---\nbody\n")
+        header, _body = parse_frontmatter("\ufeff---\nid: 1\n---\nbody\n")
         assert header == ""
 
     def test_bom_stripped_before_parse(self) -> None:

@@ -7,9 +7,6 @@ from mkdocs.structure.pages import Page
 from mkdocs_zettelkasten.plugin.adapters.backlinks_to_page import (
     adapt_backlinks_to_page,
 )
-from mkdocs_zettelkasten.plugin.adapters.unlinked_mentions_to_page import (
-    adapt_unlinked_mentions_to_page,
-)
 from mkdocs_zettelkasten.plugin.adapters.page_links_to_zettels import (
     adapt_page_links_to_zettels,
 )
@@ -23,6 +20,9 @@ from mkdocs_zettelkasten.plugin.adapters.suggestions_to_page import (
     adapt_suggestions_to_page,
 )
 from mkdocs_zettelkasten.plugin.adapters.transclusion import adapt_transclusion
+from mkdocs_zettelkasten.plugin.adapters.unlinked_mentions_to_page import (
+    adapt_unlinked_mentions_to_page,
+)
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
 
 logger = logging.getLogger(
@@ -56,9 +56,7 @@ class PageTransformer:
                 logger.exception("Adapter %s failed on %s", name, src)
                 raise
 
-        page = _run(
-            "add_zettel_to_page", zettel_service.add_zettel_to_page, page
-        )
+        page = _run("add_zettel_to_page", zettel_service.add_zettel_to_page, page)
         markdown = _run(
             "adapt_page_title",
             adapt_page_title,

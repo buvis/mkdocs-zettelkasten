@@ -11,6 +11,7 @@ import json
 import logging
 import os
 from importlib.metadata import version
+from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import colorlog
@@ -352,18 +353,15 @@ class ZettelkastenPlugin(BasePlugin):
             return
         import rjsmin
 
-        js_dir = os.path.join(config["site_dir"], "js")
-        if not os.path.isdir(js_dir):
+        js_dir = Path(config["site_dir"]) / "js"
+        if not js_dir.is_dir():
             return
-        for name in os.listdir(js_dir):
-            if not name.endswith(".js"):
+        for path in js_dir.iterdir():
+            if path.suffix != ".js" or not path.is_file():
                 continue
-            path = os.path.join(js_dir, name)
-            if not os.path.isfile(path):
-                continue
-            with open(path) as f:
-                source = f.read()
+            source = path.read_text()
             minified = rjsmin.jsmin(source)
-            with open(path, "w") as f:
-                f.write(minified)
-            self.logger.debug("Minified %s (%d → %d bytes)", name, len(source), len(minified))
+            path.write_text(minified)
+            self.logger.debug(
+                "Minified %s (%d → %d bytes)", path.name, len(source), len(minified)
+            )
