@@ -76,3 +76,4 @@ class TestSuggestionsToPage:
             {1: [{"target_id": 2, "reason": "t", "confidence": 0.5}]},
             lambda x: None,
         )
+        assert "suggested_links" not in page.meta

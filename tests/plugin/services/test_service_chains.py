@@ -354,9 +354,8 @@ Content of note B.
         suggestions = suggestion_svc.compute(svc.store, tags_metadata)
 
         # Already linked → should NOT suggest
-        if 100 in suggestions:
-            target_ids = {s["target_id"] for s in suggestions[100]}
-            assert 200 not in target_ids
+        target_ids = {s["target_id"] for s in suggestions.get(100, [])}
+        assert 200 not in target_ids
 
 
 # -- Tests: PageTransformer pipeline -----------------------------------------
