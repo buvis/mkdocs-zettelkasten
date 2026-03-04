@@ -14,10 +14,6 @@ def _make_file(src_path: str, abs_src_path: str | None = None) -> MagicMock:
     return f
 
 
-def _make_zettel(zettel_id: int, path: str):
-    return _make_zettel_mock(zettel_id, path=path)
-
-
 def _make_page(src_path: str, is_zettel: bool = True, zettel_id: int = 1) -> MagicMock:
     page = MagicMock()
     page.file.src_path = src_path
@@ -32,7 +28,7 @@ def _make_page(src_path: str, is_zettel: bool = True, zettel_id: int = 1) -> Mag
 class TestGetPrevNextPage:
     def test_index_page_returns_first_zettel(self) -> None:
         page = _make_page("index.md", is_zettel=False)
-        z = _make_zettel(1, "/docs/note.md")
+        z = _make_zettel_mock(1, path="/docs/note.md")
         f = _make_file("note.md", "/docs/note.md")
         files = MagicMock()
         files.__iter__ = lambda self: iter([f])
@@ -59,9 +55,9 @@ class TestGetPrevNextPage:
         assert next_p is None
 
     def test_zettel_navigation(self) -> None:
-        z1 = _make_zettel(1, "/docs/a.md")
-        z2 = _make_zettel(2, "/docs/b.md")
-        z3 = _make_zettel(3, "/docs/c.md")
+        z1 = _make_zettel_mock(1, path="/docs/a.md")
+        z2 = _make_zettel_mock(2, path="/docs/b.md")
+        z3 = _make_zettel_mock(3, path="/docs/c.md")
 
         f_index = _make_file("index.md")
         f1 = _make_file("a.md", "/docs/a.md")
@@ -78,8 +74,8 @@ class TestGetPrevNextPage:
         assert next_p is f3.page
 
     def test_first_zettel_has_homepage_as_prev(self) -> None:
-        z1 = _make_zettel(1, "/docs/a.md")
-        z2 = _make_zettel(2, "/docs/b.md")
+        z1 = _make_zettel_mock(1, path="/docs/a.md")
+        z2 = _make_zettel_mock(2, path="/docs/b.md")
 
         f_index = _make_file("index.md")
         f1 = _make_file("a.md", "/docs/a.md")
@@ -95,8 +91,8 @@ class TestGetPrevNextPage:
         assert next_p is f2.page
 
     def test_last_zettel_has_no_next(self) -> None:
-        z1 = _make_zettel(1, "/docs/a.md")
-        z2 = _make_zettel(2, "/docs/b.md")
+        z1 = _make_zettel_mock(1, path="/docs/a.md")
+        z2 = _make_zettel_mock(2, path="/docs/b.md")
 
         f_index = _make_file("index.md")
         f1 = _make_file("a.md", "/docs/a.md")

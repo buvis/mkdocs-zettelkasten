@@ -10,30 +10,6 @@ from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
 from tests.plugin.conftest import _make_zettel_mock
 
 
-def _make_zettel(
-    zettel_id,
-    title,
-    rel_path,
-    note_type=None,
-    maturity=None,
-    links=None,
-    role=None,
-    body="",
-    sequence_parent_id=None,
-):
-    return _make_zettel_mock(
-        zettel_id,
-        title=title,
-        rel_path=rel_path,
-        note_type=note_type,
-        maturity=maturity,
-        links=links,
-        role=role,
-        body=body,
-        sequence_parent_id=sequence_parent_id,
-    )
-
-
 class TestConfigure:
     def test_sets_output_folder_and_site_dir(self):
         svc = OutlineService()
@@ -59,8 +35,12 @@ class TestGenerate:
     def test_writes_outline_file(self, tmp_path):
         svc = OutlineService()
         svc.configure(tmp_path, str(tmp_path))
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["a.md"])
-        a = _make_zettel(10, "A", "a.md", body="Preview text here.")
+        moc = _make_zettel_mock(
+            1, title="MOC", rel_path="moc.md", role="moc", links=["a.md"]
+        )
+        a = _make_zettel_mock(
+            10, title="A", rel_path="a.md", body="Preview text here."
+        )
         store = ZettelStore([moc, a])
         outlines = svc.compute(store, {}, file_suffix=".md")
         svc.generate(outlines)
@@ -72,8 +52,10 @@ class TestGenerate:
     def test_renders_sequence_outlines(self, tmp_path):
         svc = OutlineService()
         svc.configure(tmp_path, str(tmp_path))
-        root = _make_zettel(1, "Root", "r.md")
-        child = _make_zettel(2, "Child", "c.md", sequence_parent_id=1)
+        root = _make_zettel_mock(1, title="Root", rel_path="r.md")
+        child = _make_zettel_mock(
+            2, title="Child", rel_path="c.md", sequence_parent_id=1
+        )
         store = ZettelStore([root, child])
         outlines = svc.compute(store, {1: [2]}, file_suffix=".md")
         svc.generate(outlines)
@@ -114,24 +96,38 @@ class TestMocOutlines:
         self.service = OutlineService()
 
     def test_moc_entries_in_document_order(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["b.md", "a.md"])
-        a = _make_zettel(10, "A", "a.md")
-        b = _make_zettel(20, "B", "b.md")
+        moc = _make_zettel_mock(
+            1, title="MOC", rel_path="moc.md", role="moc", links=["b.md", "a.md"]
+        )
+        a = _make_zettel_mock(10, title="A", rel_path="a.md")
+        b = _make_zettel_mock(20, title="B", rel_path="b.md")
         store = ZettelStore([moc, a, b])
         result = self.service.compute(store, {}, file_suffix=".md")
         entries = result["moc_outlines"][0]["entries"]
         assert [e["title"] for e in entries] == ["B", "A"]
 
     def test_preview_text(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["a.md"])
-        a = _make_zettel(10, "A", "a.md", body="First sentence here. More text.")
+        moc = _make_zettel_mock(
+            1, title="MOC", rel_path="moc.md", role="moc", links=["a.md"]
+        )
+        a = _make_zettel_mock(
+            10, title="A", rel_path="a.md", body="First sentence here. More text."
+        )
         store = ZettelStore([moc, a])
         result = self.service.compute(store, {}, file_suffix=".md")
         assert "First sentence" in result["moc_outlines"][0]["entries"][0]["preview"]
 
     def test_entry_metadata(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["a.md"])
-        a = _make_zettel(10, "A", "a.md", note_type="permanent", maturity="evergreen")
+        moc = _make_zettel_mock(
+            1, title="MOC", rel_path="moc.md", role="moc", links=["a.md"]
+        )
+        a = _make_zettel_mock(
+            10,
+            title="A",
+            rel_path="a.md",
+            note_type="permanent",
+            maturity="evergreen",
+        )
         store = ZettelStore([moc, a])
         result = self.service.compute(store, {}, file_suffix=".md")
         entry = result["moc_outlines"][0]["entries"][0]
@@ -139,20 +135,28 @@ class TestMocOutlines:
         assert entry["maturity"] == "evergreen"
 
     def test_skips_unresolvable_links(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["missing.md", "a.md"])
-        a = _make_zettel(10, "A", "a.md")
+        moc = _make_zettel_mock(
+            1,
+            title="MOC",
+            rel_path="moc.md",
+            role="moc",
+            links=["missing.md", "a.md"],
+        )
+        a = _make_zettel_mock(10, title="A", rel_path="a.md")
         store = ZettelStore([moc, a])
         result = self.service.compute(store, {}, file_suffix=".md")
         assert len(result["moc_outlines"][0]["entries"]) == 1
 
     def test_no_moc_outlines_when_no_mocs(self):
-        a = _make_zettel(10, "A", "a.md")
+        a = _make_zettel_mock(10, title="A", rel_path="a.md")
         store = ZettelStore([a])
         result = self.service.compute(store, {}, file_suffix=".md")
         assert result["moc_outlines"] == []
 
     def test_moc_with_no_resolvable_links_excluded(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["missing.md"])
+        moc = _make_zettel_mock(
+            1, title="MOC", rel_path="moc.md", role="moc", links=["missing.md"]
+        )
         store = ZettelStore([moc])
         result = self.service.compute(store, {}, file_suffix=".md")
         assert result["moc_outlines"] == []
@@ -163,9 +167,11 @@ class TestGapDetection:
         self.service = OutlineService()
 
     def test_gap_when_no_mutual_links(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["a.md", "b.md"])
-        a = _make_zettel(10, "A", "a.md")
-        b = _make_zettel(20, "B", "b.md")
+        moc = _make_zettel_mock(
+            1, title="MOC", rel_path="moc.md", role="moc", links=["a.md", "b.md"]
+        )
+        a = _make_zettel_mock(10, title="A", rel_path="a.md")
+        b = _make_zettel_mock(20, title="B", rel_path="b.md")
         store = ZettelStore([moc, a, b])
         result = self.service.compute(store, {}, file_suffix=".md")
         entries = result["moc_outlines"][0]["entries"]
@@ -173,18 +179,22 @@ class TestGapDetection:
         assert entries[1]["gap_before"] is True
 
     def test_no_gap_when_linked(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["a.md", "b.md"])
-        a = _make_zettel(10, "A", "a.md", links=["b.md"])
-        b = _make_zettel(20, "B", "b.md")
+        moc = _make_zettel_mock(
+            1, title="MOC", rel_path="moc.md", role="moc", links=["a.md", "b.md"]
+        )
+        a = _make_zettel_mock(10, title="A", rel_path="a.md", links=["b.md"])
+        b = _make_zettel_mock(20, title="B", rel_path="b.md")
         store = ZettelStore([moc, a, b])
         result = self.service.compute(store, {}, file_suffix=".md")
         entries = result["moc_outlines"][0]["entries"]
         assert entries[1]["gap_before"] is False
 
     def test_no_gap_when_reverse_linked(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["a.md", "b.md"])
-        a = _make_zettel(10, "A", "a.md")
-        b = _make_zettel(20, "B", "b.md", links=["a.md"])
+        moc = _make_zettel_mock(
+            1, title="MOC", rel_path="moc.md", role="moc", links=["a.md", "b.md"]
+        )
+        a = _make_zettel_mock(10, title="A", rel_path="a.md")
+        b = _make_zettel_mock(20, title="B", rel_path="b.md", links=["a.md"])
         store = ZettelStore([moc, a, b])
         result = self.service.compute(store, {}, file_suffix=".md")
         entries = result["moc_outlines"][0]["entries"]
@@ -196,8 +206,10 @@ class TestSequenceOutlines:
         self.service = OutlineService()
 
     def test_builds_tree_from_root(self):
-        root = _make_zettel(1, "Root", "r.md")
-        child = _make_zettel(2, "Child", "c.md", sequence_parent_id=1)
+        root = _make_zettel_mock(1, title="Root", rel_path="r.md")
+        child = _make_zettel_mock(
+            2, title="Child", rel_path="c.md", sequence_parent_id=1
+        )
         store = ZettelStore([root, child])
         seq_children = {1: [2]}
         result = self.service.compute(store, seq_children, file_suffix=".md")
@@ -207,9 +219,13 @@ class TestSequenceOutlines:
         assert tree[0]["children"][0]["title"] == "Child"
 
     def test_nested_children(self):
-        root = _make_zettel(1, "Root", "r.md")
-        child = _make_zettel(2, "Child", "c.md", sequence_parent_id=1)
-        grandchild = _make_zettel(3, "Grand", "g.md", sequence_parent_id=2)
+        root = _make_zettel_mock(1, title="Root", rel_path="r.md")
+        child = _make_zettel_mock(
+            2, title="Child", rel_path="c.md", sequence_parent_id=1
+        )
+        grandchild = _make_zettel_mock(
+            3, title="Grand", rel_path="g.md", sequence_parent_id=2
+        )
         store = ZettelStore([root, child, grandchild])
         seq_children = {1: [2], 2: [3]}
         result = self.service.compute(store, seq_children, file_suffix=".md")
@@ -217,7 +233,9 @@ class TestSequenceOutlines:
         assert gc[0]["title"] == "Grand"
 
     def test_excludes_non_root(self):
-        child = _make_zettel(2, "Child", "c.md", sequence_parent_id=1)
+        child = _make_zettel_mock(
+            2, title="Child", rel_path="c.md", sequence_parent_id=1
+        )
         store = ZettelStore([child])
         seq_children = {}
         result = self.service.compute(store, seq_children, file_suffix=".md")
@@ -229,9 +247,13 @@ class TestFlattenTree:
         self.service = OutlineService()
 
     def test_flattens_nested_tree(self):
-        root = _make_zettel(1, "Root", "r.md")
-        child = _make_zettel(2, "Child", "c.md", sequence_parent_id=1)
-        grandchild = _make_zettel(3, "Grand", "g.md", sequence_parent_id=2)
+        root = _make_zettel_mock(1, title="Root", rel_path="r.md")
+        child = _make_zettel_mock(
+            2, title="Child", rel_path="c.md", sequence_parent_id=1
+        )
+        grandchild = _make_zettel_mock(
+            3, title="Grand", rel_path="g.md", sequence_parent_id=2
+        )
         store = ZettelStore([root, child, grandchild])
         seq_children = {1: [2], 2: [3]}
         result = self.service.compute(store, seq_children, file_suffix=".md")
@@ -247,9 +269,11 @@ class TestTransclusionText:
         self.service = OutlineService()
 
     def test_moc_transclusion_text(self):
-        moc = _make_zettel(1, "MOC", "moc.md", role="moc", links=["a.md", "b.md"])
-        a = _make_zettel(10, "A", "a.md")
-        b = _make_zettel(20, "B", "b.md")
+        moc = _make_zettel_mock(
+            1, title="MOC", rel_path="moc.md", role="moc", links=["a.md", "b.md"]
+        )
+        a = _make_zettel_mock(10, title="A", rel_path="a.md")
+        b = _make_zettel_mock(20, title="B", rel_path="b.md")
         store = ZettelStore([moc, a, b])
         result = self.service.compute(store, {}, file_suffix=".md")
         text = result["moc_outlines"][0]["transclusion_text"]

@@ -11,10 +11,6 @@ from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
 from tests.plugin.conftest import _make_zettel_mock
 
 
-def _make_zettel(zettel_id: int, path: Path, rel_path: str, title: str):
-    return _make_zettel_mock(zettel_id, title=title, path=path, rel_path=rel_path)
-
-
 def _write_zettel(
     tmp_path: Path, name: str, zettel_id: int, title: str, body: str
 ) -> Path:
@@ -32,21 +28,13 @@ class TestPreviewExporter:
 
     def test_export_returns_correct_structure(self, tmp_path: Path) -> None:
         z1_path = _write_zettel(
-            tmp_path,
-            "one.md",
-            1,
-            "One",
-            "This is the first paragraph for one.",
+            tmp_path, "one.md", 1, "One", "This is the first paragraph for one."
         )
         z2_path = _write_zettel(
-            tmp_path,
-            "two.md",
-            2,
-            "Two",
-            "This is the first paragraph for two.",
+            tmp_path, "two.md", 2, "Two", "This is the first paragraph for two."
         )
-        z1 = _make_zettel(1, z1_path, "notes/one.md", "One")
-        z2 = _make_zettel(2, z2_path, "notes/two.md", "Two")
+        z1 = _make_zettel_mock(1, title="One", path=z1_path, rel_path="notes/one.md")
+        z2 = _make_zettel_mock(2, title="Two", path=z2_path, rel_path="notes/two.md")
         store = ZettelStore([z1, z2])
 
         result = self.exporter.export(store)
@@ -71,7 +59,9 @@ class TestPreviewExporter:
             "theta iota kappa lambda mu nu xi omicron pi rho sigma tau upsilon phi chi psi omega"
         )
         z_path = _write_zettel(tmp_path, "long.md", 3, "Long", paragraph)
-        store = ZettelStore([_make_zettel(3, z_path, "long.md", "Long")])
+        store = ZettelStore(
+            [_make_zettel_mock(3, title="Long", path=z_path, rel_path="long.md")]
+        )
 
         result = self.exporter.export(store)
         excerpt = result["3"]["excerpt"]
@@ -89,7 +79,13 @@ class TestPreviewExporter:
             "Heading",
             "## Some Heading\n\nThis is the first paragraph.",
         )
-        store = ZettelStore([_make_zettel(4, z_path, "heading.md", "Heading")])
+        store = ZettelStore(
+            [
+                _make_zettel_mock(
+                    4, title="Heading", path=z_path, rel_path="heading.md"
+                )
+            ]
+        )
 
         result = self.exporter.export(store)
 
@@ -103,7 +99,9 @@ class TestPreviewExporter:
             "Blank",
             "\n\n\nThis is the first paragraph after blank lines.",
         )
-        store = ZettelStore([_make_zettel(5, z_path, "blank.md", "Blank")])
+        store = ZettelStore(
+            [_make_zettel_mock(5, title="Blank", path=z_path, rel_path="blank.md")]
+        )
 
         result = self.exporter.export(store)
 
@@ -119,7 +117,9 @@ class TestPreviewExporter:
             "Links",
             "Read [the docs](https://example.com/docs) and [quickstart](quickstart.md).",
         )
-        store = ZettelStore([_make_zettel(6, z_path, "links.md", "Links")])
+        store = ZettelStore(
+            [_make_zettel_mock(6, title="Links", path=z_path, rel_path="links.md")]
+        )
 
         result = self.exporter.export(store)
 
@@ -127,7 +127,9 @@ class TestPreviewExporter:
 
     def test_empty_body_returns_empty_excerpt(self, tmp_path: Path) -> None:
         z_path = _write_zettel(tmp_path, "empty.md", 7, "Empty", "")
-        store = ZettelStore([_make_zettel(7, z_path, "empty.md", "Empty")])
+        store = ZettelStore(
+            [_make_zettel_mock(7, title="Empty", path=z_path, rel_path="empty.md")]
+        )
 
         result = self.exporter.export(store)
 
@@ -139,9 +141,9 @@ class TestPreviewExporter:
         z3_path = _write_zettel(tmp_path, "c.md", 10, "C", "First paragraph C.")
         store = ZettelStore(
             [
-                _make_zettel(8, z1_path, "a.md", "A"),
-                _make_zettel(9, z2_path, "b.md", "B"),
-                _make_zettel(10, z3_path, "c.md", "C"),
+                _make_zettel_mock(8, title="A", path=z1_path, rel_path="a.md"),
+                _make_zettel_mock(9, title="B", path=z2_path, rel_path="b.md"),
+                _make_zettel_mock(10, title="C", path=z3_path, rel_path="c.md"),
             ]
         )
 
@@ -151,14 +153,22 @@ class TestPreviewExporter:
 
     def test_url_format(self, tmp_path: Path) -> None:
         z_path = _write_zettel(tmp_path, "url.md", 11, "URL", "Excerpt text.")
-        store = ZettelStore([_make_zettel(11, z_path, "notes/nested/url.md", "URL")])
+        store = ZettelStore(
+            [
+                _make_zettel_mock(
+                    11, title="URL", path=z_path, rel_path="notes/nested/url.md"
+                )
+            ]
+        )
 
         result = self.exporter.export(store)
 
         assert result["11"]["url"] == "notes/nested/url/"
 
     def test_oserror_logs_warning(self, tmp_path: Path) -> None:
-        z = _make_zettel(12, tmp_path / "missing.md", "missing.md", "Missing")
+        z = _make_zettel_mock(
+            12, title="Missing", path=tmp_path / "missing.md", rel_path="missing.md"
+        )
         store = ZettelStore([z])
 
         with patch(

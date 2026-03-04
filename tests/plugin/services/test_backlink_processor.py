@@ -5,10 +5,6 @@ from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
 from tests.plugin.conftest import _make_zettel_mock
 
 
-def _make_zettel(zettel_id: int, path: str, links: list[str]):
-    return _make_zettel_mock(zettel_id, path=Path(path), links=links)
-
-
 class TestBacklinkProcessor:
     def test_empty_store(self) -> None:
         store = ZettelStore()
@@ -16,8 +12,8 @@ class TestBacklinkProcessor:
         assert result == {}
 
     def test_creates_backlinks(self) -> None:
-        z1 = _make_zettel(1, "/docs/a.md", ["b.md"])
-        z2 = _make_zettel(2, "/docs/b.md", [])
+        z1 = _make_zettel_mock(1, path=Path("/docs/a.md"), links=["b.md"])
+        z2 = _make_zettel_mock(2, path=Path("/docs/b.md"))
 
         store = ZettelStore([z1, z2])
         result = BacklinkProcessor.process(store)
@@ -26,8 +22,8 @@ class TestBacklinkProcessor:
         assert z1 in result["b.md"]
 
     def test_normalizes_links_without_suffix(self) -> None:
-        z1 = _make_zettel(1, "/docs/a.md", ["b"])
-        z2 = _make_zettel(2, "/docs/b.md", [])
+        z1 = _make_zettel_mock(1, path=Path("/docs/a.md"), links=["b"])
+        z2 = _make_zettel_mock(2, path=Path("/docs/b.md"))
 
         store = ZettelStore([z1, z2])
         result = BacklinkProcessor.process(store)
@@ -47,7 +43,7 @@ class TestBacklinkProcessor:
         assert result == {"a.md"}
 
     def test_ignores_unresolved_links(self) -> None:
-        z1 = _make_zettel(1, "/docs/a.md", ["nonexistent"])
+        z1 = _make_zettel_mock(1, path=Path("/docs/a.md"), links=["nonexistent"])
         store = ZettelStore([z1])
         result = BacklinkProcessor.process(store)
         assert result == {}

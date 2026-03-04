@@ -51,15 +51,13 @@ class TestExtractSection:
         assert _extract_section(body, "Nonexistent") is None
 
 
-def _make_zettel(title: str, path: Path):
-    return _make_zettel_mock(0, title=title, path=path, rel_path=str(path.name))
-
-
 class TestAdaptTransclusion:
     def test_embeds_full_note(self, tmp_path: Path) -> None:
         target = tmp_path / "target.md"
         target.write_text("---\nid: 111\ntitle: Target\n---\n\nHello world.\n")
-        zettel = _make_zettel("Target", target)
+        zettel = _make_zettel_mock(
+            0, title="Target", path=target, rel_path=target.name
+        )
         lookup = MagicMock(return_value=zettel)
 
         result = adapt_transclusion(
@@ -76,7 +74,9 @@ class TestAdaptTransclusion:
     def test_embed_header_links_to_source(self, tmp_path: Path) -> None:
         target = tmp_path / "target.md"
         target.write_text("---\nid: 111\ntitle: Target\n---\n\nContent.\n")
-        zettel = _make_zettel("Target", target)
+        zettel = _make_zettel_mock(
+            0, title="Target", path=target, rel_path=target.name
+        )
         lookup = MagicMock(return_value=zettel)
 
         result = adapt_transclusion(
@@ -87,7 +87,9 @@ class TestAdaptTransclusion:
     def test_alias_overrides_header_text(self, tmp_path: Path) -> None:
         target = tmp_path / "target.md"
         target.write_text("---\nid: 111\ntitle: Target\n---\n\nContent.\n")
-        zettel = _make_zettel("Target", target)
+        zettel = _make_zettel_mock(
+            0, title="Target", path=target, rel_path=target.name
+        )
         lookup = MagicMock(return_value=zettel)
 
         result = adapt_transclusion(
@@ -101,7 +103,9 @@ class TestAdaptTransclusion:
     def test_strips_h1_when_configured(self, tmp_path: Path) -> None:
         target = tmp_path / "target.md"
         target.write_text("---\nid: 111\ntitle: T\n---\n\n# Title\n\nBody.\n")
-        zettel = _make_zettel("T", target)
+        zettel = _make_zettel_mock(
+            0, title="T", path=target, rel_path=target.name
+        )
         lookup = MagicMock(return_value=zettel)
 
         result = adapt_transclusion(
@@ -117,7 +121,9 @@ class TestAdaptTransclusion:
     def test_keeps_h1_when_strip_disabled(self, tmp_path: Path) -> None:
         target = tmp_path / "target.md"
         target.write_text("---\nid: 111\ntitle: T\n---\n\n# Title\n\nBody.\n")
-        zettel = _make_zettel("T", target)
+        zettel = _make_zettel_mock(
+            0, title="T", path=target, rel_path=target.name
+        )
         lookup = MagicMock(return_value=zettel)
 
         result = adapt_transclusion(
@@ -145,7 +151,9 @@ class TestAdaptTransclusion:
         target.write_text(
             "---\nid: 111\ntitle: T\n---\n\n## Intro\n\nFirst.\n\n## Details\n\nSecond.\n"
         )
-        zettel = _make_zettel("T", target)
+        zettel = _make_zettel_mock(
+            0, title="T", path=target, rel_path=target.name
+        )
         lookup = MagicMock(return_value=zettel)
 
         result = adapt_transclusion(
@@ -160,7 +168,9 @@ class TestAdaptTransclusion:
     def test_section_not_found_renders_warning(self, tmp_path: Path) -> None:
         target = tmp_path / "target.md"
         target.write_text("---\nid: 111\ntitle: T\n---\n\n## Intro\n\nText.\n")
-        zettel = _make_zettel("T", target)
+        zettel = _make_zettel_mock(
+            0, title="T", path=target, rel_path=target.name
+        )
         lookup = MagicMock(return_value=zettel)
 
         result = adapt_transclusion(
@@ -185,8 +195,8 @@ class TestAdaptTransclusion:
         a.write_text("---\nid: 1\ntitle: A\n---\n\n![[2]]\n")
         b = tmp_path / "b.md"
         b.write_text("---\nid: 2\ntitle: B\n---\n\n![[1]]\n")
-        za = _make_zettel("A", a)
-        zb = _make_zettel("B", b)
+        za = _make_zettel_mock(0, title="A", path=a, rel_path=a.name)
+        zb = _make_zettel_mock(0, title="B", path=b, rel_path=b.name)
 
         def lookup(path: str):
             if "1" in path:
@@ -205,8 +215,8 @@ class TestAdaptTransclusion:
         inner.write_text("---\nid: 2\ntitle: Inner\n---\n\nInner content.\n")
         outer = tmp_path / "outer.md"
         outer.write_text("---\nid: 1\ntitle: Outer\n---\n\n![[2]]\n")
-        zo = _make_zettel("Outer", outer)
-        zi = _make_zettel("Inner", inner)
+        zo = _make_zettel_mock(0, title="Outer", path=outer, rel_path=outer.name)
+        zi = _make_zettel_mock(0, title="Inner", path=inner, rel_path=inner.name)
 
         def lookup(path: str):
             if "1" in path:
@@ -230,7 +240,9 @@ class TestAdaptTransclusion:
                 f.write_text(f"---\nid: {i}\ntitle: Z{i}\n---\n\n![[{i + 1}]]\n")
             else:
                 f.write_text(f"---\nid: {i}\ntitle: Z{i}\n---\n\nLeaf content.\n")
-            zettels[i] = _make_zettel(f"Z{i}", f)
+            zettels[i] = _make_zettel_mock(
+                0, title=f"Z{i}", path=f, rel_path=f.name
+            )
 
         def lookup(path: str):
             for zid, z in zettels.items():
