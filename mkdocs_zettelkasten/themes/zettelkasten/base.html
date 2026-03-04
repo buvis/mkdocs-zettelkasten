@@ -93,7 +93,7 @@
         {%- include "sidebar-nav.html" %}
         {%- endif %}
 
-        <div class="navbar fixed-top navbar-expand-lg navbar-{% if config.theme.nav_style == "light" %}light{% else %}dark{% endif %} bg-{{ config.theme.nav_style }}{% if config.theme.nav_position == "sidebar" %} sidebar-mode{% endif %}">
+        <nav class="navbar fixed-top navbar-expand-lg navbar-{% if config.theme.nav_style == "light" %}light{% else %}dark{% endif %} bg-{{ config.theme.nav_style }}{% if config.theme.nav_position == "sidebar" %} sidebar-mode{% endif %}">
             <div class="container">
 
                 {%- if config.theme.nav_position == "sidebar" %}
@@ -157,12 +157,12 @@
                       {%- block next_prev %}
                         {%- if page and (page.next_page or page.previous_page) %}
                             <li class="nav-item">
-                                <a rel="prev" {% if page.previous_page %}href="{{ page.previous_page.url|url }}" class="nav-link"{% else %}class="nav-link disabled"{% endif %}>
+                                <a rel="prev" {% if page.previous_page %}href="{{ page.previous_page.url|url }}" class="nav-link"{% else %}class="nav-link disabled"{% endif %} aria-label="{% trans %}Previous page{% endtrans %}">
                                     <i class="fa fa-arrow-left"></i>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" {% if page.next_page %}href="{{ page.next_page.url|url }}" class="nav-link"{% else %}class="nav-link disabled"{% endif %}>
+                                <a rel="next" {% if page.next_page %}href="{{ page.next_page.url|url }}" class="nav-link"{% else %}class="nav-link disabled"{% endif %} aria-label="{% trans %}Next page{% endtrans %}">
                                     <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -171,7 +171,7 @@
 
                       {%-block tags_button %}
                         <li class="nav-item">
-                          <a href="{{ 'tags.html'|url }}" class="nav-link">
+                          <a href="{{ 'tags.html'|url }}" class="nav-link" aria-label="{% trans %}Tags{% endtrans %}">
                             <i class="fa fa-tags"></i>
                           </a>
                         </li>
@@ -180,7 +180,7 @@
                       {%- block graph_button %}
                         {%- if config.extra.graph_enabled is defined and config.extra.graph_enabled %}
                         <li class="nav-item">
-                          <a href="{{ nav.homepage.url|url }}graph.html" class="nav-link" title="Graph View">
+                          <a href="{{ nav.homepage.url|url }}graph.html" class="nav-link" title="Graph View" aria-label="{% trans %}Graph view{% endtrans %}">
                             <i class="fa fa-share-alt"></i>
                           </a>
                         </li>
@@ -190,7 +190,7 @@
                       {%- block validation_icon %}
                         {%- if config.extra.validation_issues_count is defined and config.extra.validation_issues_count > 0 %}
                         <li class="nav-item">
-                          <a href="{{ 'validation.html'|url }}" class="nav-link" title="Validation issues: {{ config.extra.validation_issues_count }}">
+                          <a href="{{ 'validation.html'|url }}" class="nav-link" title="Validation issues: {{ config.extra.validation_issues_count }}" aria-label="{% trans count=config.extra.validation_issues_count %}Validation issues: {{ count }}{% endtrans %}">
                             <span class="nav-icon-badge">
                               <i class="fa fa-exclamation-triangle"></i>
                               <span class="badge badge-warning">{{ config.extra.validation_issues_count }}</span>
@@ -203,7 +203,7 @@
                       {%- block workflow_icon %}
                         {%- if config.extra.workflow_enabled is defined and config.extra.workflow_enabled %}
                         <li class="nav-item">
-                          <a href="{{ 'workflow.html'|url }}" class="nav-link" title="Workflow Dashboard">
+                          <a href="{{ 'workflow.html'|url }}" class="nav-link" title="Workflow Dashboard" aria-label="{% trans %}Workflow{% endtrans %}">
                             <span class="nav-icon-badge">
                               <i class="fa fa-inbox"></i>
                               {%- if config.extra.workflow_inbox_count is defined and config.extra.workflow_inbox_count > 0 %}
@@ -218,7 +218,7 @@
                       {%- block outline_icon %}
                         {%- if config.extra.outline_enabled is defined and config.extra.outline_enabled %}
                         <li class="nav-item">
-                          <a href="{{ 'outline.html'|url }}" class="nav-link" title="Outlines">
+                          <a href="{{ 'outline.html'|url }}" class="nav-link" title="Outlines" aria-label="{% trans %}Outlines{% endtrans %}">
                             <span class="nav-icon-badge">
                               <i class="fa fa-file-text-o"></i>
                             </span>
@@ -238,13 +238,13 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </nav>
 
-        <div class="container col-md-8">
+        <main class="container col-md-8">
           {%- block content %}
             {% include "content.html" %}
           {%- endblock %}
-        </div>
+        </main>
 
         <footer class="col-md-12">
           {%- block footer %}
