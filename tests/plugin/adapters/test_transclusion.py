@@ -55,9 +55,7 @@ class TestAdaptTransclusion:
     def test_embeds_full_note(self, tmp_path: Path) -> None:
         target = tmp_path / "target.md"
         target.write_text("---\nid: 111\ntitle: Target\n---\n\nHello world.\n")
-        zettel = _make_zettel_mock(
-            0, title="Target", path=target, rel_path=target.name
-        )
+        zettel = _make_zettel_mock(0, title="Target", path=target, rel_path=target.name)
         lookup = MagicMock(return_value=zettel)
 
         result = adapt_transclusion(
@@ -74,9 +72,7 @@ class TestAdaptTransclusion:
     def test_embed_header_links_to_source(self, tmp_path: Path) -> None:
         target = tmp_path / "target.md"
         target.write_text("---\nid: 111\ntitle: Target\n---\n\nContent.\n")
-        zettel = _make_zettel_mock(
-            0, title="Target", path=target, rel_path=target.name
-        )
+        zettel = _make_zettel_mock(0, title="Target", path=target, rel_path=target.name)
         lookup = MagicMock(return_value=zettel)
 
         result = adapt_transclusion(
@@ -87,9 +83,7 @@ class TestAdaptTransclusion:
     def test_alias_overrides_header_text(self, tmp_path: Path) -> None:
         target = tmp_path / "target.md"
         target.write_text("---\nid: 111\ntitle: Target\n---\n\nContent.\n")
-        zettel = _make_zettel_mock(
-            0, title="Target", path=target, rel_path=target.name
-        )
+        zettel = _make_zettel_mock(0, title="Target", path=target, rel_path=target.name)
         lookup = MagicMock(return_value=zettel)
 
         result = adapt_transclusion(
@@ -103,9 +97,7 @@ class TestAdaptTransclusion:
     def test_strips_h1_when_configured(self, tmp_path: Path) -> None:
         target = tmp_path / "target.md"
         target.write_text("---\nid: 111\ntitle: T\n---\n\n# Title\n\nBody.\n")
-        zettel = _make_zettel_mock(
-            0, title="T", path=target, rel_path=target.name
-        )
+        zettel = _make_zettel_mock(0, title="T", path=target, rel_path=target.name)
         lookup = MagicMock(return_value=zettel)
 
         result = adapt_transclusion(
@@ -121,9 +113,7 @@ class TestAdaptTransclusion:
     def test_keeps_h1_when_strip_disabled(self, tmp_path: Path) -> None:
         target = tmp_path / "target.md"
         target.write_text("---\nid: 111\ntitle: T\n---\n\n# Title\n\nBody.\n")
-        zettel = _make_zettel_mock(
-            0, title="T", path=target, rel_path=target.name
-        )
+        zettel = _make_zettel_mock(0, title="T", path=target, rel_path=target.name)
         lookup = MagicMock(return_value=zettel)
 
         result = adapt_transclusion(
@@ -151,9 +141,7 @@ class TestAdaptTransclusion:
         target.write_text(
             "---\nid: 111\ntitle: T\n---\n\n## Intro\n\nFirst.\n\n## Details\n\nSecond.\n"
         )
-        zettel = _make_zettel_mock(
-            0, title="T", path=target, rel_path=target.name
-        )
+        zettel = _make_zettel_mock(0, title="T", path=target, rel_path=target.name)
         lookup = MagicMock(return_value=zettel)
 
         result = adapt_transclusion(
@@ -168,9 +156,7 @@ class TestAdaptTransclusion:
     def test_section_not_found_renders_warning(self, tmp_path: Path) -> None:
         target = tmp_path / "target.md"
         target.write_text("---\nid: 111\ntitle: T\n---\n\n## Intro\n\nText.\n")
-        zettel = _make_zettel_mock(
-            0, title="T", path=target, rel_path=target.name
-        )
+        zettel = _make_zettel_mock(0, title="T", path=target, rel_path=target.name)
         lookup = MagicMock(return_value=zettel)
 
         result = adapt_transclusion(
@@ -240,9 +226,7 @@ class TestAdaptTransclusion:
                 f.write_text(f"---\nid: {i}\ntitle: Z{i}\n---\n\n![[{i + 1}]]\n")
             else:
                 f.write_text(f"---\nid: {i}\ntitle: Z{i}\n---\n\nLeaf content.\n")
-            zettels[i] = _make_zettel_mock(
-                0, title=f"Z{i}", path=f, rel_path=f.name
-            )
+            zettels[i] = _make_zettel_mock(0, title=f"Z{i}", path=f, rel_path=f.name)
 
         def lookup(path: str):
             for zid, z in zettels.items():

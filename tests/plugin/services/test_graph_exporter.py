@@ -43,9 +43,7 @@ class TestGraphExporter:
         z1 = _make_zettel_mock(
             1, title="A", rel_path="a.md", path=Path("/docs/a.md"), links=["b.md"]
         )
-        z2 = _make_zettel_mock(
-            2, title="B", rel_path="b.md", path=Path("/docs/b.md")
-        )
+        z2 = _make_zettel_mock(2, title="B", rel_path="b.md", path=Path("/docs/b.md"))
         store = ZettelStore([z1, z2])
 
         result = self.exporter.export(store, [], _build_backlinks(store))
@@ -77,9 +75,7 @@ class TestGraphExporter:
             path=Path("/docs/a.md"),
             links=["b.md", "b"],
         )
-        z2 = _make_zettel_mock(
-            2, title="B", rel_path="b.md", path=Path("/docs/b.md")
-        )
+        z2 = _make_zettel_mock(2, title="B", rel_path="b.md", path=Path("/docs/b.md"))
         store = ZettelStore([z1, z2])
 
         result = self.exporter.export(store, [], _build_backlinks(store))
@@ -87,9 +83,7 @@ class TestGraphExporter:
         assert len(result["edges"]) == 1
 
     def test_tags_from_metadata(self) -> None:
-        z = _make_zettel_mock(
-            1, title="A", rel_path="a.md", path=Path("/docs/a.md")
-        )
+        z = _make_zettel_mock(1, title="A", rel_path="a.md", path=Path("/docs/a.md"))
         store = ZettelStore([z])
         metadata = [{"src_path": "a.md", "tags": ["setup", "guide"]}]
 
@@ -98,9 +92,7 @@ class TestGraphExporter:
         assert result["nodes"][0]["tags"] == ["setup", "guide"]
 
     def test_tags_missing_for_zettel(self) -> None:
-        z = _make_zettel_mock(
-            1, title="A", rel_path="a.md", path=Path("/docs/a.md")
-        )
+        z = _make_zettel_mock(1, title="A", rel_path="a.md", path=Path("/docs/a.md"))
         store = ZettelStore([z])
 
         result = self.exporter.export(store, [], {})
@@ -149,9 +141,7 @@ class TestGraphExporter:
         assert result["nodes"][0]["maturity"] == "evergreen"
 
     def test_node_omits_type_when_none(self) -> None:
-        z = _make_zettel_mock(
-            1, title="A", rel_path="a.md", path=Path("/docs/a.md")
-        )
+        z = _make_zettel_mock(1, title="A", rel_path="a.md", path=Path("/docs/a.md"))
         store = ZettelStore([z])
 
         result = self.exporter.export(store, [], {})
@@ -159,9 +149,7 @@ class TestGraphExporter:
         assert "type" not in result["nodes"][0]
 
     def test_node_omits_maturity_when_none(self) -> None:
-        z = _make_zettel_mock(
-            1, title="A", rel_path="a.md", path=Path("/docs/a.md")
-        )
+        z = _make_zettel_mock(1, title="A", rel_path="a.md", path=Path("/docs/a.md"))
         store = ZettelStore([z])
 
         result = self.exporter.export(store, [], {})
@@ -179,9 +167,7 @@ class TestGraphExporter:
         assert result["nodes"][0]["role"] == "moc"
 
     def test_node_omits_role_when_none(self) -> None:
-        z = _make_zettel_mock(
-            1, title="A", rel_path="a.md", path=Path("/docs/a.md")
-        )
+        z = _make_zettel_mock(1, title="A", rel_path="a.md", path=Path("/docs/a.md"))
         store = ZettelStore([z])
 
         result = self.exporter.export(store, [], {})
@@ -189,9 +175,7 @@ class TestGraphExporter:
         assert "role" not in result["nodes"][0]
 
     def test_sequence_edges_exported(self) -> None:
-        z1 = _make_zettel_mock(
-            1, title="A", rel_path="a.md", path=Path("/docs/a.md")
-        )
+        z1 = _make_zettel_mock(1, title="A", rel_path="a.md", path=Path("/docs/a.md"))
         z2 = _make_zettel_mock(
             2,
             title="B",
@@ -239,9 +223,7 @@ class TestGraphExporter:
         assert degrees["2"] == 2
 
     def test_node_degree_no_links(self) -> None:
-        z = _make_zettel_mock(
-            1, title="A", rel_path="a.md", path=Path("/docs/a.md")
-        )
+        z = _make_zettel_mock(1, title="A", rel_path="a.md", path=Path("/docs/a.md"))
         store = ZettelStore([z])
 
         result = self.exporter.export(store, [], {})
@@ -249,9 +231,7 @@ class TestGraphExporter:
         assert result["nodes"][0]["degree"] == 0
 
     def test_node_degree_counts_sequence_edges(self) -> None:
-        z1 = _make_zettel_mock(
-            1, title="A", rel_path="a.md", path=Path("/docs/a.md")
-        )
+        z1 = _make_zettel_mock(1, title="A", rel_path="a.md", path=Path("/docs/a.md"))
         z2 = _make_zettel_mock(
             2,
             title="B",
@@ -271,9 +251,7 @@ class TestGraphExporter:
         z1 = _make_zettel_mock(
             1, title="A", rel_path="a.md", path=Path("/docs/a.md"), links=["b.md"]
         )
-        z2 = _make_zettel_mock(
-            2, title="B", rel_path="b.md", path=Path("/docs/b.md")
-        )
+        z2 = _make_zettel_mock(2, title="B", rel_path="b.md", path=Path("/docs/b.md"))
         store = ZettelStore([z1, z2])
 
         result = self.exporter.export(store, [], _build_backlinks(store))

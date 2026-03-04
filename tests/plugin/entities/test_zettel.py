@@ -270,7 +270,6 @@ class TestHashAndEquality:
         assert z != "not a zettel"
 
 
-
 class TestConfigurableKeys:
     def test_custom_id_key(self, tmp_path: Path) -> None:
         content = "---\nzettel_id: 99\ndate: 2024-01-01\n---\n# Title\n"

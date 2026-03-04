@@ -13,8 +13,12 @@ class TestStats:
 
     def test_counts_by_type(self):
         zettels = [
-            _make_zettel_mock(20260227000001, title="A", rel_path="a.md", note_type="fleeting"),
-            _make_zettel_mock(20260227000002, title="B", rel_path="b.md", note_type="permanent"),
+            _make_zettel_mock(
+                20260227000001, title="A", rel_path="a.md", note_type="fleeting"
+            ),
+            _make_zettel_mock(
+                20260227000002, title="B", rel_path="b.md", note_type="permanent"
+            ),
             _make_zettel_mock(20260227000003, title="C", rel_path="c.md"),
         ]
         store = ZettelStore(zettels)
@@ -28,8 +32,12 @@ class TestStats:
 
     def test_counts_by_maturity(self):
         zettels = [
-            _make_zettel_mock(20260227000001, title="A", rel_path="a.md", maturity="draft"),
-            _make_zettel_mock(20260227000002, title="B", rel_path="b.md", maturity="evergreen"),
+            _make_zettel_mock(
+                20260227000001, title="A", rel_path="a.md", maturity="draft"
+            ),
+            _make_zettel_mock(
+                20260227000002, title="B", rel_path="b.md", maturity="evergreen"
+            ),
             _make_zettel_mock(20260227000003, title="C", rel_path="c.md"),
         ]
         store = ZettelStore(zettels)
@@ -264,9 +272,7 @@ class TestMalformedIds:
         self.service = WorkflowService()
 
     def test_short_id_skipped_in_inbox(self):
-        z = _make_zettel_mock(
-            999, title="Short", rel_path="s.md", note_type="fleeting"
-        )
+        z = _make_zettel_mock(999, title="Short", rel_path="s.md", note_type="fleeting")
         store = ZettelStore([z])
         result = self.service.compute(store, {}, {}, today=TODAY)
         assert result["inbox"] == []
@@ -294,9 +300,7 @@ class TestMalformedIds:
 
     def test_non_numeric_prefix_skipped(self):
         """ID whose first 8 chars aren't all digits."""
-        z = _make_zettel_mock(
-            0, title="Zero", rel_path="z.md", note_type="fleeting"
-        )
+        z = _make_zettel_mock(0, title="Zero", rel_path="z.md", note_type="fleeting")
         store = ZettelStore([z])
         result = self.service.compute(store, {}, {}, today=TODAY)
         assert result["inbox"] == []

@@ -123,9 +123,7 @@ class TagsService:
                 for tag in tags:
                     tag_map[tag].append(meta)
 
-        logger.info(
-            "Found %d unique tags: %s", len(tag_map), ", ".join(tag_map)
-        )
+        logger.info("Found %d unique tags: %s", len(tag_map), ", ".join(tag_map))
         return dict(tag_map)
 
     def _render_tags_template(self, tag_map: dict[str, list[dict[str, Any]]]) -> str:

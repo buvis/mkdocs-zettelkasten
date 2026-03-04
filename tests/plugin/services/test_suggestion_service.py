@@ -35,9 +35,7 @@ class TestSharedLinkSuggestions:
 
     def test_already_linked_excluded(self):
         """A links to B and C, B links to C -> no suggestion A<->B (already linked)."""
-        a = _make_zettel_mock(
-            1, title="A", rel_path="a.md", links=["b.md", "c.md"]
-        )
+        a = _make_zettel_mock(1, title="A", rel_path="a.md", links=["b.md", "c.md"])
         b = _make_zettel_mock(2, title="B", rel_path="b.md", links=["c.md"])
         c = _make_zettel_mock(3, title="C", rel_path="c.md")
         store = ZettelStore([a, b, c])
@@ -48,9 +46,7 @@ class TestSharedLinkSuggestions:
     def test_reverse_link_excluded(self):
         """B links to A and C, A links to C -> no suggestion A<->B (B already links to A)."""
         a = _make_zettel_mock(1, title="A", rel_path="a.md", links=["c.md"])
-        b = _make_zettel_mock(
-            2, title="B", rel_path="b.md", links=["a.md", "c.md"]
-        )
+        b = _make_zettel_mock(2, title="B", rel_path="b.md", links=["a.md", "c.md"])
         c = _make_zettel_mock(3, title="C", rel_path="c.md")
         store = ZettelStore([a, b, c])
         result = self.service.compute(store, [])

@@ -27,8 +27,6 @@ def zettel_factory(tmp_path: Path) -> Callable[..., Zettel]:
                 return_value=False,
             ),
         ):
-            return Zettel(
-                file_path, str(file_path.relative_to(tmp_path)), cfg
-            )
+            return Zettel(file_path, str(file_path.relative_to(tmp_path)), cfg)
 
     return _factory

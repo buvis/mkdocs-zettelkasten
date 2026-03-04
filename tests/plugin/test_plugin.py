@@ -401,9 +401,7 @@ class TestZettelkastenPlugin:
         with (
             patch.object(plugin.zettel_service, "configure"),
             patch.object(plugin.tags_service, "configure"),
-            patch.object(
-                plugin.validation_service, "configure"
-            ) as mock_vcfg,
+            patch.object(plugin.validation_service, "configure") as mock_vcfg,
         ):
             plugin.on_config(config)
 

@@ -80,11 +80,7 @@ class TestPreviewExporter:
             "## Some Heading\n\nThis is the first paragraph.",
         )
         store = ZettelStore(
-            [
-                _make_zettel_mock(
-                    4, title="Heading", path=z_path, rel_path="heading.md"
-                )
-            ]
+            [_make_zettel_mock(4, title="Heading", path=z_path, rel_path="heading.md")]
         )
 
         result = self.exporter.export(store)

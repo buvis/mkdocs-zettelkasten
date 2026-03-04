@@ -37,9 +37,7 @@ class TestGenerate:
         moc = _make_zettel_mock(
             1, title="MOC", rel_path="moc.md", role="moc", links=["a.md"]
         )
-        a = _make_zettel_mock(
-            10, title="A", rel_path="a.md", body="Preview text here."
-        )
+        a = _make_zettel_mock(10, title="A", rel_path="a.md", body="Preview text here.")
         store = ZettelStore([moc, a])
         outlines = svc.compute(store, {}, file_suffix=".md")
         svc.generate(outlines)
