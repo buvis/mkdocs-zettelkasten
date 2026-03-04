@@ -124,7 +124,7 @@ class TagsService:
                     tag_map[tag].append(meta)
 
         logger.info(
-            "Found %d unique tags: %s", len(tag_map.keys()), ", ".join(tag_map.keys())
+            "Found %d unique tags: %s", len(tag_map), ", ".join(tag_map)
         )
         return dict(tag_map)
 
