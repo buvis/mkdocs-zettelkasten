@@ -62,7 +62,10 @@ class TestZettelkastenPlugin:
         plugin = self._make_plugin()
         config = MagicMock()
 
-        with patch.object(plugin.tags_service, "configure"):
+        with (
+            patch.object(plugin.tags_service, "configure"),
+            patch.object(plugin.validation_service, "configure"),
+        ):
             plugin.on_config(config)
 
         assert plugin.logger.level == logging.WARNING
@@ -74,6 +77,7 @@ class TestZettelkastenPlugin:
         with (
             patch.object(plugin.zettel_service, "configure") as mock_cfg,
             patch.object(plugin.tags_service, "configure"),
+            patch.object(plugin.validation_service, "configure"),
         ):
             plugin.on_config(config)
 
@@ -93,6 +97,7 @@ class TestZettelkastenPlugin:
         with (
             patch.object(plugin.zettel_service, "configure"),
             patch.object(plugin.tags_service, "configure") as mock_tags,
+            patch.object(plugin.validation_service, "configure"),
         ):
             plugin.on_config(config)
 
@@ -195,6 +200,7 @@ class TestZettelkastenPlugin:
         with (
             patch.object(plugin.zettel_service, "configure"),
             patch.object(plugin.tags_service, "configure"),
+            patch.object(plugin.validation_service, "configure"),
         ):
             plugin.on_config(config)
 
@@ -211,6 +217,7 @@ class TestZettelkastenPlugin:
         with (
             patch.object(plugin.zettel_service, "configure"),
             patch.object(plugin.tags_service, "configure"),
+            patch.object(plugin.validation_service, "configure"),
         ):
             plugin.on_config(config)
 
@@ -370,6 +377,7 @@ class TestZettelkastenPlugin:
         with (
             patch.object(plugin.zettel_service, "configure"),
             patch.object(plugin.tags_service, "configure"),
+            patch.object(plugin.validation_service, "configure"),
             patch.object(plugin.workflow_service, "configure"),
         ):
             plugin.on_config(config)
@@ -385,6 +393,7 @@ class TestZettelkastenPlugin:
         with (
             patch.object(plugin.zettel_service, "configure") as mock_zcfg,
             patch.object(plugin.tags_service, "configure") as mock_tcfg,
+            patch.object(plugin.validation_service, "configure"),
         ):
             plugin.on_config(config)
 
