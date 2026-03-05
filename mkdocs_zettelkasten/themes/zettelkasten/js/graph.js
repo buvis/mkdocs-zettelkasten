@@ -260,7 +260,7 @@
       const currentColor = cssVar('--graph-node-current') || '#333';
 
       /* edges */
-      const seqColor = cssVar('--graph-edge-sequence') || cssVar('--text-link') || '#0066cc';
+      const seqColor = cssVar('--text-link') || '#0066cc';
       for (let e = 0; e < resolvedEdges.length; e++) {
         const edge = resolvedEdges[e];
         if (!edge.source._visible || !edge.target._visible) continue;

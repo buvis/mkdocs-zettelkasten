@@ -603,7 +603,7 @@ pre:has(> code):hover .copy-btn {
 
 .toggle-label {
   font-size: 0.85em;
-  color: var(--fg-secondary, #888);
+  color: var(--text-muted);
   user-select: none;
 }
 
