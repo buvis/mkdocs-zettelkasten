@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 
+# module-level: used in function signatures
 from mkdocs.structure.files import File, Files
 
 from mkdocs_zettelkasten.plugin.entities.zettel import Zettel, ZettelFormatError

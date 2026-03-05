@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 
 import logging
 
+# module-level: used in function signatures
 from mkdocs.structure.files import File, Files
 
 logger = logging.getLogger(
