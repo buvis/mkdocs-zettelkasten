@@ -15,7 +15,6 @@ hljs_languages: []
 hljs_style: github
 hljs_style_dark: github-dark
 
-navigation_depth: 2
 nav_style: primary
 nav_position: sidebar
 
