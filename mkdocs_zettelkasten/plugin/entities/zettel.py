@@ -302,7 +302,7 @@ class Zettel:
     def _get_revision_date(self) -> datetime.datetime:
         """Gets revision date from VCS or filesystem."""
         if GitUtil.is_tracked(str(self.path)):
-            git_date = GitUtil().get_revision_date_for_file(str(self.path))
+            git_date = GitUtil.get_revision_date_for_file(str(self.path))
             if git_date is not None:
                 return git_date
 

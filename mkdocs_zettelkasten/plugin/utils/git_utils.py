@@ -12,7 +12,8 @@ logger = logging.getLogger(
 
 
 class GitUtil:
-    def get_revision_date_for_file(self, path: str) -> datetime.datetime | None:
+    @staticmethod
+    def get_revision_date_for_file(path: str) -> datetime.datetime | None:
         git = Git(working_dir=str(Path(path).parent))
         raw = git.log(path, n=1, format="%cI")
         if not raw:
