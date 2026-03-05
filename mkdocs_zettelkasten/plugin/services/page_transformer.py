@@ -102,6 +102,7 @@ class PageTransformer:
             page,
             zettel_service.backlinks,
             zettel_service.get_zettel_by_partial_path,
+            file_suffix=zettel_service.file_suffix,
         )
         _run(
             "adapt_unlinked_mentions_to_page",

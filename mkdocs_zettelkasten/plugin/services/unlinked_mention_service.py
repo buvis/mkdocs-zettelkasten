@@ -19,7 +19,9 @@ _INLINE_CODE = re.compile(r"`[^`]+`")
 class UnlinkedMentionService:
     """Detects unlinked mentions of zettel titles/IDs across the store."""
 
-    def find_unlinked_mentions(self, store) -> dict[int, list[tuple[int, str]]]:
+    def find_unlinked_mentions(
+        self, store, file_suffix: str = ".md"
+    ) -> dict[int, list[tuple[int, str]]]:
         """Return {target_id: [(source_id, snippet), ...]} for unlinked mentions."""
         unlinked_mentions: dict[int, list[tuple[int, str]]] = defaultdict(list)
 
@@ -34,7 +36,9 @@ class UnlinkedMentionService:
             id_pat = re.compile(r"\b" + re.escape(id_str) + r"\b")
 
             for source in store.zettels:
-                if source.id == target.id or self._already_links_to(source, target):
+                if source.id == target.id or self._already_links_to(
+                    source, target, file_suffix
+                ):
                     continue
                 result = self._find_mention_in_body(
                     source.body, title_pat, title, id_pat, id_str
@@ -69,9 +73,9 @@ class UnlinkedMentionService:
         return None
 
     @staticmethod
-    def _already_links_to(source, target) -> bool:
+    def _already_links_to(source, target, file_suffix: str = ".md") -> bool:
         target_id = str(target.id)
-        return any(link.removesuffix(".md") == target_id for link in source.links)
+        return any(link.removesuffix(file_suffix) == target_id for link in source.links)
 
     @staticmethod
     def _strip_syntax(text: str) -> str:

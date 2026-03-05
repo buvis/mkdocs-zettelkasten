@@ -20,6 +20,7 @@ def add_backlink_to_target(
     page: Page,
     zettel: Zettel,
     zettel_lookup: Callable[[str], Zettel | None],
+    file_suffix: str = ".md",
 ) -> None:
     """Add a backlink to the target zettel if the link and page match."""
     zettel_meta = page.meta.get("zettel")
@@ -32,7 +33,7 @@ def add_backlink_to_target(
         return
 
     snippet = zettel.link_snippets.get(link) or zettel.link_snippets.get(
-        link.removesuffix(".md")
+        link.removesuffix(file_suffix)
     )
     backlink: LinkRef = {
         "url": str(page.url or ""),
@@ -56,6 +57,7 @@ def adapt_backlinks_to_page(
     page: Page,
     backlinks: dict[str, list[Zettel]],
     zettel_lookup: Callable[[str], Zettel | None],
+    file_suffix: str = ".md",
 ) -> None:
     """Adapts backlinks to the specified page by adding them to target Zettels."""
     if not page.meta.get("is_zettel"):
@@ -63,4 +65,4 @@ def adapt_backlinks_to_page(
 
     for link, source_zettels in backlinks.items():
         for zettel in source_zettels:
-            add_backlink_to_target(link, page, zettel, zettel_lookup)
+            add_backlink_to_target(link, page, zettel, zettel_lookup, file_suffix)

@@ -54,7 +54,7 @@ class ZettelService:
             self.store, file_suffix=self.file_suffix
         )
         self.unlinked_mentions = self.unlinked_mention_service.find_unlinked_mentions(
-            self.store
+            self.store, file_suffix=self.file_suffix
         )
         self.sequence_children = SequenceService.build_tree(self.store)
 
