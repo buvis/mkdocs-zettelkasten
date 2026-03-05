@@ -209,6 +209,7 @@ class ZettelkastenPlugin(BasePlugin):
         self.logger.info("Processed %d files in on_files hook.", len(files))
 
     def _export_graph(self, files: Files, config: MkDocsConfig) -> None:
+        # deferred: avoid import-time mkdocs coupling
         from mkdocs.structure.files import File
 
         graph_data = self.graph_exporter.export(
@@ -229,6 +230,7 @@ class ZettelkastenPlugin(BasePlugin):
         )
 
     def _export_previews(self, files: Files, config: MkDocsConfig) -> None:
+        # deferred: avoid import-time mkdocs coupling
         from mkdocs.structure.files import File
 
         preview_data = self.preview_exporter.export(
@@ -247,6 +249,7 @@ class ZettelkastenPlugin(BasePlugin):
         )
 
     def _export_suggestions(self, files: Files, config: MkDocsConfig) -> None:
+        # deferred: avoid import-time mkdocs coupling
         from mkdocs.structure.files import File
 
         sugg_data = {}

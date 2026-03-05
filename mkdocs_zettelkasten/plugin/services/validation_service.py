@@ -215,6 +215,7 @@ class ValidationService:
         output_path.write_text(content, encoding="utf-8")
 
     def _add_to_build(self, files: Files, config: MkDocsConfig) -> None:
+        # deferred: avoid import-time mkdocs coupling
         from mkdocs.structure.files import File
 
         new_file = File(

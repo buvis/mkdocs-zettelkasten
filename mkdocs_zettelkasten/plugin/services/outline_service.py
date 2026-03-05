@@ -56,6 +56,7 @@ class OutlineService:
         if self.output_folder is None or self._site_dir is None:
             msg = "configure() must be called before add_to_build()"
             raise RuntimeError(msg)
+        # deferred: avoid import-time mkdocs coupling
         from mkdocs.structure.files import File
 
         new_file = File(

@@ -100,7 +100,8 @@ class TagsService:
         """
         Add the generated tags file to the MkDocs build list.
         """
-        from mkdocs.structure.files import File  # Local import for plugin compatibility
+        # deferred: avoid import-time mkdocs coupling
+        from mkdocs.structure.files import File
 
         new_file = File(
             path=str(self.tags_filename),
