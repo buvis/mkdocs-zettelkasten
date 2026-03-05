@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar
 
+from mkdocs_zettelkasten.plugin.constants import FLEETING_STALE_DAYS, TYPE_FLEETING
+
 if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
     from mkdocs.structure.files import Files
@@ -132,10 +134,10 @@ class ValidationService:
         from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
 
         cutoff = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(
-            days=7
+            days=FLEETING_STALE_DAYS
         )
         for zettel in zettel_service.get_zettels():
-            if zettel.note_type != "fleeting":
+            if zettel.note_type != TYPE_FLEETING:
                 continue
             created = convert_string_to_date(str(zettel.id))
             if created and created < cutoff:

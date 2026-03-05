@@ -13,6 +13,7 @@ from zoneinfo import ZoneInfo
 import yaml
 from yaml.scanner import ScannerError
 
+from mkdocs_zettelkasten.plugin.constants import MOC_ROLES
 from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
 from mkdocs_zettelkasten.plugin.utils.frontmatter import parse_frontmatter
 from mkdocs_zettelkasten.plugin.utils.git_utils import GitUtil
@@ -54,8 +55,6 @@ class ZettelFormatError(ValueError):
 
 
 class Zettel:
-    _MOC_ROLES = frozenset({"moc", "index", "hub", "structure"})
-
     def __init__(
         self,
         abs_src_path: Path,
@@ -106,7 +105,7 @@ class Zettel:
 
     @property
     def is_moc(self) -> bool:
-        return self.role in self._MOC_ROLES
+        return self.role in MOC_ROLES
 
     def _initialize_zettel(self) -> None:
         """Orchestrates the zettel initialization process."""

@@ -4,6 +4,16 @@ import logging
 from datetime import date, datetime, timezone
 from typing import TYPE_CHECKING, Any
 
+from mkdocs_zettelkasten.plugin.constants import (
+    FLEETING_STALE_DAYS,
+    MATURITY_DEVELOPING,
+    MATURITY_DRAFT,
+    MATURITY_EVERGREEN,
+    REVIEW_STALE_DAYS,
+    TYPE_FLEETING,
+    TYPE_LITERATURE,
+    TYPE_PERMANENT,
+)
 from mkdocs_zettelkasten.plugin.utils.jinja_utils import create_jinja_environment
 
 if TYPE_CHECKING:
@@ -21,8 +31,6 @@ logger = logging.getLogger(
 class WorkflowService:
     """Computes workflow dashboard data from zettel store."""
 
-    FLEETING_STALE_DAYS = 7
-    REVIEW_STALE_DAYS = 30
     MAX_HOTSPOTS = 10
 
     def __init__(self) -> None:
@@ -106,8 +114,8 @@ class WorkflowService:
 
     def _stats(self, store, backlinks, unlinked_mentions):
         zettels = store.zettels
-        by_type = {"fleeting": 0, "literature": 0, "permanent": 0, "unset": 0}
-        by_maturity = {"draft": 0, "developing": 0, "evergreen": 0, "unset": 0}
+        by_type = {TYPE_FLEETING: 0, TYPE_LITERATURE: 0, TYPE_PERMANENT: 0, "unset": 0}
+        by_maturity = {MATURITY_DRAFT: 0, MATURITY_DEVELOPING: 0, MATURITY_EVERGREEN: 0, "unset": 0}
         total_links = 0
         for z in zettels:
             t_key = z.note_type if z.note_type in by_type else "unset"
@@ -127,7 +135,7 @@ class WorkflowService:
     def _inbox(self, store, today):
         items = []
         for z in store.zettels:
-            if z.note_type != "fleeting":
+            if z.note_type != TYPE_FLEETING:
                 continue
             created = self._id_to_date(z.id)
             if not created:
@@ -139,7 +147,7 @@ class WorkflowService:
                     "title": z.title,
                     "rel_path": z.rel_path,
                     "age_days": age,
-                    "stale": age > self.FLEETING_STALE_DAYS,
+                    "stale": age > FLEETING_STALE_DAYS,
                 }
             )
         return sorted(items, key=lambda x: x["id"], reverse=True)
@@ -147,7 +155,7 @@ class WorkflowService:
     def _needs_connection(self, store):
         items = []
         for z in store.zettels:
-            if z.note_type != "permanent":
+            if z.note_type != TYPE_PERMANENT:
                 continue
             if len(z.links) > 1:
                 continue
@@ -164,13 +172,13 @@ class WorkflowService:
     def _review_queue(self, store, today):
         items = []
         for z in store.zettels:
-            if z.maturity != "developing":
+            if z.maturity != MATURITY_DEVELOPING:
                 continue
             created = self._id_to_date(z.id)
             if not created:
                 continue
             age = (today - created).days
-            if age <= self.REVIEW_STALE_DAYS:
+            if age <= REVIEW_STALE_DAYS:
                 continue
             items.append(
                 {
