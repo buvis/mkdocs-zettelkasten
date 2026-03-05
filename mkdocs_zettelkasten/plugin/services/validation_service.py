@@ -146,7 +146,7 @@ class ValidationService:
                         path=zettel.rel_path,
                         check="stale_fleeting",
                         severity="info",
-                        message="Fleeting note older than 7 days",
+                        message=f"Fleeting note older than {FLEETING_STALE_DAYS} days",
                     )
                 )
 
