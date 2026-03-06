@@ -46,6 +46,10 @@
   --adm-danger-text: #ab5959;
   --adm-danger-bg: #f5e0e0;
   --adm-danger-border: #ab5959;
+  /* Status */
+  --status-error: #ab5959;
+  --status-warning: #b07d48;
+  --status-success: #59873a;
 }
 
 [data-color-scheme="vitesse"][data-theme="dark"] {
@@ -88,4 +92,8 @@
   --adm-danger-text: #ce5050;
   --adm-danger-bg: #1a1a1a;
   --adm-danger-border: #ce5050;
+  /* Status */
+  --status-error: #ce5050;
+  --status-warning: #e6cc77;
+  --status-success: #4d9375;
 }

@@ -36,6 +36,11 @@
   --adm-danger-text: #a94442;
   --adm-danger-bg: #f2dede;
   --adm-danger-border: #ebccd1;
+
+  /* Status */
+  --status-error: #dc322f;
+  --status-warning: #b58900;
+  --status-success: #859900;
 }
 
 /* ===== Theme styles ===== */
