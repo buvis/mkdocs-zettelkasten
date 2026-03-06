@@ -47,8 +47,8 @@
       {%- block libs %}
 
         {%- if config.theme.highlightjs %}
-        <script src="{{ 'js/vendor/highlight.min.js'|url }}"></script>
-        <script>hljs.highlightAll();</script>
+        <script src="{{ 'js/vendor/highlight.min.js'|url }}" defer></script>
+        <script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
         {%- endif %}
 
         {%- if config.theme.math_support %}
@@ -262,7 +262,7 @@
         <script src="{{ 'js/settings-modal.js'|url }}" defer></script>
         <script src="{{ 'js/copyable.js'|url }}" defer></script>
         {%- if page and page.meta.editor %}
-        <script src="{{ 'js/vendor/easymde.min.js'|url }}"></script>
+        <script src="{{ 'js/vendor/easymde.min.js'|url }}" defer></script>
         <script src="{{ 'js/editor.js'|url }}" defer></script>
         {%- endif %}
         {%- if page and page.meta.is_zettel and config.extra.graph_enabled %}
