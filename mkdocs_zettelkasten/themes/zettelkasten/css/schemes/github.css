@@ -50,6 +50,13 @@
   --status-error: #cf222e;
   --status-warning: #9a6700;
   --status-success: #1a7f37;
+  /* Graph */
+  --graph-type-fleeting: #9a6700;
+  --graph-type-literature: #0969da;
+  --graph-type-permanent: #1a7f37;
+  --graph-maturity-draft: #cf222e;
+  --graph-maturity-developing: #9a6700;
+  --graph-maturity-evergreen: #1a7f37;
 }
 
 [data-color-scheme="github"][data-theme="dark"] {
@@ -96,4 +103,11 @@
   --status-error: #f85149;
   --status-warning: #d29922;
   --status-success: #3fb950;
+  /* Graph */
+  --graph-type-fleeting: #d29922;
+  --graph-type-literature: #58a6ff;
+  --graph-type-permanent: #3fb950;
+  --graph-maturity-draft: #f85149;
+  --graph-maturity-developing: #d29922;
+  --graph-maturity-evergreen: #3fb950;
 }

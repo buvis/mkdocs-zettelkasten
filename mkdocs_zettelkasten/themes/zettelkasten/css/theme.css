@@ -41,6 +41,14 @@
   --status-error: #dc322f;
   --status-warning: #b58900;
   --status-success: #859900;
+
+  /* Graph */
+  --graph-type-fleeting: #e8a838;
+  --graph-type-literature: #5b98d2;
+  --graph-type-permanent: #6bb86b;
+  --graph-maturity-draft: #e06c75;
+  --graph-maturity-developing: #e8a838;
+  --graph-maturity-evergreen: #6bb86b;
 }
 
 /* ===== Theme styles ===== */

@@ -50,6 +50,13 @@
   --status-error: #ab5959;
   --status-warning: #b07d48;
   --status-success: #59873a;
+  /* Graph */
+  --graph-type-fleeting: #b07d48;
+  --graph-type-literature: #1e754f;
+  --graph-type-permanent: #59873a;
+  --graph-maturity-draft: #ab5959;
+  --graph-maturity-developing: #b07d48;
+  --graph-maturity-evergreen: #59873a;
 }
 
 [data-color-scheme="vitesse"][data-theme="dark"] {
@@ -96,4 +103,11 @@
   --status-error: #ce5050;
   --status-warning: #e6cc77;
   --status-success: #4d9375;
+  /* Graph */
+  --graph-type-fleeting: #e6cc77;
+  --graph-type-literature: #4d9375;
+  --graph-type-permanent: #4d9375;
+  --graph-maturity-draft: #ce5050;
+  --graph-maturity-developing: #e6cc77;
+  --graph-maturity-evergreen: #4d9375;
 }

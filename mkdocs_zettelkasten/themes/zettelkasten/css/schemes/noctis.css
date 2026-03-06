@@ -50,6 +50,13 @@
   --status-error: #c44040;
   --status-warning: #b8a000;
   --status-success: #6e9440;
+  /* Graph */
+  --graph-type-fleeting: #b8a000;
+  --graph-type-literature: #c4762a;
+  --graph-type-permanent: #6e9440;
+  --graph-maturity-draft: #c44040;
+  --graph-maturity-developing: #b8a000;
+  --graph-maturity-evergreen: #6e9440;
 }
 
 [data-color-scheme="noctis"][data-theme="dark"] {
@@ -96,4 +103,11 @@
   --status-error: #e06060;
   --status-warning: #d4c760;
   --status-success: #8cbd6f;
+  /* Graph */
+  --graph-type-fleeting: #d4c760;
+  --graph-type-literature: #e8a84c;
+  --graph-type-permanent: #8cbd6f;
+  --graph-maturity-draft: #e06060;
+  --graph-maturity-developing: #d4c760;
+  --graph-maturity-evergreen: #8cbd6f;
 }
