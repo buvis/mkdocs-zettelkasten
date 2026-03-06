@@ -122,7 +122,7 @@
                         {%- for nav_item in nav %}
                         {%- if nav_item.children %}
                             <li class="dropdown{% if nav_item.active %} active{% endif %}">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">{{ nav_item.title }} <b class="caret"></b></a>
+                                <button type="button" class="nav-link dropdown-toggle" data-toggle="dropdown">{{ nav_item.title }}</button>
                                 <ul class="dropdown-menu">
                                 {%- for nav_item in nav_item.children %}
                                     {% include "nav-sub.html" %}
