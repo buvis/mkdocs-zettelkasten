@@ -13,7 +13,6 @@ logger = logging.getLogger(
 _DATE_FORMATS = ["%Y-%m-%d %H:%M:%S", "%Y%m%d%H%M%S"]
 
 
-
 def _try_strptime_formats(string: str, tz: tzinfo) -> datetime | None:
     for fmt in _DATE_FORMATS:
         try:

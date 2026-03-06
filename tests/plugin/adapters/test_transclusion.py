@@ -11,7 +11,10 @@ from tests.plugin.conftest import _make_zettel_mock
 
 class TestBodyWithoutRefs:
     def test_returns_body_as_is_when_no_divider(self) -> None:
-        assert _body_without_refs("\n# Title\n\nBody text.\n") == "\n# Title\n\nBody text.\n"
+        assert (
+            _body_without_refs("\n# Title\n\nBody text.\n")
+            == "\n# Title\n\nBody text.\n"
+        )
 
     def test_strips_reference_footer(self) -> None:
         assert _body_without_refs("\nBody.\n---\nref: foo\n---\n") == "\nBody.\n"
@@ -187,9 +190,7 @@ class TestAdaptTransclusion:
         assert 'warning "Circular embed"' in result
 
     def test_recursive_embed(self) -> None:
-        zo = _make_zettel_mock(
-            0, title="Outer", rel_path="outer.md", body="\n![[2]]\n"
-        )
+        zo = _make_zettel_mock(0, title="Outer", rel_path="outer.md", body="\n![[2]]\n")
         zi = _make_zettel_mock(
             0, title="Inner", rel_path="inner.md", body="\nInner content.\n"
         )

@@ -13,9 +13,7 @@ EMBED_LINK = re.compile(
 _CODE_FENCE = re.compile(r"```", re.DOTALL)
 
 
-def process_outside_code_blocks(
-    markdown: str, processor: Callable[[str], str]
-) -> str:
+def process_outside_code_blocks(markdown: str, processor: Callable[[str], str]) -> str:
     """Apply *processor* only to text outside fenced code blocks."""
     parts = _CODE_FENCE.split(markdown)
     for i in range(0, len(parts), 2):

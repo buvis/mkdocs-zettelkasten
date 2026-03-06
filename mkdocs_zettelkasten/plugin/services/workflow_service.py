@@ -108,7 +108,12 @@ class WorkflowService:
     def _stats(self, store, backlinks, unlinked_mentions):
         zettels = store.zettels
         by_type = {TYPE_FLEETING: 0, TYPE_LITERATURE: 0, TYPE_PERMANENT: 0, "unset": 0}
-        by_maturity = {MATURITY_DRAFT: 0, MATURITY_DEVELOPING: 0, MATURITY_EVERGREEN: 0, "unset": 0}
+        by_maturity = {
+            MATURITY_DRAFT: 0,
+            MATURITY_DEVELOPING: 0,
+            MATURITY_EVERGREEN: 0,
+            "unset": 0,
+        }
         total_links = 0
         for z in zettels:
             t_key = z.note_type if z.note_type in by_type else "unset"

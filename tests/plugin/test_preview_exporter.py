@@ -11,11 +11,15 @@ class TestPreviewExporter:
 
     def test_export_returns_correct_structure(self) -> None:
         z1 = _make_zettel_mock(
-            1, title="One", rel_path="notes/one.md",
+            1,
+            title="One",
+            rel_path="notes/one.md",
             body="\n\nThis is the first paragraph for one.",
         )
         z2 = _make_zettel_mock(
-            2, title="Two", rel_path="notes/two.md",
+            2,
+            title="Two",
+            rel_path="notes/two.md",
             body="\n\nThis is the first paragraph for two.",
         )
         store = ZettelStore([z1, z2])
@@ -42,7 +46,11 @@ class TestPreviewExporter:
             "theta iota kappa lambda mu nu xi omicron pi rho sigma tau upsilon phi chi psi omega"
         )
         store = ZettelStore(
-            [_make_zettel_mock(3, title="Long", rel_path="long.md", body=f"\n\n{paragraph}")]
+            [
+                _make_zettel_mock(
+                    3, title="Long", rel_path="long.md", body=f"\n\n{paragraph}"
+                )
+            ]
         )
 
         result = self.exporter.export(store)
@@ -55,10 +63,14 @@ class TestPreviewExporter:
 
     def test_headings_skipped(self) -> None:
         store = ZettelStore(
-            [_make_zettel_mock(
-                4, title="Heading", rel_path="heading.md",
-                body="\n\n## Some Heading\n\nThis is the first paragraph.",
-            )]
+            [
+                _make_zettel_mock(
+                    4,
+                    title="Heading",
+                    rel_path="heading.md",
+                    body="\n\n## Some Heading\n\nThis is the first paragraph.",
+                )
+            ]
         )
 
         result = self.exporter.export(store)
@@ -67,22 +79,32 @@ class TestPreviewExporter:
 
     def test_blank_lines_skipped(self) -> None:
         store = ZettelStore(
-            [_make_zettel_mock(
-                5, title="Blank", rel_path="blank.md",
-                body="\n\n\n\n\nThis is the first paragraph after blank lines.",
-            )]
+            [
+                _make_zettel_mock(
+                    5,
+                    title="Blank",
+                    rel_path="blank.md",
+                    body="\n\n\n\n\nThis is the first paragraph after blank lines.",
+                )
+            ]
         )
 
         result = self.exporter.export(store)
 
-        assert result["5"]["excerpt"] == "This is the first paragraph after blank lines."
+        assert (
+            result["5"]["excerpt"] == "This is the first paragraph after blank lines."
+        )
 
     def test_markdown_links_stripped(self) -> None:
         store = ZettelStore(
-            [_make_zettel_mock(
-                6, title="Links", rel_path="links.md",
-                body="\n\nRead [the docs](https://example.com/docs) and [quickstart](quickstart.md).",
-            )]
+            [
+                _make_zettel_mock(
+                    6,
+                    title="Links",
+                    rel_path="links.md",
+                    body="\n\nRead [the docs](https://example.com/docs) and [quickstart](quickstart.md).",
+                )
+            ]
         )
 
         result = self.exporter.export(store)
@@ -91,15 +113,21 @@ class TestPreviewExporter:
 
     def test_wiki_links_stripped(self) -> None:
         store = ZettelStore(
-            [_make_zettel_mock(
-                12, title="Wiki", rel_path="wiki.md",
-                body="\n\nSee [[20240101120000|some note]] and [[20240201130000]] for details.",
-            )]
+            [
+                _make_zettel_mock(
+                    12,
+                    title="Wiki",
+                    rel_path="wiki.md",
+                    body="\n\nSee [[20240101120000|some note]] and [[20240201130000]] for details.",
+                )
+            ]
         )
 
         result = self.exporter.export(store)
 
-        assert result["12"]["excerpt"] == "See some note and 20240201130000 for details."
+        assert (
+            result["12"]["excerpt"] == "See some note and 20240201130000 for details."
+        )
 
     def test_empty_body_returns_empty_excerpt(self) -> None:
         store = ZettelStore(
@@ -113,9 +141,15 @@ class TestPreviewExporter:
     def test_multiple_zettels(self) -> None:
         store = ZettelStore(
             [
-                _make_zettel_mock(8, title="A", rel_path="a.md", body="\n\nFirst paragraph A."),
-                _make_zettel_mock(9, title="B", rel_path="b.md", body="\n\nFirst paragraph B."),
-                _make_zettel_mock(10, title="C", rel_path="c.md", body="\n\nFirst paragraph C."),
+                _make_zettel_mock(
+                    8, title="A", rel_path="a.md", body="\n\nFirst paragraph A."
+                ),
+                _make_zettel_mock(
+                    9, title="B", rel_path="b.md", body="\n\nFirst paragraph B."
+                ),
+                _make_zettel_mock(
+                    10, title="C", rel_path="c.md", body="\n\nFirst paragraph C."
+                ),
             ]
         )
 
@@ -125,10 +159,14 @@ class TestPreviewExporter:
 
     def test_url_format(self) -> None:
         store = ZettelStore(
-            [_make_zettel_mock(
-                11, title="URL", rel_path="notes/nested/url.md",
-                body="\n\nExcerpt text.",
-            )]
+            [
+                _make_zettel_mock(
+                    11,
+                    title="URL",
+                    rel_path="notes/nested/url.md",
+                    body="\n\nExcerpt text.",
+                )
+            ]
         )
 
         result = self.exporter.export(store)

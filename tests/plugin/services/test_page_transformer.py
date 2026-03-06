@@ -32,7 +32,9 @@ class TestPageTransformer:
 
         with (
             patch(f"{MODULE}.adapt_page_title", return_value="md1") as mock_title,
-            patch(f"{MODULE}.adapt_transclusion", return_value="md1t") as mock_transclusion,
+            patch(
+                f"{MODULE}.adapt_transclusion", return_value="md1t"
+            ) as mock_transclusion,
             patch(
                 f"{MODULE}.adapt_page_links_to_zettels", return_value="md2"
             ) as mock_links,

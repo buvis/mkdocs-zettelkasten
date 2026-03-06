@@ -28,7 +28,11 @@ def build_tree_node(
     children = []
     for child_id in sequence_children.get(zettel_id, []):
         child_node = build_tree_node(
-            child_id, sequence_children, lookup, node_factory, visited,
+            child_id,
+            sequence_children,
+            lookup,
+            node_factory,
+            visited,
         )
         if child_node:
             children.append(child_node)
