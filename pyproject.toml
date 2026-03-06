@@ -60,6 +60,7 @@ dev = [
 
 [tool.pytest.ini_options]
 addopts = "--cov=mkdocs_zettelkasten --cov-report=term-missing"
+testpaths = ["tests"]
 
 [tool.ruff.lint]
 select = ["ALL"]
