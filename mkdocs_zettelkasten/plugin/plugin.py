@@ -65,7 +65,7 @@ class ZettelkastenPlugin(BasePlugin):
         ("validation_enabled", config_options.Type(bool, default=True)),
         ("editor_enabled", config_options.Type(bool, default=False)),
         ("editor_repo", config_options.Type(str, default="")),
-        ("editor_branch", config_options.Type(str, default="main")),
+        ("editor_branch", config_options.Type(str, default="master")),
         ("editor_docs_prefix", config_options.Type(str, default="docs")),
         ("date_format", config_options.Type(str, default="%Y-%m-%d")),
         ("icon_references", config_options.Type(str, default="fa fa-book")),
