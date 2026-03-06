@@ -106,6 +106,7 @@ class TestGraphToolbar:
         page.locator("#graph-container canvas").wait_for(state="attached", timeout=5000)
         count_before = page.locator(".graph-node-count").first.inner_text()
         page.locator("#graph-search").fill("Install")
+        # graph.js debounces search input by 200ms; wait 2x for filter + render
         page.wait_for_timeout(400)
         count_after = page.locator(".graph-node-count").first.inner_text()
         # Should show fewer nodes after filtering

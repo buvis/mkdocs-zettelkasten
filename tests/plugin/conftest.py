@@ -3,6 +3,8 @@ from __future__ import annotations
 from pathlib import Path, PurePosixPath
 from unittest.mock import MagicMock
 
+from mkdocs_zettelkasten.plugin.constants import MOC_ROLES
+
 
 def _make_zettel_mock(
     zettel_id: int,
@@ -42,7 +44,7 @@ def _make_zettel_mock(
     z.maturity = maturity
     z.links = links if links is not None else []
     z.role = role
-    z.is_moc = role in ("moc", "index", "hub", "structure") if role else False
+    z.is_moc = role in MOC_ROLES if role else False
     z.body = body
     z.sequence_parent_id = sequence_parent_id
     z.source = source
