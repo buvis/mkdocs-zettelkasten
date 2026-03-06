@@ -89,6 +89,18 @@ class TestPreviewExporter:
 
         assert result["6"]["excerpt"] == "Read the docs and quickstart."
 
+    def test_wiki_links_stripped(self) -> None:
+        store = ZettelStore(
+            [_make_zettel_mock(
+                12, title="Wiki", rel_path="wiki.md",
+                body="\n\nSee [[20240101120000|some note]] and [[20240201130000]] for details.",
+            )]
+        )
+
+        result = self.exporter.export(store)
+
+        assert result["12"]["excerpt"] == "See some note and 20240201130000 for details."
+
     def test_empty_body_returns_empty_excerpt(self) -> None:
         store = ZettelStore(
             [_make_zettel_mock(7, title="Empty", rel_path="empty.md", body="")]

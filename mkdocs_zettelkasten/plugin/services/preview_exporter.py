@@ -49,6 +49,7 @@ class PreviewExporter:
 
         text = " ".join(paragraph_lines)
         text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
+        text = re.sub(r"\[\[(?:[^|\]]+\|)?([^\]]+)\]\]", r"\1", text)
         if len(text) > self.MAX_EXCERPT_LENGTH:
             text = text[: self.MAX_EXCERPT_LENGTH].rsplit(" ", 1)[0] + "\u2026"
         return text
