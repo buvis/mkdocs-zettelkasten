@@ -61,73 +61,46 @@ class SuggestionService:
 
     def _shared_link_suggestions(self, store, link_sets, linked_pairs):
         """Jaccard similarity on outgoing link sets."""
+        sets = {zid: frozenset(s) for zid, s in link_sets.items() if s}
+        return self._jaccard_suggestions(store, sets, linked_pairs, "shared link")
+
+    def _shared_tag_suggestions(self, store, tag_sets, linked_pairs):
+        """Jaccard similarity on tag sets."""
+        sets = {zid: frozenset(s) for zid, s in tag_sets.items() if s}
+        return self._jaccard_suggestions(store, sets, linked_pairs, "shared tag")
+
+    def _jaccard_suggestions(
+        self,
+        store,
+        sets: dict[int, frozenset],
+        linked_pairs: set,
+        reason_label: str,
+    ) -> dict[int, list[dict]]:
+        """Compute Jaccard similarity over arbitrary sets and return suggestions."""
         suggestions: dict[int, list[dict]] = {}
         zettels = store.zettels
         for i, z in enumerate(zettels):
-            z_links = link_sets.get(z.id, set())
-            if not z_links:
+            z_set = sets.get(z.id)
+            if not z_set:
                 continue
             candidates = []
             for j, other in enumerate(zettels):
                 if i >= j:
-                    continue  # avoid duplicate pair processing
-                other_links = link_sets.get(other.id, set())
-                if not other_links:
+                    continue
+                other_set = sets.get(other.id)
+                if not other_set:
                     continue
                 if self._already_linked(z.id, other.id, linked_pairs):
                     continue
-                intersection = z_links & other_links
+                intersection = z_set & other_set
                 if not intersection:
                     continue
-                union = z_links | other_links
+                union = z_set | other_set
                 jaccard = len(intersection) / len(union)
                 if jaccard < self.CONFIDENCE_THRESHOLD:
                     continue
                 n = len(intersection)
-                reason = f"{n} shared link{'s' if n != 1 else ''}"
-                entry = {
-                    "target_id": other.id,
-                    "reason": reason,
-                    "confidence": round(jaccard, 2),
-                }
-                candidates.append(entry)
-                # Also add reverse
-                suggestions.setdefault(other.id, []).append(
-                    {
-                        "target_id": z.id,
-                        "reason": reason,
-                        "confidence": round(jaccard, 2),
-                    }
-                )
-            suggestions.setdefault(z.id, []).extend(candidates)
-        return suggestions
-
-    def _shared_tag_suggestions(self, store, tag_sets, linked_pairs):
-        """Jaccard similarity on tag sets."""
-        suggestions: dict[int, list[dict]] = {}
-        zettels = store.zettels
-        for i, z in enumerate(zettels):
-            z_tags = tag_sets.get(z.id, set())
-            if not z_tags:
-                continue
-            candidates = []
-            for j, other in enumerate(zettels):
-                if i >= j:
-                    continue
-                other_tags = tag_sets.get(other.id, set())
-                if not other_tags:
-                    continue
-                if self._already_linked(z.id, other.id, linked_pairs):
-                    continue
-                shared = z_tags & other_tags
-                if not shared:
-                    continue
-                union = z_tags | other_tags
-                jaccard = len(shared) / len(union)
-                if jaccard < self.CONFIDENCE_THRESHOLD:
-                    continue
-                n = len(shared)
-                reason = f"{n} shared tag{'s' if n != 1 else ''}"
+                reason = f"{n} {reason_label}{'s' if n != 1 else ''}"
                 entry = {
                     "target_id": other.id,
                     "reason": reason,
