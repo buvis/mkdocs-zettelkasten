@@ -113,6 +113,34 @@ class TestTagsService:
 
         assert svc.tags_folder == tmp_path / ".build"
 
+    def test_process_files_chains_metadata_and_tags(self, tmp_path: Path) -> None:
+        md = tmp_path / "note.md"
+        md.write_text("---\nid: 1\ntags:\n  - alpha\n---\nBody\n")
+
+        f = MagicMock()
+        f.src_path = "note.md"
+
+        files = MagicMock()
+        files.__iter__ = lambda self: iter([f])
+        files.__len__ = lambda self: 1
+
+        svc = TagsService()
+        config = self._make_config(str(tmp_path))
+        svc.configure(config)
+        svc.process_files(files)
+
+        # metadata extracted
+        assert len(svc.metadata) == 1
+        assert svc.metadata[0]["tags"] == ["alpha"]
+
+        # tags file generated
+        output = tmp_path / "tags.md"
+        assert output.exists()
+        assert "alpha" in output.read_text()
+
+        # tags file added to build via files.append
+        files.append.assert_called_once()
+
     def test_moc_featured_as_entry_points(self, tmp_path: Path) -> None:
         svc = TagsService()
         config = self._make_config(str(tmp_path))
