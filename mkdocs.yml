@@ -8,7 +8,7 @@ repo_name: buvis/mkdocs-zettelkasten
 repo_url: https://github.com/buvis/mkdocs-zettelkasten
 edit_uri: "edit/master/docs/"
 
-copyright: Copyright &copy; 2026 Tomáš Bouška
+copyright: Copyright &copy; 2024-2026 Tomáš Bouška
 
 theme:
   name: zettelkasten
