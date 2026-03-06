@@ -40,6 +40,10 @@ make run                # default (solarized, validation on)
 make run-selenized      # selenized color scheme
 make run-editor         # markdown editor enabled
 make run-no-validation  # validation disabled
+make run-graph          # knowledge graph enabled
+make run-preview        # hover previews enabled
+make run-math           # math rendering enabled
+make run-no-validation  # validation disabled
 ```
 
 ## Release
