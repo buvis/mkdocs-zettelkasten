@@ -10,6 +10,19 @@ logger = logging.getLogger(
 )
 
 
+_DATE_FORMATS = ["%Y-%m-%d %H:%M:%S", "%Y%m%d%H%M%S"]
+
+
+
+def _try_strptime_formats(string: str, tz: tzinfo) -> datetime | None:
+    for fmt in _DATE_FORMATS:
+        try:
+            return datetime.strptime(string, fmt).replace(tzinfo=tz)
+        except ValueError:  # noqa: PERF203
+            continue
+    return None
+
+
 def convert_string_to_date(
     string: str,
     tz: tzinfo | None = None,
@@ -17,19 +30,15 @@ def convert_string_to_date(
     if tz is None:
         tz = tzlocal.get_localzone()
     string = str(string)
-    try:
-        date = datetime.strptime(string, "%Y-%m-%d %H:%M:%S").replace(tzinfo=tz)
-    except ValueError:
+
+    date = _try_strptime_formats(string, tz)
+    if date is None:
         try:
-            date = datetime.strptime(string, "%Y%m%d%H%M%S").replace(tzinfo=tz)
+            date = datetime.fromisoformat(string)
+            if date.tzinfo is None:
+                date = date.replace(tzinfo=tz)
         except ValueError:
-            try:
-                date = datetime.fromisoformat(string)
-                if date.tzinfo is None:
-                    date = date.replace(tzinfo=tz)
-            except ValueError:
-                date = None
+            date = None
 
     logger.debug("Converted %s to datetime: %s.", string, date)
-
     return date
