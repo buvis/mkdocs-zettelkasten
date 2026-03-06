@@ -191,7 +191,12 @@ class Zettel:
 
     @staticmethod
     def _split_paragraphs(body: list[str]) -> list[str]:
-        """Joins body lines into paragraph strings split by blank lines."""
+        """Split body lines into paragraph strings, joined by spaces.
+
+        Space-joining collapses lines for snippet/link-context matching.
+        See also: UnlinkedMentionService._split_paragraphs (newline-joined,
+        preserves structure for regex search).
+        """
         paragraphs: list[str] = []
         current: list[str] = []
         for line in body:

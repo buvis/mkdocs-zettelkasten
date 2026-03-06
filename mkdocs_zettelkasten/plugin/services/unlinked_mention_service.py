@@ -87,7 +87,11 @@ class UnlinkedMentionService:
 
     @staticmethod
     def _split_paragraphs(body: str) -> list[str]:
-        """Split body into paragraphs by blank lines."""
+        """Split body into paragraphs, joined by newlines.
+
+        Newline-joining preserves line structure for regex pattern matching.
+        See also: Zettel._split_paragraphs (space-joined, for snippet matching).
+        """
         paragraphs = []
         current: list[str] = []
         for line in body.splitlines():
