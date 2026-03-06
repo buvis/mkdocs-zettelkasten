@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import re
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -15,7 +14,11 @@ if TYPE_CHECKING:
 
 import logging
 
-from mkdocs_zettelkasten.plugin.utils.patterns import MD_LINK, WIKI_LINK
+from mkdocs_zettelkasten.plugin.utils.patterns import (
+    MD_LINK,
+    WIKI_LINK,
+    process_outside_code_blocks,
+)
 
 logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
@@ -60,16 +63,8 @@ def adapt_page_links_to_zettels(
 
         return f"[{title}]({url})"
 
-    # Split markdown into alternating segments (non-code/code)
-    code_block_pattern = re.compile(r"```", re.DOTALL)
-    parts = code_block_pattern.split(markdown)
+    def _process(text: str) -> str:
+        text = WIKI_LINK.sub(process_match, text)
+        return MD_LINK.sub(process_match, text)
 
-    processed_parts = []
-    for i, original_part in enumerate(parts):
-        processed_part = original_part
-        if i % 2 == 0:  # Process even-indexed non-code segments
-            processed_part = WIKI_LINK.sub(process_match, processed_part)
-            processed_part = MD_LINK.sub(process_match, processed_part)
-        processed_parts.append(processed_part)
-
-    return "```".join(processed_parts)
+    return process_outside_code_blocks(markdown, _process)

@@ -13,7 +13,10 @@ import logging
 import re
 
 from mkdocs_zettelkasten.plugin.utils.frontmatter import DIVIDER, parse_frontmatter
-from mkdocs_zettelkasten.plugin.utils.patterns import EMBED_LINK
+from mkdocs_zettelkasten.plugin.utils.patterns import (
+    EMBED_LINK,
+    process_outside_code_blocks,
+)
 
 logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
@@ -75,28 +78,21 @@ def adapt_transclusion(
     if _embed_stack is None:
         _embed_stack = frozenset()
 
-    code_block_pattern = re.compile(r"```", re.DOTALL)
-    parts = code_block_pattern.split(markdown)
+    def _process(text: str) -> str:
+        return EMBED_LINK.sub(
+            lambda m: _resolve_embed(
+                m,
+                zettel_lookup,
+                site_url,
+                file_suffix,
+                strip_heading,
+                _depth,
+                _embed_stack,
+            ),
+            text,
+        )
 
-    processed_parts = []
-    for i, original_part in enumerate(parts):
-        processed_part = original_part
-        if i % 2 == 0:
-            processed_part = EMBED_LINK.sub(
-                lambda m: _resolve_embed(
-                    m,
-                    zettel_lookup,
-                    site_url,
-                    file_suffix,
-                    strip_heading,
-                    _depth,
-                    _embed_stack,
-                ),
-                processed_part,
-            )
-        processed_parts.append(processed_part)
-
-    return "```".join(processed_parts)
+    return process_outside_code_blocks(markdown, _process)
 
 
 def _resolve_embed(
