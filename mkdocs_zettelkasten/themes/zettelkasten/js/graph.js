@@ -19,15 +19,15 @@
   let colorMode = 'type';
 
   const typeColors = {
-    fleeting: '#e8a838',
-    literature: '#5b98d2',
-    permanent: '#6bb86b',
+    fleeting: cssVar('--graph-type-fleeting') || '#e8a838',
+    literature: cssVar('--graph-type-literature') || '#5b98d2',
+    permanent: cssVar('--graph-type-permanent') || '#6bb86b',
   };
 
   const maturityColors = {
-    draft: '#e06c75',
-    developing: '#e8a838',
-    evergreen: '#6bb86b',
+    draft: cssVar('--graph-maturity-draft') || '#e06c75',
+    developing: cssVar('--graph-maturity-developing') || '#e8a838',
+    evergreen: cssVar('--graph-maturity-evergreen') || '#6bb86b',
   };
 
   const nodeColorByMode = (node) => {
@@ -311,7 +311,8 @@
 
         /* label for hovered or current */
         if (isHovered || isCurrent) {
-          ctx.font = '12px sans-serif';
+          const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+          ctx.font = `${rootFontSize * 0.75}px sans-serif`;
           ctx.fillStyle = labelColor;
           ctx.textAlign = 'center';
           ctx.fillText(n.title, p.x, p.y - radius - 4);
