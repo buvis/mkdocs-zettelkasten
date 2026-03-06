@@ -46,9 +46,6 @@ def test_convert_string_to_date_empty_string() -> None:
 def test_convert_string_to_date_none() -> None:
     result = convert_string_to_date(None)  # pyright: ignore[reportArgumentType]
 
-    if result:
-        pass
-
     assert result is None
 
 
