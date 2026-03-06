@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
@@ -208,50 +208,40 @@ class ZettelkastenPlugin(BasePlugin):
             )
         self.logger.info("Processed %d files in on_files hook.", len(files))
 
-    def _export_graph(self, files: Files, config: MkDocsConfig) -> None:
+    def _export_json(
+        self, filename: str, data: Any, files: Files, config: MkDocsConfig
+    ) -> None:
         # deferred: avoid import-time mkdocs coupling
         from mkdocs.structure.files import File
 
+        path = self.tags_service.tags_folder / filename
+        path.write_text(json.dumps(data), encoding="utf-8")
+        files.append(
+            File(
+                path=filename,
+                src_dir=str(self.tags_service.tags_folder),
+                dest_dir=config["site_dir"],
+                use_directory_urls=False,
+            )
+        )
+
+    def _export_graph(self, files: Files, config: MkDocsConfig) -> None:
         graph_data = self.graph_exporter.export(
             self.zettel_service.store,
             self.tags_service.metadata,
             self.zettel_service.backlinks,
             file_suffix=self.config["file_suffix"],
         )
-        graph_path = self.tags_service.tags_folder / "graph.json"
-        graph_path.write_text(json.dumps(graph_data), encoding="utf-8")
-        files.append(
-            File(
-                path="graph.json",
-                src_dir=str(self.tags_service.tags_folder),
-                dest_dir=config["site_dir"],
-                use_directory_urls=False,
-            )
-        )
+        self._export_json("graph.json", graph_data, files, config)
 
     def _export_previews(self, files: Files, config: MkDocsConfig) -> None:
-        # deferred: avoid import-time mkdocs coupling
-        from mkdocs.structure.files import File
-
         preview_data = self.preview_exporter.export(
             self.zettel_service.store,
             file_suffix=self.config["file_suffix"],
         )
-        preview_path = self.tags_service.tags_folder / "previews.json"
-        preview_path.write_text(json.dumps(preview_data), encoding="utf-8")
-        files.append(
-            File(
-                path="previews.json",
-                src_dir=str(self.tags_service.tags_folder),
-                dest_dir=config["site_dir"],
-                use_directory_urls=False,
-            )
-        )
+        self._export_json("previews.json", preview_data, files, config)
 
     def _export_suggestions(self, files: Files, config: MkDocsConfig) -> None:
-        # deferred: avoid import-time mkdocs coupling
-        from mkdocs.structure.files import File
-
         sugg_data = {}
         store = self.zettel_service.store
         suffix = self.config["file_suffix"]
@@ -276,16 +266,7 @@ class ZettelkastenPlugin(BasePlugin):
             if entries:
                 sugg_data[str(zid)] = entries
 
-        sugg_path = self.tags_service.tags_folder / "suggestions.json"
-        sugg_path.write_text(json.dumps(sugg_data), encoding="utf-8")
-        files.append(
-            File(
-                path="suggestions.json",
-                src_dir=str(self.tags_service.tags_folder),
-                dest_dir=config["site_dir"],
-                use_directory_urls=False,
-            )
-        )
+        self._export_json("suggestions.json", sugg_data, files, config)
 
     def on_page_markdown(
         self,
