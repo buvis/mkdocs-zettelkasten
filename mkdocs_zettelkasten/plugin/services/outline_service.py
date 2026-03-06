@@ -160,6 +160,8 @@ class OutlineService:
                     "children": ch,
                 },
             )
+            if node is None:
+                continue
             node["flat_entries"] = self._flatten_tree(node)
             outlines.append(node)
         return outlines
