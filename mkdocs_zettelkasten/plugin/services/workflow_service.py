@@ -14,6 +14,7 @@ from mkdocs_zettelkasten.plugin.constants import (
     TYPE_LITERATURE,
     TYPE_PERMANENT,
 )
+from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
 from mkdocs_zettelkasten.plugin.utils.jinja_utils import create_jinja_environment
 
 if TYPE_CHECKING:
@@ -92,15 +93,6 @@ class WorkflowService:
         )
         files.append(new_file)
 
-    def _id_to_date(self, zettel_id: int) -> date | None:
-        s = str(zettel_id)
-        if len(s) < 8 or not s[:8].isdigit():
-            return None
-        try:
-            return date(int(s[:4]), int(s[4:6]), int(s[6:8]))
-        except ValueError:
-            return None
-
     def _resolve_backlinks(self, store, backlinks, file_suffix):
         ids: set[int] = set()
         counts: dict[int, int] = {}
@@ -138,7 +130,8 @@ class WorkflowService:
         for z in store.zettels:
             if z.note_type != TYPE_FLEETING:
                 continue
-            created = self._id_to_date(z.id)
+            dt = convert_string_to_date(str(z.id))
+            created = dt.date() if dt else None
             if not created:
                 continue
             age = (today - created).days
@@ -175,7 +168,8 @@ class WorkflowService:
         for z in store.zettels:
             if z.maturity != MATURITY_DEVELOPING:
                 continue
-            created = self._id_to_date(z.id)
+            dt = convert_string_to_date(str(z.id))
+            created = dt.date() if dt else None
             if not created:
                 continue
             age = (today - created).days
