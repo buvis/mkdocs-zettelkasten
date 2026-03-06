@@ -1,6 +1,8 @@
 from pathlib import Path
 from unittest.mock import MagicMock
 
+import pytest
+
 from mkdocs_zettelkasten.plugin.services.validation_service import (
     ValidationService,
 )
@@ -267,6 +269,19 @@ class TestValidationService:
         vs.validate(svc, files, config)
 
         assert vs.total_actionable_issues() == 0
+
+    def test_validate_unconfigured_raises_on_missing_output_folder(self) -> None:
+        svc = self._make_zettel_service([])
+
+        vs = ValidationService()
+        # output_folder defaults to relative Path(".build") which shouldn't exist
+        vs.output_folder = Path("/nonexistent/path")
+        config = MagicMock()
+        config.__getitem__ = lambda self, k: "/tmp" if k == "site_dir" else ""
+        files = MagicMock()
+
+        with pytest.raises(FileNotFoundError):
+            vs.validate(svc, files, config)
 
     def test_report_file_generated(self, tmp_path: Path) -> None:
         svc = self._make_zettel_service([])
