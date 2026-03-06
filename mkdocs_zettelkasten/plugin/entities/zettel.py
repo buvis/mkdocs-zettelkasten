@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import html
 import re
 from typing import TYPE_CHECKING, Any, TypedDict
 
@@ -214,11 +215,17 @@ class Zettel:
     def _make_snippet(paragraph: str, match: re.Match) -> str:
         """Cleans link syntax and trims paragraph to ~200 chars around the link."""
         link_text = match.group("title") or match.group("url")
-        marked_text = f"<mark>{link_text}</mark>"
-        clean = paragraph[: match.start()] + marked_text + paragraph[match.end() :]
-        clean = WIKI_LINK.sub(lambda m: m.group("title") or m.group("url"), clean)
+        clean = WIKI_LINK.sub(lambda m: m.group("title") or m.group("url"), paragraph)
         clean = MD_LINK.sub(lambda m: m.group("title"), clean)
-        return truncate_around(clean, match.start(), len(marked_text))
+        clean = html.escape(clean)
+        escaped_link = html.escape(link_text)
+        link_pat = re.compile(re.escape(escaped_link), re.IGNORECASE)
+        m = link_pat.search(clean)
+        if m:
+            marked = f"<mark>{clean[m.start():m.end()]}</mark>"
+            clean = clean[: m.start()] + marked + clean[m.end() :]
+            return truncate_around(clean, m.start(), len(marked))
+        return truncate_around(clean, 0, 0)
 
     def _set_core_metadata(self, meta: dict, alt_title: str) -> None:
         """Sets fundamental metadata fields."""

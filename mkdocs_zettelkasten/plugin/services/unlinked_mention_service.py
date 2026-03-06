@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import html
 import logging
 import re
 from collections import defaultdict
@@ -125,8 +126,12 @@ class UnlinkedMentionService:
         """Create a display snippet with <mark> around the matched term."""
         clean = WIKI_LINK.sub(lambda m: m.group("title") or m.group("url"), paragraph)
         clean = MD_LINK.sub(lambda m: m.group("title"), clean)
+        clean = html.escape(clean)
 
-        term_pat = re.compile(r"\b" + re.escape(term) + r"\b", re.IGNORECASE)
+        escaped_term = html.escape(term)
+        term_pat = re.compile(
+            r"\b" + re.escape(escaped_term) + r"\b", re.IGNORECASE
+        )
         m = term_pat.search(clean)
         if m:
             marked = f"<mark>{clean[m.start() : m.end()]}</mark>"
