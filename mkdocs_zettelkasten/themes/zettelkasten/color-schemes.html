@@ -67,7 +67,10 @@
 
     function init() {
         fetch(REGISTRY_URL)
-            .then(function(r) { return r.json(); })
+            .then(function(r) {
+                if (!r.ok) throw new Error(r.status);
+                return r.json();
+            })
             .then(function(schemes) {
                 var grid = document.getElementById('gallery-grid');
 
@@ -99,6 +102,10 @@
                     });
                     grid.appendChild(section);
                 });
+            })
+            .catch(function() {
+                var grid = document.getElementById('gallery-grid');
+                if (grid) grid.textContent = 'Failed to load color schemes.';
             });
     }
 
