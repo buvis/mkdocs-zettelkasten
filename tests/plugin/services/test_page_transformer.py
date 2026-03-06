@@ -41,6 +41,9 @@ class TestPageTransformer:
                 f"{MODULE}.get_prev_next_page", return_value=(None, None)
             ) as mock_nav,
             patch(f"{MODULE}.adapt_backlinks_to_page") as mock_backlinks,
+            patch(f"{MODULE}.adapt_unlinked_mentions_to_page") as mock_unlinked,
+            patch(f"{MODULE}.adapt_suggestions_to_page") as mock_suggestions,
+            patch(f"{MODULE}.adapt_sequence_to_page") as mock_sequence,
         ):
             result = transformer.transform(
                 "original", page, config, files, zettel_service
@@ -52,6 +55,9 @@ class TestPageTransformer:
         mock_ref.assert_called_once()
         mock_nav.assert_called_once()
         mock_backlinks.assert_called_once()
+        mock_unlinked.assert_called_once()
+        mock_suggestions.assert_called_once()
+        mock_sequence.assert_called_once()
 
     def test_transform_chains_adapters_in_order(self) -> None:
         """Each adapter receives the output of the previous one."""
@@ -68,6 +74,9 @@ class TestPageTransformer:
             patch(f"{MODULE}.get_page_ref", return_value=("after_ref", None)) as m_ref,
             patch(f"{MODULE}.get_prev_next_page", return_value=(None, None)),
             patch(f"{MODULE}.adapt_backlinks_to_page"),
+            patch(f"{MODULE}.adapt_unlinked_mentions_to_page"),
+            patch(f"{MODULE}.adapt_suggestions_to_page"),
+            patch(f"{MODULE}.adapt_sequence_to_page"),
         ):
             result = transformer.transform(
                 "original", page, config, files, zettel_service
