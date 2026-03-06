@@ -1,6 +1,6 @@
 /* Theme & scheme switching */
 (() => {
-    const root = (typeof base_url !== 'undefined' && base_url) || '';
+    const root = ((typeof base_url !== 'undefined' && base_url) || '').replace(/\/+$/, '');
     const getTheme = () => document.documentElement.getAttribute('data-theme') || 'light';
 
     const getScheme = () => document.documentElement.getAttribute('data-color-scheme') || 'solarized';
