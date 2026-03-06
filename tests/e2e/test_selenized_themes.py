@@ -1,5 +1,10 @@
 """E2E tests for color scheme switching."""
 
+SCHEME_BG = {
+    "solarized": "#f8f8f8",
+    "vesper": "#f5f0e8",
+}
+
 
 def _get_css_var(page, var):
     return page.evaluate(
@@ -27,25 +32,25 @@ def test_default_site_uses_solarized(page, default_site):
 
 def test_default_site_loads_solarized_colors(page, default_site):
     page.goto(default_site)
-    assert _get_css_var(page, "--bg-page") == "#f8f8f8"
+    assert _get_css_var(page, "--bg-page") == SCHEME_BG["solarized"]
 
 
 def test_switch_to_vesper_via_modal(page, default_site):
     page.goto(default_site)
     _open_settings(page)
     page.click('.scheme-card[data-scheme-id="vesper"]')
-    _wait_for_scheme_css(page, "#f5f0e8")
-    assert _get_css_var(page, "--bg-page") == "#f5f0e8"
+    _wait_for_scheme_css(page, SCHEME_BG["vesper"])
+    assert _get_css_var(page, "--bg-page") == SCHEME_BG["vesper"]
 
 
 def test_scheme_persists_on_reload(page, default_site):
     page.goto(default_site)
     _open_settings(page)
     page.click('.scheme-card[data-scheme-id="vesper"]')
-    _wait_for_scheme_css(page, "#f5f0e8")
+    _wait_for_scheme_css(page, SCHEME_BG["vesper"])
     page.reload()
     assert page.locator("html").get_attribute("data-color-scheme") == "vesper"
-    assert _get_css_var(page, "--bg-page") == "#f5f0e8"
+    assert _get_css_var(page, "--bg-page") == SCHEME_BG["vesper"]
 
 
 def test_scheme_stored_in_localstorage(page, default_site):
