@@ -48,9 +48,6 @@
 
         {%- if config.theme.highlightjs %}
         <script src="{{ 'js/vendor/highlight.min.js'|url }}"></script>
-        {%- for lang in config.theme.hljs_languages %}
-        <script src="{{ ('js/vendor/hljs-languages/' ~ lang ~ '.min.js')|url }}"></script>
-        {%- endfor %}
         <script>hljs.highlightAll();</script>
         {%- endif %}
 
