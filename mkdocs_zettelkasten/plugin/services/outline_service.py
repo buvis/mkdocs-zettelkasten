@@ -4,6 +4,7 @@ import logging
 from typing import TYPE_CHECKING, Any
 
 from mkdocs_zettelkasten.plugin.utils.jinja_utils import create_jinja_environment
+from mkdocs_zettelkasten.plugin.utils.tree_utils import build_tree_node
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -148,23 +149,20 @@ class OutlineService:
         roots.sort(key=lambda z: z.title)
         outlines = []
         for z in roots:
-            node = self._build_tree_node(z, store, sequence_children)
+            node = build_tree_node(
+                z.id,
+                sequence_children,
+                store.get_by_id,
+                lambda z, ch: {
+                    "id": z.id,
+                    "title": z.title,
+                    "rel_path": z.rel_path,
+                    "children": ch,
+                },
+            )
             node["flat_entries"] = self._flatten_tree(node)
             outlines.append(node)
         return outlines
-
-    def _build_tree_node(self, zettel, store, sequence_children):
-        children = []
-        for child_id in sequence_children.get(zettel.id, []):
-            child = store.get_by_id(child_id)
-            if child:
-                children.append(self._build_tree_node(child, store, sequence_children))
-        return {
-            "id": zettel.id,
-            "title": zettel.title,
-            "rel_path": zettel.rel_path,
-            "children": children,
-        }
 
     def _flatten_tree(self, node, depth=0):
         items = [

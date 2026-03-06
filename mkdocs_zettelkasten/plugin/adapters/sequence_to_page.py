@@ -3,6 +3,8 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
+from mkdocs_zettelkasten.plugin.utils.tree_utils import build_tree_node
+
 if TYPE_CHECKING:
     from collections.abc import Callable
 
@@ -71,13 +73,19 @@ def adapt_sequence_to_page(
     # Build full tree if zettel is in any sequence
     if zettel.sequence_parent_id is not None or zettel.id in sequence_children:
         root_id = _find_sequence_root(zettel.id, zettel_lookup)
-        tree_node = _build_tree_node(
+        _cur = zettel.id
+        _sfx = file_suffix
+        tree_node = build_tree_node(
             root_id,
             sequence_children,
             zettel_lookup,
-            zettel.id,
-            file_suffix,
-            set(),
+            lambda z, ch: {
+                "url": z.rel_path.removesuffix(_sfx) + "/",
+                "title": z.title,
+                "current": z.id == _cur,
+                "children": ch,
+            },
+            visited=set(),
         )
         zettel.sequence_tree = [tree_node] if tree_node else []
 
@@ -103,38 +111,3 @@ def _find_sequence_root(
         if not z or z.sequence_parent_id is None or z.sequence_parent_id in visited:
             return current
         current = z.sequence_parent_id
-
-
-def _build_tree_node(
-    zettel_id: int,
-    sequence_children: dict[int, list[int]],
-    zettel_lookup: Callable[[int], Zettel | None],
-    current_id: int,
-    file_suffix: str,
-    visited: set[int],
-) -> dict | None:
-    """Recursively build a tree node dict."""
-    if zettel_id in visited:
-        return None
-    visited.add(zettel_id)
-    z = zettel_lookup(zettel_id)
-    if not z:
-        return None
-    children = []
-    for child_id in sequence_children.get(zettel_id, []):
-        child_node = _build_tree_node(
-            child_id,
-            sequence_children,
-            zettel_lookup,
-            current_id,
-            file_suffix,
-            visited,
-        )
-        if child_node:
-            children.append(child_node)
-    return {
-        "url": z.rel_path.removesuffix(file_suffix) + "/",
-        "title": z.title,
-        "current": zettel_id == current_id,
-        "children": children,
-    }
