@@ -39,6 +39,8 @@
     });
 })();
 
+(() => {
+
 const applyTopPadding = () => {
     const container = document.querySelector('body > .container');
     if (!container) return;
@@ -434,3 +436,5 @@ if (document.readyState === 'loading') {
 }
 
 window.addEventListener('resize', applyTopPadding);
+
+})();
