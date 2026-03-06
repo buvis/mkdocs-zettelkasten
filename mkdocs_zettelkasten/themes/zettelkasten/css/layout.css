@@ -65,6 +65,13 @@ body {
   position: relative;
 }
 
+button.nav-link {
+  background: none;
+  border: none;
+  appearance: none;
+  font: inherit;
+}
+
 .nav-link {
   display: block;
   padding: 0.5rem 1rem;
@@ -309,7 +316,7 @@ body .text-right {
   cursor: pointer;
 }
 
-.dropdown-toggle::after, .caret {
+.dropdown-toggle::after {
   display: inline-block;
   margin-left: 0.255em;
   vertical-align: 0.255em;
