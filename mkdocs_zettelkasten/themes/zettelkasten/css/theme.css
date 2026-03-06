@@ -309,7 +309,7 @@ pre:has(> code):hover .copy-btn {
 
 /* Validation badge */
 .validation-badge {
-  color: #b58900;
+  color: var(--status-warning);
   margin-left: 0.5em;
   font-size: 0.9em;
   position: relative;
@@ -389,15 +389,15 @@ pre:has(> code):hover .copy-btn {
 }
 
 .zettel-maturity-badge[data-maturity="draft"] .maturity-dot {
-  background: #dc322f;
+  background: var(--status-error);
 }
 
 .zettel-maturity-badge[data-maturity="developing"] .maturity-dot {
-  background: #b58900;
+  background: var(--status-warning);
 }
 
 .zettel-maturity-badge[data-maturity="evergreen"] .maturity-dot {
-  background: #859900;
+  background: var(--status-success);
 }
 
 /* MOC card styling */

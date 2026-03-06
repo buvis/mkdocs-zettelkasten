@@ -111,7 +111,7 @@
 
 .graph-tag-pill.active {
   background: var(--text-link);
-  color: #fff;
+  color: var(--bg-zettel);
   border-color: var(--text-link);
 }
 
