@@ -6,6 +6,7 @@
 
   /* Page backgrounds */
   --bg-page: #f5f0e8;
+  --bg-body-image: url(../img/grid.png);
   --bg-zettel: #fffdf8;
   --bg-header: #ece5d8;
   --bg-accent: #ece5d8;
@@ -63,6 +64,7 @@
   color-scheme: dark;
 
   --bg-page: #101010;
+  --bg-body-image: url(../img/grid.png);
   --bg-zettel: #1a1a1a;
   --bg-header: #222222;
   --bg-accent: #171717;
