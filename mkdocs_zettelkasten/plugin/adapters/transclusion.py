@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import Callable
-    from pathlib import Path
     from re import Match
 
     from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
@@ -12,7 +11,7 @@ if TYPE_CHECKING:
 import logging
 import re
 
-from mkdocs_zettelkasten.plugin.utils.frontmatter import DIVIDER, parse_frontmatter
+from mkdocs_zettelkasten.plugin.utils.frontmatter import DIVIDER
 from mkdocs_zettelkasten.plugin.utils.patterns import (
     EMBED_LINK,
     process_outside_code_blocks,
@@ -23,11 +22,8 @@ logger = logging.getLogger(
 )
 
 
-def _read_zettel_body(path: Path) -> str:
-    """Read a zettel file and return body content (after YAML header, before ref footer)."""
-    content = path.read_text(encoding="utf-8-sig")
-    _, body = parse_frontmatter(content)
-    # Truncate at reference section divider
+def _body_without_refs(body: str) -> str:
+    """Return body content before the reference section divider."""
     for i, line in enumerate(body.splitlines(keepends=True)):
         if line.strip() == DIVIDER:
             return "".join(body.splitlines(keepends=True)[:i])
@@ -120,7 +116,7 @@ def _resolve_embed(
         logger.warning("Circular embed detected: %s", url)
         return f'\n!!! warning "Circular embed"\n    Circular reference detected: `{url}`\n'
 
-    body = _read_zettel_body(zettel.path)
+    body = _body_without_refs(zettel.body)
 
     if section:
         extracted = _extract_section(body, section)

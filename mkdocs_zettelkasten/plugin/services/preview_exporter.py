@@ -4,15 +4,11 @@ import logging
 import re
 from typing import TYPE_CHECKING
 
-from mkdocs_zettelkasten.plugin.utils.frontmatter import parse_frontmatter
-
 logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
 )
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
 
 
@@ -31,24 +27,15 @@ class PreviewExporter:
         for z in store.zettels:
             zid = str(z.id)
             url = z.rel_path.removesuffix(file_suffix) + "/"
-            excerpt = self._extract_excerpt(z.path)
+            excerpt = self._extract_excerpt(z.body)
             previews[zid] = {"title": z.title, "excerpt": excerpt, "url": url}
 
         return previews
 
-    def _extract_excerpt(self, path: Path) -> str:
-        """Read zettel file, skip YAML frontmatter, return first paragraph."""
-        try:
-            content = path.read_text(encoding="utf-8-sig", errors="strict")
-        except OSError as e:
-            logger.warning("Cannot read %s: %s", path, e)
-            return ""
-
-        _, body = parse_frontmatter(content)
-        body_lines = body.splitlines()
-
+    def _extract_excerpt(self, body: str) -> str:
+        """Extract first paragraph from zettel body text."""
         paragraph_lines: list[str] = []
-        for line in body_lines:
+        for line in body.splitlines():
             stripped = line.strip()
             if not stripped:
                 if paragraph_lines:
