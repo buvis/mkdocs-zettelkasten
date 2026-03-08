@@ -179,9 +179,9 @@ class TestZettelServicePipeline:
         assert len(self.svc.backlinks) > 0
 
     def test_backlink_targets_resolve(self) -> None:
-        for link_path, sources in self.svc.backlinks.items():
-            target = self.svc.store.get_by_partial_path(link_path)
-            assert target is not None, f"backlink target {link_path} not in store"
+        for target_id, sources in self.svc.backlinks.items():
+            target = self.svc.store.get_by_id(target_id)
+            assert target is not None, f"backlink target {target_id} not in store"
             for src in sources:
                 assert src in self.svc.store.zettels
 

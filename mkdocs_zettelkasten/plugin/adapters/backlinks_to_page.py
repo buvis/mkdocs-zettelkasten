@@ -15,26 +15,40 @@ logger = logging.getLogger(
 )
 
 
+def _find_snippet(source: Zettel, target: Zettel, file_suffix: str) -> str | None:
+    """Find the snippet for a link from source to target.
+
+    Tries matching by target ID (wiki links) and rel_path (md links).
+    """
+    candidates = [
+        str(target.id),
+        target.rel_path,
+        target.rel_path.removesuffix(file_suffix),
+    ]
+    for key in candidates:
+        if snippet := source.link_snippets.get(key):
+            return snippet
+    return None
+
+
 def add_backlink_to_target(
-    link: str,
+    target_id: int,
     page: Page,
     zettel: Zettel,
-    zettel_lookup: Callable[[str], Zettel | None],
+    zettel_by_id: Callable[[int], Zettel | None],
     file_suffix: str = ".md",
 ) -> None:
-    """Add a backlink to the target zettel if the link and page match."""
+    """Add a backlink to the target zettel if the source zettel matches the page."""
     zettel_meta = page.meta.get("zettel")
     if not zettel_meta or zettel.id != zettel_meta.id:
         return
 
-    target_zettel = zettel_lookup(link)
+    target_zettel = zettel_by_id(target_id)
 
     if not target_zettel:
         return
 
-    snippet = zettel.link_snippets.get(link) or zettel.link_snippets.get(
-        link.removesuffix(file_suffix)
-    )
+    snippet = _find_snippet(zettel, target_zettel, file_suffix)
     backlink: LinkRef = {
         "url": str(page.url or ""),
         "title": str(page.title or ""),
@@ -55,14 +69,14 @@ def add_backlink_to_target(
 
 def adapt_backlinks_to_page(
     page: Page,
-    backlinks: dict[str, list[Zettel]],
-    zettel_lookup: Callable[[str], Zettel | None],
+    backlinks: dict[int, list[Zettel]],
+    zettel_by_id: Callable[[int], Zettel | None],
     file_suffix: str = ".md",
 ) -> None:
     """Adapts backlinks to the specified page by adding them to target Zettels."""
     if not page.meta.get("is_zettel"):
         return
 
-    for link, source_zettels in backlinks.items():
+    for target_id, source_zettels in backlinks.items():
         for zettel in source_zettels:
-            add_backlink_to_target(link, page, zettel, zettel_lookup, file_suffix)
+            add_backlink_to_target(target_id, page, zettel, zettel_by_id, file_suffix)

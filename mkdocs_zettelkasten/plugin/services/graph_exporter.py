@@ -14,7 +14,7 @@ class GraphExporter:
         self,
         store: ZettelStore,
         tags_metadata: list[dict[str, Any]],
-        backlinks: dict[str, list[Zettel]],
+        backlinks: dict[int, list[Zettel]],
         file_suffix: str = ".md",
     ) -> dict:
         tags_by_path = {m["src_path"]: m.get("tags", []) for m in tags_metadata}
@@ -22,7 +22,7 @@ class GraphExporter:
 
         seen_edges: set[tuple[str, str]] = set()
         edges = self._build_backlink_edges(
-            store, backlinks, id_set, seen_edges, file_suffix
+            backlinks, id_set, seen_edges
         )
         edges += self._build_sequence_edges(store, id_set, seen_edges)
 
@@ -63,18 +63,13 @@ class GraphExporter:
 
     @staticmethod
     def _build_backlink_edges(
-        store: ZettelStore,
-        backlinks: dict[str, list[Zettel]],
+        backlinks: dict[int, list[Zettel]],
         id_set: set[str],
         seen: set[tuple[str, str]],
-        file_suffix: str,
     ) -> list[dict[str, str]]:
         edges = []
-        for link_path, source_zettels in backlinks.items():
-            target = store.get_by_partial_path(link_path, file_suffix)
-            if target is None:
-                continue
-            target_id = str(target.id)
+        for target_zid, source_zettels in backlinks.items():
+            target_id = str(target_zid)
             if target_id not in id_set:
                 continue
             for source in source_zettels:

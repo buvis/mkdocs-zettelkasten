@@ -46,7 +46,7 @@ class TestValidationService:
         z2 = self._make_zettel(2, "b.md", links=["a"])
 
         svc = self._make_zettel_service(
-            [z1, z2], backlinks={"a.md": [z2], "b.md": [z1]}
+            [z1, z2], backlinks={1: [z2], 2: [z1]}
         )
 
         vs = ValidationService()
@@ -64,7 +64,7 @@ class TestValidationService:
         z1 = self._make_zettel(1, "a.md", links=["b"])
         z2 = self._make_zettel(2, "b.md", links=[])
 
-        svc = self._make_zettel_service([z1, z2], backlinks={"b.md": [z1]})
+        svc = self._make_zettel_service([z1, z2], backlinks={2: [z1]})
 
         vs = ValidationService()
         vs.output_folder = tmp_path

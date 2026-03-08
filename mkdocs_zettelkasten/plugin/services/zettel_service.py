@@ -30,7 +30,7 @@ class ZettelService:
 
     def __init__(self) -> None:
         self.store = ZettelStore()
-        self.backlinks: dict[str, list[Zettel]] = {}
+        self.backlinks: dict[int, list[Zettel]] = {}
         self.invalid_files: list = []
         self.zettel_config = ZettelkastenConfig()
         self.file_suffix: str = ".md"

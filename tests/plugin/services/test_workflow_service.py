@@ -55,7 +55,7 @@ class TestStats:
         )
         z2 = _make_zettel_mock(20260227000002, title="B", rel_path="b.md")
         store = ZettelStore([z1, z2])
-        backlinks = {"b.md": [z1]}
+        backlinks = {20260227000002: [z1]}
         mentions = {2: [(1, "snip")]}
         result = self.service.compute(store, backlinks, mentions, today=TODAY)
         assert result["stats"]["total"] == 2
@@ -200,7 +200,7 @@ class TestOrphans:
             20260227000002, title="Source", rel_path="s.md", links=["t.md"]
         )
         store = ZettelStore([z1, z2])
-        backlinks = {"t.md": [z2]}
+        backlinks = {20260227000001: [z2]}
         result = self.service.compute(store, backlinks, {}, today=TODAY)
         orphan_ids = [o["id"] for o in result["orphans"]]
         assert 20260227000001 not in orphan_ids
@@ -246,7 +246,7 @@ class TestUnlinkedMentionHotspots:
             20260227000002, title="Src", rel_path="s.md", links=["t.md"]
         )
         store = ZettelStore([z1, z2])
-        backlinks = {"t.md": [z2]}
+        backlinks = {20260227000001: [z2]}
         mentions = {20260227000001: [(20260227000002, "s")]}
         result = self.service.compute(store, backlinks, mentions, today=TODAY)
         assert result["mention_hotspots"][0]["backlink_count"] == 1

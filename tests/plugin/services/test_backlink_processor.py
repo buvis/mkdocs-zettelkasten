@@ -18,8 +18,8 @@ class TestBacklinkProcessor:
         store = ZettelStore([z1, z2])
         result = BacklinkProcessor.process(store)
 
-        assert "b.md" in result
-        assert z1 in result["b.md"]
+        assert 2 in result
+        assert z1 in result[2]
 
     def test_normalizes_links_without_suffix(self) -> None:
         z1 = _make_zettel_mock(1, path=Path("/docs/a.md"), links=["b"])
@@ -28,7 +28,7 @@ class TestBacklinkProcessor:
         store = ZettelStore([z1, z2])
         result = BacklinkProcessor.process(store)
 
-        assert "b.md" in result
+        assert 2 in result
 
     def test_normalize_links_appends_suffix(self) -> None:
         result = BacklinkProcessor.normalize_links(["a", "b.md"])

@@ -17,9 +17,9 @@ class BacklinkProcessor:
     @classmethod
     def process(
         cls, store: ZettelStore, file_suffix: str = ".md"
-    ) -> dict[str, list[Zettel]]:
-        """Create mapping: target_path -> list_of_linking_files."""
-        backlinks = defaultdict(list)
+    ) -> dict[int, list[Zettel]]:
+        """Create mapping: target_zettel_id -> list_of_linking_zettels."""
+        backlinks: dict[int, list[Zettel]] = defaultdict(list)
 
         for zettel in store.zettels:
             for normalized_link in cls.normalize_links(zettel.links, file_suffix):
@@ -32,7 +32,7 @@ class BacklinkProcessor:
                         target_zettel.id,
                         target_zettel.id,
                     )
-                    backlinks[normalized_link].append(zettel)
+                    backlinks[target_zettel.id].append(zettel)
 
         return backlinks
 

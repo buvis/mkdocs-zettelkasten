@@ -85,13 +85,7 @@ class ValidationService:
             )
 
     def _check_orphans(self, zettel_service: ZettelService) -> None:
-        targeted_ids: set[int] = set()
-        for link_path in zettel_service.backlinks:
-            target = zettel_service.store.get_by_partial_path(
-                link_path, self.file_suffix
-            )
-            if target:
-                targeted_ids.add(target.id)
+        targeted_ids: set[int] = set(zettel_service.backlinks.keys())
 
         for zettel in zettel_service.get_zettels():
             if zettel.id not in targeted_ids:

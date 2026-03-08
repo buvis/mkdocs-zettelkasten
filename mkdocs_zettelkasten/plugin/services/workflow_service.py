@@ -41,7 +41,7 @@ class WorkflowService:
     def compute(
         self,
         store: ZettelStore,
-        backlinks: dict[str, list],
+        backlinks: dict[int, list],
         unlinked_mentions: dict[int, list[tuple[int, str]]],
         file_suffix: str = ".md",
         today: date | None = None,
@@ -96,13 +96,10 @@ class WorkflowService:
     def _resolve_backlinks(self, store, backlinks, file_suffix):
         ids: set[int] = set()
         counts: dict[int, int] = {}
-        for key, linkers in backlinks.items():
-            target = store.get_by_partial_path(key, file_suffix)
-            if not target:
-                continue
+        for target_id, linkers in backlinks.items():
             if linkers:
-                ids.add(target.id)
-            counts[target.id] = counts.get(target.id, 0) + len(linkers)
+                ids.add(target_id)
+            counts[target_id] = counts.get(target_id, 0) + len(linkers)
         return ids, counts
 
     def _stats(self, store, backlinks, unlinked_mentions):

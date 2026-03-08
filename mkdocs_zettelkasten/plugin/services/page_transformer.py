@@ -120,7 +120,7 @@ class PageTransformer:
             adapt_backlinks_to_page,
             page,
             zettel_service.backlinks,
-            zettel_service.get_zettel_by_partial_path,
+            zettel_service.get_zettel_by_id,
             file_suffix=zettel_service.file_suffix,
         )
         # Step 8 — requires: zettel in page.meta (step 1)
