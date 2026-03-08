@@ -19,6 +19,7 @@ import tzlocal
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 
+from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
 from mkdocs_zettelkasten.plugin.services.graph_exporter import GraphExporter
 from mkdocs_zettelkasten.plugin.services.outline_service import OutlineService
 from mkdocs_zettelkasten.plugin.services.page_transformer import PageTransformer
@@ -106,19 +107,23 @@ class ZettelkastenPlugin(BasePlugin):
         ):
             self.logger.addHandler(self._create_logging_handler())
         tz = self._resolve_timezone()
+        self.zk_config = ZettelkastenConfig(
+            **{k: self.config[k] for k in ZettelkastenConfig.__dataclass_fields__ if k != "timezone"},
+            timezone=tz,
+        )
         zettel_config = {
-            "id_key": self.config["id_key"],
-            "date_key": self.config["date_key"],
-            "last_update_key": self.config["last_update_key"],
-            "tags_key": self.config["tags_key"],
-            "type_key": self.config["type_key"],
-            "maturity_key": self.config["maturity_key"],
-            "role_key": self.config["role_key"],
-            "sequence_key": self.config["sequence_key"],
-            "id_format": self.config["id_format"],
+            "id_key": self.zk_config.id_key,
+            "date_key": self.zk_config.date_key,
+            "last_update_key": self.zk_config.last_update_key,
+            "tags_key": self.zk_config.tags_key,
+            "type_key": self.zk_config.type_key,
+            "maturity_key": self.zk_config.maturity_key,
+            "role_key": self.zk_config.role_key,
+            "sequence_key": self.zk_config.sequence_key,
+            "id_format": self.zk_config.id_format,
             "timezone": tz,
-            "date_format": self.config["date_format"],
-            "file_suffix": self.config["file_suffix"],
+            "date_format": self.zk_config.date_format,
+            "file_suffix": self.zk_config.file_suffix,
         }
         self.zettel_service.configure(zettel_config)
         self.tags_service.configure(
