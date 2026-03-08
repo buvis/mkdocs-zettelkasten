@@ -3,10 +3,13 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
 from mkdocs_zettelkasten.plugin.entities.zettel import (
     Zettel,
     ZettelFormatError,
 )
+
+PERMISSIVE_CONFIG = ZettelkastenConfig(id_format=r"^\d+$")
 
 VALID_ZETTEL = """---
 id: 20240101120000
@@ -149,16 +152,16 @@ The formula x < y & z > w links to [[20240102120000|note]] for details.
 """
 
 
-def _make_zettel(tmp_path: Path, content: str, **kwargs) -> Zettel:
+def _make_zettel(
+    tmp_path: Path,
+    content: str,
+    zettel_config: ZettelkastenConfig | None = None,
+) -> Zettel:
     fp = tmp_path / "test.md"
     fp.write_text(content)
     mock_stat = Mock()
     mock_stat.st_mtime = 1704067200.0  # 2024-01-01
-    # Default to permissive id_format so tests that don't care about ID
-    # validation can use short IDs like "1" without tripping the check.
-    cfg = kwargs.get("zettel_config") or {}
-    cfg.setdefault("id_format", r"^\d+$")
-    kwargs["zettel_config"] = cfg
+    cfg = zettel_config or PERMISSIVE_CONFIG
     with (
         patch.object(Path, "stat", return_value=mock_stat),
         patch(
@@ -166,7 +169,7 @@ def _make_zettel(tmp_path: Path, content: str, **kwargs) -> Zettel:
             return_value=False,
         ),
     ):
-        return Zettel(fp, str(fp.relative_to(tmp_path)), **kwargs)
+        return Zettel(fp, str(fp.relative_to(tmp_path)), cfg)
 
 
 class TestZettelInit:
@@ -215,11 +218,11 @@ class TestZettelInit:
     def test_id_format_mismatch_raises(self, tmp_path: Path) -> None:
         content = "---\nid: 999\ndate: 2024-01-01\n---\nBody.\n"
         with pytest.raises(ZettelFormatError, match="does not match format"):
-            _make_zettel(tmp_path, content, zettel_config={"id_format": r"^\d{14}$"})
+            _make_zettel(tmp_path, content, zettel_config=ZettelkastenConfig())
 
     def test_id_format_match_passes(self, tmp_path: Path) -> None:
         z = _make_zettel(
-            tmp_path, VALID_ZETTEL, zettel_config={"id_format": r"^\d{14}$"}
+            tmp_path, VALID_ZETTEL, zettel_config=ZettelkastenConfig()
         )
         assert z.id == 20240101120000
 
@@ -289,18 +292,18 @@ class TestHashAndEquality:
 class TestConfigurableKeys:
     def test_custom_id_key(self, tmp_path: Path) -> None:
         content = "---\nzettel_id: 99\ndate: 2024-01-01\n---\n# Title\n"
-        z = _make_zettel(tmp_path, content, zettel_config={"id_key": "zettel_id"})
+        z = _make_zettel(tmp_path, content, zettel_config=ZettelkastenConfig(id_key="zettel_id", id_format=r"^\d+$"))
         assert z.id == 99
 
     def test_custom_date_key(self, tmp_path: Path) -> None:
         content = "---\nid: 1\ncreated: 2025-06-15\n---\n# Title\n"
-        z = _make_zettel(tmp_path, content, zettel_config={"date_key": "created"})
+        z = _make_zettel(tmp_path, content, zettel_config=ZettelkastenConfig(date_key="created", id_format=r"^\d+$"))
         assert z.last_update_date == "2025-06-15"
 
     def test_custom_last_update_key(self, tmp_path: Path) -> None:
         content = "---\nid: 1\nmodified: 2025-06-15\ndate: 2024-01-01\n---\n# Title\n"
         z = _make_zettel(
-            tmp_path, content, zettel_config={"last_update_key": "modified"}
+            tmp_path, content, zettel_config=ZettelkastenConfig(last_update_key="modified", id_format=r"^\d+$")
         )
         assert z.last_update_date == "2025-06-15"
 
@@ -335,12 +338,12 @@ class TestNoteTypeAndMaturity:
 
     def test_custom_type_key(self, tmp_path: Path) -> None:
         content = "---\nid: 1\nkind: literature\ndate: 2024-01-01\n---\n# Title\n"
-        z = _make_zettel(tmp_path, content, zettel_config={"type_key": "kind"})
+        z = _make_zettel(tmp_path, content, zettel_config=ZettelkastenConfig(type_key="kind", id_format=r"^\d+$"))
         assert z.note_type == "literature"
 
     def test_custom_maturity_key(self, tmp_path: Path) -> None:
         content = "---\nid: 1\nstatus: evergreen\ndate: 2024-01-01\n---\n# Title\n"
-        z = _make_zettel(tmp_path, content, zettel_config={"maturity_key": "status"})
+        z = _make_zettel(tmp_path, content, zettel_config=ZettelkastenConfig(maturity_key="status", id_format=r"^\d+$"))
         assert z.maturity == "evergreen"
 
     def test_arbitrary_type_value(self, tmp_path: Path) -> None:
@@ -361,7 +364,7 @@ class TestRole:
 
     def test_custom_role_key(self, tmp_path: Path) -> None:
         content = "---\nid: 1\nnote_role: index\ndate: 2024-01-01\n---\n# Title\n"
-        z = _make_zettel(tmp_path, content, zettel_config={"role_key": "note_role"})
+        z = _make_zettel(tmp_path, content, zettel_config=ZettelkastenConfig(role_key="note_role", id_format=r"^\d+$"))
         assert z.role == "index"
 
     def test_is_moc_true_for_moc(self, tmp_path: Path) -> None:
@@ -474,7 +477,7 @@ class TestSequence:
 
     def test_custom_sequence_key(self, tmp_path: Path) -> None:
         content = "---\nid: 1\nfollows: 99\ndate: 2024-01-01\n---\n# Title\n"
-        z = _make_zettel(tmp_path, content, zettel_config={"sequence_key": "follows"})
+        z = _make_zettel(tmp_path, content, zettel_config=ZettelkastenConfig(sequence_key="follows", id_format=r"^\d+$"))
         assert z.sequence_parent_id == 99
 
     def test_sequence_parent_initialized_none(self, tmp_path: Path) -> None:

@@ -1,16 +1,17 @@
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
 
 VALID_MD = "---\nid: 1\ndate: 2024-01-01\n---\n# Title\nBody\n"
-PERMISSIVE_CONFIG = {"id_format": r"^\d+$"}
+PERMISSIVE_CONFIG = ZettelkastenConfig(id_format=r"^\d+$")
 
 
 class TestZettelService:
     def test_configure_stores_config(self) -> None:
         svc = ZettelService()
-        cfg = {"id_key": "myid"}
+        cfg = ZettelkastenConfig(id_key="myid")
         svc.configure(cfg)
         assert svc.zettel_config == cfg
 

@@ -12,6 +12,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
 from mkdocs_zettelkasten.plugin.services.graph_exporter import GraphExporter
 from mkdocs_zettelkasten.plugin.services.page_transformer import PageTransformer
 from mkdocs_zettelkasten.plugin.services.preview_exporter import PreviewExporter
@@ -21,7 +22,7 @@ from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
 if TYPE_CHECKING:
     from pathlib import Path
 
-PERMISSIVE_CONFIG = {"id_format": r"^\d+$"}
+PERMISSIVE_CONFIG = ZettelkastenConfig(id_format=r"^\d+$")
 
 # -- Zettel markdown fixtures ------------------------------------------------
 

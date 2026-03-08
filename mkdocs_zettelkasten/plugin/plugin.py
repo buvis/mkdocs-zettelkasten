@@ -111,30 +111,16 @@ class ZettelkastenPlugin(BasePlugin):
             **{k: self.config[k] for k in ZettelkastenConfig.__dataclass_fields__ if k != "timezone"},
             timezone=tz,
         )
-        zettel_config = {
-            "id_key": self.zk_config.id_key,
-            "date_key": self.zk_config.date_key,
-            "last_update_key": self.zk_config.last_update_key,
-            "tags_key": self.zk_config.tags_key,
-            "type_key": self.zk_config.type_key,
-            "maturity_key": self.zk_config.maturity_key,
-            "role_key": self.zk_config.role_key,
-            "sequence_key": self.zk_config.sequence_key,
-            "id_format": self.zk_config.id_format,
-            "timezone": tz,
-            "date_format": self.zk_config.date_format,
-            "file_suffix": self.zk_config.file_suffix,
-        }
-        self.zettel_service.configure(zettel_config)
+        self.zettel_service.configure(self.zk_config)
         self.tags_service.configure(
             config,
-            tags_key=self.config["tags_key"],
-            file_suffix=self.config["file_suffix"],
-            role_key=self.config["role_key"],
+            tags_key=self.zk_config.tags_key,
+            file_suffix=self.zk_config.file_suffix,
+            role_key=self.zk_config.role_key,
         )
-        if self.config["validation_enabled"]:
+        if self.zk_config.validation_enabled:
             self.validation_service.configure(
-                config, file_suffix=self.config["file_suffix"]
+                config, file_suffix=self.zk_config.file_suffix
             )
         if self.config["editor_enabled"]:
             config["extra"]["editor_enabled"] = True

@@ -83,12 +83,12 @@ class TestZettelkastenPlugin:
 
         mock_cfg.assert_called_once()
         call_args = mock_cfg.call_args[0][0]
-        assert call_args["id_key"] == "id"
-        assert call_args["tags_key"] == "tags"
-        assert call_args["type_key"] == "type"
-        assert call_args["maturity_key"] == "maturity"
-        assert call_args["date_format"] == "%Y-%m-%d"
-        assert call_args["file_suffix"] == ".md"
+        assert call_args.id_key == "id"
+        assert call_args.tags_key == "tags"
+        assert call_args.type_key == "type"
+        assert call_args.maturity_key == "maturity"
+        assert call_args.date_format == "%Y-%m-%d"
+        assert call_args.file_suffix == ".md"
 
     def test_on_config_passes_tags_key(self) -> None:
         plugin = self._make_plugin()
@@ -397,7 +397,7 @@ class TestZettelkastenPlugin:
         ):
             plugin.on_config(config)
 
-        assert mock_zcfg.call_args[0][0]["file_suffix"] == ".txt"
+        assert mock_zcfg.call_args[0][0].file_suffix == ".txt"
         mock_tcfg.assert_called_once_with(
             config, tags_key="tags", file_suffix=".txt", role_key="role"
         )

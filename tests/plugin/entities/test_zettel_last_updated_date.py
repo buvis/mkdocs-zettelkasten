@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
+from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
 from mkdocs_zettelkasten.plugin.entities.zettel import Zettel, ZettelFormatError
 
 UTC = ZoneInfo("UTC")
@@ -88,7 +89,7 @@ def test_custom_date_format(
     zettel_factory: Callable[..., Zettel],
 ) -> None:
     zettel = zettel_factory(
-        LAST_UPDATE_CONTENT, _ts(2022), zettel_config={"date_format": "%d/%m/%Y"}
+        LAST_UPDATE_CONTENT, _ts(2022), zettel_config=ZettelkastenConfig(date_format="%d/%m/%Y")
     )
     assert zettel.last_update_date == "31/12/2022"
 

@@ -3,11 +3,12 @@ from unittest.mock import MagicMock, patch
 
 from mkdocs.structure.files import File
 
+from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
 from mkdocs_zettelkasten.plugin.services.zettel_parser import ZettelParser
 
 VALID_CONTENT = "---\nid: 1\ndate: 2024-01-01\n---\n# Title\nBody\n"
 INVALID_CONTENT = "---\ntitle: No ID\n---\n# Title\n"
-PERMISSIVE_CONFIG = {"id_format": r"^\d+$"}
+PERMISSIVE_CONFIG = ZettelkastenConfig(id_format=r"^\d+$")
 
 
 def _make_file(src_path: str, abs_src_path: str, is_doc: bool = True) -> MagicMock:
@@ -82,7 +83,7 @@ class TestZettelParser:
         ):
             valid, _ = ZettelParser.parse_files(
                 files,
-                zettel_config={"id_key": "zettel_id", "id_format": r"^\d+$"},
+                zettel_config=ZettelkastenConfig(id_key="zettel_id", id_format=r"^\d+$"),
             )
 
         assert len(valid) == 1

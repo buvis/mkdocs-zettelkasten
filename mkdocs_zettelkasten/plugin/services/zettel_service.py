@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
@@ -11,6 +11,8 @@ if TYPE_CHECKING:
     from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
 
 import logging
+
+from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
 
 from .backlink_processor import BacklinkProcessor
 from .sequence_service import SequenceService
@@ -30,16 +32,16 @@ class ZettelService:
         self.store = ZettelStore()
         self.backlinks: dict[str, list[Zettel]] = {}
         self.invalid_files: list = []
-        self.zettel_config: dict[str, Any] = {}
+        self.zettel_config = ZettelkastenConfig()
         self.file_suffix: str = ".md"
         self.unlinked_mention_service = UnlinkedMentionService()
         self.unlinked_mentions: dict[int, list[tuple[int, str]]] = {}
         self.sequence_children: dict[int, list[int]] = {}
         self.suggestions: dict[int, list[dict]] = {}
 
-    def configure(self, zettel_config: dict[str, Any]) -> None:
+    def configure(self, zettel_config: ZettelkastenConfig) -> None:
         self.zettel_config = zettel_config
-        self.file_suffix = zettel_config.get("file_suffix", ".md")
+        self.file_suffix = zettel_config.file_suffix
 
     def process_files(self, files: Files, config: MkDocsConfig) -> None:
         """Main processing pipeline."""

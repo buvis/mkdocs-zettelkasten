@@ -4,6 +4,7 @@ from pathlib import Path
 # module-level: used in function signatures
 from mkdocs.structure.files import File, Files
 
+from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
 from mkdocs_zettelkasten.plugin.entities.zettel import Zettel, ZettelFormatError
 
 logger = logging.getLogger(
@@ -17,7 +18,7 @@ class ZettelParser:
     @staticmethod
     def parse_files(
         files: Files,
-        zettel_config: dict[str, str] | None = None,
+        zettel_config: ZettelkastenConfig | None = None,
     ) -> tuple[list[Zettel], list[File]]:
         """
         Returns:
@@ -35,7 +36,7 @@ class ZettelParser:
                 zettel = Zettel(
                     Path(file.abs_src_path),
                     file.src_path,
-                    zettel_config=zettel_config or {},
+                    zettel_config=zettel_config,
                 )
             except ZettelFormatError:
                 invalid_files.append(file)

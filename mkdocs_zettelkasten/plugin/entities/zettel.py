@@ -3,13 +3,15 @@ from __future__ import annotations
 import datetime
 import html
 import re
-from typing import TYPE_CHECKING, Any, TypedDict
+from typing import TYPE_CHECKING, TypedDict
 
 if TYPE_CHECKING:
     from pathlib import Path
 
 import logging
 from zoneinfo import ZoneInfo
+
+from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
 
 import yaml
 from yaml.scanner import ScannerError
@@ -60,7 +62,7 @@ class Zettel:
         self,
         abs_src_path: Path,
         src_path: str,
-        zettel_config: dict[str, Any] | None = None,
+        zettel_config: ZettelkastenConfig | None = None,
     ) -> None:
         self.id: int = 0
         self.title: str = ""
@@ -84,17 +86,17 @@ class Zettel:
         self.sequence_breadcrumb: list[SequenceRef] = []
         self.sequence_tree: list[SequenceTreeNode] = []
 
-        cfg = zettel_config or {}
-        self._id_key = cfg.get("id_key", "id")
-        self._date_key = cfg.get("date_key", "date")
-        self._last_update_key = cfg.get("last_update_key", "last_update")
-        self._type_key = cfg.get("type_key", "type")
-        self._maturity_key = cfg.get("maturity_key", "maturity")
-        self._role_key = cfg.get("role_key", "role")
-        self._sequence_key = cfg.get("sequence_key", "sequence")
-        self._id_format = cfg.get("id_format", r"^\d{14}$")
-        self._tz = cfg.get("timezone") or ZoneInfo("UTC")
-        self._date_format = cfg.get("date_format", "%Y-%m-%d")
+        cfg = zettel_config or ZettelkastenConfig()
+        self._id_key = cfg.id_key
+        self._date_key = cfg.date_key
+        self._last_update_key = cfg.last_update_key
+        self._type_key = cfg.type_key
+        self._maturity_key = cfg.maturity_key
+        self._role_key = cfg.role_key
+        self._sequence_key = cfg.sequence_key
+        self._id_format = cfg.id_format
+        self._tz = cfg.timezone
+        self._date_format = cfg.date_format
 
         self._initialize_zettel()
 
