@@ -132,6 +132,14 @@ First mention of [[20240102120000|note]] in this paragraph.
 Second mention of [[20240102120000|note]] in another paragraph.
 """
 
+ZETTEL_DUPLICATE_TEXT_BEFORE_LINK = """---
+id: 20240101120000
+title: My Zettel
+date: 2024-01-01
+---
+The word apple appears first, then we link to [[20240102120000|apple]] as a concept.
+"""
+
 
 def _make_zettel(tmp_path: Path, content: str, **kwargs) -> Zettel:
     fp = tmp_path / "test.md"
@@ -424,6 +432,12 @@ class TestLinkSnippets:
         snippet = z.link_snippets["20240102120000"]
         assert "<mark>" in snippet
         assert "other note</mark>" in snippet
+
+    def test_snippet_highlights_correct_occurrence(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, ZETTEL_DUPLICATE_TEXT_BEFORE_LINK)
+        snippet = z.link_snippets["20240102120000"]
+        before_mark = snippet.split("<mark>")[0]
+        assert "link to" in before_mark
 
     def test_snippet_does_not_include_link_syntax(self, tmp_path: Path) -> None:
         z = _make_zettel(tmp_path, ZETTEL_WITH_CONTEXT)

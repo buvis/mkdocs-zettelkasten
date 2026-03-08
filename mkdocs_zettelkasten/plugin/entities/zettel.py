@@ -215,17 +215,17 @@ class Zettel:
     def _make_snippet(paragraph: str, match: re.Match) -> str:
         """Cleans link syntax and trims paragraph to ~200 chars around the link."""
         link_text = match.group("title") or match.group("url")
-        clean = WIKI_LINK.sub(lambda m: m.group("title") or m.group("url"), paragraph)
-        clean = MD_LINK.sub(lambda m: m.group("title"), clean)
-        clean = html.escape(clean)
+
+        def _strip_links(text: str) -> str:
+            text = WIKI_LINK.sub(lambda m: m.group("title") or m.group("url"), text)
+            return MD_LINK.sub(lambda m: m.group("title"), text)
+
+        prefix = html.escape(_strip_links(paragraph[: match.start()]))
         escaped_link = html.escape(link_text)
-        link_pat = re.compile(re.escape(escaped_link), re.IGNORECASE)
-        m = link_pat.search(clean)
-        if m:
-            marked = f"<mark>{clean[m.start():m.end()]}</mark>"
-            clean = clean[: m.start()] + marked + clean[m.end() :]
-            return truncate_around(clean, m.start(), len(marked))
-        return truncate_around(clean, 0, 0)
+        suffix = html.escape(_strip_links(paragraph[match.end() :]))
+        marked = f"<mark>{escaped_link}</mark>"
+        clean = prefix + marked + suffix
+        return truncate_around(clean, len(prefix), len(marked))
 
     def _set_core_metadata(self, meta: dict, alt_title: str) -> None:
         """Sets fundamental metadata fields."""
