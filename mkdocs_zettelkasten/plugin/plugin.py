@@ -344,7 +344,8 @@ class ZettelkastenPlugin(BasePlugin):
             if path.suffix != ".js" or not path.is_file():
                 continue
             source = path.read_text()
-            minified = str(rjsmin.jsmin(source))
+            minified = rjsmin.jsmin(source)
+            assert isinstance(minified, str)
             path.write_text(minified)
             self.logger.debug(
                 "Minified %s (%d → %d bytes)", path.name, len(source), len(minified)
