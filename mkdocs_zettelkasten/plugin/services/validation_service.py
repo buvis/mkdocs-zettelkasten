@@ -6,6 +6,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar
+from zoneinfo import ZoneInfo
 
 from mkdocs_zettelkasten.plugin.constants import FLEETING_STALE_DAYS, TYPE_FLEETING
 
@@ -36,8 +37,10 @@ class ValidationService:
         self.output_folder: Path = Path(".build")
         self.output_filename: Path = Path("validation.md")
         self.file_suffix: str = ".md"
+        self._timezone: ZoneInfo | None = None
 
-    def configure(self, config: MkDocsConfig, file_suffix: str = ".md") -> None:
+    def configure(self, timezone: ZoneInfo, config: MkDocsConfig, file_suffix: str = ".md") -> None:
+        self._timezone = timezone
         self.output_folder = Path(config.get("tags_folder", ".build"))
         if not self.output_folder.is_absolute():
             self.output_folder = Path(config["docs_dir"]).parent / self.output_folder
@@ -127,7 +130,8 @@ class ValidationService:
     def _check_stale_fleeting(self, zettel_service: ZettelService) -> None:
         from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
 
-        cutoff = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(
+        tz = self._timezone or ZoneInfo("UTC")
+        cutoff = datetime.datetime.now(tz=tz) - datetime.timedelta(
             days=FLEETING_STALE_DAYS
         )
         for zettel in zettel_service.get_zettels():

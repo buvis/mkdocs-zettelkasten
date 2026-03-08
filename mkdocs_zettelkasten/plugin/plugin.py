@@ -124,7 +124,7 @@ class ZettelkastenPlugin(BasePlugin):
         )
         if self.zk_config.validation_enabled:
             self.validation_service.configure(
-                config, file_suffix=self.zk_config.file_suffix
+                self.zk_config.timezone, config, file_suffix=self.zk_config.file_suffix
             )
         if self.config["editor_enabled"]:
             config["extra"]["editor_enabled"] = True

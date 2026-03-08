@@ -418,7 +418,9 @@ class TestZettelkastenPlugin:
         ):
             plugin.on_config(config)
 
-        mock_vcfg.assert_called_once_with(config, file_suffix=".txt")
+        mock_vcfg.assert_called_once_with(
+            plugin.zk_config.timezone, config, file_suffix=".txt"
+        )
 
     def test_on_post_build_skips_vendor_subdir(self, tmp_path) -> None:
         plugin = self._make_plugin()
