@@ -1,8 +1,10 @@
+from pathlib import Path
 from unittest.mock import MagicMock
 
 from mkdocs_zettelkasten.plugin.services.unlinked_mention_service import (
     UnlinkedMentionService,
 )
+from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
 from tests.plugin.conftest import _make_zettel_mock
 
 
@@ -183,3 +185,46 @@ class TestUnlinkedMentionDetection:
 
         mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         assert 1 not in mentions
+
+    def test_skips_already_linked_by_wiki_path(self) -> None:
+        target = _make_zettel_mock(
+            1, title="Epistemology", rel_path="folder/note.md",
+            path=Path("/docs/folder/note.md"), body="Body.",
+        )
+        source = _make_zettel_mock(
+            2, title="Other", body="Epistemology is discussed.",
+            links=["folder/note"],
+        )
+        store = ZettelStore([target, source])
+
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
+        assert 1 not in mentions
+
+    def test_skips_already_linked_by_path_with_suffix(self) -> None:
+        target = _make_zettel_mock(
+            1, title="Epistemology", rel_path="folder/note.md",
+            path=Path("/docs/folder/note.md"), body="Body.",
+        )
+        source = _make_zettel_mock(
+            2, title="Other", body="Epistemology is discussed.",
+            links=["folder/note.md"],
+        )
+        store = ZettelStore([target, source])
+
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
+        assert 1 not in mentions
+
+    def test_path_link_to_different_target_still_reports_mention(self) -> None:
+        target = _make_zettel_mock(
+            1, title="Epistemology", rel_path="folder/note.md",
+            path=Path("/docs/folder/note.md"), body="Body.",
+        )
+        source = _make_zettel_mock(
+            2, title="Other", body="Epistemology is discussed.",
+            rel_path="other.md", path=Path("/docs/other.md"),
+            links=["folder/different"],
+        )
+        store = ZettelStore([target, source])
+
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
+        assert 1 in mentions
