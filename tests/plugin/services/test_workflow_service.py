@@ -1,15 +1,18 @@
 from datetime import date
+from zoneinfo import ZoneInfo
 
 from mkdocs_zettelkasten.plugin.services.workflow_service import WorkflowService
 from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
 from tests.plugin.conftest import _make_zettel_mock
 
 TODAY = date(2026, 2, 27)
+_UTC = ZoneInfo("UTC")
 
 
 class TestStats:
     def setup_method(self):
         self.service = WorkflowService()
+        self.service._timezone = _UTC
 
     def test_counts_by_type(self):
         zettels = [
@@ -67,6 +70,7 @@ class TestStats:
 class TestInbox:
     def setup_method(self):
         self.service = WorkflowService()
+        self.service._timezone = _UTC
 
     def test_includes_fleeting(self):
         z = _make_zettel_mock(
@@ -113,6 +117,7 @@ class TestInbox:
 class TestNeedsConnection:
     def setup_method(self):
         self.service = WorkflowService()
+        self.service._timezone = _UTC
 
     def test_permanent_no_links(self):
         z = _make_zettel_mock(
@@ -158,6 +163,7 @@ class TestNeedsConnection:
 class TestReviewQueue:
     def setup_method(self):
         self.service = WorkflowService()
+        self.service._timezone = _UTC
 
     def test_stale_developing(self):
         z = _make_zettel_mock(
@@ -187,6 +193,7 @@ class TestReviewQueue:
 class TestOrphans:
     def setup_method(self):
         self.service = WorkflowService()
+        self.service._timezone = _UTC
 
     def test_includes_unlinked(self):
         z = _make_zettel_mock(20260227000000, title="Orphan", rel_path="o.md")
@@ -217,6 +224,7 @@ class TestOrphans:
 class TestUnlinkedMentionHotspots:
     def setup_method(self):
         self.service = WorkflowService()
+        self.service._timezone = _UTC
 
     def test_ranked_by_count(self):
         z1 = _make_zettel_mock(20260227000001, title="Hot", rel_path="h.md")
@@ -255,6 +263,7 @@ class TestUnlinkedMentionHotspots:
 class TestEmptyStore:
     def setup_method(self):
         self.service = WorkflowService()
+        self.service._timezone = _UTC
 
     def test_empty_store_returns_empty_sections(self):
         store = ZettelStore([])
@@ -270,6 +279,7 @@ class TestEmptyStore:
 class TestMalformedIds:
     def setup_method(self):
         self.service = WorkflowService()
+        self.service._timezone = _UTC
 
     def test_short_id_skipped_in_inbox(self):
         z = _make_zettel_mock(999, title="Short", rel_path="s.md", note_type="fleeting")

@@ -134,6 +134,7 @@ class ZettelkastenPlugin(BasePlugin):
             config["extra"]["preview_enabled"] = True
         if self.config["workflow_enabled"]:
             self.workflow_service.configure(
+                self.zk_config.timezone,
                 self.tags_service.tags_folder,
                 config["site_dir"],
             )

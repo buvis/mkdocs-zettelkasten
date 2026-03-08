@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import logging
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 from typing import TYPE_CHECKING, Any
+from zoneinfo import ZoneInfo
 
 from mkdocs_zettelkasten.plugin.constants import (
     FLEETING_STALE_DAYS,
@@ -35,6 +36,7 @@ class WorkflowService:
     MAX_HOTSPOTS = 10
 
     def __init__(self) -> None:
+        self._timezone: ZoneInfo | None = None
         self.output_folder: Path | None = None
         self._site_dir: str | None = None
 
@@ -45,7 +47,10 @@ class WorkflowService:
         unlinked_mentions: dict[int, list[tuple[int, str]]],
         today: date | None = None,
     ) -> dict[str, Any]:
-        today = today or datetime.now(tz=timezone.utc).date()
+        if self._timezone is None:
+            msg = "configure() must be called before compute()"
+            raise RuntimeError(msg)
+        today = today or datetime.now(tz=self._timezone).date()
         backlinked_ids, backlink_counts = self._resolve_backlinks(backlinks)
         return {
             "stats": self._stats(store, backlinks, unlinked_mentions),
@@ -58,7 +63,8 @@ class WorkflowService:
             ),
         }
 
-    def configure(self, output_folder: Path, site_dir: str) -> None:
+    def configure(self, timezone: ZoneInfo, output_folder: Path, site_dir: str) -> None:
+        self._timezone = timezone
         self.output_folder = output_folder
         self._site_dir = site_dir
 
