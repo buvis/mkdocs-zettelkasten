@@ -2,6 +2,8 @@ from datetime import date, datetime
 from unittest.mock import patch
 from zoneinfo import ZoneInfo
 
+import pytest
+
 from mkdocs_zettelkasten.plugin.services.workflow_service import WorkflowService
 from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
 from tests.plugin.conftest import _make_zettel_mock
@@ -315,6 +317,14 @@ class TestMalformedIds:
         store = ZettelStore([z])
         result = self.service.compute(store, {}, {}, today=TODAY)
         assert result["inbox"] == []
+
+
+class TestComputeBeforeConfigure:
+    def test_raises_without_configure(self):
+        svc = WorkflowService()
+        store = ZettelStore([])
+        with pytest.raises(RuntimeError, match="configure\\(\\) must be called"):
+            svc.compute(store, {}, {})
 
 
 def _patched_now(utc_instant):
