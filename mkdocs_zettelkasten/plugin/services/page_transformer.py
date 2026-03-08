@@ -33,6 +33,18 @@ logger = logging.getLogger(
 class PageTransformer:
     """
     Applies all Zettelkasten-specific transformations to page markdown.
+
+    Adapter execution order (dependency DAG):
+        1. add_zettel_to_page     — no prerequisites; populates page.meta["zettel"]
+        2. adapt_page_title       — requires: zettel in page.meta
+        3. adapt_transclusion     — no prerequisites; expands transclusions in markdown
+        4. adapt_page_links       — requires: transclusions resolved (step 3)
+        5. get_page_ref           — requires: links resolved (step 4)
+        6. get_prev_next_page     — no prerequisites; independent navigation
+        7. adapt_backlinks        — requires: zettel in page.meta (step 1)
+        8. adapt_unlinked_mentions— requires: zettel in page.meta (step 1)
+        9. adapt_suggestions      — requires: zettel in page.meta (step 1)
+       10. adapt_sequence         — requires: zettel in page.meta (step 1)
     """
 
     def transform(
@@ -56,7 +68,9 @@ class PageTransformer:
                 logger.exception("Adapter %s failed on %s", name, src)
                 raise
 
+        # Step 1 — no prerequisites; populates page.meta["zettel"]
         page = _run("add_zettel_to_page", zettel_service.add_zettel_to_page, page)
+        # Step 2 — requires: zettel in page.meta (step 1)
         markdown = _run(
             "adapt_page_title",
             adapt_page_title,
@@ -64,6 +78,7 @@ class PageTransformer:
             page,
             page.meta.get("zettel"),
         )
+        # Step 3 — no prerequisites; expands transclusions before link processing
         markdown = _run(
             "adapt_transclusion",
             adapt_transclusion,
@@ -75,6 +90,7 @@ class PageTransformer:
                 "transclusion_strip_heading", True
             ),
         )
+        # Step 4 — requires: transclusions resolved (step 3)
         markdown = _run(
             "adapt_page_links_to_zettels",
             adapt_page_links_to_zettels,
@@ -85,9 +101,11 @@ class PageTransformer:
             zettel_service.get_zettel_by_partial_path,
             file_suffix=zettel_service.file_suffix,
         )
+        # Step 5 — requires: links resolved (step 4)
         processed_md, page.meta["ref"] = _run(
             "get_page_ref", get_page_ref, markdown, page, config
         )
+        # Step 6 — no prerequisites; independent navigation lookup
         page.previous_page, page.next_page = _run(
             "get_prev_next_page",
             get_prev_next_page,
@@ -96,6 +114,7 @@ class PageTransformer:
             zettel_service.get_zettels(),
             file_suffix=zettel_service.file_suffix,
         )
+        # Step 7 — requires: zettel in page.meta (step 1)
         _run(
             "adapt_backlinks_to_page",
             adapt_backlinks_to_page,
@@ -104,6 +123,7 @@ class PageTransformer:
             zettel_service.get_zettel_by_partial_path,
             file_suffix=zettel_service.file_suffix,
         )
+        # Step 8 — requires: zettel in page.meta (step 1)
         _run(
             "adapt_unlinked_mentions_to_page",
             adapt_unlinked_mentions_to_page,
@@ -111,6 +131,7 @@ class PageTransformer:
             zettel_service.unlinked_mentions,
             zettel_service.get_zettel_by_id,
         )
+        # Step 9 — requires: zettel in page.meta (step 1)
         _run(
             "adapt_suggestions_to_page",
             adapt_suggestions_to_page,
@@ -119,6 +140,7 @@ class PageTransformer:
             zettel_service.get_zettel_by_id,
             file_suffix=zettel_service.file_suffix,
         )
+        # Step 10 — requires: zettel in page.meta (step 1)
         _run(
             "adapt_sequence_to_page",
             adapt_sequence_to_page,
