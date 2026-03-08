@@ -409,3 +409,29 @@ class TestReviewQueueTimezoneBoundary:
             mock_dt.side_effect = lambda *a, **kw: datetime(*a, **kw)
             result_utc = svc_utc.compute(store, {}, {})
         assert len(result_utc["review_queue"]) == 1
+
+
+class TestDstTransitionDay:
+    """Date calculation stays correct on DST transition days."""
+
+    def test_inbox_staleness_correct_on_spring_forward(self):
+        # US spring-forward 2026: March 8, clocks jump 2am→3am ET.
+        # Fleeting created Feb 28. "Now" is March 8 06:00 UTC.
+        # America/New_York (UTC-5→UTC-4 at 2am): local time is 1am EST pre-transition.
+        # But datetime.now(tz=NY).date() = March 8 regardless of DST offset.
+        # age = 8 days → stale (>7)
+        z = _make_zettel_mock(
+            20260228120000, title="DST", rel_path="dst.md", note_type="fleeting"
+        )
+        store = ZettelStore([z])
+        utc_instant = datetime(2026, 3, 8, 6, 0, 0, tzinfo=_UTC)
+
+        svc = WorkflowService()
+        svc.configure(ZoneInfo("America/New_York"), Path("."), ".")
+        with patch(
+            "mkdocs_zettelkasten.plugin.services.workflow_service.datetime"
+        ) as mock_dt:
+            mock_dt.now = _patched_now(utc_instant)
+            mock_dt.side_effect = lambda *a, **kw: datetime(*a, **kw)
+            result = svc.compute(store, {}, {})
+        assert result["inbox"][0]["stale"] is True
