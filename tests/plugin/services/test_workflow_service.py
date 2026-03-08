@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from pathlib import Path
 from unittest.mock import patch
 from zoneinfo import ZoneInfo
 
@@ -15,7 +16,7 @@ _UTC = ZoneInfo("UTC")
 class TestStats:
     def setup_method(self):
         self.service = WorkflowService()
-        self.service._timezone = _UTC
+        self.service.configure(_UTC, Path("."), ".")
 
     def test_counts_by_type(self):
         zettels = [
@@ -73,7 +74,7 @@ class TestStats:
 class TestInbox:
     def setup_method(self):
         self.service = WorkflowService()
-        self.service._timezone = _UTC
+        self.service.configure(_UTC, Path("."), ".")
 
     def test_includes_fleeting(self):
         z = _make_zettel_mock(
@@ -120,7 +121,7 @@ class TestInbox:
 class TestNeedsConnection:
     def setup_method(self):
         self.service = WorkflowService()
-        self.service._timezone = _UTC
+        self.service.configure(_UTC, Path("."), ".")
 
     def test_permanent_no_links(self):
         z = _make_zettel_mock(
@@ -166,7 +167,7 @@ class TestNeedsConnection:
 class TestReviewQueue:
     def setup_method(self):
         self.service = WorkflowService()
-        self.service._timezone = _UTC
+        self.service.configure(_UTC, Path("."), ".")
 
     def test_stale_developing(self):
         z = _make_zettel_mock(
@@ -196,7 +197,7 @@ class TestReviewQueue:
 class TestOrphans:
     def setup_method(self):
         self.service = WorkflowService()
-        self.service._timezone = _UTC
+        self.service.configure(_UTC, Path("."), ".")
 
     def test_includes_unlinked(self):
         z = _make_zettel_mock(20260227000000, title="Orphan", rel_path="o.md")
@@ -227,7 +228,7 @@ class TestOrphans:
 class TestUnlinkedMentionHotspots:
     def setup_method(self):
         self.service = WorkflowService()
-        self.service._timezone = _UTC
+        self.service.configure(_UTC, Path("."), ".")
 
     def test_ranked_by_count(self):
         z1 = _make_zettel_mock(20260227000001, title="Hot", rel_path="h.md")
@@ -266,7 +267,7 @@ class TestUnlinkedMentionHotspots:
 class TestEmptyStore:
     def setup_method(self):
         self.service = WorkflowService()
-        self.service._timezone = _UTC
+        self.service.configure(_UTC, Path("."), ".")
 
     def test_empty_store_returns_empty_sections(self):
         store = ZettelStore([])
@@ -282,7 +283,7 @@ class TestEmptyStore:
 class TestMalformedIds:
     def setup_method(self):
         self.service = WorkflowService()
-        self.service._timezone = _UTC
+        self.service.configure(_UTC, Path("."), ".")
 
     def test_short_id_skipped_in_inbox(self):
         z = _make_zettel_mock(999, title="Short", rel_path="s.md", note_type="fleeting")
@@ -356,7 +357,7 @@ class TestInboxTimezoneBoundary:
         utc_instant = datetime(2026, 3, 7, 3, 0, 0, tzinfo=_UTC)
 
         svc_ny = WorkflowService()
-        svc_ny._timezone = ZoneInfo("America/New_York")
+        svc_ny.configure(ZoneInfo("America/New_York"), Path("."), ".")
         with patch(
             "mkdocs_zettelkasten.plugin.services.workflow_service.datetime"
         ) as mock_dt:
@@ -366,7 +367,7 @@ class TestInboxTimezoneBoundary:
         assert result_ny["inbox"][0]["stale"] is False
 
         svc_utc = WorkflowService()
-        svc_utc._timezone = _UTC
+        svc_utc.configure(_UTC, Path("."), ".")
         with patch(
             "mkdocs_zettelkasten.plugin.services.workflow_service.datetime"
         ) as mock_dt:
@@ -390,7 +391,7 @@ class TestReviewQueueTimezoneBoundary:
         utc_instant = datetime(2026, 3, 8, 3, 0, 0, tzinfo=_UTC)
 
         svc_ny = WorkflowService()
-        svc_ny._timezone = ZoneInfo("America/New_York")
+        svc_ny.configure(ZoneInfo("America/New_York"), Path("."), ".")
         with patch(
             "mkdocs_zettelkasten.plugin.services.workflow_service.datetime"
         ) as mock_dt:
@@ -400,7 +401,7 @@ class TestReviewQueueTimezoneBoundary:
         assert result_ny["review_queue"] == []
 
         svc_utc = WorkflowService()
-        svc_utc._timezone = _UTC
+        svc_utc.configure(_UTC, Path("."), ".")
         with patch(
             "mkdocs_zettelkasten.plugin.services.workflow_service.datetime"
         ) as mock_dt:
