@@ -95,4 +95,4 @@ class ZettelService:
 
     def get_zettel_by_partial_path(self, partial_path: str) -> Zettel | None:
         """Delegate to store's lookup mechanism."""
-        return self.store.get_by_partial_path(partial_path)
+        return self.store.get_by_partial_path(partial_path, self.file_suffix)
