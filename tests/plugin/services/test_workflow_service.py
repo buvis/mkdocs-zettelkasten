@@ -1,4 +1,5 @@
-from datetime import date
+from datetime import date, datetime
+from unittest.mock import patch
 from zoneinfo import ZoneInfo
 
 from mkdocs_zettelkasten.plugin.services.workflow_service import WorkflowService
@@ -314,3 +315,80 @@ class TestMalformedIds:
         store = ZettelStore([z])
         result = self.service.compute(store, {}, {}, today=TODAY)
         assert result["inbox"] == []
+
+
+def _patched_now(utc_instant):
+    """Return a datetime.now mock that converts utc_instant to the requested tz."""
+
+    def _now(tz=None):
+        return utc_instant.astimezone(tz)
+
+    return _now
+
+
+class TestInboxTimezoneBoundary:
+    """Inbox staleness respects configured timezone at day boundaries."""
+
+    def test_fleeting_stale_in_utc_but_not_in_local(self):
+        # Fleeting created Feb 27. "Now" is Mar 7 03:00 UTC.
+        # UTC: today=Mar 7, age=8 → stale (>7)
+        # America/New_York (UTC-5): today=Mar 6, age=7 → NOT stale
+        z = _make_zettel_mock(
+            20260227120000, title="Edge", rel_path="e.md", note_type="fleeting"
+        )
+        store = ZettelStore([z])
+        utc_instant = datetime(2026, 3, 7, 3, 0, 0, tzinfo=_UTC)
+
+        svc_ny = WorkflowService()
+        svc_ny._timezone = ZoneInfo("America/New_York")
+        with patch(
+            "mkdocs_zettelkasten.plugin.services.workflow_service.datetime"
+        ) as mock_dt:
+            mock_dt.now = _patched_now(utc_instant)
+            mock_dt.side_effect = lambda *a, **kw: datetime(*a, **kw)
+            result_ny = svc_ny.compute(store, {}, {})
+        assert result_ny["inbox"][0]["stale"] is False
+
+        svc_utc = WorkflowService()
+        svc_utc._timezone = _UTC
+        with patch(
+            "mkdocs_zettelkasten.plugin.services.workflow_service.datetime"
+        ) as mock_dt:
+            mock_dt.now = _patched_now(utc_instant)
+            mock_dt.side_effect = lambda *a, **kw: datetime(*a, **kw)
+            result_utc = svc_utc.compute(store, {}, {})
+        assert result_utc["inbox"][0]["stale"] is True
+
+
+class TestReviewQueueTimezoneBoundary:
+    """Review queue staleness respects configured timezone at day boundaries."""
+
+    def test_developing_stale_in_utc_but_not_in_local(self):
+        # Developing created Feb 5. "Now" is Mar 8 03:00 UTC.
+        # UTC: today=Mar 8, age=31 → in queue (>30)
+        # America/New_York (UTC-5): today=Mar 7, age=30 → NOT in queue
+        z = _make_zettel_mock(
+            20260205120000, title="Dev", rel_path="d.md", maturity="developing"
+        )
+        store = ZettelStore([z])
+        utc_instant = datetime(2026, 3, 8, 3, 0, 0, tzinfo=_UTC)
+
+        svc_ny = WorkflowService()
+        svc_ny._timezone = ZoneInfo("America/New_York")
+        with patch(
+            "mkdocs_zettelkasten.plugin.services.workflow_service.datetime"
+        ) as mock_dt:
+            mock_dt.now = _patched_now(utc_instant)
+            mock_dt.side_effect = lambda *a, **kw: datetime(*a, **kw)
+            result_ny = svc_ny.compute(store, {}, {})
+        assert result_ny["review_queue"] == []
+
+        svc_utc = WorkflowService()
+        svc_utc._timezone = _UTC
+        with patch(
+            "mkdocs_zettelkasten.plugin.services.workflow_service.datetime"
+        ) as mock_dt:
+            mock_dt.now = _patched_now(utc_instant)
+            mock_dt.side_effect = lambda *a, **kw: datetime(*a, **kw)
+            result_utc = svc_utc.compute(store, {}, {})
+        assert len(result_utc["review_queue"]) == 1

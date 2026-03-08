@@ -378,12 +378,16 @@ class TestZettelkastenPlugin:
             patch.object(plugin.zettel_service, "configure"),
             patch.object(plugin.tags_service, "configure"),
             patch.object(plugin.validation_service, "configure"),
-            patch.object(plugin.workflow_service, "configure"),
+            patch.object(
+                plugin.workflow_service, "configure", wraps=plugin.workflow_service.configure
+            ) as mock_wf_cfg,
         ):
             plugin.on_config(config)
 
         assert extra["graph_enabled"] is True
         assert extra["workflow_enabled"] is True
+        mock_wf_cfg.assert_called_once()
+        assert mock_wf_cfg.call_args[0][0] == plugin.zk_config.timezone
 
     def test_on_config_propagates_custom_file_suffix(self) -> None:
         plugin = self._make_plugin()
