@@ -129,9 +129,7 @@ class UnlinkedMentionService:
         clean = html.escape(clean)
 
         escaped_term = html.escape(term)
-        term_pat = re.compile(
-            r"\b" + re.escape(escaped_term) + r"\b", re.IGNORECASE
-        )
+        term_pat = re.compile(r"\b" + re.escape(escaped_term) + r"\b", re.IGNORECASE)
         m = term_pat.search(clean)
         if m:
             marked = f"<mark>{clean[m.start() : m.end()]}</mark>"

@@ -9,13 +9,11 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 import logging
-from zoneinfo import ZoneInfo
-
-from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
 
 import yaml
 from yaml.scanner import ScannerError
 
+from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
 from mkdocs_zettelkasten.plugin.constants import MOC_ROLES
 from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
 from mkdocs_zettelkasten.plugin.utils.frontmatter import parse_frontmatter

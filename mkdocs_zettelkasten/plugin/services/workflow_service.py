@@ -43,13 +43,10 @@ class WorkflowService:
         store: ZettelStore,
         backlinks: dict[int, list],
         unlinked_mentions: dict[int, list[tuple[int, str]]],
-        file_suffix: str = ".md",
         today: date | None = None,
     ) -> dict[str, Any]:
         today = today or datetime.now(tz=timezone.utc).date()
-        backlinked_ids, backlink_counts = self._resolve_backlinks(
-            store, backlinks, file_suffix
-        )
+        backlinked_ids, backlink_counts = self._resolve_backlinks(backlinks)
         return {
             "stats": self._stats(store, backlinks, unlinked_mentions),
             "inbox": self._inbox(store, today),
@@ -93,7 +90,7 @@ class WorkflowService:
         )
         files.append(new_file)
 
-    def _resolve_backlinks(self, store, backlinks, file_suffix):
+    def _resolve_backlinks(self, backlinks):
         ids: set[int] = set()
         counts: dict[int, int] = {}
         for target_id, linkers in backlinks.items():

@@ -21,9 +21,7 @@ class GraphExporter:
         nodes, id_set = self._build_nodes(store, tags_by_path, file_suffix)
 
         seen_edges: set[tuple[str, str]] = set()
-        edges = self._build_backlink_edges(
-            backlinks, id_set, seen_edges
-        )
+        edges = self._build_backlink_edges(backlinks, id_set, seen_edges)
         edges += self._build_sequence_edges(store, id_set, seen_edges)
 
         degree: dict[str, int] = {}

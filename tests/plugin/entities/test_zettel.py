@@ -221,9 +221,7 @@ class TestZettelInit:
             _make_zettel(tmp_path, content, zettel_config=ZettelkastenConfig())
 
     def test_id_format_match_passes(self, tmp_path: Path) -> None:
-        z = _make_zettel(
-            tmp_path, VALID_ZETTEL, zettel_config=ZettelkastenConfig()
-        )
+        z = _make_zettel(tmp_path, VALID_ZETTEL, zettel_config=ZettelkastenConfig())
         assert z.id == 20240101120000
 
 
@@ -292,18 +290,30 @@ class TestHashAndEquality:
 class TestConfigurableKeys:
     def test_custom_id_key(self, tmp_path: Path) -> None:
         content = "---\nzettel_id: 99\ndate: 2024-01-01\n---\n# Title\n"
-        z = _make_zettel(tmp_path, content, zettel_config=ZettelkastenConfig(id_key="zettel_id", id_format=r"^\d+$"))
+        z = _make_zettel(
+            tmp_path,
+            content,
+            zettel_config=ZettelkastenConfig(id_key="zettel_id", id_format=r"^\d+$"),
+        )
         assert z.id == 99
 
     def test_custom_date_key(self, tmp_path: Path) -> None:
         content = "---\nid: 1\ncreated: 2025-06-15\n---\n# Title\n"
-        z = _make_zettel(tmp_path, content, zettel_config=ZettelkastenConfig(date_key="created", id_format=r"^\d+$"))
+        z = _make_zettel(
+            tmp_path,
+            content,
+            zettel_config=ZettelkastenConfig(date_key="created", id_format=r"^\d+$"),
+        )
         assert z.last_update_date == "2025-06-15"
 
     def test_custom_last_update_key(self, tmp_path: Path) -> None:
         content = "---\nid: 1\nmodified: 2025-06-15\ndate: 2024-01-01\n---\n# Title\n"
         z = _make_zettel(
-            tmp_path, content, zettel_config=ZettelkastenConfig(last_update_key="modified", id_format=r"^\d+$")
+            tmp_path,
+            content,
+            zettel_config=ZettelkastenConfig(
+                last_update_key="modified", id_format=r"^\d+$"
+            ),
         )
         assert z.last_update_date == "2025-06-15"
 
@@ -338,12 +348,20 @@ class TestNoteTypeAndMaturity:
 
     def test_custom_type_key(self, tmp_path: Path) -> None:
         content = "---\nid: 1\nkind: literature\ndate: 2024-01-01\n---\n# Title\n"
-        z = _make_zettel(tmp_path, content, zettel_config=ZettelkastenConfig(type_key="kind", id_format=r"^\d+$"))
+        z = _make_zettel(
+            tmp_path,
+            content,
+            zettel_config=ZettelkastenConfig(type_key="kind", id_format=r"^\d+$"),
+        )
         assert z.note_type == "literature"
 
     def test_custom_maturity_key(self, tmp_path: Path) -> None:
         content = "---\nid: 1\nstatus: evergreen\ndate: 2024-01-01\n---\n# Title\n"
-        z = _make_zettel(tmp_path, content, zettel_config=ZettelkastenConfig(maturity_key="status", id_format=r"^\d+$"))
+        z = _make_zettel(
+            tmp_path,
+            content,
+            zettel_config=ZettelkastenConfig(maturity_key="status", id_format=r"^\d+$"),
+        )
         assert z.maturity == "evergreen"
 
     def test_arbitrary_type_value(self, tmp_path: Path) -> None:
@@ -364,7 +382,11 @@ class TestRole:
 
     def test_custom_role_key(self, tmp_path: Path) -> None:
         content = "---\nid: 1\nnote_role: index\ndate: 2024-01-01\n---\n# Title\n"
-        z = _make_zettel(tmp_path, content, zettel_config=ZettelkastenConfig(role_key="note_role", id_format=r"^\d+$"))
+        z = _make_zettel(
+            tmp_path,
+            content,
+            zettel_config=ZettelkastenConfig(role_key="note_role", id_format=r"^\d+$"),
+        )
         assert z.role == "index"
 
     def test_is_moc_true_for_moc(self, tmp_path: Path) -> None:
@@ -477,7 +499,13 @@ class TestSequence:
 
     def test_custom_sequence_key(self, tmp_path: Path) -> None:
         content = "---\nid: 1\nfollows: 99\ndate: 2024-01-01\n---\n# Title\n"
-        z = _make_zettel(tmp_path, content, zettel_config=ZettelkastenConfig(sequence_key="follows", id_format=r"^\d+$"))
+        z = _make_zettel(
+            tmp_path,
+            content,
+            zettel_config=ZettelkastenConfig(
+                sequence_key="follows", id_format=r"^\d+$"
+            ),
+        )
         assert z.sequence_parent_id == 99
 
     def test_sequence_parent_initialized_none(self, tmp_path: Path) -> None:

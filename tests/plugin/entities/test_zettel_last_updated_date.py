@@ -89,7 +89,9 @@ def test_custom_date_format(
     zettel_factory: Callable[..., Zettel],
 ) -> None:
     zettel = zettel_factory(
-        LAST_UPDATE_CONTENT, _ts(2022), zettel_config=ZettelkastenConfig(date_format="%d/%m/%Y")
+        LAST_UPDATE_CONTENT,
+        _ts(2022),
+        zettel_config=ZettelkastenConfig(date_format="%d/%m/%Y"),
     )
     assert zettel.last_update_date == "31/12/2022"
 

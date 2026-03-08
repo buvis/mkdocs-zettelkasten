@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
@@ -108,7 +108,11 @@ class ZettelkastenPlugin(BasePlugin):
             self.logger.addHandler(self._create_logging_handler())
         tz = self._resolve_timezone()
         self.zk_config = ZettelkastenConfig(
-            **{k: self.config[k] for k in ZettelkastenConfig.__dataclass_fields__ if k != "timezone"},
+            **{
+                k: self.config[k]
+                for k in ZettelkastenConfig.__dataclass_fields__
+                if k != "timezone"
+            },
             timezone=tz,
         )
         self.zettel_service.configure(self.zk_config)
@@ -187,7 +191,6 @@ class ZettelkastenPlugin(BasePlugin):
                 self.zettel_service.store,
                 self.zettel_service.backlinks,
                 self.zettel_service.unlinked_mentions,
-                file_suffix=self.config["file_suffix"],
             )
             self.workflow_service.generate(dashboard)
             self.workflow_service.add_to_build(files)
@@ -335,8 +338,7 @@ class ZettelkastenPlugin(BasePlugin):
             if path.suffix != ".js" or not path.is_file():
                 continue
             source = path.read_text()
-            minified = rjsmin.jsmin(source)
-            assert isinstance(minified, str)
+            minified = cast("str", rjsmin.jsmin(source))
             path.write_text(minified)
             self.logger.debug(
                 "Minified %s (%d → %d bytes)", path.name, len(source), len(minified)

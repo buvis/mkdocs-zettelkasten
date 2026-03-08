@@ -83,7 +83,9 @@ class TestZettelParser:
         ):
             valid, _ = ZettelParser.parse_files(
                 files,
-                zettel_config=ZettelkastenConfig(id_key="zettel_id", id_format=r"^\d+$"),
+                zettel_config=ZettelkastenConfig(
+                    id_key="zettel_id", id_format=r"^\d+$"
+                ),
             )
 
         assert len(valid) == 1
