@@ -38,7 +38,7 @@ class UnlinkedMentionService:
 
             for source in store.zettels:
                 if source.id == target.id or self._already_links_to(
-                    source, target, file_suffix
+                    source, target, store, file_suffix
                 ):
                     continue
                 result = self._find_mention_in_body(
@@ -74,9 +74,15 @@ class UnlinkedMentionService:
         return None
 
     @staticmethod
-    def _already_links_to(source, target, file_suffix: str = ".md") -> bool:
+    def _already_links_to(source, target, store, file_suffix: str = ".md") -> bool:
         target_id = str(target.id)
-        return any(link.removesuffix(file_suffix) == target_id for link in source.links)
+        for link in source.links:
+            if link.removesuffix(file_suffix) == target_id:
+                return True
+            resolved = store.get_by_partial_path(link, file_suffix)
+            if resolved is not None and resolved.id == target.id:
+                return True
+        return False
 
     @staticmethod
     def _strip_syntax(text: str) -> str:
