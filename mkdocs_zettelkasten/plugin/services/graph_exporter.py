@@ -20,7 +20,7 @@ class GraphExporter:
         tags_by_path = {m["src_path"]: m.get("tags", []) for m in tags_metadata}
         nodes, id_set = self._build_nodes(store, tags_by_path, file_suffix)
 
-        seen_edges: set[tuple[str, str]] = set()
+        seen_edges: set[tuple[str, str, str]] = set()
         edges = self._build_backlink_edges(backlinks, id_set, seen_edges)
         edges += self._build_sequence_edges(store, id_set, seen_edges)
 
@@ -63,7 +63,7 @@ class GraphExporter:
     def _build_backlink_edges(
         backlinks: dict[int, list[Zettel]],
         id_set: set[str],
-        seen: set[tuple[str, str]],
+        seen: set[tuple[str, str, str]],
     ) -> list[dict[str, str]]:
         edges = []
         for target_zid, source_zettels in backlinks.items():
@@ -74,7 +74,7 @@ class GraphExporter:
                 source_id = str(source.id)
                 if source_id not in id_set:
                     continue
-                pair = (source_id, target_id)
+                pair = (source_id, target_id, "backlink")
                 if pair not in seen:
                     seen.add(pair)
                     edges.append({"source": source_id, "target": target_id})
@@ -84,7 +84,7 @@ class GraphExporter:
     def _build_sequence_edges(
         store: ZettelStore,
         id_set: set[str],
-        seen: set[tuple[str, str]],
+        seen: set[tuple[str, str, str]],
     ) -> list[dict[str, str]]:
         edges = []
         for z in store.zettels:
@@ -94,7 +94,7 @@ class GraphExporter:
             parent_id = str(z.sequence_parent_id)
             if parent_id not in id_set or child_id not in id_set:
                 continue
-            pair = (child_id, parent_id)
+            pair = (child_id, parent_id, "sequence")
             if pair not in seen:
                 seen.add(pair)
                 edges.append(
