@@ -47,10 +47,11 @@ class WorkflowService:
         unlinked_mentions: dict[int, list[tuple[int, str]]],
         today: date | None = None,
     ) -> dict[str, Any]:
-        if self._timezone is None:
-            msg = "configure() must be called before compute()"
-            raise RuntimeError(msg)
-        today = today or datetime.now(tz=self._timezone).date()
+        if today is None:
+            if self._timezone is None:
+                msg = "configure() must be called before compute()"
+                raise RuntimeError(msg)
+            today = datetime.now(tz=self._timezone).date()
         backlinked_ids, backlink_counts = self._resolve_backlinks(backlinks)
         return {
             "stats": self._stats(store, backlinks, unlinked_mentions),

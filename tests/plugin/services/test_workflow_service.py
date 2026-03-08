@@ -326,6 +326,12 @@ class TestComputeBeforeConfigure:
         with pytest.raises(RuntimeError, match="configure\\(\\) must be called"):
             svc.compute(store, {}, {})
 
+    def test_explicit_today_works_without_configure(self):
+        svc = WorkflowService()
+        store = ZettelStore([])
+        result = svc.compute(store, {}, {}, today=TODAY)
+        assert result["inbox"] == []
+
 
 def _patched_now(utc_instant):
     """Return a datetime.now mock that converts utc_instant to the requested tz."""
