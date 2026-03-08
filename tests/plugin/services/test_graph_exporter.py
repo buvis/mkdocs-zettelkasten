@@ -247,6 +247,29 @@ class TestGraphExporter:
         assert degrees["1"] == 1
         assert degrees["2"] == 1
 
+    def test_overlapping_backlink_and_sequence_both_preserved(self) -> None:
+        z1 = _make_zettel_mock(
+            1, title="Parent", rel_path="a.md", path=Path("/docs/a.md")
+        )
+        z2 = _make_zettel_mock(
+            2,
+            title="Child",
+            rel_path="b.md",
+            path=Path("/docs/b.md"),
+            links=["a.md"],
+            sequence_parent_id=1,
+        )
+        store = ZettelStore([z1, z2])
+
+        result = self.exporter.export(store, [], _build_backlinks(store))
+
+        backlink_edges = [e for e in result["edges"] if "type" not in e]
+        seq_edges = [e for e in result["edges"] if e.get("type") == "sequence"]
+        assert len(backlink_edges) == 1
+        assert len(seq_edges) == 1
+        assert backlink_edges[0] == {"source": "2", "target": "1"}
+        assert seq_edges[0] == {"source": "2", "target": "1", "type": "sequence"}
+
     def test_link_edges_have_no_type(self) -> None:
         z1 = _make_zettel_mock(
             1, title="A", rel_path="a.md", path=Path("/docs/a.md"), links=["b.md"]
