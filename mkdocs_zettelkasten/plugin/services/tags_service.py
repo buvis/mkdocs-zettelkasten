@@ -87,7 +87,7 @@ class TagsService:
         for file in files:
             if not file.src_path.endswith(self.file_suffix):
                 continue
-            zettel = store.get_by_partial_path(file.src_path) if store else None
+            zettel = store.get_by_partial_path(file.src_path, self.file_suffix) if store else None
             if zettel:
                 meta = dict(zettel.meta)
                 meta["src_path"] = file.src_path

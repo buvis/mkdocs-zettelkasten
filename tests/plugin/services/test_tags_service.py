@@ -2,6 +2,8 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 from mkdocs_zettelkasten.plugin.services.tags_service import TagsService
+from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
+from tests.plugin.conftest import _make_zettel_mock
 
 
 class TestTagsService:
@@ -169,3 +171,27 @@ class TestTagsService:
         assert content.count("MOC Note") == 1
         # Regular note should appear in the regular list
         assert "[Regular Note]" in content
+
+    def test_process_metadata_uses_configured_suffix_for_store_lookup(
+        self, tmp_path: Path
+    ) -> None:
+        z = _make_zettel_mock(
+            1, title="Note", rel_path="note.txt",
+            path=Path("/docs/note.txt"),
+        )
+        z.meta = {"id": 1, "title": "Note", "tags": ["demo"]}
+        store = ZettelStore([z])
+
+        f = MagicMock()
+        f.src_path = "note.txt"
+
+        files = MagicMock()
+        files.__iter__ = lambda self: iter([f])
+
+        svc = TagsService()
+        config = self._make_config(str(tmp_path))
+        svc.configure(config, file_suffix=".txt")
+        svc.process_metadata(files, store)
+
+        assert len(svc.metadata) == 1
+        assert svc.metadata[0]["title"] == "Note"
