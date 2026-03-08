@@ -110,3 +110,15 @@ class TestZettelService:
 
         result = svc.add_zettel_to_page(page)
         assert result.meta["is_zettel"] is False
+
+    def test_partial_path_lookup_uses_configured_suffix(self) -> None:
+        from tests.plugin.conftest import _make_zettel_mock
+        from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
+
+        z = _make_zettel_mock(1, title="Note", rel_path="note.txt")
+        svc = ZettelService()
+        svc.configure(ZettelkastenConfig(file_suffix=".txt"))
+        svc.store = ZettelStore([z])
+
+        assert svc.get_zettel_by_partial_path("note.txt") is not None
+        assert svc.get_zettel_by_partial_path("note.txt").id == 1
