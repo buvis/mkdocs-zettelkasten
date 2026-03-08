@@ -161,7 +161,7 @@ class ZettelkastenPlugin(BasePlugin):
 
     def on_files(self, files: Files, /, *, config: MkDocsConfig) -> None:
         self.zettel_service.process_files(files, config)
-        self.tags_service.process_files(files)
+        self.tags_service.process_files(files, store=self.zettel_service.store)
         if self.config["graph_enabled"]:
             self._export_graph(files, config)
         if self.config["preview_enabled"]:

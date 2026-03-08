@@ -119,7 +119,7 @@ class TestZettelkastenPlugin:
             plugin.on_files(files, config=config)
 
         mock_zs.assert_called_once_with(files, config)
-        mock_ts.assert_called_once_with(files)
+        mock_ts.assert_called_once_with(files, store=plugin.zettel_service.store)
 
     def test_on_files_sets_validation_count(self) -> None:
         plugin = self._make_plugin()

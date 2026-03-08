@@ -85,6 +85,7 @@ class Zettel:
         self.sequence_children: list[SequenceRef] = []
         self.sequence_breadcrumb: list[SequenceRef] = []
         self.sequence_tree: list[SequenceTreeNode] = []
+        self.meta: dict = {}
 
         cfg = zettel_config or ZettelkastenConfig()
         self._id_key = cfg.id_key
@@ -126,6 +127,7 @@ class Zettel:
             raise ZettelFormatError(msg)
 
         meta = self._parse_metadata(header_text)
+        self.meta = meta
         self.body = body_text
         body_lines = body_text.splitlines()
         self._extract_links(body_lines)

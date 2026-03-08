@@ -6,6 +6,8 @@ if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
     from mkdocs.structure.files import Files
 
+    from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
+
 import logging
 from pathlib import Path
 from typing import Any
@@ -69,21 +71,29 @@ class TagsService:
         self._docs_dir = config["docs_dir"]
         self._site_dir = config["site_dir"]
 
-    def process_files(self, files: Files) -> None:
+    def process_files(self, files: Files, store: ZettelStore | None = None) -> None:
         logger.info("Processing %d files for tag extraction.", len(files))
-        self.process_metadata(files)
+        self.process_metadata(files, store)
         self.generate_tags_file()
         self.add_tags_file_to_build(files)
 
-    def process_metadata(self, files: Files) -> None:
-        """
-        Extract metadata from Markdown files.
+    def process_metadata(self, files: Files, store: ZettelStore | None = None) -> None:
+        """Extract metadata from Markdown files.
+
+        Uses pre-parsed Zettel metadata when available (via store),
+        falling back to extract_file_metadata for non-zettel files.
         """
         self.metadata.clear()
         for file in files:
-            if file.src_path.endswith(self.file_suffix):
+            if not file.src_path.endswith(self.file_suffix):
+                continue
+            zettel = store.get_by_partial_path(file.src_path) if store else None
+            if zettel:
+                meta = dict(zettel.meta)
+                meta["src_path"] = file.src_path
+                self.metadata.append(meta)
+            else:
                 meta = extract_file_metadata(file.src_path, self._docs_dir)
-
                 if meta:
                     meta["src_path"] = file.src_path
                     self.metadata.append(meta)
