@@ -135,6 +135,20 @@ class TestUnlinkedMentionDetection:
         _, snippet = mentions[1][0]
         assert "<mark>" in snippet
 
+    def test_snippet_escapes_html_special_chars(self) -> None:
+        target = _make_zettel_mock(1, title="Epistemology", body="Body.")
+        source = _make_zettel_mock(
+            2, title="Other", body="If x < y & z > w then epistemology matters."
+        )
+        store = _make_store([target, source])
+
+        mentions = UnlinkedMentionService().find_unlinked_mentions(store)
+        _, snippet = mentions[1][0]
+        assert "&lt;" in snippet
+        assert "&amp;" in snippet
+        assert "&gt;" in snippet
+        assert "<mark>" in snippet
+
     def test_multiple_sources_for_same_target(self) -> None:
         target = _make_zettel_mock(1, title="Epistemology", body="Body.")
         source_a = _make_zettel_mock(2, title="A", body="Epistemology matters.")

@@ -140,6 +140,14 @@ date: 2024-01-01
 The word apple appears first, then we link to [[20240102120000|apple]] as a concept.
 """
 
+ZETTEL_HTML_SPECIAL_CHARS = """---
+id: 20240101120000
+title: My Zettel
+date: 2024-01-01
+---
+The formula x < y & z > w links to [[20240102120000|note]] for details.
+"""
+
 
 def _make_zettel(tmp_path: Path, content: str, **kwargs) -> Zettel:
     fp = tmp_path / "test.md"
@@ -438,6 +446,14 @@ class TestLinkSnippets:
         snippet = z.link_snippets["20240102120000"]
         before_mark = snippet.split("<mark>")[0]
         assert "link to" in before_mark
+
+    def test_snippet_escapes_html_special_chars(self, tmp_path: Path) -> None:
+        z = _make_zettel(tmp_path, ZETTEL_HTML_SPECIAL_CHARS)
+        snippet = z.link_snippets["20240102120000"]
+        assert "&lt;" in snippet
+        assert "&amp;" in snippet
+        assert "&gt;" in snippet
+        assert "<mark>note</mark>" in snippet
 
     def test_snippet_does_not_include_link_syntax(self, tmp_path: Path) -> None:
         z = _make_zettel(tmp_path, ZETTEL_WITH_CONTEXT)
