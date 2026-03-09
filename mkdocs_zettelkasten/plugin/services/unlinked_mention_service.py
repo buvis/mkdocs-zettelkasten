@@ -21,7 +21,10 @@ class UnlinkedMentionService:
     """Detects unlinked mentions of zettel titles/IDs across the store."""
 
     def find_unlinked_mentions(
-        self, store, file_suffix: str = ".md"
+        self,
+        store,
+        file_suffix: str = ".md",
+        resolved_links: dict[int, set[int]] | None = None,
     ) -> dict[int, list[tuple[int, str]]]:
         """Return {target_id: [(source_id, snippet), ...]} for unlinked mentions."""
         unlinked_mentions: dict[int, list[tuple[int, str]]] = defaultdict(list)

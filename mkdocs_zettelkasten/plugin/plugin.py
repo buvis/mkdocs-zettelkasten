@@ -176,6 +176,9 @@ class ZettelkastenPlugin(BasePlugin):
                 self.zettel_service.store,
                 self.tags_service.metadata,
                 file_suffix=self.config["file_suffix"],
+                resolved_links=self.zettel_service.link_map.resolved
+                if self.zettel_service.link_map
+                else None,
             )
             self._export_suggestions(files, config)
         outlines = self.outline_service.compute(
@@ -197,7 +200,14 @@ class ZettelkastenPlugin(BasePlugin):
             self.workflow_service.add_to_build(files)
             config["extra"]["workflow_inbox_count"] = len(dashboard["inbox"])
         if self.config["validation_enabled"]:
-            self.validation_service.validate(self.zettel_service, files, config)
+            self.validation_service.validate(
+                self.zettel_service,
+                files,
+                config,
+                broken_links=self.zettel_service.link_map.broken
+                if self.zettel_service.link_map
+                else None,
+            )
             config["extra"]["validation_issues_count"] = (
                 self.validation_service.total_actionable_issues()
             )

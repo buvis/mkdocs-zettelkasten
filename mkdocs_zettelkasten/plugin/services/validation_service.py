@@ -49,7 +49,11 @@ class ValidationService:
             self.output_folder.mkdir(parents=True)
 
     def validate(
-        self, zettel_service: ZettelService, files: Files, config: MkDocsConfig
+        self,
+        zettel_service: ZettelService,
+        files: Files,
+        config: MkDocsConfig,
+        broken_links: list[tuple[str, str]] | None = None,
     ) -> None:
         from .backlink_processor import BacklinkProcessor
 

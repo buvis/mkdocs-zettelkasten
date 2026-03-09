@@ -16,7 +16,10 @@ class BacklinkProcessor:
 
     @classmethod
     def process(
-        cls, store: ZettelStore, file_suffix: str = ".md"
+        cls,
+        store: ZettelStore,
+        file_suffix: str = ".md",
+        resolved_links: dict[int, set[int]] | None = None,
     ) -> dict[int, list[Zettel]]:
         """Create mapping: target_zettel_id -> list_of_linking_zettels."""
         backlinks: dict[int, list[Zettel]] = defaultdict(list)

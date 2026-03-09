@@ -17,6 +17,7 @@ class SuggestionService:
         store: ZettelStore,
         tags_metadata: list[dict[str, Any]],
         file_suffix: str = ".md",
+        resolved_links: dict[int, set[int]] | None = None,
     ) -> dict[int, list[dict]]:
         """Return {zettel_id: [{target_id, reason, confidence}, ...]}."""
         link_sets = self._build_link_sets(store, file_suffix)

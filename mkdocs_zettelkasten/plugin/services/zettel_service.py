@@ -15,6 +15,7 @@ import logging
 from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
 
 from .backlink_processor import BacklinkProcessor
+from .link_resolver import LinkMap, LinkResolver
 from .sequence_service import SequenceService
 from .unlinked_mention_service import UnlinkedMentionService
 from .zettel_parser import ZettelParser
@@ -38,6 +39,7 @@ class ZettelService:
         self.unlinked_mentions: dict[int, list[tuple[int, str]]] = {}
         self.sequence_children: dict[int, list[int]] = {}
         self.suggestions: dict[int, list[dict]] = {}
+        self.link_map: LinkMap | None = None
 
     def configure(self, zettel_config: ZettelkastenConfig) -> None:
         self.zettel_config = zettel_config
@@ -52,11 +54,14 @@ class ZettelService:
         )
         logger.info("Found %s zettels in `%s`", len(valid_zettels), docs_dir)
         self.store.update(valid_zettels)
+        self.link_map = LinkResolver.resolve(self.store, file_suffix=self.file_suffix)
         self.backlinks = BacklinkProcessor.process(
-            self.store, file_suffix=self.file_suffix
+            self.store, file_suffix=self.file_suffix,
+            resolved_links=self.link_map.resolved,
         )
         self.unlinked_mentions = self.unlinked_mention_service.find_unlinked_mentions(
-            self.store, file_suffix=self.file_suffix
+            self.store, file_suffix=self.file_suffix,
+            resolved_links=self.link_map.resolved,
         )
         self.sequence_children = SequenceService.build_tree(self.store)
 
