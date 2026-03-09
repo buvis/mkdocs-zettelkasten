@@ -281,6 +281,38 @@ class TestValidationService:
         with pytest.raises(FileNotFoundError):
             vs.validate(svc, files, config)
 
+    def test_broken_link_from_precomputed_list(self, tmp_path: Path) -> None:
+        svc = self._make_zettel_service([], backlinks={})
+
+        vs = ValidationService()
+        vs.output_folder = tmp_path
+        config = MagicMock()
+        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
+        files = MagicMock()
+
+        vs.validate(svc, files, config, broken_links=[("a.md", "missing")])
+
+        broken = [i for i in vs.get_issues("a.md") if i.check == "broken_link"]
+        assert len(broken) == 1
+        assert "missing" in broken[0].message
+
+    def test_precomputed_broken_links_skips_store_lookup(self, tmp_path: Path) -> None:
+        z1 = self._make_zettel(1, "a.md", links=["nonexistent"])
+        svc = self._make_zettel_service([z1], backlinks={})
+
+        vs = ValidationService()
+        vs.output_folder = tmp_path
+        config = MagicMock()
+        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
+        files = MagicMock()
+
+        # Pass empty broken_links — should produce no broken link issues
+        # even though z1 has a nonexistent link (proves store lookup is skipped)
+        vs.validate(svc, files, config, broken_links=[])
+
+        broken = [i for i in vs.get_issues("a.md") if i.check == "broken_link"]
+        assert len(broken) == 0
+
     def test_report_file_generated(self, tmp_path: Path) -> None:
         svc = self._make_zettel_service([])
 

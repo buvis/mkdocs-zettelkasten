@@ -60,7 +60,7 @@ class ValidationService:
         self.issues.clear()
         self._check_invalid_files(zettel_service)
         self._check_orphans(zettel_service)
-        self._check_broken_links(zettel_service, BacklinkProcessor)
+        self._check_broken_links(zettel_service, BacklinkProcessor, broken_links)
         self._check_stale_fleeting(zettel_service)
         self._check_missing_type(zettel_service)
         self._check_broken_sequences(zettel_service)
@@ -106,30 +106,45 @@ class ValidationService:
                 )
 
     def _check_broken_links(
-        self, zettel_service: ZettelService, backlink_processor_cls: type
+        self,
+        zettel_service: ZettelService,
+        backlink_processor_cls: type,
+        broken_links: list[tuple[str, str]] | None = None,
     ) -> None:
-        for zettel in zettel_service.get_zettels():
-            internal_links = [
-                link
-                for link in zettel.links
-                if not link.startswith(("http://", "https://", "#", "mailto:"))
-            ]
-            for link in backlink_processor_cls.normalize_links(
-                internal_links, self.file_suffix
-            ):
-                target = zettel_service.store.get_by_partial_path(
-                    link, self.file_suffix
-                )
-                if not target:
-                    logger.warning("Broken link in %s: %s", zettel.rel_path, link)
-                    self.issues[zettel.rel_path].append(
-                        ValidationIssue(
-                            path=zettel.rel_path,
-                            check="broken_link",
-                            severity="warning",
-                            message=f"Broken link: {link}",
-                        )
+        if broken_links is not None:
+            for rel_path, link in broken_links:
+                logger.warning("Broken link in %s: %s", rel_path, link)
+                self.issues[rel_path].append(
+                    ValidationIssue(
+                        path=rel_path,
+                        check="broken_link",
+                        severity="warning",
+                        message=f"Broken link: {link}",
                     )
+                )
+        else:
+            for zettel in zettel_service.get_zettels():
+                internal_links = [
+                    link
+                    for link in zettel.links
+                    if not link.startswith(("http://", "https://", "#", "mailto:"))
+                ]
+                for link in backlink_processor_cls.normalize_links(
+                    internal_links, self.file_suffix
+                ):
+                    target = zettel_service.store.get_by_partial_path(
+                        link, self.file_suffix
+                    )
+                    if not target:
+                        logger.warning("Broken link in %s: %s", zettel.rel_path, link)
+                        self.issues[zettel.rel_path].append(
+                            ValidationIssue(
+                                path=zettel.rel_path,
+                                check="broken_link",
+                                severity="warning",
+                                message=f"Broken link: {link}",
+                            )
+                        )
 
     def _check_stale_fleeting(self, zettel_service: ZettelService) -> None:
         from mkdocs_zettelkasten.plugin.utils.date_utils import convert_string_to_date
