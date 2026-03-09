@@ -228,3 +228,47 @@ class TestUnlinkedMentionDetection:
 
         mentions = UnlinkedMentionService().find_unlinked_mentions(store)
         assert 1 in mentions
+
+
+class TestUnlinkedMentionWithResolvedLinks:
+    def test_suppresses_when_resolved_links_contains_target(self) -> None:
+        target = _make_zettel_mock(1, title="Epistemology", body="Body.")
+        source = _make_zettel_mock(
+            2, title="Other", body="Epistemology is discussed."
+        )
+        store = _make_store([target, source])
+
+        resolved = {2: {1}, 1: set()}
+        mentions = UnlinkedMentionService().find_unlinked_mentions(
+            store, resolved_links=resolved
+        )
+        assert 1 not in mentions
+
+    def test_detects_when_resolved_links_missing_target(self) -> None:
+        target = _make_zettel_mock(1, title="Epistemology", body="Body.")
+        source = _make_zettel_mock(
+            2, title="Other", body="Epistemology is discussed."
+        )
+        store = _make_store([target, source])
+
+        resolved = {2: set(), 1: set()}
+        mentions = UnlinkedMentionService().find_unlinked_mentions(
+            store, resolved_links=resolved
+        )
+        assert 1 in mentions
+
+    def test_resolved_links_skips_store_lookup(self) -> None:
+        """Even with links=['1'], if resolved_links says no link, detect mention."""
+        target = _make_zettel_mock(1, title="Epistemology", body="Body.")
+        source = _make_zettel_mock(
+            2, title="Other", body="Epistemology is discussed.", links=["1"]
+        )
+        store = _make_store([target, source])
+
+        # resolved_links says source doesn't link to target
+        resolved = {2: set(), 1: set()}
+        mentions = UnlinkedMentionService().find_unlinked_mentions(
+            store, resolved_links=resolved
+        )
+        # resolved_links takes precedence over _already_links_to
+        assert 1 in mentions

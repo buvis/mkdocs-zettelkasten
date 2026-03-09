@@ -40,9 +40,12 @@ class UnlinkedMentionService:
             id_pat = re.compile(r"\b" + re.escape(id_str) + r"\b")
 
             for source in store.zettels:
-                if source.id == target.id or self._already_links_to(
-                    source, target, store, file_suffix
-                ):
+                if source.id == target.id:
+                    continue
+                if resolved_links is not None:
+                    if target.id in resolved_links.get(source.id, set()):
+                        continue
+                elif self._already_links_to(source, target, store, file_suffix):
                     continue
                 result = self._find_mention_in_body(
                     source.body, title_pat, title, id_pat, id_str
