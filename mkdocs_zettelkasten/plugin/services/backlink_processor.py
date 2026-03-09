@@ -24,18 +24,30 @@ class BacklinkProcessor:
         """Create mapping: target_zettel_id -> list_of_linking_zettels."""
         backlinks: dict[int, list[Zettel]] = defaultdict(list)
 
-        for zettel in store.zettels:
-            for normalized_link in cls.normalize_links(zettel.links, file_suffix):
-                target_zettel = store.get_by_partial_path(normalized_link, file_suffix)
-
-                if target_zettel:
+        if resolved_links is not None:
+            for zettel in store.zettels:
+                for target_id in resolved_links.get(zettel.id, set()):
                     logger.debug(
                         "Link from %s to %s found and added to %s's backlinks.",
                         zettel.id,
-                        target_zettel.id,
-                        target_zettel.id,
+                        target_id,
+                        target_id,
                     )
-                    backlinks[target_zettel.id].append(zettel)
+                    backlinks[target_id].append(zettel)
+        else:
+            for zettel in store.zettels:
+                for normalized_link in cls.normalize_links(zettel.links, file_suffix):
+                    target_zettel = store.get_by_partial_path(
+                        normalized_link, file_suffix
+                    )
+                    if target_zettel:
+                        logger.debug(
+                            "Link from %s to %s found and added to %s's backlinks.",
+                            zettel.id,
+                            target_zettel.id,
+                            target_zettel.id,
+                        )
+                        backlinks[target_zettel.id].append(zettel)
 
         return backlinks
 
