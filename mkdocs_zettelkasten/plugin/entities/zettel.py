@@ -118,10 +118,14 @@ class Zettel:
             msg = f"File {self.path} read error"
             raise ZettelFormatError(msg) from err
 
-        header_text, body_text = parse_frontmatter(content)
+        header_text, body_text, has_opening = parse_frontmatter(content)
         if not header_text:
-            logger.error("Unclosed YAML header in file: %s", self.path)
-            msg = "Unclosed YAML header in file"
+            if has_opening:
+                logger.error("Unclosed YAML header in file: %s", self.path)
+                msg = "Unclosed YAML header in file"
+            else:
+                logger.debug("Skipping non-zettel file: %s", self.path)
+                msg = "No frontmatter found"
             raise ZettelFormatError(msg)
 
         meta = self._parse_metadata(header_text)
