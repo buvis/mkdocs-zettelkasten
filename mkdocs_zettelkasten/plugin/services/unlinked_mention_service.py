@@ -59,15 +59,16 @@ class UnlinkedMentionService:
     def _find_mention_in_body(self, body, title_pat, title, id_pat, id_str):
         """Search body paragraphs for a mention, return snippet or None."""
         body_clean = _FENCED_CODE.sub(lambda m: " " * len(m.group()), body)
+        orig_paragraphs = self._split_paragraphs(body)
+        cleaned_paragraphs = self._split_paragraphs(body_clean)
 
-        for paragraph in self._split_paragraphs(body_clean):
-            stripped = self._strip_syntax(paragraph)
+        for orig_para, clean_para in zip(orig_paragraphs, cleaned_paragraphs):
+            stripped = self._strip_syntax(clean_para)
             matched_term = self._match_paragraph(
                 stripped, title_pat, title, id_pat, id_str
             )
             if matched_term:
-                orig_paragraph = self._find_original_paragraph(body, paragraph)
-                return self._make_snippet(orig_paragraph, matched_term)
+                return self._make_snippet(orig_para, matched_term)
         return None
 
     @staticmethod
@@ -117,21 +118,6 @@ class UnlinkedMentionService:
         if current:
             paragraphs.append("\n".join(current))
         return paragraphs
-
-    def _find_original_paragraph(
-        self, original_body: str, cleaned_paragraph: str
-    ) -> str:
-        """Find the original paragraph text before code-block stripping."""
-        orig_paragraphs = self._split_paragraphs(original_body)
-        cleaned_paragraphs = self._split_paragraphs(
-            _FENCED_CODE.sub(lambda m: " " * len(m.group()), original_body)
-        )
-
-        for i, cp in enumerate(cleaned_paragraphs):
-            if cp == cleaned_paragraph and i < len(orig_paragraphs):
-                return orig_paragraphs[i]
-
-        return cleaned_paragraph
 
     @staticmethod
     def _make_snippet(paragraph: str, term: str) -> str:
