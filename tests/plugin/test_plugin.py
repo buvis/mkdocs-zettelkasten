@@ -3,7 +3,10 @@ import os
 from unittest.mock import MagicMock, patch
 from zoneinfo import ZoneInfo
 
+from mkdocs_zettelkasten.plugin.services.link_resolver import LinkMap
 from mkdocs_zettelkasten.plugin.plugin import ZettelkastenPlugin
+
+_EMPTY_LINK_MAP = LinkMap(resolved={}, broken=[])
 
 
 class TestZettelkastenPlugin:
@@ -107,6 +110,7 @@ class TestZettelkastenPlugin:
 
     def test_on_files_delegates(self) -> None:
         plugin = self._make_plugin()
+        plugin.zettel_service.link_map = _EMPTY_LINK_MAP
         files = MagicMock()
         files.__len__ = lambda self: 5
         config = MagicMock()
@@ -123,6 +127,7 @@ class TestZettelkastenPlugin:
 
     def test_on_files_sets_validation_count(self) -> None:
         plugin = self._make_plugin()
+        plugin.zettel_service.link_map = _EMPTY_LINK_MAP
         files = MagicMock()
         files.__len__ = lambda self: 5
         config = {"extra": {}}
@@ -245,6 +250,7 @@ class TestZettelkastenPlugin:
 
     def test_on_files_exports_graph_json(self, tmp_path) -> None:
         plugin = self._make_plugin()
+        plugin.zettel_service.link_map = _EMPTY_LINK_MAP
         plugin.config["graph_enabled"] = True
         files = MagicMock()
         files.__len__ = lambda self: 1
@@ -265,6 +271,7 @@ class TestZettelkastenPlugin:
 
     def test_on_files_exports_previews_json(self, tmp_path) -> None:
         plugin = self._make_plugin()
+        plugin.zettel_service.link_map = _EMPTY_LINK_MAP
         plugin.config["preview_enabled"] = True
         files = MagicMock()
         files.__len__ = lambda self: 1
@@ -418,9 +425,7 @@ class TestZettelkastenPlugin:
         ):
             plugin.on_config(config)
 
-        mock_vcfg.assert_called_once_with(
-            plugin.zk_config.timezone, config, file_suffix=".txt"
-        )
+        mock_vcfg.assert_called_once_with(plugin.zk_config.timezone, config)
 
     def test_on_post_build_skips_vendor_subdir(self, tmp_path) -> None:
         plugin = self._make_plugin()

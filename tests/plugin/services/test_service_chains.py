@@ -321,7 +321,9 @@ Content of note Y.
             {"src_path": "200.md", "tags": ["alpha", "beta"]},
         ]
 
-        suggestions = suggestion_svc.compute(svc.store, tags_metadata)
+        suggestions = suggestion_svc.compute(
+            svc.store, tags_metadata, svc.link_map.resolved
+        )
 
         # Perfect tag overlap (Jaccard 1.0) → suggestions in both directions
         assert 100 in suggestions or 200 in suggestions
@@ -352,7 +354,9 @@ Content of note B.
             {"src_path": "200.md", "tags": ["alpha", "beta"]},
         ]
 
-        suggestions = suggestion_svc.compute(svc.store, tags_metadata)
+        suggestions = suggestion_svc.compute(
+            svc.store, tags_metadata, svc.link_map.resolved
+        )
 
         # Already linked → should NOT suggest
         target_ids = {s["target_id"] for s in suggestions.get(100, [])}

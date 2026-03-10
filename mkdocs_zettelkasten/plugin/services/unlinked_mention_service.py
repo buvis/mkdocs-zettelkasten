@@ -23,8 +23,7 @@ class UnlinkedMentionService:
     def find_unlinked_mentions(
         self,
         store,
-        file_suffix: str = ".md",
-        resolved_links: dict[int, set[int]] | None = None,
+        resolved_links: dict[int, set[int]],
     ) -> dict[int, list[tuple[int, str]]]:
         """Return {target_id: [(source_id, snippet), ...]} for unlinked mentions."""
         unlinked_mentions: dict[int, list[tuple[int, str]]] = defaultdict(list)
@@ -42,10 +41,7 @@ class UnlinkedMentionService:
             for source in store.zettels:
                 if source.id == target.id:
                     continue
-                if resolved_links is not None:
-                    if target.id in resolved_links.get(source.id, set()):
-                        continue
-                elif self._already_links_to(source, target, store, file_suffix):
+                if target.id in resolved_links.get(source.id, set()):
                     continue
                 result = self._find_mention_in_body(
                     source.body, title_pat, title, id_pat, id_str
@@ -79,17 +75,6 @@ class UnlinkedMentionService:
         if id_pat.search(stripped):
             return id_str
         return None
-
-    @staticmethod
-    def _already_links_to(source, target, store, file_suffix: str = ".md") -> bool:
-        target_id = str(target.id)
-        for link in source.links:
-            if link.removesuffix(file_suffix) == target_id:
-                return True
-            resolved = store.get_by_partial_path(link, file_suffix)
-            if resolved is not None and resolved.id == target.id:
-                return True
-        return False
 
     @staticmethod
     def _strip_syntax(text: str) -> str:

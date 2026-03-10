@@ -123,9 +123,7 @@ class ZettelkastenPlugin(BasePlugin):
             role_key=self.zk_config.role_key,
         )
         if self.zk_config.validation_enabled:
-            self.validation_service.configure(
-                self.zk_config.timezone, config, file_suffix=self.zk_config.file_suffix
-            )
+            self.validation_service.configure(self.zk_config.timezone, config)
         if self.config["editor_enabled"]:
             config["extra"]["editor_enabled"] = True
         if self.config["graph_enabled"]:
@@ -175,10 +173,7 @@ class ZettelkastenPlugin(BasePlugin):
             self.zettel_service.suggestions = self.suggestion_service.compute(
                 self.zettel_service.store,
                 self.tags_service.metadata,
-                file_suffix=self.config["file_suffix"],
-                resolved_links=self.zettel_service.link_map.resolved
-                if self.zettel_service.link_map
-                else None,
+                self.zettel_service.link_map.resolved,
             )
             self._export_suggestions(files, config)
         outlines = self.outline_service.compute(
@@ -204,9 +199,7 @@ class ZettelkastenPlugin(BasePlugin):
                 self.zettel_service,
                 files,
                 config,
-                broken_links=self.zettel_service.link_map.broken
-                if self.zettel_service.link_map
-                else None,
+                self.zettel_service.link_map.broken,
             )
             config["extra"]["validation_issues_count"] = (
                 self.validation_service.total_actionable_issues()

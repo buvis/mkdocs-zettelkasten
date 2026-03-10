@@ -16,18 +16,13 @@ class SuggestionService:
         self,
         store: ZettelStore,
         tags_metadata: list[dict[str, Any]],
-        file_suffix: str = ".md",
-        resolved_links: dict[int, set[int]] | None = None,
+        resolved_links: dict[int, set[int]],
     ) -> dict[int, list[dict]]:
         """Return {zettel_id: [{target_id, reason, confidence}, ...]}."""
-        if resolved_links is not None:
-            # Filter out self-links since _build_link_sets excludes them
-            link_sets = {
-                zid: {tid for tid in targets if tid != zid}
-                for zid, targets in resolved_links.items()
-            }
-        else:
-            link_sets = self._build_link_sets(store, file_suffix)
+        link_sets = {
+            zid: {tid for tid in targets if tid != zid}
+            for zid, targets in resolved_links.items()
+        }
         tag_sets = self._build_tag_sets(store, tags_metadata)
         linked_pairs = self._build_linked_pairs(link_sets)
 
@@ -35,18 +30,6 @@ class SuggestionService:
         tag_suggs = self._shared_tag_suggestions(store, tag_sets, linked_pairs)
 
         return self._merge(link_suggs, tag_suggs)
-
-    def _build_link_sets(self, store, file_suffix):
-        """Map each zettel ID to set of target IDs it links to."""
-        link_sets: dict[int, set[int]] = {}
-        for z in store.zettels:
-            targets = set()
-            for link in z.links:
-                target = store.get_by_partial_path(link, file_suffix)
-                if target and target.id != z.id:
-                    targets.add(target.id)
-            link_sets[z.id] = targets
-        return link_sets
 
     def _build_tag_sets(self, store, tags_metadata):
         """Map each zettel ID to its set of tags."""

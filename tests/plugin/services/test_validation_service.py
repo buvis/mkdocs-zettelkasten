@@ -53,7 +53,7 @@ class TestValidationService:
         config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
         files = MagicMock()
 
-        vs.validate(svc, files, config)
+        vs.validate(svc, files, config, [])
 
         assert vs.get_issues("a.md") == []
         assert vs.get_issues("b.md") == []
@@ -70,7 +70,7 @@ class TestValidationService:
         config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
         files = MagicMock()
 
-        vs.validate(svc, files, config)
+        vs.validate(svc, files, config, [])
 
         a_issues = vs.get_issues("a.md")
         assert len(a_issues) == 1
@@ -78,9 +78,7 @@ class TestValidationService:
         assert vs.get_issues("b.md") == []
 
     def test_broken_link_detected(self, tmp_path: Path) -> None:
-        z1 = self._make_zettel(1, "a.md", links=["nonexistent"])
-
-        svc = self._make_zettel_service([z1], backlinks={})
+        svc = self._make_zettel_service([], backlinks={})
 
         vs = ValidationService()
         vs.output_folder = tmp_path
@@ -88,7 +86,7 @@ class TestValidationService:
         config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
         files = MagicMock()
 
-        vs.validate(svc, files, config)
+        vs.validate(svc, files, config, [("a.md", "nonexistent")])
 
         issues = vs.get_issues("a.md")
         broken = [i for i in issues if i.check == "broken_link"]
@@ -107,7 +105,7 @@ class TestValidationService:
         config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
         files = MagicMock()
 
-        vs.validate(svc, files, config)
+        vs.validate(svc, files, config, [])
 
         issues = vs.get_issues("bad.md")
         assert len(issues) == 1
@@ -127,7 +125,7 @@ class TestValidationService:
         config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
         files = MagicMock()
 
-        vs.validate(svc, files, config)
+        vs.validate(svc, files, config, [])
 
         broken = [i for i in vs.get_issues("a.md") if i.check == "broken_link"]
         assert len(broken) == 0
@@ -143,7 +141,7 @@ class TestValidationService:
         config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
         files = MagicMock()
 
-        vs.validate(svc, files, config)
+        vs.validate(svc, files, config, [])
 
         stale = [i for i in vs.get_issues("a.md") if i.check == "stale_fleeting"]
         assert len(stale) == 1
@@ -160,7 +158,7 @@ class TestValidationService:
         config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
         files = MagicMock()
 
-        vs.validate(svc, files, config)
+        vs.validate(svc, files, config, [])
 
         stale = [i for i in vs.get_issues("a.md") if i.check == "stale_fleeting"]
         assert len(stale) == 0
@@ -176,7 +174,7 @@ class TestValidationService:
         config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
         files = MagicMock()
 
-        vs.validate(svc, files, config)
+        vs.validate(svc, files, config, [])
 
         stale = [i for i in vs.get_issues("a.md") if i.check == "stale_fleeting"]
         assert len(stale) == 0
@@ -192,7 +190,7 @@ class TestValidationService:
         config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
         files = MagicMock()
 
-        vs.validate(svc, files, config)
+        vs.validate(svc, files, config, [])
 
         missing = [i for i in vs.get_issues("a.md") if i.check == "missing_type"]
         assert len(missing) == 1
@@ -209,7 +207,7 @@ class TestValidationService:
         config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
         files = MagicMock()
 
-        vs.validate(svc, files, config)
+        vs.validate(svc, files, config, [])
 
         missing = [i for i in vs.get_issues("a.md") if i.check == "missing_type"]
         assert len(missing) == 0
@@ -227,7 +225,7 @@ class TestValidationService:
         config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
         files = MagicMock()
 
-        vs.validate(svc, files, config)
+        vs.validate(svc, files, config, [])
 
         broken = [i for i in vs.get_issues("a.md") if i.check == "broken_sequence"]
         assert len(broken) == 1
@@ -250,7 +248,7 @@ class TestValidationService:
         config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
         files = MagicMock()
 
-        vs.validate(svc, files, config)
+        vs.validate(svc, files, config, [])
 
         broken = [i for i in vs.get_issues("a.md") if i.check == "broken_sequence"]
         assert len(broken) == 0
@@ -264,7 +262,7 @@ class TestValidationService:
         config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
         files = MagicMock()
 
-        vs.validate(svc, files, config)
+        vs.validate(svc, files, config, [])
 
         assert vs.total_actionable_issues() == 0
 
@@ -279,7 +277,7 @@ class TestValidationService:
         files = MagicMock()
 
         with pytest.raises(FileNotFoundError):
-            vs.validate(svc, files, config)
+            vs.validate(svc, files, config, [])
 
     def test_broken_link_from_precomputed_list(self, tmp_path: Path) -> None:
         svc = self._make_zettel_service([], backlinks={})
@@ -322,7 +320,7 @@ class TestValidationService:
         config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
         files = MagicMock()
 
-        vs.validate(svc, files, config)
+        vs.validate(svc, files, config, [])
 
         report = tmp_path / "validation.md"
         assert report.exists()

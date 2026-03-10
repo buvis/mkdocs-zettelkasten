@@ -56,12 +56,10 @@ class ZettelService:
         self.store.update(valid_zettels)
         self.link_map = LinkResolver.resolve(self.store, file_suffix=self.file_suffix)
         self.backlinks = BacklinkProcessor.process(
-            self.store, file_suffix=self.file_suffix,
-            resolved_links=self.link_map.resolved,
+            self.store, self.link_map.resolved,
         )
         self.unlinked_mentions = self.unlinked_mention_service.find_unlinked_mentions(
-            self.store, file_suffix=self.file_suffix,
-            resolved_links=self.link_map.resolved,
+            self.store, self.link_map.resolved,
         )
         self.sequence_children = SequenceService.build_tree(self.store)
 

@@ -1,6 +1,5 @@
 import logging
 from collections import defaultdict
-from collections.abc import Iterable
 
 from mkdocs_zettelkasten.plugin.entities.zettel import Zettel
 
@@ -18,43 +17,19 @@ class BacklinkProcessor:
     def process(
         cls,
         store: ZettelStore,
-        file_suffix: str = ".md",
-        resolved_links: dict[int, set[int]] | None = None,
+        resolved_links: dict[int, set[int]],
     ) -> dict[int, list[Zettel]]:
         """Create mapping: target_zettel_id -> list_of_linking_zettels."""
         backlinks: dict[int, list[Zettel]] = defaultdict(list)
 
-        if resolved_links is not None:
-            for zettel in store.zettels:
-                for target_id in resolved_links.get(zettel.id, set()):
-                    logger.debug(
-                        "Link from %s to %s found and added to %s's backlinks.",
-                        zettel.id,
-                        target_id,
-                        target_id,
-                    )
-                    backlinks[target_id].append(zettel)
-        else:
-            for zettel in store.zettels:
-                for normalized_link in cls.normalize_links(zettel.links, file_suffix):
-                    target_zettel = store.get_by_partial_path(
-                        normalized_link, file_suffix
-                    )
-                    if target_zettel:
-                        logger.debug(
-                            "Link from %s to %s found and added to %s's backlinks.",
-                            zettel.id,
-                            target_zettel.id,
-                            target_zettel.id,
-                        )
-                        backlinks[target_zettel.id].append(zettel)
+        for zettel in store.zettels:
+            for target_id in resolved_links.get(zettel.id, set()):
+                logger.debug(
+                    "Link from %s to %s found and added to %s's backlinks.",
+                    zettel.id,
+                    target_id,
+                    target_id,
+                )
+                backlinks[target_id].append(zettel)
 
         return backlinks
-
-    @staticmethod
-    def normalize_links(links: Iterable[str], file_suffix: str = ".md") -> set[str]:
-        """Normalize links to consistent format with file suffix."""
-        return {
-            f"{link}{file_suffix}" if not link.endswith(file_suffix) else link
-            for link in links
-        }

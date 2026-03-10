@@ -1,6 +1,11 @@
+from mkdocs_zettelkasten.plugin.services.link_resolver import LinkResolver
 from mkdocs_zettelkasten.plugin.services.suggestion_service import SuggestionService
 from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
 from tests.plugin.conftest import _make_zettel_mock
+
+
+def _resolve(store):
+    return LinkResolver.resolve(store).resolved
 
 
 class TestSharedLinkSuggestions:
@@ -10,7 +15,7 @@ class TestSharedLinkSuggestions:
     def test_no_suggestions_for_isolated_note(self):
         z = _make_zettel_mock(1, title="A", rel_path="a.md")
         store = ZettelStore([z])
-        result = self.service.compute(store, [])
+        result = self.service.compute(store, [], _resolve(store))
         assert result.get(1, []) == []
 
     def test_shared_link_produces_suggestion(self):
@@ -19,7 +24,7 @@ class TestSharedLinkSuggestions:
         b = _make_zettel_mock(2, title="B", rel_path="b.md", links=["c.md"])
         c = _make_zettel_mock(3, title="C", rel_path="c.md")
         store = ZettelStore([a, b, c])
-        result = self.service.compute(store, [])
+        result = self.service.compute(store, [], _resolve(store))
         sugg_for_a = result.get(1, [])
         assert any(s["target_id"] == 2 for s in sugg_for_a)
 
@@ -28,7 +33,7 @@ class TestSharedLinkSuggestions:
         b = _make_zettel_mock(2, title="B", rel_path="b.md", links=["c.md"])
         c = _make_zettel_mock(3, title="C", rel_path="c.md")
         store = ZettelStore([a, b, c])
-        result = self.service.compute(store, [])
+        result = self.service.compute(store, [], _resolve(store))
         sugg = next(s for s in result.get(1, []) if s["target_id"] == 2)
         assert "shared link" in sugg["reason"]
         assert sugg["confidence"] > 0
@@ -39,7 +44,7 @@ class TestSharedLinkSuggestions:
         b = _make_zettel_mock(2, title="B", rel_path="b.md", links=["c.md"])
         c = _make_zettel_mock(3, title="C", rel_path="c.md")
         store = ZettelStore([a, b, c])
-        result = self.service.compute(store, [])
+        result = self.service.compute(store, [], _resolve(store))
         sugg_for_a = result.get(1, [])
         assert not any(s["target_id"] == 2 for s in sugg_for_a)
 
@@ -49,7 +54,7 @@ class TestSharedLinkSuggestions:
         b = _make_zettel_mock(2, title="B", rel_path="b.md", links=["a.md", "c.md"])
         c = _make_zettel_mock(3, title="C", rel_path="c.md")
         store = ZettelStore([a, b, c])
-        result = self.service.compute(store, [])
+        result = self.service.compute(store, [], _resolve(store))
         sugg_for_a = result.get(1, [])
         assert not any(s["target_id"] == 2 for s in sugg_for_a)
 
@@ -66,7 +71,7 @@ class TestSharedTagSuggestions:
             {"src_path": "a.md", "tags": ["philosophy", "epistemology"]},
             {"src_path": "b.md", "tags": ["philosophy", "science"]},
         ]
-        result = self.service.compute(store, tags_meta)
+        result = self.service.compute(store, tags_meta, _resolve(store))
         sugg_for_a = result.get(1, [])
         assert any(s["target_id"] == 2 for s in sugg_for_a)
 
@@ -78,7 +83,7 @@ class TestSharedTagSuggestions:
             {"src_path": "a.md", "tags": ["philosophy", "epistemology"]},
             {"src_path": "b.md", "tags": ["philosophy", "science"]},
         ]
-        result = self.service.compute(store, tags_meta)
+        result = self.service.compute(store, tags_meta, _resolve(store))
         sugg = next(s for s in result.get(1, []) if s["target_id"] == 2)
         assert "shared tag" in sugg["reason"]
 
@@ -90,7 +95,7 @@ class TestSharedTagSuggestions:
             {"src_path": "a.md", "tags": ["philosophy"]},
             {"src_path": "b.md", "tags": ["science"]},
         ]
-        result = self.service.compute(store, tags_meta)
+        result = self.service.compute(store, tags_meta, _resolve(store))
         sugg_for_a = result.get(1, [])
         assert not any(s["target_id"] == 2 for s in sugg_for_a)
 
@@ -121,7 +126,7 @@ class TestMergeAndLimits:
             )
         ]
         store = ZettelStore([a, b, *targets])
-        result = self.service.compute(store, [])
+        result = self.service.compute(store, [], _resolve(store))
         sugg_for_a = result.get(1, [])
         # Jaccard = 1/9 ~ 0.11 < 0.3 threshold
         assert not any(s["target_id"] == 2 for s in sugg_for_a)
@@ -138,7 +143,7 @@ class TestMergeAndLimits:
         tags_meta += [
             {"src_path": f"other{i}.md", "tags": ["a", "b"]} for i in range(2, 9)
         ]
-        result = self.service.compute(store, tags_meta)
+        result = self.service.compute(store, tags_meta, _resolve(store))
         assert len(result.get(1, [])) <= 5
 
     def test_highest_confidence_kept_on_duplicate(self):
@@ -151,7 +156,7 @@ class TestMergeAndLimits:
             {"src_path": "a.md", "tags": ["x", "y"]},
             {"src_path": "b.md", "tags": ["x", "y"]},
         ]
-        result = self.service.compute(store, tags_meta)
+        result = self.service.compute(store, tags_meta, _resolve(store))
         sugg_for_a = [s for s in result.get(1, []) if s["target_id"] == 2]
         assert len(sugg_for_a) == 1  # no duplicates
 
@@ -165,51 +170,45 @@ class TestMergeAndLimits:
             {"src_path": "high.md", "tags": ["a", "b", "c"]},
             {"src_path": "low.md", "tags": ["a", "b"]},
         ]
-        result = self.service.compute(store, tags_meta)
+        result = self.service.compute(store, tags_meta, _resolve(store))
         suggs = result.get(1, [])
         assert len(suggs) >= 2
         assert suggs[0]["confidence"] >= suggs[1]["confidence"]
 
 
-class TestSuggestionServiceWithResolvedLinks:
+class TestSuggestionServiceWithExplicitResolvedLinks:
     def setup_method(self):
         self.service = SuggestionService()
 
-    def test_uses_resolved_links_instead_of_store(self):
-        """Resolved links should be used for link-based suggestions."""
+    def test_uses_resolved_links(self):
         a = _make_zettel_mock(1, title="A", rel_path="a.md")
         b = _make_zettel_mock(2, title="B", rel_path="b.md")
         c = _make_zettel_mock(3, title="C", rel_path="c.md")
         store = ZettelStore([a, b, c])
 
         resolved = {1: {3}, 2: {3}, 3: set()}
-        result = self.service.compute(store, [], resolved_links=resolved)
+        result = self.service.compute(store, [], resolved)
         sugg_for_a = result.get(1, [])
         assert any(s["target_id"] == 2 for s in sugg_for_a)
 
-    def test_resolved_links_filters_self_links(self):
-        """Self-links in resolved map should be excluded from suggestions."""
+    def test_filters_self_links(self):
         a = _make_zettel_mock(1, title="A", rel_path="a.md")
         b = _make_zettel_mock(2, title="B", rel_path="b.md")
         c = _make_zettel_mock(3, title="C", rel_path="c.md")
         store = ZettelStore([a, b, c])
 
-        # Self-links included in resolved map
         resolved = {1: {1, 3}, 2: {2, 3}, 3: set()}
-        result = self.service.compute(store, [], resolved_links=resolved)
+        result = self.service.compute(store, [], resolved)
         sugg_for_a = result.get(1, [])
-        # Should still suggest A<->B based on shared link to C
         assert any(s["target_id"] == 2 for s in sugg_for_a)
 
-    def test_resolved_links_skips_store_lookup(self):
-        """Even if zettels have links, resolved_links takes precedence."""
+    def test_empty_resolved_no_link_suggestions(self):
         a = _make_zettel_mock(1, title="A", rel_path="a.md", links=["c.md"])
         b = _make_zettel_mock(2, title="B", rel_path="b.md", links=["c.md"])
         c = _make_zettel_mock(3, title="C", rel_path="c.md")
         store = ZettelStore([a, b, c])
 
-        # Pass empty resolved_links — should find no link-based suggestions
         resolved = {1: set(), 2: set(), 3: set()}
-        result = self.service.compute(store, [], resolved_links=resolved)
+        result = self.service.compute(store, [], resolved)
         sugg_for_a = result.get(1, [])
         assert not any(s["target_id"] == 2 for s in sugg_for_a)

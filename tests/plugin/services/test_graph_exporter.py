@@ -2,12 +2,14 @@ from pathlib import Path
 
 from mkdocs_zettelkasten.plugin.services.backlink_processor import BacklinkProcessor
 from mkdocs_zettelkasten.plugin.services.graph_exporter import GraphExporter
+from mkdocs_zettelkasten.plugin.services.link_resolver import LinkResolver
 from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
 from tests.plugin.conftest import _make_zettel_mock
 
 
 def _build_backlinks(store: ZettelStore) -> dict:
-    return BacklinkProcessor.process(store)
+    resolved = LinkResolver.resolve(store).resolved
+    return BacklinkProcessor.process(store, resolved)
 
 
 class TestGraphExporter:
