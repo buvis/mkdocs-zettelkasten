@@ -10,6 +10,8 @@ on:
     - '.github/workflows/docs.yml'
     - 'mkdocs.yml'
     - 'docs/**'
+    # published docs are the live demo of the plugin/theme
+    - 'mkdocs_zettelkasten/**'
 
 permissions:
   contents: read
