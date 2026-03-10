@@ -165,6 +165,8 @@ class ZettelkastenPlugin(BasePlugin):
     def on_files(self, files: Files, /, *, config: MkDocsConfig) -> None:
         self.zettel_service.process_files(files, config)
         self.tags_service.process_files(files, store=self.zettel_service.store)
+        link_map = self.zettel_service.link_map
+        assert link_map is not None
         if self.config["graph_enabled"]:
             self._export_graph(files, config)
         if self.config["preview_enabled"]:
@@ -173,7 +175,7 @@ class ZettelkastenPlugin(BasePlugin):
             self.zettel_service.suggestions = self.suggestion_service.compute(
                 self.zettel_service.store,
                 self.tags_service.metadata,
-                self.zettel_service.link_map.resolved,
+                link_map.resolved,
             )
             self._export_suggestions(files, config)
         outlines = self.outline_service.compute(
@@ -199,7 +201,7 @@ class ZettelkastenPlugin(BasePlugin):
                 self.zettel_service,
                 files,
                 config,
-                self.zettel_service.link_map.broken,
+                link_map.broken,
             )
             config["extra"]["validation_issues_count"] = (
                 self.validation_service.total_actionable_issues()
