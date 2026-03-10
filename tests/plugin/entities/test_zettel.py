@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -43,6 +44,11 @@ MISSING_ID_ZETTEL = """---
 title: No ID Here
 ---
 # Content
+"""
+
+NO_FRONTMATTER = """# Just a regular page
+
+Some content without any YAML frontmatter.
 """
 
 UNCLOSED_HEADER = """---
@@ -183,9 +189,25 @@ class TestZettelInit:
         with pytest.raises(ZettelFormatError, match="Missing zettel ID"):
             _make_zettel(tmp_path, MISSING_ID_ZETTEL)
 
+    def test_no_frontmatter_raises_without_error_log(
+        self, tmp_path: Path, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        with pytest.raises(ZettelFormatError, match="No frontmatter found"):
+            _make_zettel(tmp_path, NO_FRONTMATTER)
+        error_records = [r for r in caplog.records if r.levelno >= logging.ERROR]
+        assert error_records == [], "absent frontmatter should not emit ERROR logs"
+
     def test_unclosed_header_raises(self, tmp_path: Path) -> None:
         with pytest.raises(ZettelFormatError, match="Unclosed YAML header"):
             _make_zettel(tmp_path, UNCLOSED_HEADER)
+
+    def test_unclosed_header_logs_error(
+        self, tmp_path: Path, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        with pytest.raises(ZettelFormatError):
+            _make_zettel(tmp_path, UNCLOSED_HEADER)
+        error_records = [r for r in caplog.records if r.levelno >= logging.ERROR]
+        assert any("Unclosed YAML header" in r.message for r in error_records)
 
     def test_invalid_yaml_raises(self, tmp_path: Path) -> None:
         with pytest.raises(ZettelFormatError):
