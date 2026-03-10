@@ -13,19 +13,18 @@ def parse_frontmatter(content: str) -> tuple[str, str, bool]:
         (header, body, True)   — valid frontmatter found and closed
         ("",   content, True)  — opening ``---`` found but never closed (malformed)
         ("",   content, False) — no opening ``---`` at all (not a zettel)
+
+    Only a ``---`` on the first line counts as a frontmatter opener.
+    Later ``---`` lines without a first-line opener are thematic breaks.
     """
     lines = content.splitlines(keepends=True)
-    divider_count = 0
-    header_start = 0
+    if not lines or lines[0].strip() != DIVIDER:
+        return ("", content, False)
 
-    for i, line in enumerate(lines):
+    for i, line in enumerate(lines[1:], start=1):
         if line.strip() == DIVIDER:
-            divider_count += 1
-            if divider_count == 1:
-                header_start = i + 1
-            elif divider_count == DIVIDER_COUNT:
-                header = "".join(lines[header_start:i])
-                body = "".join(lines[i + 1 :])
-                return (header, body, True)
+            header = "".join(lines[1:i])
+            body = "".join(lines[i + 1 :])
+            return (header, body, True)
 
-    return ("", content, divider_count > 0)
+    return ("", content, True)

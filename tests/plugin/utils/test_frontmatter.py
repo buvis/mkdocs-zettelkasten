@@ -52,11 +52,10 @@ class TestParseFrontmatter:
 
     def test_bom_before_first_divider(self) -> None:
         # BOM (\ufeff) before the opening --- makes the divider line "\ufeff---"
-        # which doesn't match "---", so the first divider is skipped.
-        # The closing --- is seen as a lone opening divider → unclosed pattern.
+        # which doesn't match "---", so the first line isn't a frontmatter opener.
         header, _body, has_opening = parse_frontmatter("\ufeff---\nid: 1\n---\nbody\n")
         assert header == ""
-        assert has_opening is True
+        assert has_opening is False
 
     def test_bom_stripped_before_parse(self) -> None:
         # After stripping BOM, frontmatter should parse normally.
@@ -114,8 +113,7 @@ class TestParseFrontmatter:
         assert has_opening is False
 
     def test_text_then_divider_is_absent(self) -> None:
-        # Opening --- must be first divider; text before it means no frontmatter intent
-        # but the function sees a --- so has_opening is True (unclosed pattern)
+        # --- not on the first line is a thematic break, not a frontmatter opener
         header, _body, has_opening = parse_frontmatter("some text\n---\nmore text\n")
         assert header == ""
-        assert has_opening is True
+        assert has_opening is False
