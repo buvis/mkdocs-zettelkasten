@@ -34,21 +34,41 @@ def test_returns_empty_for_invalid_yaml(tmp_path: Path) -> None:
     assert meta == {}
 
 
+LOGGER_NAME = "mkdocs.plugins.zettelkasten.utils.metadata_utils"
+PARENT_LOGGER = "mkdocs.plugins.zettelkasten"
+
+
+def _ensure_propagation() -> None:
+    """Allow caplog (attached to root) to capture child log records."""
+    parent = logging.getLogger(PARENT_LOGGER)
+    parent.propagate = True
+
+
 def test_no_frontmatter_logs_debug(tmp_path: Path, caplog: object) -> None:
+    _ensure_propagation()
     md = tmp_path / "plain.md"
     md.write_text("Just plain text\n")
-    with caplog.at_level(logging.DEBUG):  # type: ignore[union-attr]
+    with caplog.at_level(logging.DEBUG, logger=LOGGER_NAME):  # type: ignore[union-attr]
         extract_file_metadata("plain.md", str(tmp_path))
-    assert any(r.levelno == logging.DEBUG and "No YAML frontmatter" in r.message for r in caplog.records)  # type: ignore[union-attr]
-    assert not any(r.levelno >= logging.WARNING and "frontmatter" in r.message.lower() for r in caplog.records)  # type: ignore[union-attr]
+    assert any(
+        r.levelno == logging.DEBUG and "No YAML frontmatter" in r.message
+        for r in caplog.records
+    )  # type: ignore[union-attr]
+    assert not any(
+        r.levelno >= logging.WARNING and "frontmatter" in r.message.lower()
+        for r in caplog.records
+    )  # type: ignore[union-attr]
 
 
 def test_unclosed_frontmatter_logs_warning(tmp_path: Path, caplog: object) -> None:
+    _ensure_propagation()
     md = tmp_path / "broken.md"
     md.write_text("---\nid: 1\n")
-    with caplog.at_level(logging.DEBUG):  # type: ignore[union-attr]
+    with caplog.at_level(logging.DEBUG, logger=LOGGER_NAME):  # type: ignore[union-attr]
         extract_file_metadata("broken.md", str(tmp_path))
-    assert any(r.levelno == logging.WARNING and "Unclosed" in r.message for r in caplog.records)  # type: ignore[union-attr]
+    assert any(
+        r.levelno == logging.WARNING and "Unclosed" in r.message for r in caplog.records
+    )  # type: ignore[union-attr]
 
 
 def test_handles_tags_list(tmp_path: Path) -> None:
