@@ -20,7 +20,14 @@ class SuggestionService:
         resolved_links: dict[int, set[int]] | None = None,
     ) -> dict[int, list[dict]]:
         """Return {zettel_id: [{target_id, reason, confidence}, ...]}."""
-        link_sets = self._build_link_sets(store, file_suffix)
+        if resolved_links is not None:
+            # Filter out self-links since _build_link_sets excludes them
+            link_sets = {
+                zid: {tid for tid in targets if tid != zid}
+                for zid, targets in resolved_links.items()
+            }
+        else:
+            link_sets = self._build_link_sets(store, file_suffix)
         tag_sets = self._build_tag_sets(store, tags_metadata)
         linked_pairs = self._build_linked_pairs(link_sets)
 

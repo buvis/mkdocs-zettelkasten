@@ -169,3 +169,47 @@ class TestMergeAndLimits:
         suggs = result.get(1, [])
         assert len(suggs) >= 2
         assert suggs[0]["confidence"] >= suggs[1]["confidence"]
+
+
+class TestSuggestionServiceWithResolvedLinks:
+    def setup_method(self):
+        self.service = SuggestionService()
+
+    def test_uses_resolved_links_instead_of_store(self):
+        """Resolved links should be used for link-based suggestions."""
+        a = _make_zettel_mock(1, title="A", rel_path="a.md")
+        b = _make_zettel_mock(2, title="B", rel_path="b.md")
+        c = _make_zettel_mock(3, title="C", rel_path="c.md")
+        store = ZettelStore([a, b, c])
+
+        resolved = {1: {3}, 2: {3}, 3: set()}
+        result = self.service.compute(store, [], resolved_links=resolved)
+        sugg_for_a = result.get(1, [])
+        assert any(s["target_id"] == 2 for s in sugg_for_a)
+
+    def test_resolved_links_filters_self_links(self):
+        """Self-links in resolved map should be excluded from suggestions."""
+        a = _make_zettel_mock(1, title="A", rel_path="a.md")
+        b = _make_zettel_mock(2, title="B", rel_path="b.md")
+        c = _make_zettel_mock(3, title="C", rel_path="c.md")
+        store = ZettelStore([a, b, c])
+
+        # Self-links included in resolved map
+        resolved = {1: {1, 3}, 2: {2, 3}, 3: set()}
+        result = self.service.compute(store, [], resolved_links=resolved)
+        sugg_for_a = result.get(1, [])
+        # Should still suggest A<->B based on shared link to C
+        assert any(s["target_id"] == 2 for s in sugg_for_a)
+
+    def test_resolved_links_skips_store_lookup(self):
+        """Even if zettels have links, resolved_links takes precedence."""
+        a = _make_zettel_mock(1, title="A", rel_path="a.md", links=["c.md"])
+        b = _make_zettel_mock(2, title="B", rel_path="b.md", links=["c.md"])
+        c = _make_zettel_mock(3, title="C", rel_path="c.md")
+        store = ZettelStore([a, b, c])
+
+        # Pass empty resolved_links — should find no link-based suggestions
+        resolved = {1: set(), 2: set(), 3: set()}
+        result = self.service.compute(store, [], resolved_links=resolved)
+        sugg_for_a = result.get(1, [])
+        assert not any(s["target_id"] == 2 for s in sugg_for_a)
