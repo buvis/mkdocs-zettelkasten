@@ -19,7 +19,7 @@ def extract_file_metadata(filename: str, docs_dir: str) -> dict[str, Any]:
     logger.debug("Extracting metadata from file: %s.", file_path)
     try:
         content = file_path.read_text(encoding="utf-8-sig")
-        header_text, _ = parse_frontmatter(content)
+        header_text, _, _ = parse_frontmatter(content)
         if not header_text:
             logger.warning("No YAML frontmatter found in file: %s.", file_path)
             return {}

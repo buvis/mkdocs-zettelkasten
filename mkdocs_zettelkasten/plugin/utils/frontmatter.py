@@ -6,10 +6,13 @@ DIVIDER = "---"
 DIVIDER_COUNT = 2
 
 
-def parse_frontmatter(content: str) -> tuple[str, str]:
-    """Split content into (header_yaml_text, body_text) at YAML frontmatter boundary.
+def parse_frontmatter(content: str) -> tuple[str, str, bool]:
+    """Split content into (header_yaml_text, body_text, has_opening) at YAML frontmatter boundary.
 
-    Returns ("", content) if no valid frontmatter found.
+    Return cases:
+        (header, body, True)   — valid frontmatter found and closed
+        ("",   content, True)  — opening ``---`` found but never closed (malformed)
+        ("",   content, False) — no opening ``---`` at all (not a zettel)
     """
     lines = content.splitlines(keepends=True)
     divider_count = 0
@@ -23,6 +26,6 @@ def parse_frontmatter(content: str) -> tuple[str, str]:
             elif divider_count == DIVIDER_COUNT:
                 header = "".join(lines[header_start:i])
                 body = "".join(lines[i + 1 :])
-                return (header, body)
+                return (header, body, True)
 
-    return ("", content)
+    return ("", content, divider_count > 0)
