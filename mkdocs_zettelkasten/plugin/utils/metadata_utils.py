@@ -19,9 +19,12 @@ def extract_file_metadata(filename: str, docs_dir: str) -> dict[str, Any]:
     logger.debug("Extracting metadata from file: %s.", file_path)
     try:
         content = file_path.read_text(encoding="utf-8-sig")
-        header_text, _, _ = parse_frontmatter(content)
+        header_text, _, has_opening = parse_frontmatter(content)
         if not header_text:
-            logger.warning("No YAML frontmatter found in file: %s.", file_path)
+            if has_opening:
+                logger.warning("Unclosed YAML frontmatter in file: %s.", file_path)
+            else:
+                logger.debug("No YAML frontmatter in file: %s.", file_path)
             return {}
         metadata = yaml.safe_load(header_text)
         if not isinstance(metadata, dict):
