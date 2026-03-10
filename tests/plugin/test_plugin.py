@@ -3,8 +3,8 @@ import os
 from unittest.mock import MagicMock, patch
 from zoneinfo import ZoneInfo
 
-from mkdocs_zettelkasten.plugin.services.link_resolver import LinkMap
 from mkdocs_zettelkasten.plugin.plugin import ZettelkastenPlugin
+from mkdocs_zettelkasten.plugin.services.link_resolver import LinkMap
 
 _EMPTY_LINK_MAP = LinkMap(resolved={}, broken=[])
 
@@ -386,7 +386,9 @@ class TestZettelkastenPlugin:
             patch.object(plugin.tags_service, "configure"),
             patch.object(plugin.validation_service, "configure"),
             patch.object(
-                plugin.workflow_service, "configure", wraps=plugin.workflow_service.configure
+                plugin.workflow_service,
+                "configure",
+                wraps=plugin.workflow_service.configure,
             ) as mock_wf_cfg,
         ):
             plugin.on_config(config)

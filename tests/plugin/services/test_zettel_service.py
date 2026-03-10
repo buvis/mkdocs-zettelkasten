@@ -112,8 +112,8 @@ class TestZettelService:
         assert result.meta["is_zettel"] is False
 
     def test_partial_path_lookup_uses_configured_suffix(self) -> None:
-        from tests.plugin.conftest import _make_zettel_mock
         from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
+        from tests.plugin.conftest import _make_zettel_mock
 
         z = _make_zettel_mock(1, title="Note", rel_path="note.txt")
         svc = ZettelService()

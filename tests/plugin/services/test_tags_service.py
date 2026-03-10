@@ -176,7 +176,9 @@ class TestTagsService:
         self, tmp_path: Path
     ) -> None:
         z = _make_zettel_mock(
-            1, title="Note", rel_path="note.txt",
+            1,
+            title="Note",
+            rel_path="note.txt",
             path=Path("/docs/note.txt"),
         )
         z.meta = {"id": 1, "title": "Note", "tags": ["demo"]}

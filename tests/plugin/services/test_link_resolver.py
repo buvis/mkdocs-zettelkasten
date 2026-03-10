@@ -43,9 +43,7 @@ class TestLinkResolver:
         assert 1 in result.resolved[1]
 
     def test_multiple_links_to_same_target_deduplicated(self) -> None:
-        z1 = _make_zettel_mock(
-            1, path=Path("/docs/a.md"), links=["b.md", "b"]
-        )
+        z1 = _make_zettel_mock(1, path=Path("/docs/a.md"), links=["b.md", "b"])
         z2 = _make_zettel_mock(2, path=Path("/docs/b.md"))
         store = ZettelStore([z1, z2])
 
@@ -57,7 +55,12 @@ class TestLinkResolver:
         z1 = _make_zettel_mock(
             1,
             path=Path("/docs/a.md"),
-            links=["http://example.com", "https://example.com", "#anchor", "mailto:x@y"],
+            links=[
+                "http://example.com",
+                "https://example.com",
+                "#anchor",
+                "mailto:x@y",
+            ],
         )
         store = ZettelStore([z1])
 
