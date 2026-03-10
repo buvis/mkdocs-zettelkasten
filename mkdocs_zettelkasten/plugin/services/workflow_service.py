@@ -3,7 +3,9 @@ from __future__ import annotations
 import logging
 from datetime import date, datetime
 from typing import TYPE_CHECKING, Any
-from zoneinfo import ZoneInfo
+
+if TYPE_CHECKING:
+    from zoneinfo import ZoneInfo
 
 from mkdocs_zettelkasten.plugin.constants import (
     FLEETING_STALE_DAYS,
