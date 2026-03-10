@@ -59,7 +59,7 @@ class UnlinkedMentionService:
         cleaned_paragraphs = self._split_paragraphs(body_clean)
 
         for orig_para, clean_para in zip(
-            orig_paragraphs, cleaned_paragraphs, strict=False
+            orig_paragraphs, cleaned_paragraphs, strict=True
         ):
             stripped = self._strip_syntax(clean_para)
             matched_term = self._match_paragraph(
