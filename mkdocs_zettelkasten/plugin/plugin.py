@@ -165,15 +165,15 @@ class ZettelkastenPlugin(BasePlugin):
     def on_files(self, files: Files, /, *, config: MkDocsConfig) -> None:
         self.zettel_service.process_files(files, config)
         self.tags_service.process_files(files, store=self.zettel_service.store)
-        link_map = self.zettel_service.link_map
-        if link_map is None:
-            msg = "link_map not initialized; process_files must run first"
-            raise RuntimeError(msg)
         if self.config["graph_enabled"]:
             self._export_graph(files, config)
         if self.config["preview_enabled"]:
             self._export_previews(files, config)
+        link_map = self.zettel_service.link_map
         if self.config["suggestions_enabled"]:
+            if link_map is None:
+                msg = "link_map not initialized; process_files must run first"
+                raise RuntimeError(msg)
             self.zettel_service.suggestions = self.suggestion_service.compute(
                 self.zettel_service.store,
                 self.tags_service.metadata,
@@ -199,6 +199,9 @@ class ZettelkastenPlugin(BasePlugin):
             self.workflow_service.add_to_build(files)
             config["extra"]["workflow_inbox_count"] = len(dashboard["inbox"])
         if self.config["validation_enabled"]:
+            if link_map is None:
+                msg = "link_map not initialized; process_files must run first"
+                raise RuntimeError(msg)
             self.validation_service.validate(
                 self.zettel_service,
                 files,
