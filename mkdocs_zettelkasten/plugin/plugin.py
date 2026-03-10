@@ -166,7 +166,9 @@ class ZettelkastenPlugin(BasePlugin):
         self.zettel_service.process_files(files, config)
         self.tags_service.process_files(files, store=self.zettel_service.store)
         link_map = self.zettel_service.link_map
-        assert link_map is not None
+        if link_map is None:
+            msg = "link_map not initialized; process_files must run first"
+            raise RuntimeError(msg)
         if self.config["graph_enabled"]:
             self._export_graph(files, config)
         if self.config["preview_enabled"]:
