@@ -3,7 +3,9 @@ from mkdocs_zettelkasten.plugin.utils.frontmatter import parse_frontmatter
 
 class TestParseFrontmatter:
     def test_splits_header_and_body(self) -> None:
-        header, body, has_opening = parse_frontmatter("---\nid: 1\ntitle: Test\n---\nbody text\n")
+        header, body, has_opening = parse_frontmatter(
+            "---\nid: 1\ntitle: Test\n---\nbody text\n"
+        )
         assert "id: 1" in header
         assert "title: Test" in header
         assert "body text" in body
@@ -66,7 +68,9 @@ class TestParseFrontmatter:
         assert has_opening is True
 
     def test_extra_divider_in_body(self) -> None:
-        header, body, has_opening = parse_frontmatter("---\nid: 1\n---\nbefore\n---\nafter\n")
+        header, body, has_opening = parse_frontmatter(
+            "---\nid: 1\n---\nbefore\n---\nafter\n"
+        )
         assert "id: 1" in header
         assert "before" in body
         assert "---" in body
@@ -75,7 +79,9 @@ class TestParseFrontmatter:
 
     def test_malformed_yaml_still_splits(self) -> None:
         # parse_frontmatter only splits text, it doesn't validate YAML
-        header, body, has_opening = parse_frontmatter('---\nkey: "unclosed\n---\nbody\n')
+        header, body, has_opening = parse_frontmatter(
+            '---\nkey: "unclosed\n---\nbody\n'
+        )
         assert '"unclosed' in header
         assert "body" in body
         assert has_opening is True
