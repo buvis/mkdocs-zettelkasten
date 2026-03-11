@@ -108,7 +108,7 @@ class TestParseFrontmatter:
         assert has_opening is True
 
     def test_whitespace_only_file(self) -> None:
-        header, body, has_opening = parse_frontmatter("   \n\n  \n")
+        header, _body, has_opening = parse_frontmatter("   \n\n  \n")
         assert header == ""
         assert has_opening is False
 

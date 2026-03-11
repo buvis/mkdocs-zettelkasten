@@ -54,7 +54,9 @@ class UnlinkedMentionService:
 
     def _find_mention_in_body(self, body, title_pat, title, id_pat, id_str):
         """Search body paragraphs for a mention, return snippet or None."""
-        body_clean = _FENCED_CODE.sub(lambda m: " " * len(m.group()), body)
+        body_clean = _FENCED_CODE.sub(
+            lambda m: "".join("\n" if c == "\n" else "\x00" for c in m.group()), body
+        )
         orig_paragraphs = self._split_paragraphs(body)
         cleaned_paragraphs = self._split_paragraphs(body_clean)
 
