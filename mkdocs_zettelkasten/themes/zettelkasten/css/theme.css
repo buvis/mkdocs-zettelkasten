@@ -613,8 +613,11 @@ pre:has(> code):hover .copy-btn {
   transition: border-color 0.15s;
 }
 
-.scheme-card:hover {
+.scheme-card:hover,
+.scheme-card:focus-visible {
   border-color: var(--text-link);
+  outline: 2px solid var(--text-link);
+  outline-offset: 2px;
 }
 
 .scheme-card.active {

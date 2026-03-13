@@ -24,6 +24,8 @@
             const card = document.createElement('div');
             card.className = `scheme-card${scheme.id === current ? ' active' : ''}`;
             card.dataset.schemeId = scheme.id;
+            card.tabIndex = 0;
+            card.setAttribute('role', 'button');
 
             const colors = isDark ? scheme.preview.dark : scheme.preview.light;
             const swatch = document.createElement('div');
@@ -40,14 +42,21 @@
             label.className = 'scheme-label';
             label.textContent = scheme.name;
 
-            card.appendChild(swatch);
-            card.appendChild(label);
-            card.addEventListener('click', () => {
+            const activate = () => {
                 window.zkTheme.setScheme(scheme.id);
                 grid.querySelectorAll('.scheme-card').forEach((c) => {
                     c.classList.remove('active');
                 });
                 card.classList.add('active');
+            };
+            card.appendChild(swatch);
+            card.appendChild(label);
+            card.addEventListener('click', activate);
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    activate();
+                }
             });
             grid.appendChild(card);
         });
@@ -117,18 +126,27 @@
             const card = document.createElement('div');
             card.className = `scheme-card${theme.value === current ? ' active' : ''}`;
             card.dataset.themeValue = theme.value;
+            card.tabIndex = 0;
+            card.setAttribute('role', 'button');
 
             const label = document.createElement('span');
             label.className = 'scheme-label';
             label.textContent = theme.name;
 
-            card.appendChild(label);
-            card.addEventListener('click', () => {
+            const activate = () => {
                 applyCodeTheme(theme.value);
                 grid.querySelectorAll('.scheme-card').forEach((c) => {
                     c.classList.remove('active');
                 });
                 card.classList.add('active');
+            };
+            card.appendChild(label);
+            card.addEventListener('click', activate);
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    activate();
+                }
             });
             grid.appendChild(card);
         });
