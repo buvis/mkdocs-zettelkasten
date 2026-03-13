@@ -166,6 +166,16 @@
                         {%- endif %}
                       {%- endblock %}
 
+                      {%- block graph_nav_button %}
+                        {%- if config.extra.graph_enabled is defined and config.extra.graph_enabled %}
+                        <li class="nav-item">
+                          <a href="{{ nav.homepage.url|url }}graph.html" class="nav-link" aria-label="{% trans %}Graph view{% endtrans %}">
+                            <i class="fa fa-share-alt"></i>
+                          </a>
+                        </li>
+                        {%- endif %}
+                      {%- endblock %}
+
                                             <!-- Tools Dropdown -->
                       <li class="nav-item dropdown">
                         <button type="button" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-label="Tools">
@@ -179,13 +189,7 @@
                           </a>
                           {%- endblock %}
 
-                          {%- block graph_button %}
-                            {%- if config.extra.graph_enabled is defined and config.extra.graph_enabled %}
-                            <a href="{{ nav.homepage.url|url }}graph.html" class="dropdown-item" title="Graph View">
-                              <i class="fa fa-share-alt fa-fw"></i> {% trans %}Graph view{% endtrans %}
-                            </a>
-                            {%- endif %}
-                          {%- endblock %}
+                          {%- block graph_button %}{%- endblock %}
 
                           {%- block validation_icon %}
                             {%- if config.extra.validation_issues_count is defined and config.extra.validation_issues_count > 0 %}
