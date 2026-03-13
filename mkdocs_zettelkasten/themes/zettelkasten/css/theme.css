@@ -184,6 +184,12 @@ svg.clickable {
   margin-top: 0.25em;
 }
 
+.file-header-secondary {
+  margin-top: 0.5em;
+  padding-top: 0.5em;
+  border-top: 1px solid var(--border-accent);
+}
+
 .file-header svg {
   display: inline-block;
   width: 1em;

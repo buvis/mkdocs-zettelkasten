@@ -1,150 +1,161 @@
   <div class="zettel">
     {% if page %}
     <div class="file-header">
-      <div class="row align-items-center">
-        <div class="col-8">
-          {% if page.meta.is_zettel %}
-            <div class="row align-items-center">
-              <span>
-                {% if page.meta.zettel.is_moc %}
-                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" d="M11.536 3.464a5 5 0 010 7.072L8 14.07l-3.536-3.535a5 5 0 117.072-7.072v.001zm1.06 8.132a6.5 6.5 0 10-9.192 0l3.535 3.536a1.5 1.5 0 002.122 0l3.535-3.536zM8 9a2 2 0 100-4 2 2 0 000 4z"/>
-                </svg>
-                {% else %}
-                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-earmark-text" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M4 0h5.5v1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h1V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
-                  <path d="M9.5 3V0L14 4.5h-3A1.5 1.5 0 0 1 9.5 3z"/>
-                  <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
-                </svg>
-                {% endif %}
-                <strong><button type="button" class="zettel-copy-btn" data-tooltip="Copy link to zettel" data-copy-value="{{page.canonical_url}}">{{page.meta['zettel'].id}}<span class="visually-hidden"> — {% trans %}click to copy link{% endtrans %}</span></button></strong>
-                {% if page.meta.validation_issues %}
-                  {% set actionable = page.meta.validation_issues|selectattr('severity', 'ne', 'info')|list %}
-                  {% if actionable %}
-                  <button type="button" class="validation-badge" aria-label="Validation issues" aria-expanded="false">
-                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                    <div class="validation-popover" role="tooltip">
-                      <ul>
-                        {% for issue in actionable %}
-                        <li>{{ issue.message }}</li>
-                        {% endfor %}
-                      </ul>
-                    </div>
-                  </button>
+      <div class="file-header-primary">
+        <div class="row align-items-center">
+          <div class="col-8">
+            {% if page.meta.is_zettel %}
+              <div class="row align-items-center">
+                <span>
+                  {% if page.meta.zettel.is_moc %}
+                  <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M11.536 3.464a5 5 0 010 7.072L8 14.07l-3.536-3.535a5 5 0 117.072-7.072v.001zm1.06 8.132a6.5 6.5 0 10-9.192 0l3.535 3.536a1.5 1.5 0 002.122 0l3.535-3.536zM8 9a2 2 0 100-4 2 2 0 000 4z"/>
+                  </svg>
+                  {% else %}
+                  <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-earmark-text" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 0h5.5v1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h1V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
+                    <path d="M9.5 3V0L14 4.5h-3A1.5 1.5 0 0 1 9.5 3z"/>
+                    <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+                  </svg>
                   {% endif %}
-                {% endif %}
-              </span>
-            </div>
-            {% if page.meta.zettel.is_moc %}
-            <div class="row align-items-center">
-              <span class="moc-link-count">{{ page.meta.zettel.links|length }} notes in this map</span>
-            </div>
-            {% endif %}
-            {% if page.meta.zettel.note_type or (page.meta.zettel.maturity and not page.meta.zettel.is_moc) %}
-            <div class="row align-items-center">
-              <span class="zettel-badges">
-                {% if page.meta.zettel.note_type %}
-                  <span class="zettel-type-badge" data-type="{{ page.meta.zettel.note_type }}">
-                    {% if page.meta.zettel.note_type == "fleeting" %}
-                      <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 9.511c.076.954.83 1.697 2.182 1.785V12h.6v-.709c1.4-.098 2.218-.846 2.218-1.932 0-.987-.626-1.496-1.745-1.76l-.473-.112V5.57c.6.068.982.396 1.074.85h1.052c-.076-.919-.864-1.638-2.126-1.716V4h-.6v.719c-1.195.117-2.01.836-2.01 1.853 0 .9.606 1.472 1.613 1.707l.397.098v2.034c-.615-.093-1.022-.43-1.114-.9H5.5zm2.177-2.166c-.59-.137-.91-.416-.91-.836 0-.47.345-.822.915-.925v1.76h-.005zm.692 1.193c.717.166 1.048.435 1.048.91 0 .542-.412.914-1.135.982V8.518l.087.02z"/><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M8 13.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11zm0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/></svg>
-                    {% elif page.meta.zettel.note_type == "literature" %}
-                      <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/></svg>
-                    {% elif page.meta.zettel.note_type == "permanent" %}
-                      <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3.1.7a.5.5 0 0 1 .4-.2h9a.5.5 0 0 1 .4.2l2.976 3.974c.149.185.156.45.01.644L8.4 15.3a.5.5 0 0 1-.8 0L.1 5.3a.5.5 0 0 1 0-.6l3-4zm11.386 3.785l-1.806-2.41-.776 2.413 2.582-.003zm-3.633.004l.961-2.989H4.186l.963 2.995 5.704-.006zM5.47 5.495L8 13.366l2.532-7.876-5.062.005zm-1.371-.999l-.78-2.422-1.818 2.425 2.598-.003zM1.499 5.5l5.113 6.817-2.192-6.82L1.5 5.5zm7.889 6.817l5.123-6.83-2.928.002-2.195 6.828z"/></svg>
-                    {% else %}
-                      <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z"/></svg>
+                  <strong><button type="button" class="zettel-copy-btn" data-tooltip="Copy link to zettel" data-copy-value="{{page.canonical_url}}">{{page.meta['zettel'].id}}<span class="visually-hidden"> — {% trans %}click to copy link{% endtrans %}</span></button></strong>
+                  {% if page.meta.validation_issues %}
+                    {% set actionable = page.meta.validation_issues|selectattr('severity', 'ne', 'info')|list %}
+                    {% if actionable %}
+                    <button type="button" class="validation-badge" aria-label="Validation issues" aria-expanded="false">
+                      <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                      <div class="validation-popover" role="tooltip">
+                        <ul>
+                          {% for issue in actionable %}
+                          <li>{{ issue.message }}</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    </button>
                     {% endif %}
-                    {{ page.meta.zettel.note_type }}
-                  </span>
-                {% endif %}
-                {% if page.meta.zettel.maturity and not page.meta.zettel.is_moc %}
-                  <span class="zettel-maturity-badge" data-maturity="{{ page.meta.zettel.maturity }}">
-                    <span class="maturity-dot"></span>{{ page.meta.zettel.maturity }}
-                  </span>
-                {% endif %}
-              </span>
-            </div>
+                  {% endif %}
+                </span>
+              </div>
+              {% if page.meta.zettel.is_moc %}
+              <div class="row align-items-center">
+                <span class="moc-link-count">{{ page.meta.zettel.links|length }} notes in this map</span>
+              </div>
+              {% endif %}
+              {% if page.meta.zettel.note_type or (page.meta.zettel.maturity and not page.meta.zettel.is_moc) %}
+              <div class="row align-items-center">
+                <span class="zettel-badges">
+                  {% if page.meta.zettel.note_type %}
+                    <span class="zettel-type-badge" data-type="{{ page.meta.zettel.note_type }}">
+                      {% if page.meta.zettel.note_type == "fleeting" %}
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 9.511c.076.954.83 1.697 2.182 1.785V12h.6v-.709c1.4-.098 2.218-.846 2.218-1.932 0-.987-.626-1.496-1.745-1.76l-.473-.112V5.57c.6.068.982.396 1.074.85h1.052c-.076-.919-.864-1.638-2.126-1.716V4h-.6v.719c-1.195.117-2.01.836-2.01 1.853 0 .9.606 1.472 1.613 1.707l.397.098v2.034c-.615-.093-1.022-.43-1.114-.9H5.5zm2.177-2.166c-.59-.137-.91-.416-.91-.836 0-.47.345-.822.915-.925v1.76h-.005zm.692 1.193c.717.166 1.048.435 1.048.91 0 .542-.412.914-1.135.982V8.518l.087.02z"/><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M8 13.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11zm0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/></svg>
+                      {% elif page.meta.zettel.note_type == "literature" %}
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/></svg>
+                      {% elif page.meta.zettel.note_type == "permanent" %}
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3.1.7a.5.5 0 0 1 .4-.2h9a.5.5 0 0 1 .4.2l2.976 3.974c.149.185.156.45.01.644L8.4 15.3a.5.5 0 0 1-.8 0L.1 5.3a.5.5 0 0 1 0-.6l3-4zm11.386 3.785l-1.806-2.41-.776 2.413 2.582-.003zm-3.633.004l.961-2.989H4.186l.963 2.995 5.704-.006zM5.47 5.495L8 13.366l2.532-7.876-5.062.005zm-1.371-.999l-.78-2.422-1.818 2.425 2.598-.003zM1.499 5.5l5.113 6.817-2.192-6.82L1.5 5.5zm7.889 6.817l5.123-6.83-2.928.002-2.195 6.828z"/></svg>
+                      {% else %}
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z"/></svg>
+                      {% endif %}
+                      {{ page.meta.zettel.note_type }}
+                    </span>
+                  {% endif %}
+                  {% if page.meta.zettel.maturity and not page.meta.zettel.is_moc %}
+                    <span class="zettel-maturity-badge" data-maturity="{{ page.meta.zettel.maturity }}">
+                      <span class="maturity-dot"></span>{{ page.meta.zettel.maturity }}
+                    </span>
+                  {% endif %}
+                </span>
+              </div>
+              {% endif %}
             {% endif %}
-            {% if page.meta.zettel.moc_parents %}
-            <div class="row align-items-center">
-              <span class="moc-breadcrumb">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" d="M11.536 3.464a5 5 0 010 7.072L8 14.07l-3.536-3.535a5 5 0 117.072-7.072v.001zm1.06 8.132a6.5 6.5 0 10-9.192 0l3.535 3.536a1.5 1.5 0 002.122 0l3.535-3.536zM8 9a2 2 0 100-4 2 2 0 000 4z"/>
-                </svg>
-                Part of:
-                {% for moc in page.meta.zettel.moc_parents %}
-                  <a href="{{ moc.url|url }}">{{ moc.title }}</a>{% if not loop.last %}, {% endif %}
-                {% endfor %}
-              </span>
-            </div>
+          </div>
+          <div class="col-4 text-right date">
+            {% if page.meta.is_zettel %}
+              {% if page.meta.editor %}
+                <button id="zettel-edit-btn" class="btn btn-sm btn-outline-secondary editor-btn" data-tooltip="Edit zettel's source">
+                  <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                  </svg>
+                </button>
+                <button id="zettel-save-btn" class="btn btn-sm btn-outline-success editor-btn" style="display:none" data-tooltip="Save to GitHub">
+                  <i class="fa fa-check"></i>
+                </button>
+                <button id="zettel-cancel-btn" class="btn btn-sm btn-outline-danger editor-btn" style="display:none" data-tooltip="Cancel editing">
+                  <i class="fa fa-times"></i>
+                </button>
+                <button id="zettel-forget-token-btn" class="btn btn-sm btn-outline-secondary editor-btn" style="display:none" data-tooltip="Forget stored token">
+                  <i class="fa fa-sign-out"></i>
+                </button>
+              {% elif page.edit_url %}
+                <a href="{{ page.edit_url }}" class="hidden-hyperlink" data-tooltip="Edit zettel's source">
+                  <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil clickable" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                  </svg>
+                </a>
+              {% endif %}
+              {{page.meta.zettel.last_update_date}}
             {% endif %}
-            {% if page.meta.zettel.sequence_breadcrumb %}
-            <div class="row align-items-center">
-              <span class="sequence-breadcrumb">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1z"/>
-                  <path d="M.5 12a1.5 1.5 0 0 1 1.5-1.5h1A1.5 1.5 0 0 1 5 12v1A1.5 1.5 0 0 1 3.5 14.5h-1A1.5 1.5 0 0 1 .5 13v-1zm5 0a1.5 1.5 0 0 1 1.5-1.5h1A1.5 1.5 0 0 1 10 12v1A1.5 1.5 0 0 1 8.5 14.5h-1A1.5 1.5 0 0 1 5.5 13v-1zm5 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1z"/>
-                </svg>
-                {% for ancestor in page.meta.zettel.sequence_breadcrumb %}
-                  <a href="{{ ancestor.url|url }}">{{ ancestor.title }}</a> &rsaquo;
-                {% endfor %}
-                <strong>{{ page.title }}</strong>
-              </span>
-            </div>
-            {% endif %}
-            {% if page.meta.zettel.sequence_children %}
-            <div class="row align-items-center">
-              <span class="sequence-branches">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M8 1a1.5 1.5 0 0 0-1.5 1.5v4.34L5.29 5.62a1.5 1.5 0 1 0-2.12 2.12l3.54 3.54a1.5 1.5 0 0 0 2.12 0l3.54-3.54a1.5 1.5 0 0 0-2.12-2.12L9 6.84V2.5A1.5 1.5 0 0 0 8 1zM3 13.5A1.5 1.5 0 0 1 4.5 12h7a1.5 1.5 0 0 1 0 3h-7A1.5 1.5 0 0 1 3 13.5z"/>
-                </svg>
-                Branches:
-                {% for child in page.meta.zettel.sequence_children %}
-                  <a href="{{ child.url|url }}">{{ child.title }}</a>{% if not loop.last %} &middot; {% endif %}
-                {% endfor %}
-              </span>
-            </div>
-            {% endif %}
-            <div class="row align-items-center">
-              <span>
-                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-tags" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" d="M3 2v4.586l7 7L14.586 9l-7-7H3zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586V2z"/>
-                  <path fill-rule="evenodd" d="M5.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
-                  <path d="M1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1v5.086z"/>
-                </svg>
-                {% for tag in page.meta.tags %}<a href="{{ 'tags.html'|url }}#{{tag}}">#{{tag}}</a> {% endfor %}
-              </span>
-            </div>
-          {% endif %}
-        </div>
-        <div class="col-4 text-right date">
-          {% if page.meta.is_zettel %}
-            {% if page.meta.editor %}
-              <button id="zettel-edit-btn" class="btn btn-sm btn-outline-secondary editor-btn" data-tooltip="Edit zettel's source">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-                </svg>
-              </button>
-              <button id="zettel-save-btn" class="btn btn-sm btn-outline-success editor-btn" style="display:none" data-tooltip="Save to GitHub">
-                <i class="fa fa-check"></i>
-              </button>
-              <button id="zettel-cancel-btn" class="btn btn-sm btn-outline-danger editor-btn" style="display:none" data-tooltip="Cancel editing">
-                <i class="fa fa-times"></i>
-              </button>
-              <button id="zettel-forget-token-btn" class="btn btn-sm btn-outline-secondary editor-btn" style="display:none" data-tooltip="Forget stored token">
-                <i class="fa fa-sign-out"></i>
-              </button>
-            {% elif page.edit_url %}
-              <a href="{{ page.edit_url }}" class="hidden-hyperlink" data-tooltip="Edit zettel's source">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil clickable" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-                </svg>
-              </a>
-            {% endif %}
-            {{page.meta.zettel.last_update_date}}
-          {% endif %}
+          </div>
         </div>
       </div>
+      {% if page.meta.is_zettel %}
+      {% set has_secondary = page.meta.zettel.moc_parents or page.meta.zettel.sequence_breadcrumb or page.meta.zettel.sequence_children or page.meta.tags %}
+      {% if has_secondary %}
+      <div class="file-header-secondary">
+        {% if page.meta.zettel.moc_parents %}
+        <div class="row align-items-center">
+          <span class="moc-breadcrumb">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M11.536 3.464a5 5 0 010 7.072L8 14.07l-3.536-3.535a5 5 0 117.072-7.072v.001zm1.06 8.132a6.5 6.5 0 10-9.192 0l3.535 3.536a1.5 1.5 0 002.122 0l3.535-3.536zM8 9a2 2 0 100-4 2 2 0 000 4z"/>
+            </svg>
+            Part of:
+            {% for moc in page.meta.zettel.moc_parents %}
+              <a href="{{ moc.url|url }}">{{ moc.title }}</a>{% if not loop.last %}, {% endif %}
+            {% endfor %}
+          </span>
+        </div>
+        {% endif %}
+        {% if page.meta.zettel.sequence_breadcrumb %}
+        <div class="row align-items-center">
+          <span class="sequence-breadcrumb">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1z"/>
+              <path d="M.5 12a1.5 1.5 0 0 1 1.5-1.5h1A1.5 1.5 0 0 1 5 12v1A1.5 1.5 0 0 1 3.5 14.5h-1A1.5 1.5 0 0 1 .5 13v-1zm5 0a1.5 1.5 0 0 1 1.5-1.5h1A1.5 1.5 0 0 1 10 12v1A1.5 1.5 0 0 1 8.5 14.5h-1A1.5 1.5 0 0 1 5.5 13v-1zm5 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1z"/>
+            </svg>
+            {% for ancestor in page.meta.zettel.sequence_breadcrumb %}
+              <a href="{{ ancestor.url|url }}">{{ ancestor.title }}</a> &rsaquo;
+            {% endfor %}
+            <strong>{{ page.title }}</strong>
+          </span>
+        </div>
+        {% endif %}
+        {% if page.meta.zettel.sequence_children %}
+        <div class="row align-items-center">
+          <span class="sequence-branches">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 1a1.5 1.5 0 0 0-1.5 1.5v4.34L5.29 5.62a1.5 1.5 0 1 0-2.12 2.12l3.54 3.54a1.5 1.5 0 0 0 2.12 0l3.54-3.54a1.5 1.5 0 0 0-2.12-2.12L9 6.84V2.5A1.5 1.5 0 0 0 8 1zM3 13.5A1.5 1.5 0 0 1 4.5 12h7a1.5 1.5 0 0 1 0 3h-7A1.5 1.5 0 0 1 3 13.5z"/>
+            </svg>
+            Branches:
+            {% for child in page.meta.zettel.sequence_children %}
+              <a href="{{ child.url|url }}">{{ child.title }}</a>{% if not loop.last %} &middot; {% endif %}
+            {% endfor %}
+          </span>
+        </div>
+        {% endif %}
+        {% if page.meta.tags %}
+        <div class="row align-items-center">
+          <span>
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-tags" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M3 2v4.586l7 7L14.586 9l-7-7H3zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586V2z"/>
+              <path fill-rule="evenodd" d="M5.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+              <path d="M1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1v5.086z"/>
+            </svg>
+            {% for tag in page.meta.tags %}<a href="{{ 'tags.html'|url }}#{{tag}}">#{{tag}}</a> {% endfor %}
+          </span>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endif %}
     </div>
     {% if page.meta.is_zettel and page.meta.zettel.sequence_tree %}
     <div class="sequence-tree-container">
