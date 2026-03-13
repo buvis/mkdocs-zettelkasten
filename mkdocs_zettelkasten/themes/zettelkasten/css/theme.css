@@ -190,6 +190,39 @@ svg.clickable {
   border-top: 1px solid var(--border-accent);
 }
 
+.file-header-secondary-toggle {
+  cursor: pointer;
+  font-size: 0.8em;
+  color: var(--text-muted);
+  list-style: none;
+}
+
+.file-header-secondary-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.file-header-secondary-toggle::before {
+  content: '\25b6';
+  display: inline-block;
+  margin-right: 0.25em;
+  font-size: 0.7em;
+  transition: transform 0.15s ease-in-out;
+}
+
+.file-header-secondary[open] > .file-header-secondary-toggle::before {
+  transform: rotate(90deg);
+}
+
+@media (min-width: 48rem) {
+  .file-header-secondary {
+    display: block;
+  }
+
+  .file-header-secondary > .file-header-secondary-toggle {
+    display: none;
+  }
+}
+
 .file-header svg {
   display: inline-block;
   width: 1em;

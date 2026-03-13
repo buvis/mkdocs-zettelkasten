@@ -100,7 +100,8 @@
       {% if page.meta.is_zettel %}
       {% set has_secondary = page.meta.zettel.moc_parents or page.meta.zettel.sequence_breadcrumb or page.meta.zettel.sequence_children or page.meta.tags %}
       {% if has_secondary %}
-      <div class="file-header-secondary">
+      <details class="file-header-secondary" open>
+        <summary class="file-header-secondary-toggle">Details</summary>
         {% if page.meta.zettel.moc_parents %}
         <div class="row align-items-center">
           <span class="moc-breadcrumb">
@@ -153,7 +154,7 @@
           </span>
         </div>
         {% endif %}
-      </div>
+      </details>
       {% endif %}
       {% endif %}
     </div>
