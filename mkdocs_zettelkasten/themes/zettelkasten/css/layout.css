@@ -746,7 +746,7 @@ body .flex-column {
   top: 0;
   left: 0;
   z-index: var(--z-sidebar);
-  width: 18rem;
+  width: min(18rem, 85vw);
   height: 100vh;
   background-color: var(--bg-zettel);
   border-right: 1px solid var(--border-accent);
