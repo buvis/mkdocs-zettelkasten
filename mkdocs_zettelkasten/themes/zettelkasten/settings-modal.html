@@ -23,38 +23,8 @@
 
                 <div class="settings-section-header code-theme-header">
                     <h5>Code Theme</h5>
-                    <select id="hljs-theme-select" class="form-control">
-                        <option value="github">GitHub</option>
-                        <option value="github-dark">GitHub Dark</option>
-                        <option value="monokai">Monokai</option>
-                        <option value="solarized-light">Solarized Light</option>
-                        <option value="solarized-dark">Solarized Dark</option>
-                        <option value="nord">Nord</option>
-                        <option value="atom-one-light">Atom One Light</option>
-                        <option value="atom-one-dark">Atom One Dark</option>
-                        <option value="dracula">Dracula</option>
-                        <option value="gruvbox-light">Gruvbox Light</option>
-                        <option value="gruvbox-dark">Gruvbox Dark</option>
-                        <option value="tokyo-night-dark">Tokyo Night Dark</option>
-                        <option value="tokyo-night-light">Tokyo Night Light</option>
-                        <option value="a11y-light">A11y Light</option>
-                        <option value="a11y-dark">A11y Dark</option>
-                        <option value="base16/catppuccin-latte">Catppuccin Latte</option>
-                        <option value="base16/catppuccin-mocha">Catppuccin Mocha</option>
-                        <option value="base16/rose-pine">Rose Pine</option>
-                        <option value="base16/rose-pine-dawn">Rose Pine Dawn</option>
-                        <option value="base16/everforest">Everforest</option>
-                        <option value="base16/kanagawa">Kanagawa</option>
-                        <option value="base16/material">Material</option>
-                        <option value="base16/material-lighter">Material Lighter</option>
-                        <option value="base16/nord">Nord (base16)</option>
-                        <option value="base16/papercolor-light">PaperColor Light</option>
-                        <option value="base16/papercolor-dark">PaperColor Dark</option>
-                        <option value="base16/zenburn">Zenburn</option>
-                        <option value="eink-light">E-ink Light</option>
-                        <option value="eink-dark">E-ink Dark</option>
-                    </select>
                 </div>
+                <div id="code-theme-grid" class="code-theme-grid"></div>
                 <pre id="hljs-preview" class="hljs-preview"><code class="language-python">def greet(name: str) -> str:
     """Return a greeting."""
     return f"Hello, {name}!"

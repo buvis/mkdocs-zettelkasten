@@ -591,10 +591,15 @@ pre:has(> code):hover .copy-btn {
 }
 
 /* Settings modal */
-.scheme-grid {
+.scheme-grid,
+.code-theme-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(7.5rem, 100%), 1fr));
   gap: 0.75em;
+}
+
+.code-theme-grid {
+  margin-bottom: 1em;
 }
 
 .scheme-card {

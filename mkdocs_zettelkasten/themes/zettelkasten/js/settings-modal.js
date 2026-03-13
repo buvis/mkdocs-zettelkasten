@@ -53,34 +53,89 @@
         });
     };
 
-    const initCodeThemePicker = () => {
-        const select = document.getElementById('hljs-theme-select');
-        if (!select) return;
+    const CODE_THEMES = [
+        { value: 'github', name: 'GitHub' },
+        { value: 'github-dark', name: 'GitHub Dark' },
+        { value: 'monokai', name: 'Monokai' },
+        { value: 'solarized-light', name: 'Solarized Light' },
+        { value: 'solarized-dark', name: 'Solarized Dark' },
+        { value: 'nord', name: 'Nord' },
+        { value: 'atom-one-light', name: 'Atom One Light' },
+        { value: 'atom-one-dark', name: 'Atom One Dark' },
+        { value: 'dracula', name: 'Dracula' },
+        { value: 'gruvbox-light', name: 'Gruvbox Light' },
+        { value: 'gruvbox-dark', name: 'Gruvbox Dark' },
+        { value: 'tokyo-night-dark', name: 'Tokyo Night Dark' },
+        { value: 'tokyo-night-light', name: 'Tokyo Night Light' },
+        { value: 'a11y-light', name: 'A11y Light' },
+        { value: 'a11y-dark', name: 'A11y Dark' },
+        { value: 'base16/catppuccin-latte', name: 'Catppuccin Latte' },
+        { value: 'base16/catppuccin-mocha', name: 'Catppuccin Mocha' },
+        { value: 'base16/rose-pine', name: 'Rose Pine' },
+        { value: 'base16/rose-pine-dawn', name: 'Rose Pine Dawn' },
+        { value: 'base16/everforest', name: 'Everforest' },
+        { value: 'base16/kanagawa', name: 'Kanagawa' },
+        { value: 'base16/material', name: 'Material' },
+        { value: 'base16/material-lighter', name: 'Material Lighter' },
+        { value: 'base16/nord', name: 'Nord (base16)' },
+        { value: 'base16/papercolor-light', name: 'PaperColor Light' },
+        { value: 'base16/papercolor-dark', name: 'PaperColor Dark' },
+        { value: 'base16/zenburn', name: 'Zenburn' },
+        { value: 'eink-light', name: 'E-ink Light' },
+        { value: 'eink-dark', name: 'E-ink Dark' },
+    ];
+
+    const applyCodeTheme = (themeValue) => {
+        const isDark = window.zkTheme.getTheme() === 'dark';
+        const key = isDark ? 'hljs-theme-dark' : 'hljs-theme-light';
+        localStorage.setItem(key, themeValue);
+
+        const link = document.getElementById('hljs-theme');
+        if (link) {
+            if (isDark) link.dataset.darkStyle = themeValue;
+            else link.dataset.lightStyle = themeValue;
+            link.href = `${HLJS_BASE}${themeValue}.min.css`;
+        }
+
+        const preview = document.querySelector('#hljs-preview code');
+        if (preview && window.hljs) {
+            preview.removeAttribute('data-highlighted');
+            window.hljs.highlightElement(preview);
+        }
+    };
+
+    const renderCodeThemeGrid = () => {
+        const grid = document.getElementById('code-theme-grid');
+        if (!grid) return;
+        grid.innerHTML = '';
 
         const isDark = window.zkTheme.getTheme() === 'dark';
         const key = isDark ? 'hljs-theme-dark' : 'hljs-theme-light';
-        const current = localStorage.getItem(key);
-        if (current) select.value = current;
+        const current = localStorage.getItem(key) || 'github';
 
-        select.addEventListener('change', () => {
-            const theme = select.value;
-            const isDark = window.zkTheme.getTheme() === 'dark';
-            const key = isDark ? 'hljs-theme-dark' : 'hljs-theme-light';
-            localStorage.setItem(key, theme);
+        CODE_THEMES.forEach((theme) => {
+            const card = document.createElement('div');
+            card.className = `scheme-card${theme.value === current ? ' active' : ''}`;
+            card.dataset.themeValue = theme.value;
 
-            const link = document.getElementById('hljs-theme');
-            if (link) {
-                if (isDark) link.dataset.darkStyle = theme;
-                else link.dataset.lightStyle = theme;
-                link.href = `${HLJS_BASE}${theme}.min.css`;
-            }
+            const label = document.createElement('span');
+            label.className = 'scheme-label';
+            label.textContent = theme.name;
 
-            const preview = document.querySelector('#hljs-preview code');
-            if (preview && window.hljs) {
-                preview.removeAttribute('data-highlighted');
-                window.hljs.highlightElement(preview);
-            }
+            card.appendChild(label);
+            card.addEventListener('click', () => {
+                applyCodeTheme(theme.value);
+                grid.querySelectorAll('.scheme-card').forEach((c) => {
+                    c.classList.remove('active');
+                });
+                card.classList.add('active');
+            });
+            grid.appendChild(card);
         });
+    };
+
+    const initCodeThemePicker = () => {
+        renderCodeThemeGrid();
     };
 
     const initDarkModeToggle = () => {
@@ -93,14 +148,8 @@
             const theme = toggle.checked ? 'dark' : 'light';
             window.zkTheme.setTheme(theme);
 
-            const select = document.getElementById('hljs-theme-select');
-            if (select) {
-                const key = theme === 'dark' ? 'hljs-theme-dark' : 'hljs-theme-light';
-                const current = localStorage.getItem(key);
-                if (current) select.value = current;
-            }
-
             fetchRegistry(renderSchemeGrid);
+            renderCodeThemeGrid();
         });
     };
 
