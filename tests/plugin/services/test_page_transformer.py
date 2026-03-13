@@ -23,12 +23,16 @@ def _make_transform_fixtures():
     zettel_service.add_zettel_to_page.return_value = page
     zettel_service.get_zettels.return_value = []
     zettel_service.file_suffix = ".md"
-    return transformer, page, config, files, zettel_service
+    features = []
+    ctx = MagicMock()
+    return transformer, page, config, files, zettel_service, features, ctx
 
 
 class TestPageTransformer:
-    def test_transform_calls_all_adapters(self) -> None:
-        transformer, page, config, files, zettel_service = _make_transform_fixtures()
+    def test_transform_calls_core_adapters(self) -> None:
+        transformer, page, config, files, svc, features, ctx = (
+            _make_transform_fixtures()
+        )
 
         with (
             patch(f"{MODULE}.adapt_page_title", return_value="md1") as mock_title,
@@ -42,13 +46,9 @@ class TestPageTransformer:
             patch(
                 f"{MODULE}.get_prev_next_page", return_value=(None, None)
             ) as mock_nav,
-            patch(f"{MODULE}.adapt_backlinks_to_page") as mock_backlinks,
-            patch(f"{MODULE}.adapt_unlinked_mentions_to_page") as mock_unlinked,
-            patch(f"{MODULE}.adapt_suggestions_to_page") as mock_suggestions,
-            patch(f"{MODULE}.adapt_sequence_to_page") as mock_sequence,
         ):
             result = transformer.transform(
-                "original", page, config, files, zettel_service
+                "original", page, config, files, svc, features, ctx
             )
 
         assert result == "md3"
@@ -57,14 +57,32 @@ class TestPageTransformer:
         mock_links.assert_called_once()
         mock_ref.assert_called_once()
         mock_nav.assert_called_once()
-        mock_backlinks.assert_called_once()
-        mock_unlinked.assert_called_once()
-        mock_suggestions.assert_called_once()
-        mock_sequence.assert_called_once()
+
+    def test_transform_calls_feature_adapt_page(self) -> None:
+        transformer, page, config, files, svc, _, ctx = _make_transform_fixtures()
+        feature1 = MagicMock()
+        feature1.name = "feat1"
+        feature2 = MagicMock()
+        feature2.name = "feat2"
+        features = [feature1, feature2]
+
+        with (
+            patch(f"{MODULE}.adapt_page_title", return_value="md1"),
+            patch(f"{MODULE}.adapt_transclusion", return_value="md1t"),
+            patch(f"{MODULE}.adapt_page_links_to_zettels", return_value="md2"),
+            patch(f"{MODULE}.get_page_ref", return_value=("md3", None)),
+            patch(f"{MODULE}.get_prev_next_page", return_value=(None, None)),
+        ):
+            transformer.transform("original", page, config, files, svc, features, ctx)
+
+        feature1.adapt_page.assert_called_once_with(page, ctx)
+        feature2.adapt_page.assert_called_once_with(page, ctx)
 
     def test_transform_chains_adapters_in_order(self) -> None:
         """Each adapter receives the output of the previous one."""
-        transformer, page, config, files, zettel_service = _make_transform_fixtures()
+        transformer, page, config, files, svc, features, ctx = (
+            _make_transform_fixtures()
+        )
 
         with (
             patch(f"{MODULE}.adapt_page_title", return_value="after_title") as m_title,
@@ -76,13 +94,9 @@ class TestPageTransformer:
             ) as m_links,
             patch(f"{MODULE}.get_page_ref", return_value=("after_ref", None)) as m_ref,
             patch(f"{MODULE}.get_prev_next_page", return_value=(None, None)),
-            patch(f"{MODULE}.adapt_backlinks_to_page"),
-            patch(f"{MODULE}.adapt_unlinked_mentions_to_page"),
-            patch(f"{MODULE}.adapt_suggestions_to_page"),
-            patch(f"{MODULE}.adapt_sequence_to_page"),
         ):
             result = transformer.transform(
-                "original", page, config, files, zettel_service
+                "original", page, config, files, svc, features, ctx
             )
 
         # title gets the raw markdown
@@ -97,7 +111,9 @@ class TestPageTransformer:
         assert result == "after_ref"
 
     def test_exception_logs_adapter_name(self, caplog) -> None:
-        transformer, page, config, files, zettel_service = _make_transform_fixtures()
+        transformer, page, config, files, svc, features, ctx = (
+            _make_transform_fixtures()
+        )
 
         with (
             patch(f"{MODULE}.adapt_page_title", return_value="md1"),
@@ -105,7 +121,28 @@ class TestPageTransformer:
             caplog.at_level(logging.ERROR),
             pytest.raises(ValueError, match="boom"),
         ):
-            transformer.transform("original", page, config, files, zettel_service)
+            transformer.transform("original", page, config, files, svc, features, ctx)
 
         assert "adapt_transclusion" in caplog.text
         assert "test.md" in caplog.text
+
+    def test_feature_exception_logs_feature_name(self, caplog) -> None:
+        transformer, page, config, files, svc, _, ctx = _make_transform_fixtures()
+        feature = MagicMock()
+        feature.name = "my_feature"
+        feature.adapt_page.side_effect = RuntimeError("feature boom")
+
+        with (
+            patch(f"{MODULE}.adapt_page_title", return_value="md1"),
+            patch(f"{MODULE}.adapt_transclusion", return_value="md1t"),
+            patch(f"{MODULE}.adapt_page_links_to_zettels", return_value="md2"),
+            patch(f"{MODULE}.get_page_ref", return_value=("md3", None)),
+            patch(f"{MODULE}.get_prev_next_page", return_value=(None, None)),
+            caplog.at_level(logging.ERROR),
+            pytest.raises(RuntimeError, match="feature boom"),
+        ):
+            transformer.transform(
+                "original", page, config, files, svc, [feature], ctx
+            )
+
+        assert "my_feature" in caplog.text

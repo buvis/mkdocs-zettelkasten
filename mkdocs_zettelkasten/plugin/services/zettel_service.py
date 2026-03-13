@@ -14,10 +14,7 @@ import logging
 
 from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
 
-from .backlink_processor import BacklinkProcessor
 from .link_resolver import LinkMap, LinkResolver
-from .sequence_service import SequenceService
-from .unlinked_mention_service import UnlinkedMentionService
 from .zettel_parser import ZettelParser
 from .zettel_store import ZettelStore
 
@@ -27,18 +24,13 @@ logger = logging.getLogger(
 
 
 class ZettelService:
-    """Orchestrates zettel processing pipeline."""
+    """Orchestrates core zettel processing pipeline: parse, store, resolve links."""
 
     def __init__(self) -> None:
         self.store = ZettelStore()
-        self.backlinks: dict[int, list[Zettel]] = {}
         self.invalid_files: list = []
         self.zettel_config = ZettelkastenConfig()
         self.file_suffix: str = ".md"
-        self.unlinked_mention_service = UnlinkedMentionService()
-        self.unlinked_mentions: dict[int, list[tuple[int, str]]] = {}
-        self.sequence_children: dict[int, list[int]] = {}
-        self.suggestions: dict[int, list[dict]] = {}
         self.link_map: LinkMap | None = None
 
     def configure(self, zettel_config: ZettelkastenConfig) -> None:
@@ -46,7 +38,7 @@ class ZettelService:
         self.file_suffix = zettel_config.file_suffix
 
     def process_files(self, files: Files, config: MkDocsConfig) -> None:
-        """Main processing pipeline."""
+        """Core pipeline: parse → store → resolve links."""
         docs_dir = config["docs_dir"]
         logger.info("Scanning `%s` for zettels", docs_dir)
         valid_zettels, self.invalid_files = ZettelParser.parse_files(
@@ -55,15 +47,6 @@ class ZettelService:
         logger.info("Found %s zettels in `%s`", len(valid_zettels), docs_dir)
         self.store.update(valid_zettels)
         self.link_map = LinkResolver.resolve(self.store, file_suffix=self.file_suffix)
-        self.backlinks = BacklinkProcessor.process(
-            self.store,
-            self.link_map.resolved,
-        )
-        self.unlinked_mentions = self.unlinked_mention_service.find_unlinked_mentions(
-            self.store,
-            self.link_map.resolved,
-        )
-        self.sequence_children = SequenceService.build_tree(self.store)
 
     def add_zettel_to_page(self, page: Page) -> Page:
         enriched_page = page

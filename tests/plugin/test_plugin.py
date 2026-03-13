@@ -48,6 +48,7 @@ class TestZettelkastenPlugin:
         assert plugin.tags_service is not None
         assert plugin.zettel_service is not None
         assert plugin.page_transformer is not None
+        assert len(plugin._features) == 9
 
     def test_init_creates_logger(self) -> None:
         plugin = ZettelkastenPlugin()
@@ -67,7 +68,6 @@ class TestZettelkastenPlugin:
 
         with (
             patch.object(plugin.tags_service, "configure"),
-            patch.object(plugin.validation_service, "configure"),
         ):
             plugin.on_config(config)
 
@@ -80,7 +80,6 @@ class TestZettelkastenPlugin:
         with (
             patch.object(plugin.zettel_service, "configure") as mock_cfg,
             patch.object(plugin.tags_service, "configure"),
-            patch.object(plugin.validation_service, "configure"),
         ):
             plugin.on_config(config)
 
@@ -100,7 +99,6 @@ class TestZettelkastenPlugin:
         with (
             patch.object(plugin.zettel_service, "configure"),
             patch.object(plugin.tags_service, "configure") as mock_tags,
-            patch.object(plugin.validation_service, "configure"),
         ):
             plugin.on_config(config)
 
@@ -110,15 +108,16 @@ class TestZettelkastenPlugin:
 
     def test_on_files_delegates(self) -> None:
         plugin = self._make_plugin()
+        plugin.zk_config = MagicMock()
+        plugin._active_features = []
         plugin.zettel_service.link_map = _EMPTY_LINK_MAP
         files = MagicMock()
         files.__len__ = lambda self: 5
-        config = MagicMock()
+        config = {"extra": {}, "site_dir": "/tmp"}
 
         with (
             patch.object(plugin.zettel_service, "process_files") as mock_zs,
             patch.object(plugin.tags_service, "process_files") as mock_ts,
-            patch.object(plugin.validation_service, "validate"),
         ):
             plugin.on_files(files, config=config)
 
@@ -127,18 +126,25 @@ class TestZettelkastenPlugin:
 
     def test_on_files_sets_validation_count(self) -> None:
         plugin = self._make_plugin()
+        plugin.zk_config = MagicMock()
         plugin.zettel_service.link_map = _EMPTY_LINK_MAP
         files = MagicMock()
         files.__len__ = lambda self: 5
-        config = {"extra": {}}
+        config = {"extra": {}, "site_dir": "/tmp"}
+
+        # Create a mock validation feature that sets the count
+        mock_feature = MagicMock()
+        mock_feature.name = "validation"
+
+        def _set_count(ctx, f, c):
+            c["extra"]["validation_issues_count"] = 7
+
+        mock_feature.export.side_effect = _set_count
+        plugin._active_features = [mock_feature]
 
         with (
             patch.object(plugin.zettel_service, "process_files"),
             patch.object(plugin.tags_service, "process_files"),
-            patch.object(plugin.validation_service, "validate"),
-            patch.object(
-                plugin.validation_service, "total_actionable_issues", return_value=7
-            ),
         ):
             plugin.on_files(files, config=config)
 
@@ -147,9 +153,12 @@ class TestZettelkastenPlugin:
     def test_on_files_skips_validation_count_when_disabled(self) -> None:
         plugin = self._make_plugin()
         plugin.config["validation_enabled"] = False
+        plugin.zk_config = MagicMock()
+        plugin._active_features = []
+        plugin.zettel_service.link_map = _EMPTY_LINK_MAP
         files = MagicMock()
         files.__len__ = lambda self: 5
-        config = {"extra": {}}
+        config = {"extra": {}, "site_dir": "/tmp"}
 
         with (
             patch.object(plugin.zettel_service, "process_files"),
@@ -161,6 +170,8 @@ class TestZettelkastenPlugin:
 
     def test_on_page_markdown_returns_transformed(self) -> None:
         plugin = self._make_plugin()
+        plugin._ctx = MagicMock()
+        plugin._active_features = []
         page = MagicMock()
         page.url = "/test/"
         config = MagicMock()
@@ -177,6 +188,8 @@ class TestZettelkastenPlugin:
 
     def test_on_page_markdown_sets_icons_meta(self) -> None:
         plugin = self._make_plugin()
+        plugin._ctx = MagicMock()
+        plugin._active_features = []
         page = MagicMock()
         page.url = "/test/"
         page.meta = {}
@@ -205,7 +218,6 @@ class TestZettelkastenPlugin:
         with (
             patch.object(plugin.zettel_service, "configure"),
             patch.object(plugin.tags_service, "configure"),
-            patch.object(plugin.validation_service, "configure"),
         ):
             plugin.on_config(config)
 
@@ -222,7 +234,6 @@ class TestZettelkastenPlugin:
         with (
             patch.object(plugin.zettel_service, "configure"),
             patch.object(plugin.tags_service, "configure"),
-            patch.object(plugin.validation_service, "configure"),
         ):
             plugin.on_config(config)
 
@@ -250,19 +261,29 @@ class TestZettelkastenPlugin:
 
     def test_on_files_exports_graph_json(self, tmp_path) -> None:
         plugin = self._make_plugin()
-        plugin.zettel_service.link_map = _EMPTY_LINK_MAP
         plugin.config["graph_enabled"] = True
+        plugin.zk_config = MagicMock()
+        plugin.zettel_service.link_map = _EMPTY_LINK_MAP
         files = MagicMock()
         files.__len__ = lambda self: 1
-        site_dir = tmp_path / "site"
-        site_dir.mkdir()
-        config = {"extra": {}, "site_dir": str(site_dir)}
+        config = {"extra": {}, "site_dir": str(tmp_path / "site")}
+
+        # Create a mock graph feature that writes graph.json
+        mock_feature = MagicMock()
+        mock_feature.name = "graph"
+
+        def _export_graph(ctx, f, c):
+            import json
+
+            path = ctx.tags_folder / "graph.json"
+            path.write_text(json.dumps({}))
+
+        mock_feature.export.side_effect = _export_graph
+        plugin._active_features = [mock_feature]
 
         with (
             patch.object(plugin.zettel_service, "process_files"),
             patch.object(plugin.tags_service, "process_files"),
-            patch.object(plugin.validation_service, "validate"),
-            patch.object(plugin.graph_exporter, "export", return_value={}),
             patch.object(plugin.tags_service, "tags_folder", tmp_path),
         ):
             plugin.on_files(files, config=config)
@@ -271,19 +292,28 @@ class TestZettelkastenPlugin:
 
     def test_on_files_exports_previews_json(self, tmp_path) -> None:
         plugin = self._make_plugin()
-        plugin.zettel_service.link_map = _EMPTY_LINK_MAP
         plugin.config["preview_enabled"] = True
+        plugin.zk_config = MagicMock()
+        plugin.zettel_service.link_map = _EMPTY_LINK_MAP
         files = MagicMock()
         files.__len__ = lambda self: 1
-        site_dir = tmp_path / "site"
-        site_dir.mkdir()
-        config = {"extra": {}, "site_dir": str(site_dir)}
+        config = {"extra": {}, "site_dir": str(tmp_path / "site")}
+
+        mock_feature = MagicMock()
+        mock_feature.name = "preview"
+
+        def _export_preview(ctx, f, c):
+            import json
+
+            path = ctx.tags_folder / "previews.json"
+            path.write_text(json.dumps({}))
+
+        mock_feature.export.side_effect = _export_preview
+        plugin._active_features = [mock_feature]
 
         with (
             patch.object(plugin.zettel_service, "process_files"),
             patch.object(plugin.tags_service, "process_files"),
-            patch.object(plugin.validation_service, "validate"),
-            patch.object(plugin.preview_exporter, "export", return_value={}),
             patch.object(plugin.tags_service, "tags_folder", tmp_path),
         ):
             plugin.on_files(files, config=config)
@@ -292,16 +322,31 @@ class TestZettelkastenPlugin:
 
     def test_on_page_markdown_sets_validation_issues(self) -> None:
         plugin = self._make_plugin()
+        plugin._ctx = MagicMock()
+
+        # Create a mock validation feature that sets issues on adapt_page
+        issues = [{"msg": "test issue"}]
+        mock_feature = MagicMock()
+        mock_feature.name = "validation"
+        mock_feature.adapt_page.side_effect = lambda page, ctx: page.meta.update(
+            {"validation_issues": issues}
+        )
+        plugin._active_features = [mock_feature]
+
         page = MagicMock()
         page.url = "/test/"
         page.meta = {}
         config = MagicMock()
         files = MagicMock()
-        issues = [{"msg": "test issue"}]
 
-        with (
-            patch.object(plugin.page_transformer, "transform", return_value="md"),
-            patch.object(plugin.validation_service, "get_issues", return_value=issues),
+        # Mock transform to call features like the real implementation does
+        def _mock_transform(md, pg, cfg, f, svc, features, ctx):
+            for feat in features:
+                feat.adapt_page(pg, ctx)
+            return "md"
+
+        with patch.object(
+            plugin.page_transformer, "transform", side_effect=_mock_transform
         ):
             plugin.on_page_markdown("original", page=page, config=config, files=files)
 
@@ -311,6 +356,8 @@ class TestZettelkastenPlugin:
         plugin = self._make_plugin()
         plugin.config["editor_enabled"] = True
         plugin.config["editor_repo"] = "https://github.com/test/repo"
+        plugin._ctx = MagicMock()
+        plugin._active_features = []
         page = MagicMock()
         page.url = "/test/"
         page.meta = {}
@@ -384,19 +431,11 @@ class TestZettelkastenPlugin:
         with (
             patch.object(plugin.zettel_service, "configure"),
             patch.object(plugin.tags_service, "configure"),
-            patch.object(plugin.validation_service, "configure"),
-            patch.object(
-                plugin.workflow_service,
-                "configure",
-                wraps=plugin.workflow_service.configure,
-            ) as mock_wf_cfg,
         ):
             plugin.on_config(config)
 
         assert extra["graph_enabled"] is True
         assert extra["workflow_enabled"] is True
-        mock_wf_cfg.assert_called_once()
-        assert mock_wf_cfg.call_args[0][0] == plugin.zk_config.timezone
 
     def test_on_config_propagates_custom_file_suffix(self) -> None:
         plugin = self._make_plugin()
@@ -406,7 +445,6 @@ class TestZettelkastenPlugin:
         with (
             patch.object(plugin.zettel_service, "configure") as mock_zcfg,
             patch.object(plugin.tags_service, "configure") as mock_tcfg,
-            patch.object(plugin.validation_service, "configure"),
         ):
             plugin.on_config(config)
 
@@ -414,20 +452,6 @@ class TestZettelkastenPlugin:
         mock_tcfg.assert_called_once_with(
             config, tags_key="tags", file_suffix=".txt", role_key="role"
         )
-
-    def test_on_config_propagates_custom_suffix_to_validation(self) -> None:
-        plugin = self._make_plugin()
-        plugin.config["file_suffix"] = ".txt"
-        config = MagicMock()
-
-        with (
-            patch.object(plugin.zettel_service, "configure"),
-            patch.object(plugin.tags_service, "configure"),
-            patch.object(plugin.validation_service, "configure") as mock_vcfg,
-        ):
-            plugin.on_config(config)
-
-        mock_vcfg.assert_called_once_with(plugin.zk_config.timezone, config)
 
     def test_on_post_build_skips_vendor_subdir(self, tmp_path) -> None:
         plugin = self._make_plugin()
@@ -439,3 +463,25 @@ class TestZettelkastenPlugin:
         config = {"site_dir": str(tmp_path)}
         plugin.on_post_build(config=config)
         assert (vendor_dir / "lib.js").read_text() == original
+
+    def test_on_files_runs_feature_compute_and_export(self) -> None:
+        plugin = self._make_plugin()
+        plugin.zk_config = MagicMock()
+        plugin.zettel_service.link_map = _EMPTY_LINK_MAP
+        files = MagicMock()
+        files.__len__ = lambda self: 1
+        config = {"extra": {}, "site_dir": "/tmp"}
+
+        mock_feature = MagicMock()
+        mock_feature.name = "test"
+        mock_feature.compute.return_value = {"data": 1}
+        plugin._active_features = [mock_feature]
+
+        with (
+            patch.object(plugin.zettel_service, "process_files"),
+            patch.object(plugin.tags_service, "process_files"),
+        ):
+            plugin.on_files(files, config=config)
+
+        mock_feature.compute.assert_called_once()
+        mock_feature.export.assert_called_once()

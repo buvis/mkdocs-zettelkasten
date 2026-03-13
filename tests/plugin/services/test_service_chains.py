@@ -7,20 +7,32 @@ data flow across service boundaries.
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
+from mkdocs_zettelkasten.plugin.features.backlink_feature import BacklinkFeature
+from mkdocs_zettelkasten.plugin.features.sequence_feature import SequenceFeature
+from mkdocs_zettelkasten.plugin.features.unlinked_mention_feature import (
+    UnlinkedMentionFeature,
+)
+from mkdocs_zettelkasten.plugin.pipeline_context import PipelineContext
+from mkdocs_zettelkasten.plugin.services.backlink_processor import BacklinkProcessor
 from mkdocs_zettelkasten.plugin.services.graph_exporter import GraphExporter
 from mkdocs_zettelkasten.plugin.services.page_transformer import PageTransformer
 from mkdocs_zettelkasten.plugin.services.preview_exporter import PreviewExporter
+from mkdocs_zettelkasten.plugin.services.sequence_service import SequenceService
 from mkdocs_zettelkasten.plugin.services.suggestion_service import SuggestionService
+from mkdocs_zettelkasten.plugin.services.unlinked_mention_service import (
+    UnlinkedMentionService,
+)
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
 
 if TYPE_CHECKING:
-    from pathlib import Path
+    pass
 
 PERMISSIVE_CONFIG = ZettelkastenConfig(id_format=r"^\d+$")
 
@@ -158,11 +170,28 @@ def _build_service(docs_dir: Path, file_map: dict[str, str]):
     return svc
 
 
+def _build_ctx(svc: ZettelService) -> PipelineContext:
+    """Build a PipelineContext and compute core features from a ZettelService."""
+    ctx = PipelineContext(
+        config=svc.zettel_config,
+        store=svc.store,
+        link_map=svc.link_map,
+        invalid_files=svc.invalid_files,
+        tags_metadata=[],
+        tags_folder=Path("."),
+        site_dir="/tmp",
+    )
+    features = [BacklinkFeature(), UnlinkedMentionFeature(), SequenceFeature()]
+    for f in features:
+        ctx.results[f.name] = f.compute(ctx)
+    return ctx
+
+
 # -- Tests: ZettelService pipeline -------------------------------------------
 
 
 class TestZettelServicePipeline:
-    """process_files → store + backlinks + unlinked mentions + sequences."""
+    """process_files → store + link_map. Features compute backlinks etc."""
 
     @pytest.fixture(autouse=True)
     def setup(self, tmp_path: Path) -> None:
@@ -175,23 +204,35 @@ class TestZettelServicePipeline:
         assert len(self.svc.get_zettels()) == 3
 
     def test_backlinks_computed(self) -> None:
-        # A links to B, B links to A → both should have backlink entries
-        assert len(self.svc.backlinks) > 0
+        backlinks = BacklinkProcessor.process(
+            self.svc.store, self.svc.link_map.resolved
+        )
+        assert len(backlinks) > 0
 
     def test_backlink_targets_resolve(self) -> None:
-        for target_id, sources in self.svc.backlinks.items():
+        backlinks = BacklinkProcessor.process(
+            self.svc.store, self.svc.link_map.resolved
+        )
+        for target_id, sources in backlinks.items():
             target = self.svc.store.get_by_id(target_id)
             assert target is not None, f"backlink target {target_id} not in store"
             for src in sources:
                 assert src in self.svc.store.zettels
 
     def test_unlinked_mentions_detected(self) -> None:
-        # A mentions "Gamma Note" without linking → should detect mention on zettel 3
-        assert len(self.svc.unlinked_mentions) > 0
+        ums = UnlinkedMentionService()
+        mentions = ums.find_unlinked_mentions(
+            self.svc.store, self.svc.link_map.resolved
+        )
+        assert len(mentions) > 0
 
     def test_unlinked_mentions_have_snippets(self) -> None:
-        for mentions in self.svc.unlinked_mentions.values():
-            for source_id, snippet in mentions:
+        ums = UnlinkedMentionService()
+        mentions = ums.find_unlinked_mentions(
+            self.svc.store, self.svc.link_map.resolved
+        )
+        for mention_list in mentions.values():
+            for source_id, snippet in mention_list:
                 assert isinstance(source_id, int)
                 assert len(snippet) > 0
 
@@ -211,12 +252,14 @@ class TestSequenceChain:
         )
 
     def test_sequence_children_built(self) -> None:
-        assert 10 in self.svc.sequence_children
-        assert 11 in self.svc.sequence_children[10]
+        children = SequenceService.build_tree(self.svc.store)
+        assert 10 in children
+        assert 11 in children[10]
 
     def test_sequence_grandchild(self) -> None:
-        assert 11 in self.svc.sequence_children
-        assert 12 in self.svc.sequence_children[11]
+        children = SequenceService.build_tree(self.svc.store)
+        assert 11 in children
+        assert 12 in children[11]
 
     def test_root_has_no_parent(self) -> None:
         root = self.svc.get_zettel_by_id(10)
@@ -232,13 +275,14 @@ class TestGraphExportChain:
 
     def test_graph_nodes_and_edges(self, tmp_path: Path) -> None:
         svc = _build_service(tmp_path, {"1.md": ZETTEL_A, "2.md": ZETTEL_B})
+        backlinks = BacklinkProcessor.process(svc.store, svc.link_map.resolved)
         exporter = GraphExporter()
         tags_metadata = [
             {"src_path": "1.md", "tags": ["test"]},
             {"src_path": "2.md", "tags": ["test", "lit"]},
         ]
 
-        graph = exporter.export(svc.store, tags_metadata, svc.backlinks)
+        graph = exporter.export(svc.store, tags_metadata, backlinks)
 
         assert len(graph["nodes"]) == 2
         node_ids = {n["id"] for n in graph["nodes"]}
@@ -248,9 +292,10 @@ class TestGraphExportChain:
 
     def test_graph_preserves_zettel_metadata(self, tmp_path: Path) -> None:
         svc = _build_service(tmp_path, {"1.md": ZETTEL_A})
+        backlinks = BacklinkProcessor.process(svc.store, svc.link_map.resolved)
         exporter = GraphExporter()
 
-        graph = exporter.export(svc.store, [], svc.backlinks)
+        graph = exporter.export(svc.store, [], backlinks)
 
         node = graph["nodes"][0]
         assert node["id"] == "1"
@@ -263,9 +308,10 @@ class TestGraphExportChain:
             tmp_path,
             {"10.md": ZETTEL_SEQ_ROOT, "11.md": ZETTEL_SEQ_CHILD},
         )
+        backlinks = BacklinkProcessor.process(svc.store, svc.link_map.resolved)
         exporter = GraphExporter()
 
-        graph = exporter.export(svc.store, [], svc.backlinks)
+        graph = exporter.export(svc.store, [], backlinks)
 
         seq_edges = [e for e in graph["edges"] if e.get("type") == "sequence"]
         assert len(seq_edges) == 1
@@ -372,6 +418,8 @@ class TestPageTransformerChain:
     def test_transform_enriches_zettel_page(self, tmp_path: Path) -> None:
         file_map = {"1.md": ZETTEL_A, "2.md": ZETTEL_B, "3.md": ZETTEL_C}
         svc = _build_service(tmp_path, file_map)
+        ctx = _build_ctx(svc)
+        features = [BacklinkFeature(), UnlinkedMentionFeature(), SequenceFeature()]
         files, _ = _make_files(tmp_path, file_map)
         config = _make_full_config(tmp_path)
 
@@ -384,7 +432,9 @@ class TestPageTransformerChain:
         page.next_page = None
 
         transformer = PageTransformer()
-        result_md = transformer.transform(ZETTEL_A, page, config, files, svc)
+        result_md = transformer.transform(
+            ZETTEL_A, page, config, files, svc, features, ctx
+        )
 
         assert isinstance(result_md, str)
         assert page.meta["is_zettel"] is True
@@ -393,6 +443,7 @@ class TestPageTransformerChain:
 
     def test_transform_non_zettel_page(self, tmp_path: Path) -> None:
         svc = _build_service(tmp_path, {"1.md": ZETTEL_A})
+        ctx = _build_ctx(svc)
         files, _ = _make_files(tmp_path, {"1.md": ZETTEL_A})
         config = _make_full_config(tmp_path)
 
@@ -403,17 +454,16 @@ class TestPageTransformerChain:
         page.meta = {}
 
         transformer = PageTransformer()
-        result_md = transformer.transform("# Home", page, config, files, svc)
+        result_md = transformer.transform("# Home", page, config, files, svc, [], ctx)
 
         assert isinstance(result_md, str)
         assert page.meta["is_zettel"] is False
 
     def test_backlinks_populated_across_pages(self, tmp_path: Path) -> None:
-        # Backlink adapter adds backlinks to TARGET zettels when the SOURCE
-        # page is processed. So process zettel 1 (which links to 2) first,
-        # then verify zettel 2 gained a backlink.
         file_map = {"1.md": ZETTEL_A, "2.md": ZETTEL_B}
         svc = _build_service(tmp_path, file_map)
+        ctx = _build_ctx(svc)
+        features = [BacklinkFeature(), UnlinkedMentionFeature(), SequenceFeature()]
         files, _ = _make_files(tmp_path, file_map)
         config = _make_full_config(tmp_path)
         transformer = PageTransformer()
@@ -426,7 +476,7 @@ class TestPageTransformerChain:
         page1.meta = {}
         page1.previous_page = None
         page1.next_page = None
-        transformer.transform(ZETTEL_A, page1, config, files, svc)
+        transformer.transform(ZETTEL_A, page1, config, files, svc, features, ctx)
 
         # Now zettel 2 (the target) should have gained a backlink
         zettel_2 = svc.get_zettel_by_id(2)
@@ -440,6 +490,8 @@ class TestPageTransformerChain:
             "12.md": ZETTEL_SEQ_GRANDCHILD,
         }
         svc = _build_service(tmp_path, file_map)
+        ctx = _build_ctx(svc)
+        features = [BacklinkFeature(), UnlinkedMentionFeature(), SequenceFeature()]
         files, _ = _make_files(tmp_path, file_map)
         config = _make_full_config(tmp_path)
 
@@ -452,7 +504,9 @@ class TestPageTransformerChain:
         page.next_page = None
 
         transformer = PageTransformer()
-        transformer.transform(ZETTEL_SEQ_CHILD, page, config, files, svc)
+        transformer.transform(
+            ZETTEL_SEQ_CHILD, page, config, files, svc, features, ctx
+        )
 
         zettel = page.meta["zettel"]
         assert zettel.sequence_parent is not None

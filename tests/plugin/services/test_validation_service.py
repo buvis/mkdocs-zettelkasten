@@ -24,36 +24,22 @@ class TestValidationService:
             note_type=note_type,
         )
 
-    def _make_zettel_service(self, zettels, backlinks=None, invalid_files=None):
-        svc = MagicMock()
-        svc.get_zettels.return_value = zettels
-        svc.store.get_by_partial_path = self._make_partial_path_lookup(zettels)
-        svc.backlinks = backlinks or {}
-        svc.invalid_files = invalid_files or []
-        return svc
-
-    def _make_partial_path_lookup(self, zettels):
-        def lookup(partial, _file_suffix=".md"):
-            for z in zettels:
-                if partial in z.rel_path:
-                    return z
-            return None
-
-        return lookup
+    def _make_store(self, zettels):
+        store = MagicMock()
+        store.zettels = zettels
+        store.get_by_id.side_effect = lambda zid: next(
+            (z for z in zettels if z.id == zid), None
+        )
+        return store
 
     def test_no_issues_when_all_linked(self, tmp_path: Path) -> None:
         z1 = self._make_zettel(1, "a.md", links=["b"])
         z2 = self._make_zettel(2, "b.md", links=["a"])
-
-        svc = self._make_zettel_service([z1, z2], backlinks={1: [z2], 2: [z1]})
+        store = self._make_store([z1, z2])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
-        vs.validate(svc, files, config, [])
+        vs.validate(store, {1: [z2], 2: [z1]}, [], [])
 
         assert vs.get_issues("a.md") == []
         assert vs.get_issues("b.md") == []
@@ -61,16 +47,11 @@ class TestValidationService:
     def test_orphan_detected(self, tmp_path: Path) -> None:
         z1 = self._make_zettel(1, "a.md", links=["b"])
         z2 = self._make_zettel(2, "b.md", links=[])
-
-        svc = self._make_zettel_service([z1, z2], backlinks={2: [z1]})
+        store = self._make_store([z1, z2])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
-        vs.validate(svc, files, config, [])
+        vs.validate(store, {2: [z1]}, [], [])
 
         a_issues = vs.get_issues("a.md")
         assert len(a_issues) == 1
@@ -78,15 +59,11 @@ class TestValidationService:
         assert vs.get_issues("b.md") == []
 
     def test_broken_link_detected(self, tmp_path: Path) -> None:
-        svc = self._make_zettel_service([], backlinks={})
+        store = self._make_store([])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
-        vs.validate(svc, files, config, [("a.md", "nonexistent")])
+        vs.validate(store, {}, [], [("a.md", "nonexistent")])
 
         issues = vs.get_issues("a.md")
         broken = [i for i in issues if i.check == "broken_link"]
@@ -96,16 +73,11 @@ class TestValidationService:
     def test_invalid_file_reported(self, tmp_path: Path) -> None:
         invalid_f = MagicMock()
         invalid_f.src_path = "bad.md"
-
-        svc = self._make_zettel_service([], invalid_files=[invalid_f])
+        store = self._make_store([])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
-        vs.validate(svc, files, config, [])
+        vs.validate(store, {}, [invalid_f], [])
 
         issues = vs.get_issues("bad.md")
         assert len(issues) == 1
@@ -116,32 +88,22 @@ class TestValidationService:
         z1 = self._make_zettel(
             1, "a.md", links=["https://example.com", "#anchor", "mailto:x@y.com"]
         )
-
-        svc = self._make_zettel_service([z1], backlinks={})
+        store = self._make_store([z1])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
-        vs.validate(svc, files, config, [])
+        vs.validate(store, {}, [], [])
 
         broken = [i for i in vs.get_issues("a.md") if i.check == "broken_link"]
         assert len(broken) == 0
 
     def test_stale_fleeting_detected(self, tmp_path: Path) -> None:
         z1 = self._make_zettel(20200101120000, "a.md", note_type="fleeting")
-
-        svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
+        store = self._make_store([z1])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
-        vs.validate(svc, files, config, [])
+        vs.validate(store, {"a.md": [z1]}, [], [])
 
         stale = [i for i in vs.get_issues("a.md") if i.check == "stale_fleeting"]
         assert len(stale) == 1
@@ -149,48 +111,33 @@ class TestValidationService:
 
     def test_recent_fleeting_not_flagged(self, tmp_path: Path) -> None:
         z1 = self._make_zettel(20991231120000, "a.md", note_type="fleeting")
-
-        svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
+        store = self._make_store([z1])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
-        vs.validate(svc, files, config, [])
+        vs.validate(store, {"a.md": [z1]}, [], [])
 
         stale = [i for i in vs.get_issues("a.md") if i.check == "stale_fleeting"]
         assert len(stale) == 0
 
     def test_permanent_note_not_flagged_as_stale(self, tmp_path: Path) -> None:
         z1 = self._make_zettel(20200101120000, "a.md")
-
-        svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
+        store = self._make_store([z1])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
-        vs.validate(svc, files, config, [])
+        vs.validate(store, {"a.md": [z1]}, [], [])
 
         stale = [i for i in vs.get_issues("a.md") if i.check == "stale_fleeting"]
         assert len(stale) == 0
 
     def test_missing_type_detected(self, tmp_path: Path) -> None:
         z1 = self._make_zettel(1, "a.md", note_type=None)
-
-        svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
+        store = self._make_store([z1])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
-        vs.validate(svc, files, config, [])
+        vs.validate(store, {"a.md": [z1]}, [], [])
 
         missing = [i for i in vs.get_issues("a.md") if i.check == "missing_type"]
         assert len(missing) == 1
@@ -198,16 +145,11 @@ class TestValidationService:
 
     def test_typed_note_not_flagged_as_missing(self, tmp_path: Path) -> None:
         z1 = self._make_zettel(1, "a.md")
-
-        svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
+        store = self._make_store([z1])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
-        vs.validate(svc, files, config, [])
+        vs.validate(store, {"a.md": [z1]}, [], [])
 
         missing = [i for i in vs.get_issues("a.md") if i.check == "missing_type"]
         assert len(missing) == 0
@@ -215,17 +157,11 @@ class TestValidationService:
     def test_broken_sequence_detected(self, tmp_path: Path) -> None:
         z1 = self._make_zettel(1, "a.md")
         z1.sequence_parent_id = 999
-
-        svc = self._make_zettel_service([z1], backlinks={"a.md": [z1]})
-        svc.get_zettel_by_id.return_value = None
+        store = self._make_store([z1])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
-        vs.validate(svc, files, config, [])
+        vs.validate(store, {"a.md": [z1]}, [], [])
 
         broken = [i for i in vs.get_issues("a.md") if i.check == "broken_sequence"]
         assert len(broken) == 1
@@ -236,59 +172,40 @@ class TestValidationService:
         z1 = self._make_zettel(1, "a.md")
         z1.sequence_parent_id = 2
         z2 = self._make_zettel(2, "b.md")
-
-        svc = self._make_zettel_service(
-            [z1, z2], backlinks={"a.md": [z1], "b.md": [z2]}
-        )
-        svc.get_zettel_by_id.side_effect = lambda zid: z2 if zid == 2 else None
+        store = self._make_store([z1, z2])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
-        vs.validate(svc, files, config, [])
+        vs.validate(store, {"a.md": [z1], "b.md": [z2]}, [], [])
 
         broken = [i for i in vs.get_issues("a.md") if i.check == "broken_sequence"]
         assert len(broken) == 0
 
     def test_empty_store_produces_zero_issues(self, tmp_path: Path) -> None:
-        svc = self._make_zettel_service([])
+        store = self._make_store([])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
-        vs.validate(svc, files, config, [])
+        vs.validate(store, {}, [], [])
 
         assert vs.total_actionable_issues() == 0
 
-    def test_validate_unconfigured_raises_on_missing_output_folder(self) -> None:
-        svc = self._make_zettel_service([])
+    def test_generate_report_raises_on_missing_output_folder(self) -> None:
+        store = self._make_store([])
 
         vs = ValidationService()
-        # output_folder defaults to relative Path(".build") which shouldn't exist
         vs.output_folder = Path("/nonexistent/path")
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: "/tmp" if k == "site_dir" else ""
-        files = MagicMock()
+        vs.validate(store, {}, [], [])
 
         with pytest.raises(FileNotFoundError):
-            vs.validate(svc, files, config, [])
+            vs.generate_report()
 
     def test_broken_link_from_precomputed_list(self, tmp_path: Path) -> None:
-        svc = self._make_zettel_service([], backlinks={})
+        store = self._make_store([])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
-        vs.validate(svc, files, config, broken_links=[("a.md", "missing")])
+        vs.validate(store, {}, [], broken_links=[("a.md", "missing")])
 
         broken = [i for i in vs.get_issues("a.md") if i.check == "broken_link"]
         assert len(broken) == 1
@@ -296,31 +213,24 @@ class TestValidationService:
 
     def test_precomputed_broken_links_skips_store_lookup(self, tmp_path: Path) -> None:
         z1 = self._make_zettel(1, "a.md", links=["nonexistent"])
-        svc = self._make_zettel_service([z1], backlinks={})
+        store = self._make_store([z1])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
         # Pass empty broken_links — should produce no broken link issues
         # even though z1 has a nonexistent link (proves store lookup is skipped)
-        vs.validate(svc, files, config, broken_links=[])
+        vs.validate(store, {}, [], broken_links=[])
 
         broken = [i for i in vs.get_issues("a.md") if i.check == "broken_link"]
         assert len(broken) == 0
 
     def test_report_file_generated(self, tmp_path: Path) -> None:
-        svc = self._make_zettel_service([])
+        store = self._make_store([])
 
         vs = ValidationService()
         vs.output_folder = tmp_path
-        config = MagicMock()
-        config.__getitem__ = lambda self, k: str(tmp_path) if k == "site_dir" else ""
-        files = MagicMock()
-
-        vs.validate(svc, files, config, [])
+        vs.validate(store, {}, [], [])
+        vs.generate_report()
 
         report = tmp_path / "validation.md"
         assert report.exists()

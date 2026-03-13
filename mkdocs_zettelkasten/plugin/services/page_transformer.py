@@ -1,29 +1,24 @@
+from __future__ import annotations
+
 import logging
+from typing import TYPE_CHECKING
 
-from mkdocs.config.defaults import MkDocsConfig
-from mkdocs.structure.files import Files
-from mkdocs.structure.pages import Page
+if TYPE_CHECKING:
+    from mkdocs.config.defaults import MkDocsConfig
+    from mkdocs.structure.files import Files
+    from mkdocs.structure.pages import Page
 
-from mkdocs_zettelkasten.plugin.adapters.backlinks_to_page import (
-    adapt_backlinks_to_page,
-)
+    from mkdocs_zettelkasten.plugin.feature import Feature
+    from mkdocs_zettelkasten.plugin.pipeline_context import PipelineContext
+    from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
+
 from mkdocs_zettelkasten.plugin.adapters.page_links_to_zettels import (
     adapt_page_links_to_zettels,
 )
 from mkdocs_zettelkasten.plugin.adapters.page_ref import get_page_ref
 from mkdocs_zettelkasten.plugin.adapters.page_title import adapt_page_title
 from mkdocs_zettelkasten.plugin.adapters.prev_next_page import get_prev_next_page
-from mkdocs_zettelkasten.plugin.adapters.sequence_to_page import (
-    adapt_sequence_to_page,
-)
-from mkdocs_zettelkasten.plugin.adapters.suggestions_to_page import (
-    adapt_suggestions_to_page,
-)
 from mkdocs_zettelkasten.plugin.adapters.transclusion import adapt_transclusion
-from mkdocs_zettelkasten.plugin.adapters.unlinked_mentions_to_page import (
-    adapt_unlinked_mentions_to_page,
-)
-from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
 
 logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
@@ -34,17 +29,15 @@ class PageTransformer:
     """
     Applies all Zettelkasten-specific transformations to page markdown.
 
-    Adapter execution order (dependency DAG):
+    Core adapter execution order (dependency DAG):
         1. add_zettel_to_page     — no prerequisites; populates page.meta["zettel"]
         2. adapt_page_title       — requires: zettel in page.meta
         3. adapt_transclusion     — no prerequisites; expands transclusions in markdown
         4. adapt_page_links       — requires: transclusions resolved (step 3)
         5. get_page_ref           — requires: links resolved (step 4)
         6. get_prev_next_page     — no prerequisites; independent navigation
-        7. adapt_backlinks        — requires: zettel in page.meta (step 1)
-        8. adapt_unlinked_mentions— requires: zettel in page.meta (step 1)
-        9. adapt_suggestions      — requires: zettel in page.meta (step 1)
-       10. adapt_sequence         — requires: zettel in page.meta (step 1)
+
+    After core adapters, feature.adapt_page() is called for each active feature.
     """
 
     def transform(
@@ -54,10 +47,10 @@ class PageTransformer:
         config: MkDocsConfig,
         files: Files,
         zettel_service: ZettelService,
+        features: list[Feature],
+        ctx: PipelineContext,
     ) -> str:
-        """
-        Apply all adapters to the markdown and update references.
-        """
+        """Apply core adapters and feature adapters to the markdown."""
         src = page.file.src_path
         logger.debug("Started %s transformations", src)
 
@@ -114,41 +107,10 @@ class PageTransformer:
             zettel_service.get_zettels(),
             file_suffix=zettel_service.file_suffix,
         )
-        # Step 7 — requires: zettel in page.meta (step 1)
-        _run(
-            "adapt_backlinks_to_page",
-            adapt_backlinks_to_page,
-            page,
-            zettel_service.backlinks,
-            zettel_service.get_zettel_by_id,
-            file_suffix=zettel_service.file_suffix,
-        )
-        # Step 8 — requires: zettel in page.meta (step 1)
-        _run(
-            "adapt_unlinked_mentions_to_page",
-            adapt_unlinked_mentions_to_page,
-            page,
-            zettel_service.unlinked_mentions,
-            zettel_service.get_zettel_by_id,
-        )
-        # Step 9 — requires: zettel in page.meta (step 1)
-        _run(
-            "adapt_suggestions_to_page",
-            adapt_suggestions_to_page,
-            page,
-            zettel_service.suggestions,
-            zettel_service.get_zettel_by_id,
-            file_suffix=zettel_service.file_suffix,
-        )
-        # Step 10 — requires: zettel in page.meta (step 1)
-        _run(
-            "adapt_sequence_to_page",
-            adapt_sequence_to_page,
-            page,
-            zettel_service.sequence_children,
-            zettel_service.get_zettel_by_id,
-            file_suffix=zettel_service.file_suffix,
-        )
+
+        # Feature adapters
+        for feature in features:
+            _run(feature.name, feature.adapt_page, page, ctx)
 
         logger.debug("Finished %s transformations", src)
         return processed_md

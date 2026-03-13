@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
     from mkdocs.structure.files import Files
     from mkdocs.structure.pages import Page
 
-import json
 import logging
 import os
 from importlib.metadata import version
@@ -20,14 +19,21 @@ from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 
 from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
-from mkdocs_zettelkasten.plugin.services.graph_exporter import GraphExporter
-from mkdocs_zettelkasten.plugin.services.outline_service import OutlineService
+from mkdocs_zettelkasten.plugin.feature import Feature, resolve_features
+from mkdocs_zettelkasten.plugin.features.backlink_feature import BacklinkFeature
+from mkdocs_zettelkasten.plugin.features.graph_feature import GraphFeature
+from mkdocs_zettelkasten.plugin.features.outline_feature import OutlineFeature
+from mkdocs_zettelkasten.plugin.features.preview_feature import PreviewFeature
+from mkdocs_zettelkasten.plugin.features.sequence_feature import SequenceFeature
+from mkdocs_zettelkasten.plugin.features.suggestion_feature import SuggestionFeature
+from mkdocs_zettelkasten.plugin.features.unlinked_mention_feature import (
+    UnlinkedMentionFeature,
+)
+from mkdocs_zettelkasten.plugin.features.validation_feature import ValidationFeature
+from mkdocs_zettelkasten.plugin.features.workflow_feature import WorkflowFeature
+from mkdocs_zettelkasten.plugin.pipeline_context import PipelineContext
 from mkdocs_zettelkasten.plugin.services.page_transformer import PageTransformer
-from mkdocs_zettelkasten.plugin.services.preview_exporter import PreviewExporter
-from mkdocs_zettelkasten.plugin.services.suggestion_service import SuggestionService
 from mkdocs_zettelkasten.plugin.services.tags_service import TagsService
-from mkdocs_zettelkasten.plugin.services.validation_service import ValidationService
-from mkdocs_zettelkasten.plugin.services.workflow_service import WorkflowService
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
 
 
@@ -84,13 +90,20 @@ class ZettelkastenPlugin(BasePlugin):
         super().__init__()
         self.tags_service = TagsService()
         self.zettel_service = ZettelService()
-        self.validation_service = ValidationService()
-        self.graph_exporter = GraphExporter()
-        self.outline_service = OutlineService()
-        self.preview_exporter = PreviewExporter()
-        self.suggestion_service = SuggestionService()
-        self.workflow_service = WorkflowService()
         self.page_transformer = PageTransformer()
+        self._features: list[Feature] = [
+            BacklinkFeature(),
+            UnlinkedMentionFeature(),
+            SequenceFeature(),
+            SuggestionFeature(),
+            GraphFeature(),
+            PreviewFeature(),
+            OutlineFeature(),
+            WorkflowFeature(),
+            ValidationFeature(),
+        ]
+        self._active_features: list[Feature] = []
+        self._ctx: PipelineContext | None = None
         self._is_serve = False
         self._initialize_logger()
         self.logger.debug("Initialized ZettelkastenPlugin with services and logger.")
@@ -122,25 +135,13 @@ class ZettelkastenPlugin(BasePlugin):
             file_suffix=self.zk_config.file_suffix,
             role_key=self.zk_config.role_key,
         )
-        if self.zk_config.validation_enabled:
-            self.validation_service.configure(self.zk_config.timezone, config)
+        self._active_features = resolve_features(self._features, self.zk_config)
+        for f in self._active_features:
+            extra_key = getattr(f, "extra_key", None)
+            if extra_key:
+                config["extra"][extra_key] = True
         if self.config["editor_enabled"]:
             config["extra"]["editor_enabled"] = True
-        if self.config["graph_enabled"]:
-            config["extra"]["graph_enabled"] = True
-        if self.config["preview_enabled"]:
-            config["extra"]["preview_enabled"] = True
-        if self.config["workflow_enabled"]:
-            self.workflow_service.configure(
-                self.zk_config.timezone,
-                self.tags_service.tags_folder,
-                config["site_dir"],
-            )
-            config["extra"]["workflow_enabled"] = True
-        self.outline_service.configure(
-            self.tags_service.tags_folder,
-            config["site_dir"],
-        )
         config["extra"]["transclusion_strip_heading"] = self.config[
             "transclusion_strip_heading"
         ]
@@ -165,113 +166,23 @@ class ZettelkastenPlugin(BasePlugin):
     def on_files(self, files: Files, /, *, config: MkDocsConfig) -> None:
         self.zettel_service.process_files(files, config)
         self.tags_service.process_files(files, store=self.zettel_service.store)
-        if self.config["graph_enabled"]:
-            self._export_graph(files, config)
-        if self.config["preview_enabled"]:
-            self._export_previews(files, config)
         link_map = self.zettel_service.link_map
-        if self.config["suggestions_enabled"]:
-            if link_map is None:
-                msg = "link_map not initialized; process_files must run first"
-                raise RuntimeError(msg)
-            self.zettel_service.suggestions = self.suggestion_service.compute(
-                self.zettel_service.store,
-                self.tags_service.metadata,
-                link_map.resolved,
-            )
-            self._export_suggestions(files, config)
-        outlines = self.outline_service.compute(
-            self.zettel_service.store,
-            self.zettel_service.sequence_children,
-            file_suffix=self.config["file_suffix"],
+        if link_map is None:
+            msg = "link_map not initialized; process_files must run first"
+            raise RuntimeError(msg)
+        self._ctx = PipelineContext(
+            config=self.zk_config,
+            store=self.zettel_service.store,
+            link_map=link_map,
+            invalid_files=self.zettel_service.invalid_files,
+            tags_metadata=self.tags_service.metadata,
+            tags_folder=self.tags_service.tags_folder,
+            site_dir=config["site_dir"],
         )
-        if outlines["moc_outlines"] or outlines["sequence_outlines"]:
-            self.outline_service.generate(outlines)
-            self.outline_service.add_to_build(files)
-            config["extra"]["outline_enabled"] = True
-        if self.config["workflow_enabled"]:
-            dashboard = self.workflow_service.compute(
-                self.zettel_service.store,
-                self.zettel_service.backlinks,
-                self.zettel_service.unlinked_mentions,
-            )
-            self.workflow_service.generate(dashboard)
-            self.workflow_service.add_to_build(files)
-            config["extra"]["workflow_inbox_count"] = len(dashboard["inbox"])
-        if self.config["validation_enabled"]:
-            if link_map is None:
-                msg = "link_map not initialized; process_files must run first"
-                raise RuntimeError(msg)
-            self.validation_service.validate(
-                self.zettel_service,
-                files,
-                config,
-                link_map.broken,
-            )
-            config["extra"]["validation_issues_count"] = (
-                self.validation_service.total_actionable_issues()
-            )
+        for f in self._active_features:
+            self._ctx.results[f.name] = f.compute(self._ctx)
+            f.export(self._ctx, files, config)
         self.logger.info("Processed %d files in on_files hook.", len(files))
-
-    def _export_json(
-        self, filename: str, data: Any, files: Files, config: MkDocsConfig
-    ) -> None:
-        # deferred: avoid import-time mkdocs coupling
-        from mkdocs.structure.files import File
-
-        path = self.tags_service.tags_folder / filename
-        path.write_text(json.dumps(data), encoding="utf-8")
-        files.append(
-            File(
-                path=filename,
-                src_dir=str(self.tags_service.tags_folder),
-                dest_dir=config["site_dir"],
-                use_directory_urls=False,
-            )
-        )
-
-    def _export_graph(self, files: Files, config: MkDocsConfig) -> None:
-        graph_data = self.graph_exporter.export(
-            self.zettel_service.store,
-            self.tags_service.metadata,
-            self.zettel_service.backlinks,
-            file_suffix=self.config["file_suffix"],
-        )
-        self._export_json("graph.json", graph_data, files, config)
-
-    def _export_previews(self, files: Files, config: MkDocsConfig) -> None:
-        preview_data = self.preview_exporter.export(
-            self.zettel_service.store,
-            file_suffix=self.config["file_suffix"],
-        )
-        self._export_json("previews.json", preview_data, files, config)
-
-    def _export_suggestions(self, files: Files, config: MkDocsConfig) -> None:
-        sugg_data = {}
-        store = self.zettel_service.store
-        suffix = self.config["file_suffix"]
-        for zid, suggs in self.zettel_service.suggestions.items():
-            z = store.get_by_id(zid)
-            if not z:
-                continue
-            entries = []
-            for s in suggs:
-                target = store.get_by_id(s["target_id"])
-                if not target:
-                    continue
-                entries.append(
-                    {
-                        "target_id": str(s["target_id"]),
-                        "target_title": target.title,
-                        "target_url": target.rel_path.removesuffix(suffix) + "/",
-                        "reason": s["reason"],
-                        "confidence": s["confidence"],
-                    }
-                )
-            if entries:
-                sugg_data[str(zid)] = entries
-
-        self._export_json("suggestions.json", sugg_data, files, config)
 
     def on_page_markdown(
         self,
@@ -283,17 +194,18 @@ class ZettelkastenPlugin(BasePlugin):
         files: Files,
     ) -> str | None:
         self.logger.debug("Transforming markdown for page: %s.", page.url)
+        if self._ctx is None:
+            msg = "PipelineContext not initialized; on_files must run first"
+            raise RuntimeError(msg)
         transformed_markdown = self.page_transformer.transform(
             markdown,
             page,
             config,
             files,
             self.zettel_service,
+            self._active_features,
+            self._ctx,
         )
-        if self.config["validation_enabled"]:
-            page.meta["validation_issues"] = self.validation_service.get_issues(
-                page.file.src_path
-            )
         if self.config["editor_enabled"]:
             page.meta["editor"] = {
                 "repo": self.config["editor_repo"],
