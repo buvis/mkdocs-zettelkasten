@@ -508,7 +508,7 @@ dialog.modal-lg {
   color: var(--text-primary);
   background-color: var(--bg-zettel);
   border-color: var(--text-link);
-  outline: 0;
+  outline: 2px solid transparent;
   box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--text-link) 25%, transparent);
 }
 
