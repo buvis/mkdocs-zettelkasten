@@ -4,9 +4,9 @@
   --bg-page: #f5f5f5;
   --bg-body-image: url(../img/grid.png);
   --bg-zettel: #fff;
-  --bg-header: #e0e0e0;
-  --bg-accent: #eee;
-  --bg-code: #f5f5f5;
+  --bg-header: transparent;
+  --bg-accent: #f7f7f7;
+  --bg-code: #f9f9f9;
 
   --bg-tooltip: #333;
   --bg-kbd: #333;
@@ -19,12 +19,12 @@
   --text-kbd: #fff;
   --text-link-code: #0066cc;
   --text-link-code-hover: #004499;
-  --border-zettel: #ddd;
+  --border-zettel: #eee;
   --border-heading: #eee;
-  --border-accent: #ddd;
-  --border-code: #ddd;
-  --border-hr: #ccc;
-  --border-img: #ddd;
+  --border-accent: #f0f0f0;
+  --border-code: #f0f0f0;
+  --border-hr: #eee;
+  --border-img: #f0f0f0;
   --nav-from: #555;
   --nav-to: #666;
   --adm-note-text: #31708f;
