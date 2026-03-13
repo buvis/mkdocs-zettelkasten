@@ -1,3 +1,13 @@
+:root {
+    --z-popover: 100;
+    --z-dropdown: 1000;
+    --z-navbar: 1030;
+    --z-sidebar-backdrop: 1042;
+    --z-sidebar: 1045;
+    --z-modal: 1050;
+    --z-overlay: 10000;
+}
+
 html {
     /* csslint ignore:start */
     scroll-padding-top: 4.75rem;

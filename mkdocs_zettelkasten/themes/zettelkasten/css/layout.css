@@ -30,7 +30,7 @@ body {
   top: 0;
   right: 0;
   left: 0;
-  z-index: 1030;
+  z-index: var(--z-navbar);
 }
 
 .navbar-brand {
@@ -331,7 +331,7 @@ body .text-right {
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 1000;
+  z-index: var(--z-dropdown);
   display: none;
   float: left;
   min-width: 10rem;
@@ -412,7 +412,7 @@ dialog {
   background: var(--bg-zettel);
   color: var(--text-primary);
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
-  z-index: 1050;
+  z-index: var(--z-modal);
 }
 
 dialog::backdrop {
@@ -719,7 +719,7 @@ body .flex-column {
 .sidebar-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 1042;
+  z-index: var(--z-sidebar-backdrop);
   background-color: rgba(0, 0, 0, 0.4);
   opacity: 0;
   pointer-events: none;
@@ -735,7 +735,7 @@ body .flex-column {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1045;
+  z-index: var(--z-sidebar);
   width: 18rem;
   height: 100vh;
   background-color: var(--bg-zettel);

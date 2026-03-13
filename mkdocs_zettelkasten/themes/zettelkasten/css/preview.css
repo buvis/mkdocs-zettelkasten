@@ -2,7 +2,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 10000;
+  z-index: var(--z-overlay);
   max-width: 20rem;
   padding: 0.75rem;
   background: var(--bg-tooltip);

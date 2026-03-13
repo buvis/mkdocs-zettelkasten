@@ -133,7 +133,7 @@ svg.clickable {
   border: 1px solid var(--border-accent);
   border-radius: 0.25rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-  z-index: 100;
+  z-index: var(--z-popover);
   min-width: 8.75rem;
   display: flex;
   flex-direction: column;
@@ -336,7 +336,7 @@ pre:has(> code):hover .copy-btn {
   border-radius: 0.25rem;
   min-width: 15rem;
   max-width: 25rem;
-  z-index: 100;
+  z-index: var(--z-popover);
   margin-top: 0.25rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   text-align: left;
@@ -535,7 +535,7 @@ pre:has(> code):hover .copy-btn {
   border-radius: 0.25rem;
   padding: 0.6em 1.2em;
   font-size: 0.9em;
-  z-index: 10000;
+  z-index: var(--z-overlay);
   opacity: 0;
   transition: opacity 0.3s, transform 0.3s;
   pointer-events: none;
