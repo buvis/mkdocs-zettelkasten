@@ -65,6 +65,16 @@ body {
   position: relative;
 }
 
+.nav-prev-next {
+  display: flex;
+  gap: 0;
+}
+
+.nav-prev-next .nav-link {
+  padding-left: 0.375rem;
+  padding-right: 0.375rem;
+}
+
 button.nav-link {
   background: none;
   border: none;
