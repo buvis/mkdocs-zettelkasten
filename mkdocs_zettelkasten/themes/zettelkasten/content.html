@@ -155,6 +155,15 @@
         </div>
         {% endif %}
       </details>
+      <script>
+        (function() {
+          var d = document.querySelector('.file-header-secondary');
+          if (!d) return;
+          var mq = window.matchMedia('(min-width: 48rem)');
+          if (!mq.matches) d.open = false;
+          mq.addEventListener('change', function() { d.open = mq.matches; });
+        })();
+      </script>
       {% endif %}
       {% endif %}
     </div>
