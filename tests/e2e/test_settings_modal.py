@@ -43,3 +43,45 @@ def test_settings_modal_closes(page, default_site):
     _open_settings(page)
     page.click("#mkdocs_settings_modal .modal-close")
     expect(page.locator("#mkdocs_settings_modal")).not_to_be_visible()
+
+
+def test_code_theme_card_click_selects(page, default_site):
+    page.goto(default_site)
+    _open_settings(page)
+    cards = page.locator("#code-theme-grid .scheme-card")
+    target = cards.nth(2)
+    target.click()
+    expect(target).to_have_class("scheme-card active")
+
+
+def test_code_theme_selection_persists_across_reopen(page, default_site):
+    page.goto(default_site)
+    _open_settings(page)
+    cards = page.locator("#code-theme-grid .scheme-card")
+    target = cards.nth(3)
+    theme_value = target.get_attribute("data-theme-value")
+    target.click()
+    page.click("#mkdocs_settings_modal .modal-close")
+    _open_settings(page)
+    active = page.locator("#code-theme-grid .scheme-card.active")
+    expect(active).to_have_attribute("data-theme-value", theme_value)
+
+
+def test_code_theme_card_keyboard_activation(page, default_site):
+    page.goto(default_site)
+    _open_settings(page)
+    cards = page.locator("#code-theme-grid .scheme-card")
+    target = cards.nth(1)
+    target.focus()
+    target.press("Enter")
+    expect(target).to_have_class("scheme-card active")
+
+
+def test_scheme_card_keyboard_activation(page, default_site):
+    page.goto(default_site)
+    _open_settings(page)
+    cards = page.locator("#scheme-grid .scheme-card")
+    target = cards.nth(1)
+    target.focus()
+    target.press(" ")
+    expect(target).to_have_class("scheme-card active")
