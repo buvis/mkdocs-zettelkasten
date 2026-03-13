@@ -172,7 +172,7 @@ svg.clickable {
   background-color: var(--bg-header);
   border-top-left-radius: 0.375rem;
   border-top-right-radius: 0.375rem;
-  padding: 2.5em;
+  padding: 1.5rem;
   padding-top: 0.2em;
   padding-bottom: 0.7em;
   min-height: 2.5rem;
