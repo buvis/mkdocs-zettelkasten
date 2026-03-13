@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
@@ -20,15 +20,17 @@ from mkdocs_zettelkasten.plugin.services.suggestion_service import SuggestionSer
 class SuggestionFeature:
     name = "suggestions"
     depends_on: tuple[str, ...] = ()
+    extra_key: str | None = None
 
     def __init__(self) -> None:
         self._service = SuggestionService()
+        self._suggestions: dict[int, list[dict]] = {}
 
     def is_enabled(self, config: ZettelkastenConfig) -> bool:
         return config.suggestions_enabled
 
-    def compute(self, ctx: PipelineContext) -> Any:
-        return self._service.compute(
+    def compute(self, ctx: PipelineContext) -> None:
+        self._suggestions = self._service.compute(
             ctx.store, ctx.tags_metadata, ctx.link_map.resolved
         )
 
@@ -36,7 +38,7 @@ class SuggestionFeature:
         sugg_data: dict[str, list[dict]] = {}
         store = ctx.store
         suffix = ctx.config.file_suffix
-        for zid, suggs in ctx.suggestions.items():
+        for zid, suggs in self._suggestions.items():
             z = store.get_by_id(zid)
             if not z:
                 continue
@@ -62,7 +64,7 @@ class SuggestionFeature:
     def adapt_page(self, page: Page, ctx: PipelineContext) -> None:
         adapt_suggestions_to_page(
             page,
-            ctx.suggestions,
+            self._suggestions,
             ctx.store.get_by_id,
             file_suffix=ctx.config.file_suffix,
         )

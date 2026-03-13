@@ -17,19 +17,22 @@ from mkdocs_zettelkasten.plugin.services.preview_exporter import PreviewExporter
 class PreviewFeature:
     name = "preview"
     depends_on: tuple[str, ...] = ()
-    extra_key = "preview_enabled"
+    extra_key: str | None = "preview_enabled"
 
     def __init__(self) -> None:
         self._exporter = PreviewExporter()
+        self._preview_data: dict[str, Any] = {}
 
     def is_enabled(self, config: ZettelkastenConfig) -> bool:
         return config.preview_enabled
 
-    def compute(self, ctx: PipelineContext) -> Any:
-        return self._exporter.export(ctx.store, file_suffix=ctx.config.file_suffix)
+    def compute(self, ctx: PipelineContext) -> None:
+        self._preview_data = self._exporter.export(
+            ctx.store, file_suffix=ctx.config.file_suffix
+        )
 
     def export(self, ctx: PipelineContext, files: Files, config: MkDocsConfig) -> None:
-        export_json(ctx, "previews.json", ctx.results["preview"], files, config)
+        export_json(ctx, "previews.json", self._preview_data, files, config)
 
     def adapt_page(self, page: Page, ctx: PipelineContext) -> None:
         pass

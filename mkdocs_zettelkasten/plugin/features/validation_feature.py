@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
@@ -16,6 +16,7 @@ from mkdocs_zettelkasten.plugin.services.validation_service import ValidationSer
 class ValidationFeature:
     name = "validation"
     depends_on: tuple[str, ...] = ("backlinks",)
+    extra_key: str | None = None
 
     def __init__(self) -> None:
         self._service = ValidationService()
@@ -23,7 +24,7 @@ class ValidationFeature:
     def is_enabled(self, config: ZettelkastenConfig) -> bool:
         return config.validation_enabled
 
-    def compute(self, ctx: PipelineContext) -> Any:
+    def compute(self, ctx: PipelineContext) -> None:
         self._service.validate(
             ctx.store,
             ctx.backlinks,
@@ -31,7 +32,6 @@ class ValidationFeature:
             ctx.link_map.broken,
             timezone=ctx.config.timezone,
         )
-        return None
 
     def export(self, ctx: PipelineContext, files: Files, config: MkDocsConfig) -> None:
         self._service.output_folder = ctx.tags_folder

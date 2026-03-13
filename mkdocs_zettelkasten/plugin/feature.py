@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
@@ -15,9 +15,10 @@ if TYPE_CHECKING:
 class Feature(Protocol):
     name: str
     depends_on: tuple[str, ...]
+    extra_key: str | None
 
     def is_enabled(self, config: ZettelkastenConfig) -> bool: ...
-    def compute(self, ctx: PipelineContext) -> Any: ...
+    def compute(self, ctx: PipelineContext) -> None: ...
     def export(self, ctx: PipelineContext, files: Files, config: MkDocsConfig) -> None: ...
     def adapt_page(self, page: Page, ctx: PipelineContext) -> None: ...
 

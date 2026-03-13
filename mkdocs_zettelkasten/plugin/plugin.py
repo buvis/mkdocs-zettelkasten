@@ -137,9 +137,8 @@ class ZettelkastenPlugin(BasePlugin):
         )
         self._active_features = resolve_features(self._features, self.zk_config)
         for f in self._active_features:
-            extra_key = getattr(f, "extra_key", None)
-            if extra_key:
-                config["extra"][extra_key] = True
+            if f.extra_key:
+                config["extra"][f.extra_key] = True
         if self.config["editor_enabled"]:
             config["extra"]["editor_enabled"] = True
         config["extra"]["transclusion_strip_heading"] = self.config[
@@ -180,7 +179,7 @@ class ZettelkastenPlugin(BasePlugin):
             site_dir=config["site_dir"],
         )
         for f in self._active_features:
-            self._ctx.results[f.name] = f.compute(self._ctx)
+            f.compute(self._ctx)
             f.export(self._ctx, files, config)
         self.logger.info("Processed %d files in on_files hook.", len(files))
 

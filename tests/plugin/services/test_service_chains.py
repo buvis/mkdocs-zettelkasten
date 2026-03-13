@@ -8,7 +8,6 @@ data flow across service boundaries.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -30,9 +29,6 @@ from mkdocs_zettelkasten.plugin.services.unlinked_mention_service import (
     UnlinkedMentionService,
 )
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
-
-if TYPE_CHECKING:
-    pass
 
 PERMISSIVE_CONFIG = ZettelkastenConfig(id_format=r"^\d+$")
 
@@ -178,12 +174,12 @@ def _build_ctx(svc: ZettelService) -> PipelineContext:
         link_map=svc.link_map,
         invalid_files=svc.invalid_files,
         tags_metadata=[],
-        tags_folder=Path("."),
+        tags_folder=Path(),
         site_dir="/tmp",
     )
     features = [BacklinkFeature(), UnlinkedMentionFeature(), SequenceFeature()]
     for f in features:
-        ctx.results[f.name] = f.compute(ctx)
+        f.compute(ctx)
     return ctx
 
 

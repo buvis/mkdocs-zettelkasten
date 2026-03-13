@@ -17,16 +17,17 @@ from mkdocs_zettelkasten.plugin.services.graph_exporter import GraphExporter
 class GraphFeature:
     name = "graph"
     depends_on: tuple[str, ...] = ("backlinks",)
-    extra_key = "graph_enabled"
+    extra_key: str | None = "graph_enabled"
 
     def __init__(self) -> None:
         self._exporter = GraphExporter()
+        self._graph_data: dict[str, Any] = {}
 
     def is_enabled(self, config: ZettelkastenConfig) -> bool:
         return config.graph_enabled
 
-    def compute(self, ctx: PipelineContext) -> Any:
-        return self._exporter.export(
+    def compute(self, ctx: PipelineContext) -> None:
+        self._graph_data = self._exporter.export(
             ctx.store,
             ctx.tags_metadata,
             ctx.backlinks,
@@ -34,7 +35,7 @@ class GraphFeature:
         )
 
     def export(self, ctx: PipelineContext, files: Files, config: MkDocsConfig) -> None:
-        export_json(ctx, "graph.json", ctx.results["graph"], files, config)
+        export_json(ctx, "graph.json", self._graph_data, files, config)
 
     def adapt_page(self, page: Page, ctx: PipelineContext) -> None:
         pass

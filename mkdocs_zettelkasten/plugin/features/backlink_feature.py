@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
@@ -19,12 +19,13 @@ from mkdocs_zettelkasten.plugin.services.backlink_processor import BacklinkProce
 class BacklinkFeature:
     name = "backlinks"
     depends_on: tuple[str, ...] = ()
+    extra_key: str | None = None
 
     def is_enabled(self, config: ZettelkastenConfig) -> bool:  # noqa: ARG002
         return True
 
-    def compute(self, ctx: PipelineContext) -> Any:
-        return BacklinkProcessor.process(ctx.store, ctx.link_map.resolved)
+    def compute(self, ctx: PipelineContext) -> None:
+        ctx.backlinks = BacklinkProcessor.process(ctx.store, ctx.link_map.resolved)
 
     def export(self, ctx: PipelineContext, files: Files, config: MkDocsConfig) -> None:
         pass

@@ -25,23 +25,9 @@ class PipelineContext:
     tags_metadata: list[dict[str, Any]]
     tags_folder: Path
     site_dir: str
-    results: dict[str, Any] = field(default_factory=dict)
-
-    @property
-    def backlinks(self) -> dict[int, list[Zettel]]:
-        return self.results.get("backlinks", {})
-
-    @property
-    def unlinked_mentions(self) -> dict[int, list[tuple[int, str]]]:
-        return self.results.get("unlinked_mentions", {})
-
-    @property
-    def sequence_children(self) -> dict[int, list[int]]:
-        return self.results.get("sequence_children", {})
-
-    @property
-    def suggestions(self) -> dict[int, list[dict]]:
-        return self.results.get("suggestions", {})
+    backlinks: dict[int, list[Zettel]] = field(default_factory=dict)
+    unlinked_mentions: dict[int, list[tuple[int, str]]] = field(default_factory=dict)
+    sequence_children: dict[int, list[int]] = field(default_factory=dict)
 
 
 def export_json(

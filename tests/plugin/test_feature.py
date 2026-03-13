@@ -7,13 +7,14 @@ class _StubFeature:
     def __init__(self, name, depends_on=(), enabled=True):
         self.name = name
         self.depends_on = depends_on
+        self.extra_key = None
         self._enabled = enabled
 
-    def is_enabled(self, config):
+    def is_enabled(self, config):  # noqa: ARG002
         return self._enabled
 
     def compute(self, ctx):
-        return None
+        pass
 
     def export(self, ctx, files, config):
         pass

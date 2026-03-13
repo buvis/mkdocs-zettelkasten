@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
@@ -19,12 +19,13 @@ from mkdocs_zettelkasten.plugin.services.sequence_service import SequenceService
 class SequenceFeature:
     name = "sequence_children"
     depends_on: tuple[str, ...] = ()
+    extra_key: str | None = None
 
     def is_enabled(self, config: ZettelkastenConfig) -> bool:  # noqa: ARG002
         return True
 
-    def compute(self, ctx: PipelineContext) -> Any:
-        return SequenceService.build_tree(ctx.store)
+    def compute(self, ctx: PipelineContext) -> None:
+        ctx.sequence_children = SequenceService.build_tree(ctx.store)
 
     def export(self, ctx: PipelineContext, files: Files, config: MkDocsConfig) -> None:
         pass
