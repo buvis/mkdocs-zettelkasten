@@ -186,10 +186,27 @@ svg.clickable {
   margin-top: 0.25rem;
 }
 
+.file-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.375rem;
+}
+
 .file-header-secondary {
   margin-top: 0.5rem;
   padding-top: 0.5rem;
   border-top: 1px solid var(--border-accent);
+}
+
+.file-header-secondary-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.file-header-secondary-item {
+  min-width: 0;
 }
 
 .file-header-secondary-toggle {
@@ -220,8 +237,19 @@ svg.clickable {
     display: block;
   }
 
+  .file-header-secondary-body {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+  }
+
   .file-header-secondary > .file-header-secondary-toggle {
     display: none;
+  }
+
+  .file-header-secondary-date {
+    margin-left: auto;
   }
 }
 
@@ -233,11 +261,6 @@ svg.clickable {
   color: inherit;
   vertical-align: -0.125em;
   fill: currentColor;
-}
-
-.file-header .date {
-  padding-right: 0;
-  position: relative;
 }
 
 .file-body {
@@ -499,6 +522,20 @@ pre:has(> code):hover .copy-btn {
   color: var(--text-link);
 }
 
+.file-header-tags,
+.file-header-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  flex-wrap: wrap;
+  font-size: 0.8em;
+  color: var(--text-muted);
+}
+
+.file-header-tags a {
+  color: var(--text-link);
+}
+
 /* Sequence tree view */
 .sequence-tree-container {
   border-top: 1px solid var(--border-accent);
@@ -576,7 +613,7 @@ pre:has(> code):hover .copy-btn {
   border-radius: 0.25rem;
   padding: 0.6em 1.2em;
   font-size: 0.9em;
-  z-index: var(--z-overlay);
+  z-index: var(--z-toast);
   opacity: 0;
   transition: opacity 0.3s, transform 0.3s;
   pointer-events: none;
@@ -682,7 +719,7 @@ pre:has(> code):hover .copy-btn {
   margin: 0;
   opacity: 0.01;
   cursor: pointer;
-  z-index: 1;
+  z-index: var(--z-raised);
 }
 
 .toggle-track {

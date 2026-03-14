@@ -1,11 +1,14 @@
 :root {
+    --z-raised: 1;
     --z-popover: 100;
     --z-dropdown: 1000;
     --z-navbar: 1030;
     --z-sidebar-backdrop: 1042;
     --z-sidebar: 1045;
+    --z-modal-backdrop: 1048;
     --z-modal: 1050;
-    --z-overlay: 10000;
+    --z-toast: 10000;
+    --z-overlay: var(--z-toast);
 }
 
 html {
@@ -194,7 +197,7 @@ footer {
 .bs-sidebar .nav > li > a {
     display: block;
     padding: 0.3125rem 1.25rem;
-    z-index: 1;
+    z-index: var(--z-raised);
 }
 .bs-sidebar .nav > li > a:hover,
 .bs-sidebar .nav > li > a:focus {

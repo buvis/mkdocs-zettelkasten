@@ -1,10 +1,11 @@
   <div class="zettel">
     {% if page %}
+    {% if page.meta.is_zettel %}
     <div class="file-header">
+      {% set has_header_controls = page.meta.editor or page.edit_url %}
       <div class="file-header-primary">
         <div class="row align-items-center">
-          <div class="col-8">
-            {% if page.meta.is_zettel %}
+          <div class="{% if has_header_controls %}col-8{% else %}col-12{% endif %}">
               <div class="row align-items-center">
                 <span>
                   {% if page.meta.zettel.is_moc %}
@@ -66,10 +67,9 @@
                 </span>
               </div>
               {% endif %}
-            {% endif %}
           </div>
-          <div class="col-4 text-right date">
-            {% if page.meta.is_zettel %}
+          {% if has_header_controls %}
+          <div class="col-4 text-right file-header-actions">
               {% if page.meta.editor %}
                 <button id="zettel-edit-btn" class="btn btn-sm btn-outline-secondary editor-btn" data-tooltip="Edit zettel's source">
                   <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -92,18 +92,17 @@
                   </svg>
                 </a>
               {% endif %}
-              {{page.meta.zettel.last_update_date}}
-            {% endif %}
           </div>
+          {% endif %}
         </div>
       </div>
-      {% if page.meta.is_zettel %}
-      {% set has_secondary = page.meta.zettel.moc_parents or page.meta.zettel.sequence_breadcrumb or page.meta.zettel.sequence_children or page.meta.tags %}
+      {% set has_secondary = page.meta.zettel.moc_parents or page.meta.zettel.sequence_breadcrumb or page.meta.zettel.sequence_children or page.meta.tags or page.meta.zettel.last_update_date %}
       {% if has_secondary %}
       <details class="file-header-secondary" open>
         <summary class="file-header-secondary-toggle">Details</summary>
+        <div class="file-header-secondary-body">
         {% if page.meta.zettel.moc_parents %}
-        <div class="row align-items-center">
+        <div class="file-header-secondary-item">
           <span class="moc-breadcrumb">
             <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" d="M11.536 3.464a5 5 0 010 7.072L8 14.07l-3.536-3.535a5 5 0 117.072-7.072v.001zm1.06 8.132a6.5 6.5 0 10-9.192 0l3.535 3.536a1.5 1.5 0 002.122 0l3.535-3.536zM8 9a2 2 0 100-4 2 2 0 000 4z"/>
@@ -116,7 +115,7 @@
         </div>
         {% endif %}
         {% if page.meta.zettel.sequence_breadcrumb %}
-        <div class="row align-items-center">
+        <div class="file-header-secondary-item">
           <span class="sequence-breadcrumb">
             <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1z"/>
@@ -130,7 +129,7 @@
         </div>
         {% endif %}
         {% if page.meta.zettel.sequence_children %}
-        <div class="row align-items-center">
+        <div class="file-header-secondary-item">
           <span class="sequence-branches">
             <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path d="M8 1a1.5 1.5 0 0 0-1.5 1.5v4.34L5.29 5.62a1.5 1.5 0 1 0-2.12 2.12l3.54 3.54a1.5 1.5 0 0 0 2.12 0l3.54-3.54a1.5 1.5 0 0 0-2.12-2.12L9 6.84V2.5A1.5 1.5 0 0 0 8 1zM3 13.5A1.5 1.5 0 0 1 4.5 12h7a1.5 1.5 0 0 1 0 3h-7A1.5 1.5 0 0 1 3 13.5z"/>
@@ -143,8 +142,8 @@
         </div>
         {% endif %}
         {% if page.meta.tags %}
-        <div class="row align-items-center">
-          <span>
+        <div class="file-header-secondary-item">
+          <span class="file-header-tags">
             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-tags" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" d="M3 2v4.586l7 7L14.586 9l-7-7H3zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586V2z"/>
               <path fill-rule="evenodd" d="M5.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
@@ -154,6 +153,18 @@
           </span>
         </div>
         {% endif %}
+        {% if page.meta.zettel.last_update_date %}
+        <div class="file-header-secondary-item file-header-secondary-date">
+          <span class="file-header-date">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11 0a.5.5 0 0 1 .5.5V1H13a2 2 0 0 1 2 2v1H1V3a2 2 0 0 1 2-2h1.5V.5a.5.5 0 0 1 1 0V1h5V.5A.5.5 0 0 1 11 0z"/>
+              <path d="M1 5v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V5H1zm3 2.25a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zm2.5 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zm2.5 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zm2.5 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zm-7.5 2.5a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zm2.5 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zm2.5 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5z"/>
+            </svg>
+            Updated {{ page.meta.zettel.last_update_date }}
+          </span>
+        </div>
+        {% endif %}
+        </div>
       </details>
       <script>
         (function() {
@@ -165,8 +176,8 @@
         })();
       </script>
       {% endif %}
-      {% endif %}
     </div>
+    {% endif %}
     {% if page.meta.is_zettel and page.meta.zettel.sequence_tree %}
     <div class="sequence-tree-container">
       <details class="sequence-tree" open>
