@@ -175,20 +175,20 @@ svg.clickable {
   border-top-left-radius: 0.375rem;
   border-top-right-radius: 0.375rem;
   padding: 1.5rem;
-  padding-top: 0.2em;
-  padding-bottom: 0.7em;
+  padding-top: 0.1875rem;
+  padding-bottom: 0.5625rem;
   min-height: 2.5rem;
   font-size: small;
   color: var(--text-header);
 }
 
 .file-header .row {
-  margin-top: 0.25em;
+  margin-top: 0.25rem;
 }
 
 .file-header-secondary {
-  margin-top: 0.5em;
-  padding-top: 0.5em;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
   border-top: 1px solid var(--border-accent);
 }
 
@@ -206,7 +206,7 @@ svg.clickable {
 .file-header-secondary-toggle::before {
   content: '\25b6';
   display: inline-block;
-  margin-right: 0.25em;
+  margin-right: 0.25rem;
   font-size: 0.7em;
   transition: transform 0.15s ease-in-out;
 }
