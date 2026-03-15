@@ -24,13 +24,12 @@ class SuggestionFeature:
 
     def __init__(self) -> None:
         self._service = SuggestionService()
-        self._suggestions: dict[int, list[dict]] = {}
 
     def is_enabled(self, config: ZettelkastenConfig) -> bool:
         return config.suggestions_enabled
 
     def compute(self, ctx: PipelineContext) -> None:
-        self._suggestions = self._service.compute(
+        ctx.suggestions = self._service.compute(
             ctx.store, ctx.tags_metadata, ctx.link_map.resolved
         )
 
@@ -38,7 +37,7 @@ class SuggestionFeature:
         sugg_data: dict[str, list[dict]] = {}
         store = ctx.store
         suffix = ctx.config.file_suffix
-        for zid, suggs in self._suggestions.items():
+        for zid, suggs in ctx.suggestions.items():
             z = store.get_by_id(zid)
             if not z:
                 continue
@@ -64,7 +63,7 @@ class SuggestionFeature:
     def adapt_page(self, page: Page, ctx: PipelineContext) -> None:
         adapt_suggestions_to_page(
             page,
-            self._suggestions,
+            ctx.suggestions,
             ctx.store.get_by_id,
             file_suffix=ctx.config.file_suffix,
         )

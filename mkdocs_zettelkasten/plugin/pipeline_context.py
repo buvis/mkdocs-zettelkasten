@@ -28,6 +28,7 @@ class PipelineContext:
     backlinks: dict[int, list[Zettel]] = field(default_factory=dict)
     unlinked_mentions: dict[int, list[tuple[int, str]]] = field(default_factory=dict)
     sequence_children: dict[int, list[int]] = field(default_factory=dict)
+    suggestions: dict[int, list[dict]] = field(default_factory=dict)
 
 
 def export_json(
