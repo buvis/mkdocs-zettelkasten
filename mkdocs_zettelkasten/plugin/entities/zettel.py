@@ -3,7 +3,9 @@ from __future__ import annotations
 import datetime
 import html
 import re
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, TypedDict
+from zoneinfo import ZoneInfo
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -49,6 +51,50 @@ class SequenceTreeNode(TypedDict):
     title: str
     current: bool
     children: list[SequenceTreeNode]
+
+
+@dataclass(frozen=True)
+class ZettelMeta:
+    id: int
+    title: str
+    path: Path
+    rel_path: str
+    body: str
+    last_update_date: str
+    meta: dict
+    links: list[str]
+    link_snippets: dict[str, str]
+    note_type: str | None = None
+    maturity: str | None = None
+    source: str | None = None
+    role: str | None = None
+    sequence_parent_id: int | None = None
+    _id_key: str = "id"
+    _date_key: str = "date"
+    _last_update_key: str = "last_update"
+    _type_key: str = "type"
+    _maturity_key: str = "maturity"
+    _role_key: str = "role"
+    _sequence_key: str = "sequence"
+    _id_format: str = r"^\d{14}$"
+    _tz: ZoneInfo = field(default_factory=lambda: ZoneInfo("UTC"))
+    _date_format: str = "%Y-%m-%d"
+
+    @property
+    def is_moc(self) -> bool:
+        return self.role in MOC_ROLES
+
+
+@dataclass
+class ZettelRelationships:
+    backlinks: list[LinkRef] = field(default_factory=list)
+    moc_parents: list[LinkRef] = field(default_factory=list)
+    unlinked_mentions: list[LinkRef] = field(default_factory=list)
+    suggested_links: list[SuggestionRef] = field(default_factory=list)
+    sequence_parent: SequenceRef | None = None
+    sequence_children: list[SequenceRef] = field(default_factory=list)
+    sequence_breadcrumb: list[SequenceRef] = field(default_factory=list)
+    sequence_tree: list[SequenceTreeNode] = field(default_factory=list)
 
 
 class ZettelFormatError(ValueError):
@@ -307,8 +353,8 @@ class Zettel:
 
     def _get_initial_candidate_date(self, meta: dict) -> datetime.datetime:
         """Gets first valid date from metadata sources."""
-        for field in [self._last_update_key, self._date_key]:
-            if date := convert_string_to_date(meta.get(field, ""), tz=self._tz):
+        for key in [self._last_update_key, self._date_key]:
+            if date := convert_string_to_date(meta.get(key, ""), tz=self._tz):
                 return date
 
         id_date = convert_string_to_date(str(self.id), tz=self._tz)
