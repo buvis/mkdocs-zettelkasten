@@ -10,9 +10,6 @@ if TYPE_CHECKING:
     from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
     from mkdocs_zettelkasten.plugin.pipeline_context import PipelineContext
 
-from mkdocs_zettelkasten.plugin.adapters.sequence_to_page import (
-    adapt_sequence_to_page,
-)
 from mkdocs_zettelkasten.plugin.services.sequence_service import SequenceService
 
 
@@ -31,9 +28,4 @@ class SequenceFeature:
         pass
 
     def adapt_page(self, page: Page, ctx: PipelineContext) -> None:
-        adapt_sequence_to_page(
-            page,
-            ctx.sequence_children,
-            ctx.store.get_by_id,
-            file_suffix=ctx.config.file_suffix,
-        )
+        pass

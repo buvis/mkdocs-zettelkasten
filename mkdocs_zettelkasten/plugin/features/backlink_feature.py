@@ -10,9 +10,6 @@ if TYPE_CHECKING:
     from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
     from mkdocs_zettelkasten.plugin.pipeline_context import PipelineContext
 
-from mkdocs_zettelkasten.plugin.adapters.backlinks_to_page import (
-    adapt_backlinks_to_page,
-)
 from mkdocs_zettelkasten.plugin.services.backlink_processor import BacklinkProcessor
 
 
@@ -31,9 +28,4 @@ class BacklinkFeature:
         pass
 
     def adapt_page(self, page: Page, ctx: PipelineContext) -> None:
-        adapt_backlinks_to_page(
-            page,
-            ctx.backlinks,
-            ctx.store.get_by_id,
-            file_suffix=ctx.config.file_suffix,
-        )
+        pass

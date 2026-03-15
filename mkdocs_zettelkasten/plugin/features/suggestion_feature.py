@@ -10,9 +10,6 @@ if TYPE_CHECKING:
     from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
     from mkdocs_zettelkasten.plugin.pipeline_context import PipelineContext
 
-from mkdocs_zettelkasten.plugin.adapters.suggestions_to_page import (
-    adapt_suggestions_to_page,
-)
 from mkdocs_zettelkasten.plugin.pipeline_context import export_json
 from mkdocs_zettelkasten.plugin.services.suggestion_service import SuggestionService
 
@@ -61,9 +58,4 @@ class SuggestionFeature:
         export_json(ctx, "suggestions.json", sugg_data, files, config)
 
     def adapt_page(self, page: Page, ctx: PipelineContext) -> None:
-        adapt_suggestions_to_page(
-            page,
-            ctx.suggestions,
-            ctx.store.get_by_id,
-            file_suffix=ctx.config.file_suffix,
-        )
+        pass

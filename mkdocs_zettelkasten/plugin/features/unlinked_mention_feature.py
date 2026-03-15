@@ -10,9 +10,6 @@ if TYPE_CHECKING:
     from mkdocs_zettelkasten.plugin.config import ZettelkastenConfig
     from mkdocs_zettelkasten.plugin.pipeline_context import PipelineContext
 
-from mkdocs_zettelkasten.plugin.adapters.unlinked_mentions_to_page import (
-    adapt_unlinked_mentions_to_page,
-)
 from mkdocs_zettelkasten.plugin.services.unlinked_mention_service import (
     UnlinkedMentionService,
 )
@@ -38,6 +35,4 @@ class UnlinkedMentionFeature:
         pass
 
     def adapt_page(self, page: Page, ctx: PipelineContext) -> None:
-        adapt_unlinked_mentions_to_page(
-            page, ctx.unlinked_mentions, ctx.store.get_by_id
-        )
+        pass

@@ -18,6 +18,9 @@ from mkdocs_zettelkasten.plugin.features.sequence_feature import SequenceFeature
 from mkdocs_zettelkasten.plugin.features.unlinked_mention_feature import (
     UnlinkedMentionFeature,
 )
+from mkdocs_zettelkasten.plugin.services.relationship_materializer import (
+    RelationshipMaterializer,
+)
 from mkdocs_zettelkasten.plugin.pipeline_context import PipelineContext
 from mkdocs_zettelkasten.plugin.services.backlink_processor import BacklinkProcessor
 from mkdocs_zettelkasten.plugin.services.graph_exporter import GraphExporter
@@ -180,6 +183,7 @@ def _build_ctx(svc: ZettelService) -> PipelineContext:
     features = [BacklinkFeature(), UnlinkedMentionFeature(), SequenceFeature()]
     for f in features:
         f.compute(ctx)
+    RelationshipMaterializer.materialize_all(ctx)
     return ctx
 
 
