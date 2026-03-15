@@ -4,8 +4,13 @@
         <button type="button" class="modal-close" aria-label="Close"><span aria-hidden="true">&times;</span><span class="visually-hidden">Close</span></button>
     </div>
     <div class="modal-body">
+        <div class="settings-layout">
+            <section class="settings-panel settings-panel-scheme">
                 <div class="settings-section-header">
-                    <h5>Color Scheme</h5>
+                    <div>
+                        <h5>Color Scheme</h5>
+                        <p class="settings-copy">Choose the paper palette for notes and navigation.</p>
+                    </div>
                     <div class="dark-mode-toggle-group">
                         <span class="toggle-label">Light</span>
                         <label class="dark-mode-toggle" title="Toggle dark mode">
@@ -20,17 +25,25 @@
                     </div>
                 </div>
                 <div id="scheme-grid" class="scheme-grid"></div>
+            </section>
 
+            <section class="settings-panel settings-panel-code">
                 <div class="settings-section-header code-theme-header">
-                    <h5>Code Theme</h5>
+                    <div>
+                        <h5>Code Theme</h5>
+                        <p class="settings-copy">Set the syntax highlighting palette without changing the page scheme.</p>
+                    </div>
                 </div>
                 <div id="code-theme-grid" class="code-theme-grid"></div>
-                <pre id="hljs-preview" class="hljs-preview"><code class="language-python">def greet(name: str) -> str:
+                <div class="settings-preview-panel">
+                    <div class="settings-preview-label">Preview</div>
+                    <pre id="hljs-preview" class="hljs-preview"><code class="language-python">def greet(name: str) -> str:
     """Return a greeting."""
     return f"Hello, {name}!"
 
 print(greet("Zettelkasten"))</code></pre>
-            </div>
-    <div class="modal-footer">
+                </div>
+            </section>
+        </div>
     </div>
 </dialog>

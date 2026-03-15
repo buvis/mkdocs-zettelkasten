@@ -37,7 +37,9 @@ def test_tags_link_to_zettels(page, default_site):
 
 def test_tags_nav_button_links_to_tags_page(page, default_site):
     page.goto(default_site)
-    tags_link = page.locator('a.nav-link[href*="tags"]')
+    # Tags link lives inside the Tools dropdown
+    page.locator('button.dropdown-toggle', has_text="Tools").click()
+    tags_link = page.locator('a.dropdown-item[href*="tags"]')
     assert tags_link.count() >= 1
     tags_link.first.click()
     page.wait_for_url("**/tags.html")

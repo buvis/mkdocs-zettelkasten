@@ -20,10 +20,10 @@ def test_footer_has_border_top(page, default_site):
     assert style == "solid"
 
 
-def test_footer_italic_and_smaller(page, default_site):
+def test_footer_smaller_than_body_and_not_italic(page, default_site):
     page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
     refs = page.locator(".file-references").first
-    assert _get_computed(refs, "fontStyle") == "italic"
+    assert _get_computed(refs, "fontStyle") == "normal"
     refs_size = float(_get_computed(refs, "fontSize").replace("px", ""))
     body_size = float(
         _get_computed(page.locator(".file-body").first, "fontSize").replace("px", "")

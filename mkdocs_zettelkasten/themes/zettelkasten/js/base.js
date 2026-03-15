@@ -46,8 +46,6 @@ const applyTopPadding = () => {
     if (!container) return;
     const offset = container.getBoundingClientRect().top + window.scrollY;
     document.documentElement.style.scrollPaddingTop = `${offset}px`;
-    const sidebars = document.querySelectorAll('.bs-sidebar.affix');
-    sidebars.forEach((el) => { el.style.top = `${offset}px`; });
 };
 
 // See https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
@@ -298,6 +296,8 @@ const init = () => {
         if (!e.target.closest('.dropdown')) {
             document.querySelectorAll('.dropdown-menu.show').forEach((m) => {
                 m.classList.remove('show');
+                const btn = m.previousElementSibling;
+                if (btn) btn.setAttribute('aria-expanded', 'false');
                 m.querySelectorAll('.dropdown-menu').forEach((sub) => { sub.classList.remove('show'); });
                 m.querySelectorAll('.dropdown-submenu > a').forEach((a) => { a.classList.remove('open'); });
             });
@@ -351,10 +351,13 @@ const init = () => {
                 // Close all other dropdowns first
                 document.querySelectorAll('.dropdown-menu.show').forEach((m) => {
                     m.classList.remove('show');
+                    const btn = m.previousElementSibling;
+                    if (btn) btn.setAttribute('aria-expanded', 'false');
                 });
                 if (!wasOpen) {
                     menu.classList.add('show');
                 }
+                toggle.setAttribute('aria-expanded', String(!wasOpen));
             }
         });
     });
@@ -391,41 +394,6 @@ const init = () => {
         if (sessionStorage.getItem('sidebar-open') === '1') openSidebar();
         window.addEventListener('pagehide', () => sidebarAC.abort(), {once: true});
     }
-
-    // Scrollspy via IntersectionObserver
-    (() => {
-        const tocLinks = document.querySelectorAll('.bs-sidebar .nav a');
-        if (!tocLinks.length) return;
-        const headings = [];
-        tocLinks.forEach((link) => {
-            const href = link.getAttribute('href');
-            if (href && href.startsWith('#')) {
-                const el = document.getElementById(href.slice(1));
-                if (el) headings.push({el, link});
-            }
-        });
-        if (!headings.length) return;
-
-        let currentActive = null;
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    const match = headings.find((h) => h.el === entry.target);
-                    if (match) {
-                        if (currentActive) currentActive.classList.remove('active');
-                        match.link.classList.add('active');
-                        currentActive = match.link;
-                    }
-                }
-            });
-        }, {rootMargin: '-100px 0px -66% 0px'});
-
-        headings.forEach((h) => { observer.observe(h.el); });
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') observer.disconnect();
-        }, {once: true});
-    })();
 
 };
 

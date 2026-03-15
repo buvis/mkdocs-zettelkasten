@@ -6,8 +6,10 @@
 
 {% block content %}
 <div class="gallery-page">
-    <h1>Color Schemes</h1>
-    <p>Browse all available color schemes. Click "Apply" to switch.</p>
+    <div class="gallery-hero">
+        <h1>Color Schemes</h1>
+        <p class="gallery-copy">Browse all available paper palettes and switch from the preview cards.</p>
+    </div>
 
     <div id="gallery-grid"></div>
 </div>
@@ -28,9 +30,9 @@
         return swatch;
     }
 
-    function createPreviewCard(scheme) {
+    function createPreviewCard(scheme, current) {
         var card = document.createElement('div');
-        card.className = 'gallery-card';
+        card.className = 'gallery-card' + (scheme.id === current ? ' gallery-card--active' : '');
 
         var title = document.createElement('h3');
         title.textContent = scheme.name;
@@ -40,6 +42,13 @@
         category.className = 'gallery-category';
         category.textContent = scheme.category;
         card.appendChild(category);
+
+        if (scheme.id === current) {
+            var currentBadge = document.createElement('span');
+            currentBadge.className = 'gallery-current';
+            currentBadge.textContent = 'Current';
+            card.appendChild(currentBadge);
+        }
 
         var lightLabel = document.createElement('div');
         lightLabel.textContent = 'Light';
@@ -73,6 +82,7 @@
             })
             .then(function(schemes) {
                 var grid = document.getElementById('gallery-grid');
+                var current = window.zkTheme.getScheme();
 
                 var categories = {};
                 schemes.forEach(function(s) {
@@ -98,7 +108,7 @@
                     var section = document.createElement('div');
                     section.className = 'gallery-section';
                     categories[cat].forEach(function(scheme) {
-                        section.appendChild(createPreviewCard(scheme));
+                        section.appendChild(createPreviewCard(scheme, current));
                     });
                     grid.appendChild(section);
                 });

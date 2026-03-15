@@ -3,7 +3,7 @@
   box-sizing: border-box;
 }
 
-body {
+html, body {
   overflow-x: hidden;
 }
 
@@ -13,8 +13,11 @@ body {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 1rem;
+  padding: 0.625rem 1rem;
   position: relative;
+  border-bottom: 1px solid var(--border-accent);
+  border-bottom: 1px solid color-mix(in srgb, var(--border-accent) 68%, transparent);
+  box-shadow: 0 0.5rem 1.5rem rgba(15, 23, 42, 0.06);
 }
 
 .navbar > .container,
@@ -38,18 +41,20 @@ body {
   padding-top: 0.3125rem;
   padding-bottom: 0.3125rem;
   margin-right: 1rem;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   line-height: inherit;
   white-space: nowrap;
-  font-weight: 450;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   text-decoration: none;
   color: inherit;
-  opacity: 0.95;
+  opacity: 0.84;
 }
 
 .navbar-brand:hover, .navbar-brand:focus {
   text-decoration: none;
   color: inherit;
+  opacity: 1;
 }
 
 .navbar-nav {
@@ -61,18 +66,30 @@ body {
   list-style: none;
 }
 
+.nav-utility {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.1875rem;
+}
+
 .nav-item {
   position: relative;
 }
 
 .nav-prev-next {
   display: flex;
-  gap: 0;
+  gap: 0.125rem;
+  padding: 0.125rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-accent);
+  border: 1px solid color-mix(in srgb, var(--border-accent) 80%, transparent);
+  background: var(--bg-accent);
+  background: color-mix(in srgb, var(--bg-zettel) 10%, transparent);
 }
 
 .nav-prev-next .nav-link {
-  padding-left: 0.375rem;
-  padding-right: 0.375rem;
+  padding-left: 0.45rem;
+  padding-right: 0.45rem;
 }
 
 button.nav-link {
@@ -83,8 +100,12 @@ button.nav-link {
 }
 
 .nav-link {
-  display: block;
-  padding: 0.5rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.4375rem 0.625rem;
+  border-radius: 999px;
   color: inherit;
   text-decoration: none;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
@@ -94,6 +115,22 @@ button.nav-link {
 .nav-link:hover, .nav-link:focus {
   text-decoration: none;
   color: var(--text-link);
+  background: var(--bg-accent);
+  background: color-mix(in srgb, var(--bg-zettel) 12%, transparent);
+}
+
+.nav-icon-link {
+  min-width: 2rem;
+}
+
+.nav-tools-toggle {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.nav-tools-label {
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .nav-link.disabled {
@@ -187,6 +224,11 @@ button.nav-link {
 
 .bg-primary {
   background-image: linear-gradient(var(--nav-from), var(--nav-to));
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--nav-from) 92%, transparent),
+    color-mix(in srgb, var(--nav-to) 96%, transparent)
+  );
   background-repeat: no-repeat;
 }
 
@@ -345,8 +387,8 @@ body .text-right {
   display: none;
   float: left;
   min-width: 10rem;
-  padding: 0.5rem 0;
-  margin: 0.125rem 0 0;
+  padding: 0.375rem;
+  margin: 0.4rem 0 0;
   font-size: 1rem;
   color: var(--text-primary);
   text-align: left;
@@ -354,8 +396,8 @@ body .text-right {
   background-color: var(--bg-zettel);
   background-clip: padding-box;
   border: 1px solid var(--border-accent);
-  border-radius: 0.25rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border-radius: 0.75rem;
+  box-shadow: 0 1rem 2.5rem rgba(15, 23, 42, 0.16);
 }
 
 .dropdown-menu.show {
@@ -365,7 +407,7 @@ body .text-right {
 .dropdown-item {
   display: block;
   width: 100%;
-  padding: 0.25rem 1.5rem;
+  padding: 0.5rem 0.75rem;
   clear: both;
   font-weight: 400;
   color: var(--text-primary);
@@ -373,6 +415,8 @@ body .text-right {
   white-space: nowrap;
   background-color: transparent;
   border: 0;
+  border-radius: 0.5rem;
+  font-size: 0.92rem;
   text-decoration: none;
 }
 
@@ -380,6 +424,7 @@ body .text-right {
   color: var(--text-primary);
   text-decoration: none;
   background-color: var(--bg-accent);
+  background-color: color-mix(in srgb, var(--bg-accent) 70%, var(--bg-zettel));
 }
 
 .dropdown-item.active, .dropdown-item:active {
@@ -417,16 +462,18 @@ dialog {
   max-height: 90vh;
   margin: 0;
   padding: 0;
-  border: none;
-  border-radius: 0.5rem;
+  border: 1px solid var(--border-accent);
+  border: 1px solid color-mix(in srgb, var(--border-accent) 82%, transparent);
+  border-radius: 1rem;
   background: var(--bg-zettel);
   color: var(--text-primary);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1.5rem 3.5rem rgba(15, 23, 42, 0.28);
   z-index: var(--z-modal);
 }
 
 dialog::backdrop {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(15, 23, 42, 0.48);
+  backdrop-filter: blur(0.2rem);
 }
 
 dialog[open] {
@@ -442,8 +489,9 @@ dialog.modal-lg {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 1.15rem 1.35rem 1rem;
   border-bottom: 1px solid var(--border-accent);
+  border-bottom-color: color-mix(in srgb, var(--border-accent) 78%, transparent);
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
 }
@@ -451,8 +499,8 @@ dialog.modal-lg {
 .modal-title {
   margin-bottom: 0;
   line-height: 1.5;
-  font-size: 1.25rem;
-  font-weight: 500;
+  font-size: 1.375rem;
+  font-weight: 600;
 }
 
 .modal-close {
@@ -465,7 +513,7 @@ dialog.modal-lg {
   line-height: 1;
   color: var(--text-muted);
   text-shadow: 0 1px 0 var(--bg-zettel);
-  opacity: .5;
+  opacity: 0.38;
   cursor: pointer;
 }
 
@@ -478,7 +526,7 @@ dialog.modal-lg {
 .modal-body {
   position: relative;
   flex: 1 1 auto;
-  padding: 1rem;
+  padding: 1.15rem 1.35rem 1.35rem;
   overflow-y: auto;
 }
 
@@ -519,6 +567,7 @@ dialog.modal-lg {
   background-color: var(--bg-zettel);
   border-color: var(--text-link);
   outline: 2px solid transparent;
+  box-shadow: 0 0 0 0.2rem var(--text-link);
   box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--text-link) 25%, transparent);
 }
 
@@ -730,7 +779,7 @@ body .flex-column {
   position: fixed;
   inset: 0;
   z-index: var(--z-sidebar-backdrop);
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(15, 23, 42, 0.34);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s ease;
@@ -746,11 +795,12 @@ body .flex-column {
   top: 0;
   left: 0;
   z-index: var(--z-sidebar);
-  width: min(18rem, 85vw);
+  width: min(20rem, 88vw);
   height: 100vh;
   background-color: var(--bg-zettel);
   border-right: 1px solid var(--border-accent);
-  box-shadow: 0.25rem 0 1rem rgba(0, 0, 0, 0.15);
+  border-right: 1px solid color-mix(in srgb, var(--border-accent) 80%, transparent);
+  box-shadow: 0 1.5rem 3rem rgba(15, 23, 42, 0.18);
   transform: translateX(-100%);
   transition: transform 0.25s ease;
   display: flex;
@@ -767,14 +817,15 @@ body .flex-column {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
+  padding: 0.95rem 1.1rem;
   border-bottom: 1px solid var(--border-accent);
   flex-shrink: 0;
 }
 
 .sidebar-title {
-  font-weight: 500;
-  font-size: 0.9375rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.01em;
   color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -802,7 +853,7 @@ body .flex-column {
 
 .sidebar-tree {
   list-style: none;
-  padding: 0.5rem 0;
+  padding: 0.625rem 0;
   margin: 0;
   overflow-y: auto;
   flex: 1;
@@ -826,7 +877,7 @@ body .flex-column {
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 0.375rem 1rem;
+  padding: 0.5rem 1rem;
   border: 0;
   background-color: transparent;
   font-size: 0.875rem;
@@ -834,10 +885,13 @@ body .flex-column {
   color: var(--text-primary);
   cursor: pointer;
   text-align: left;
+  margin: 0.125rem 0.5rem;
+  border-radius: 0.625rem;
 }
 
 .sidebar-section-toggle:hover {
   background-color: var(--bg-accent);
+  background-color: color-mix(in srgb, var(--bg-accent) 72%, var(--bg-zettel));
 }
 
 .sidebar-chevron {
@@ -882,11 +936,14 @@ body .flex-column {
   color: var(--text-muted);
   font-size: 0.875rem;
   text-decoration: none;
+  margin: 0.125rem 0.5rem;
+  border-radius: 0.625rem;
 }
 
 .sidebar-link:hover {
   color: var(--text-primary);
   background-color: var(--bg-accent);
+  background-color: color-mix(in srgb, var(--bg-accent) 72%, var(--bg-zettel));
   text-decoration: none;
 }
 
@@ -909,21 +966,33 @@ body .navbar.sidebar-mode .navbar-collapse {
 }
 
 .navbar.sidebar-mode .navbar-brand {
-  margin-left: 0.5rem;
+  margin-left: 0.375rem;
 }
 
 .navbar.sidebar-mode .navbar-nav.ml-auto {
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: 0.1875rem;
 }
 
 .navbar.sidebar-mode .navbar-nav.ml-auto .nav-link {
-  padding: 0.5rem 0.5rem;
+  padding: 0.375rem 0.5rem;
 }
 
 @media (max-width: 599px) {
   .navbar.sidebar-mode .navbar-nav.ml-auto .nav-link {
     padding: 0.5rem 0.25rem;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .navbar-nav.ml-auto.nav-utility {
+    gap: 0.375rem;
+    padding: 0.65rem 0;
+  }
+
+  .navbar .nav-link {
+    justify-content: flex-start;
   }
 }

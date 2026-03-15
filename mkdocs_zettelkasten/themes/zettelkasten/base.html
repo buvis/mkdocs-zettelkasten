@@ -122,7 +122,7 @@
                         {%- for nav_item in nav %}
                         {%- if nav_item.children %}
                             <li class="dropdown{% if nav_item.active %} active{% endif %}">
-                                <button type="button" class="nav-link dropdown-toggle" data-toggle="dropdown">{{ nav_item.title }}</button>
+                                <button type="button" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ nav_item.title }}</button>
                                 <ul class="dropdown-menu">
                                 {%- for nav_item in nav_item.children %}
                                     {% include "nav-sub.html" %}
@@ -140,11 +140,11 @@
                     {%- endif %}
                   {%- endblock %}
 
-                    <ul class="nav navbar-nav ml-auto">
+                    <ul class="nav navbar-nav ml-auto nav-utility">
                       {%- block search_button %}
                         {%- if 'search' in config['plugins'] %}
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal" aria-label="{% trans %}Search{% endtrans %}">
+                        <li class="nav-item nav-item-search">
+                            <a href="#" class="nav-link nav-icon-link" data-toggle="modal" data-target="#mkdocs_search_modal" aria-label="{% trans %}Search{% endtrans %}">
                                 <i class="fa fa-search"></i>
                             </a>
                         </li>
@@ -154,10 +154,10 @@
                       {%- block next_prev %}
                         {%- if page and (page.next_page or page.previous_page) %}
                             <li class="nav-item nav-prev-next">
-                                <a rel="prev" {% if page.previous_page %}href="{{ page.previous_page.url|url }}" class="nav-link"{% else %}class="nav-link disabled"{% endif %} aria-label="{% trans %}Previous page{% endtrans %}">
+                                <a rel="prev" {% if page.previous_page %}href="{{ page.previous_page.url|url }}" class="nav-link nav-icon-link"{% else %}class="nav-link nav-icon-link disabled"{% endif %} aria-label="{% trans %}Previous page{% endtrans %}">
                                     <i class="fa fa-arrow-left"></i>
                                 </a>
-                                <a rel="next" {% if page.next_page %}href="{{ page.next_page.url|url }}" class="nav-link"{% else %}class="nav-link disabled"{% endif %} aria-label="{% trans %}Next page{% endtrans %}">
+                                <a rel="next" {% if page.next_page %}href="{{ page.next_page.url|url }}" class="nav-link nav-icon-link"{% else %}class="nav-link nav-icon-link disabled"{% endif %} aria-label="{% trans %}Next page{% endtrans %}">
                                     <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -166,8 +166,8 @@
 
                       {%- block graph_nav_button %}
                         {%- if config.extra.graph_enabled is defined and config.extra.graph_enabled %}
-                        <li class="nav-item">
-                          <a href="{{ nav.homepage.url|url }}graph.html" class="nav-link" aria-label="{% trans %}Graph view{% endtrans %}">
+                        <li class="nav-item nav-item-graph">
+                          <a href="{{ nav.homepage.url|url }}graph.html" class="nav-link nav-icon-link" aria-label="{% trans %}Graph view{% endtrans %}">
                             <i class="fa fa-share-alt"></i>
                           </a>
                         </li>
@@ -175,9 +175,9 @@
                       {%- endblock %}
 
                                             <!-- Tools Dropdown -->
-                      <li class="nav-item dropdown">
-                        <button type="button" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-label="Tools">
-                          <i class="fa fa-wrench"></i> <span class="d-none d-lg-inline">Tools</span>
+                      <li class="nav-item dropdown nav-item-tools">
+                        <button type="button" class="nav-link dropdown-toggle nav-tools-toggle" data-toggle="dropdown" aria-label="Tools" aria-haspopup="true" aria-expanded="false">
+                          <i class="fa fa-wrench"></i> <span class="nav-tools-label d-none d-lg-inline">Tools</span>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
                           
@@ -226,8 +226,8 @@
                       </li>
                       
                       {%- block settings_toggle %}
-                        <li class="nav-item">
-                          <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_settings_modal" aria-label="Settings">
+                        <li class="nav-item nav-item-settings">
+                          <a href="#" class="nav-link nav-icon-link nav-settings-link" data-toggle="modal" data-target="#mkdocs_settings_modal" aria-label="Settings">
                             <i class="fa fa-cog"></i>
                           </a>
                         </li>
@@ -246,11 +246,13 @@
 
         <footer class="col-md-12">
           {%- block footer %}
-            <hr>
-            <p>{% trans plugin_link='<a href="https://github.com/buvis/mkdocs-zettelkasten">MkDocs Zettelkasten</a>', version=config.extra.plugin_version %}{{ plugin_link }} v{{ version }}{% endtrans %}</p>
-            {%- if config.copyright %}
-                <p class="footer-copyright">{{ config.copyright }}</p>
-            {%- endif %}
+            <div class="footer-inner">
+              <hr>
+              <p class="footer-version">{% trans plugin_link='<a href="https://github.com/buvis/mkdocs-zettelkasten">MkDocs Zettelkasten</a>', version=config.extra.plugin_version %}{{ plugin_link }} v{{ version }}{% endtrans %}</p>
+              {%- if config.copyright %}
+                  <p class="footer-copyright">{{ config.copyright }}</p>
+              {%- endif %}
+            </div>
           {%- endblock %}
         </footer>
 

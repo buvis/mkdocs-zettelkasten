@@ -10,11 +10,11 @@ def test_references_section_has_book_icon(page, default_site):
     assert refs.locator("i.fa.fa-book").count() >= 1
 
 
-def test_visually_hidden_text_exists(page, default_site):
+def test_references_section_has_visible_label(page, default_site):
     page.goto(f"{default_site}/{ZETTEL_INSTALL}/")
-    sr = page.locator(".file-references .visually-hidden")
-    assert sr.count() >= 1
-    assert "References" in sr.first.inner_text()
+    label = page.locator(".file-references .file-ref-label").first
+    assert label.is_visible()
+    assert label.inner_text().lower() == "references"
 
 
 def test_icons_visible_in_light_mode(page, default_site):

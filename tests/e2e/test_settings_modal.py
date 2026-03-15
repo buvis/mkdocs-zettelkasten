@@ -38,6 +38,13 @@ def test_settings_modal_has_dark_toggle(page, default_site):
     assert toggle.is_visible()
 
 
+def test_settings_modal_groups_controls_into_panels(page, default_site):
+    page.goto(default_site)
+    _open_settings(page)
+    panels = page.locator(".settings-panel")
+    assert panels.count() == 2
+
+
 def test_settings_modal_closes(page, default_site):
     page.goto(default_site)
     _open_settings(page)
