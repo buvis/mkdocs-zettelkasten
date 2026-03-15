@@ -108,94 +108,237 @@ class Zettel:
         src_path: str,
         zettel_config: ZettelkastenConfig | None = None,
     ) -> None:
-        self.id: int = 0
-        self.title: str = ""
-        self.path: Path = abs_src_path
-        self.rel_path: str = src_path
-        self.backlinks: list[LinkRef] = []
-        self.links: list[str] = []
-        self.last_update_date: str = ""
-        self.note_type: str | None = None
-        self.maturity: str | None = None
-        self.source: str | None = None
-        self.role: str | None = None
-        self.moc_parents: list[LinkRef] = []
-        self.link_snippets: dict[str, str] = {}
-        self.body: str = ""
-        self.unlinked_mentions: list[LinkRef] = []
-        self.suggested_links: list[SuggestionRef] = []
-        self.sequence_parent_id: int | None = None
-        self.sequence_parent: SequenceRef | None = None
-        self.sequence_children: list[SequenceRef] = []
-        self.sequence_breadcrumb: list[SequenceRef] = []
-        self.sequence_tree: list[SequenceTreeNode] = []
-        self.meta: dict = {}
-
         cfg = zettel_config or ZettelkastenConfig()
-        self._id_key = cfg.id_key
-        self._date_key = cfg.date_key
-        self._last_update_key = cfg.last_update_key
-        self._type_key = cfg.type_key
-        self._maturity_key = cfg.maturity_key
-        self._role_key = cfg.role_key
-        self._sequence_key = cfg.sequence_key
-        self._id_format = cfg.id_format
-        self._tz = cfg.timezone
-        self._date_format = cfg.date_format
+        self._meta = self._build_meta(abs_src_path, src_path, cfg)
+        self._rels = ZettelRelationships()
 
-        self._initialize_zettel()
+    @classmethod
+    def from_parts(
+        cls,
+        meta: ZettelMeta,
+        rels: ZettelRelationships | None = None,
+    ) -> Zettel:
+        instance = object.__new__(cls)
+        instance._meta = meta  # noqa: SLF001
+        instance._rels = rels or ZettelRelationships()  # noqa: SLF001
+        return instance
 
     def __hash__(self) -> int:
-        return hash(self.id)
+        return hash(self._meta.id)
 
     def __eq__(self, other: object) -> bool:
-        return isinstance(other, Zettel) and self.id == other.id
+        return isinstance(other, Zettel) and self._meta.id == other._meta.id
+
+    # -- Meta properties (read-only) ----------------------------------------------
+
+    @property
+    def id(self) -> int:
+        return self._meta.id
+
+    @property
+    def title(self) -> str:
+        return self._meta.title
+
+    @property
+    def path(self) -> Path:
+        return self._meta.path
+
+    @property
+    def rel_path(self) -> str:
+        return self._meta.rel_path
+
+    @property
+    def body(self) -> str:
+        return self._meta.body
+
+    @property
+    def last_update_date(self) -> str:
+        return self._meta.last_update_date
+
+    @property
+    def meta(self) -> dict:
+        return self._meta.meta
+
+    @property
+    def links(self) -> list[str]:
+        return self._meta.links
+
+    @property
+    def link_snippets(self) -> dict[str, str]:
+        return self._meta.link_snippets
+
+    @property
+    def note_type(self) -> str | None:
+        return self._meta.note_type
+
+    @property
+    def maturity(self) -> str | None:
+        return self._meta.maturity
+
+    @property
+    def source(self) -> str | None:
+        return self._meta.source
+
+    @property
+    def role(self) -> str | None:
+        return self._meta.role
+
+    @property
+    def sequence_parent_id(self) -> int | None:
+        return self._meta.sequence_parent_id
 
     @property
     def is_moc(self) -> bool:
-        return self.role in MOC_ROLES
+        return self._meta.is_moc
 
-    def _initialize_zettel(self) -> None:
-        """Orchestrates the zettel initialization process."""
+    # -- Relationship properties (read-write) --------------------------------------
+
+    @property
+    def backlinks(self) -> list[LinkRef]:
+        return self._rels.backlinks
+
+    @backlinks.setter
+    def backlinks(self, value: list[LinkRef]) -> None:
+        self._rels.backlinks = value
+
+    @property
+    def moc_parents(self) -> list[LinkRef]:
+        return self._rels.moc_parents
+
+    @moc_parents.setter
+    def moc_parents(self, value: list[LinkRef]) -> None:
+        self._rels.moc_parents = value
+
+    @property
+    def unlinked_mentions(self) -> list[LinkRef]:
+        return self._rels.unlinked_mentions
+
+    @unlinked_mentions.setter
+    def unlinked_mentions(self, value: list[LinkRef]) -> None:
+        self._rels.unlinked_mentions = value
+
+    @property
+    def suggested_links(self) -> list[SuggestionRef]:
+        return self._rels.suggested_links
+
+    @suggested_links.setter
+    def suggested_links(self, value: list[SuggestionRef]) -> None:
+        self._rels.suggested_links = value
+
+    @property
+    def sequence_parent(self) -> SequenceRef | None:
+        return self._rels.sequence_parent
+
+    @sequence_parent.setter
+    def sequence_parent(self, value: SequenceRef | None) -> None:
+        self._rels.sequence_parent = value
+
+    @property
+    def sequence_children(self) -> list[SequenceRef]:
+        return self._rels.sequence_children
+
+    @sequence_children.setter
+    def sequence_children(self, value: list[SequenceRef]) -> None:
+        self._rels.sequence_children = value
+
+    @property
+    def sequence_breadcrumb(self) -> list[SequenceRef]:
+        return self._rels.sequence_breadcrumb
+
+    @sequence_breadcrumb.setter
+    def sequence_breadcrumb(self, value: list[SequenceRef]) -> None:
+        self._rels.sequence_breadcrumb = value
+
+    @property
+    def sequence_tree(self) -> list[SequenceTreeNode]:
+        return self._rels.sequence_tree
+
+    @sequence_tree.setter
+    def sequence_tree(self, value: list[SequenceTreeNode]) -> None:
+        self._rels.sequence_tree = value
+
+    # -- Parsing (static helpers) --------------------------------------------------
+
+    @staticmethod
+    def _build_meta(
+        abs_src_path: Path,
+        src_path: str,
+        cfg: ZettelkastenConfig,
+    ) -> ZettelMeta:
         try:
-            content = self.path.read_text(encoding="utf-8-sig", errors="strict")
+            content = abs_src_path.read_text(encoding="utf-8-sig", errors="strict")
         except OSError as err:
-            logger.exception("Failed to read file %s", self.path)
-            msg = f"File {self.path} read error"
+            logger.exception("Failed to read file %s", abs_src_path)
+            msg = f"File {abs_src_path} read error"
             raise ZettelFormatError(msg) from err
 
         header_text, body_text, has_opening = parse_frontmatter(content)
         if not header_text:
             if has_opening:
-                logger.error("Unclosed YAML header in file: %s", self.path)
+                logger.error("Unclosed YAML header in file: %s", abs_src_path)
                 msg = "Unclosed YAML header in file"
             else:
-                logger.debug("Skipping non-zettel file: %s", self.path)
+                logger.debug("Skipping non-zettel file: %s", abs_src_path)
                 msg = "No frontmatter found"
             raise ZettelFormatError(msg)
 
-        meta = self._parse_metadata(header_text)
-        self.meta = meta
-        self.body = body_text
+        meta = Zettel._parse_yaml(header_text, abs_src_path)
         body_lines = body_text.splitlines()
-        self._extract_links(body_lines)
-        self._set_core_metadata(meta, self._find_alt_title(body_lines))
-        self._set_optional_metadata(meta)
-        logger.debug(
-            "Initialized zettel %s (ID: %s, Title: %s)",
-            self.rel_path,
-            self.id,
-            self.title,
+        links, link_snippets = Zettel._extract_links(body_lines)
+        alt_title = Zettel._find_alt_title(body_lines)
+
+        zettel_id, title = Zettel._parse_core_metadata(
+            meta, alt_title, abs_src_path, cfg
+        )
+        last_update_date = Zettel._determine_last_update_date(
+            meta, zettel_id, abs_src_path, src_path, cfg
+        )
+        note_type, maturity, source, role, seq_parent = (
+            Zettel._parse_optional_metadata(meta, cfg)
         )
 
-    def _parse_metadata(self, header: str) -> dict:
-        """Parses YAML metadata from header text."""
+        logger.debug(
+            "Initialized zettel %s (ID: %s, Title: %s)",
+            src_path,
+            zettel_id,
+            title,
+        )
+
+        return ZettelMeta(
+            id=zettel_id,
+            title=title,
+            path=abs_src_path,
+            rel_path=src_path,
+            body=body_text,
+            last_update_date=last_update_date,
+            meta=meta,
+            links=links,
+            link_snippets=link_snippets,
+            note_type=note_type,
+            maturity=maturity,
+            source=source,
+            role=role,
+            sequence_parent_id=seq_parent,
+            _id_key=cfg.id_key,
+            _date_key=cfg.date_key,
+            _last_update_key=cfg.last_update_key,
+            _type_key=cfg.type_key,
+            _maturity_key=cfg.maturity_key,
+            _role_key=cfg.role_key,
+            _sequence_key=cfg.sequence_key,
+            _id_format=cfg.id_format,
+            _tz=cfg.timezone,
+            _date_format=cfg.date_format,
+        )
+
+    @staticmethod
+    def _parse_yaml(header: str, path: Path) -> dict:
         try:
             meta = yaml.safe_load(header) or {}
 
             if not isinstance(meta, dict):
                 logger.error(
-                    "Invalid YAML structure in %s: not a dictionary", self.path
+                    "Invalid YAML structure in %s: not a dictionary", path
                 )
                 msg = "Invalid YAML structure"
                 raise ZettelFormatError(msg)
@@ -203,44 +346,47 @@ class Zettel:
             logger.debug("Found metadata keys: %s", list(meta.keys()))
 
         except (ScannerError, AttributeError) as err:
-            logger.exception("Failed to parse YAML in %s", self.path)
-            msg = f"Invalid YAML in {self.path}"
+            logger.exception("Failed to parse YAML in %s", path)
+            msg = f"Invalid YAML in {path}"
             raise ZettelFormatError(msg) from err
         else:
             return meta
 
-    def _find_alt_title(self, body: list[str]) -> str:
-        """Finds alternative title from markdown heading."""
+    @staticmethod
+    def _find_alt_title(body: list[str]) -> str:
         for line in body:
             if line.lstrip().startswith("# "):
                 return line.strip()[2:]
         return ""
 
-    def _extract_links(self, body: list[str]) -> None:
-        """Extracts all wiki and markdown links from body."""
+    @staticmethod
+    def _extract_links(body: list[str]) -> tuple[list[str], dict[str, str]]:
+        links: list[str] = []
+        link_snippets: dict[str, str] = {}
         wiki_count = 0
         md_count = 0
 
-        for paragraph in self._split_paragraphs(body):
+        for paragraph in Zettel._split_paragraphs(body):
             for m in WIKI_LINK.finditer(paragraph):
                 url = m.group("url")
-                self.links.append(url)
+                links.append(url)
                 wiki_count += 1
-                if url not in self.link_snippets:
-                    self.link_snippets[url] = self._make_snippet(paragraph, m)
+                if url not in link_snippets:
+                    link_snippets[url] = Zettel._make_snippet(paragraph, m)
 
             for m in MD_LINK.finditer(paragraph):
                 url = m.group("url")
-                self.links.append(url)
+                links.append(url)
                 md_count += 1
-                if url not in self.link_snippets:
-                    self.link_snippets[url] = self._make_snippet(paragraph, m)
+                if url not in link_snippets:
+                    link_snippets[url] = Zettel._make_snippet(paragraph, m)
 
         logger.debug(
             "Extracted %d wiki links and %d markdown links",
             wiki_count,
             md_count,
         )
+        return links, link_snippets
 
     @staticmethod
     def _split_paragraphs(body: list[str]) -> list[str]:
@@ -265,7 +411,6 @@ class Zettel:
 
     @staticmethod
     def _make_snippet(paragraph: str, match: re.Match) -> str:
-        """Cleans link syntax and trims paragraph to ~200 chars around the link."""
         link_text = match.group("title") or match.group("url")
 
         def _strip_links(text: str) -> str:
@@ -279,100 +424,123 @@ class Zettel:
         clean = prefix + marked + suffix
         return truncate_around(clean, len(prefix), len(marked))
 
-    def _set_core_metadata(self, meta: dict, alt_title: str) -> None:
-        """Sets fundamental metadata fields."""
-        raw_id = meta.get(self._id_key)
+    @staticmethod
+    def _parse_core_metadata(
+        meta: dict,
+        alt_title: str,
+        path: Path,
+        cfg: ZettelkastenConfig,
+    ) -> tuple[int, str]:
+        raw_id = meta.get(cfg.id_key)
         if not raw_id:
-            logger.error("Missing required ID in zettel: %s", self.path)
+            logger.error("Missing required ID in zettel: %s", path)
             msg = "Missing zettel ID"
             raise ZettelFormatError(msg)
 
         try:
-            self.id = int(raw_id)
+            zettel_id = int(raw_id)
         except (ValueError, TypeError) as err:
-            logger.error("ID %r is not a valid integer in %s", raw_id, self.path)
+            logger.error("ID %r is not a valid integer in %s", raw_id, path)
             msg = f"ID {raw_id!r} is not a valid integer"
             raise ZettelFormatError(msg) from err
 
-        if not re.fullmatch(self._id_format, str(raw_id)):
+        if not re.fullmatch(cfg.id_format, str(raw_id)):
             logger.error(
                 "ID %r does not match format %s in %s",
                 raw_id,
-                self._id_format,
-                self.path,
+                cfg.id_format,
+                path,
             )
-            msg = f"ID {raw_id!r} does not match format {self._id_format}"
+            msg = f"ID {raw_id!r} does not match format {cfg.id_format}"
             raise ZettelFormatError(msg)
 
         if meta.get("title"):
-            self.title = meta["title"]
+            title = meta["title"]
         elif alt_title:
-            self.title = alt_title
+            title = alt_title
         else:
-            self.title = self._generate_filename_title()
+            title = Zettel._generate_filename_title(path, cfg.id_format)
 
-        self._determine_last_update_date(meta)
+        return zettel_id, title
 
-    def _set_optional_metadata(self, meta: dict) -> None:
-        raw_type = meta.get(self._type_key)
-        self.note_type = str(raw_type) if raw_type is not None else None
-        raw_maturity = meta.get(self._maturity_key)
-        self.maturity = str(raw_maturity) if raw_maturity is not None else None
+    @staticmethod
+    def _parse_optional_metadata(
+        meta: dict,
+        cfg: ZettelkastenConfig,
+    ) -> tuple[str | None, str | None, str | None, str | None, int | None]:
+        raw_type = meta.get(cfg.type_key)
+        note_type = str(raw_type) if raw_type is not None else None
+        raw_maturity = meta.get(cfg.maturity_key)
+        maturity = str(raw_maturity) if raw_maturity is not None else None
         raw_source = meta.get("source")
-        self.source = str(raw_source) if raw_source is not None else None
-        raw_role = meta.get(self._role_key)
-        self.role = str(raw_role) if raw_role is not None else None
-        raw_seq = meta.get(self._sequence_key)
-        self.sequence_parent_id = int(raw_seq) if raw_seq is not None else None
+        source = str(raw_source) if raw_source is not None else None
+        raw_role = meta.get(cfg.role_key)
+        role = str(raw_role) if raw_role is not None else None
+        raw_seq = meta.get(cfg.sequence_key)
+        seq_parent = int(raw_seq) if raw_seq is not None else None
+        return note_type, maturity, source, role, seq_parent
 
-    def _generate_filename_title(self) -> str:
-        """Generates title from filename using pattern matching."""
-        stem = self.path.stem
-        # Strip ID prefix from filename (remove anchors from id_format pattern)
-        id_prefix = self._id_format.lstrip("^").rstrip("$")
+    @staticmethod
+    def _generate_filename_title(path: Path, id_format: str) -> str:
+        stem = path.stem
+        id_prefix = id_format.lstrip("^").rstrip("$")
         clean_stem = re.sub(id_prefix, "", stem)
         return clean_stem.replace("_", " ").replace("-", " ").strip().capitalize()
 
-    def _determine_last_update_date(self, meta: dict) -> None:
-        """Determines most recent valid date from multiple sources."""
-        candidate_date = self._get_initial_candidate_date(meta)
-        revision_date = self._get_revision_date()
+    @staticmethod
+    def _determine_last_update_date(
+        meta: dict,
+        zettel_id: int,
+        path: Path,
+        rel_path: str,
+        cfg: ZettelkastenConfig,
+    ) -> str:
+        candidate_date = Zettel._get_initial_candidate_date(
+            meta, zettel_id, cfg
+        )
+        revision_date = Zettel._get_revision_date(path, cfg.timezone)
 
-        if self._last_update_key in meta:
+        if cfg.last_update_key in meta:
             final_date = candidate_date
         else:
-            final_date = max(candidate_date, revision_date, key=lambda d: d.timestamp())
+            final_date = max(
+                candidate_date, revision_date, key=lambda d: d.timestamp()
+            )
             logger.debug(
                 "Using later date between metadata (%s) and modification (%s) for %s",
                 candidate_date.strftime("%Y-%m-%d"),
                 revision_date.strftime("%Y-%m-%d"),
-                self.rel_path,
+                rel_path,
             )
 
-        self.last_update_date = final_date.strftime(self._date_format)
+        return final_date.strftime(cfg.date_format)
 
-    def _get_initial_candidate_date(self, meta: dict) -> datetime.datetime:
-        """Gets first valid date from metadata sources."""
-        for key in [self._last_update_key, self._date_key]:
-            if date := convert_string_to_date(meta.get(key, ""), tz=self._tz):
+    @staticmethod
+    def _get_initial_candidate_date(
+        meta: dict,
+        zettel_id: int,
+        cfg: ZettelkastenConfig,
+    ) -> datetime.datetime:
+        for key in [cfg.last_update_key, cfg.date_key]:
+            if date := convert_string_to_date(meta.get(key, ""), tz=cfg.timezone):
                 return date
 
-        id_date = convert_string_to_date(str(self.id), tz=self._tz)
+        id_date = convert_string_to_date(str(zettel_id), tz=cfg.timezone)
         if id_date:
             return id_date
 
-        return datetime.datetime.now(tz=self._tz)
+        return datetime.datetime.now(tz=cfg.timezone)
 
-    def _get_revision_date(self) -> datetime.datetime:
-        """Gets revision date from VCS or filesystem."""
-        if GitUtil.is_tracked(str(self.path)):
-            git_date = GitUtil.get_revision_date_for_file(str(self.path))
+    @staticmethod
+    def _get_revision_date(path: Path, tz: ZoneInfo) -> datetime.datetime:
+        if GitUtil.is_tracked(str(path)):
+            git_date = GitUtil.get_revision_date_for_file(str(path))
             if git_date is not None:
                 return git_date
 
-        return self._get_mtime()
+        return Zettel._get_mtime(path, tz)
 
-    def _get_mtime(self) -> datetime.datetime:
-        """Gets modification time from filesystem."""
-        st_mtime = self.path.stat().st_mtime
-        return datetime.datetime.fromtimestamp(st_mtime, tz=self._tz)
+    @staticmethod
+    def _get_mtime(path: Path, tz: ZoneInfo) -> datetime.datetime:
+        st_mtime = path.stat().st_mtime
+        return datetime.datetime.fromtimestamp(st_mtime, tz=tz)
