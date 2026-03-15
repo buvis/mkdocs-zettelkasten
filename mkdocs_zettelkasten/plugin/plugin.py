@@ -33,6 +33,9 @@ from mkdocs_zettelkasten.plugin.features.validation_feature import ValidationFea
 from mkdocs_zettelkasten.plugin.features.workflow_feature import WorkflowFeature
 from mkdocs_zettelkasten.plugin.pipeline_context import PipelineContext
 from mkdocs_zettelkasten.plugin.services.page_transformer import PageTransformer
+from mkdocs_zettelkasten.plugin.services.relationship_materializer import (
+    RelationshipMaterializer,
+)
 from mkdocs_zettelkasten.plugin.services.tags_service import TagsService
 from mkdocs_zettelkasten.plugin.services.zettel_service import ZettelService
 
@@ -181,6 +184,7 @@ class ZettelkastenPlugin(BasePlugin):
         for f in self._active_features:
             f.compute(self._ctx)
             f.export(self._ctx, files, config)
+        RelationshipMaterializer.materialize_all(self._ctx)
         self.logger.info("Processed %d files in on_files hook.", len(files))
 
     def on_page_markdown(
