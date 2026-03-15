@@ -141,8 +141,6 @@ class TestPageTransformer:
             caplog.at_level(logging.ERROR),
             pytest.raises(RuntimeError, match="feature boom"),
         ):
-            transformer.transform(
-                "original", page, config, files, svc, [feature], ctx
-            )
+            transformer.transform("original", page, config, files, svc, [feature], ctx)
 
         assert "my_feature" in caplog.text

@@ -500,9 +500,7 @@ class TestPageTransformerChain:
         page.next_page = None
 
         transformer = PageTransformer()
-        transformer.transform(
-            ZETTEL_SEQ_CHILD, page, config, files, svc, features, ctx
-        )
+        transformer.transform(ZETTEL_SEQ_CHILD, page, config, files, svc, features, ctx)
 
         zettel = page.meta["zettel"]
         assert zettel.sequence_parent is not None

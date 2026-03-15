@@ -42,6 +42,4 @@ class ValidationFeature:
         )
 
     def adapt_page(self, page: Page, ctx: PipelineContext) -> None:  # noqa: ARG002
-        page.meta["validation_issues"] = self._service.get_issues(
-            page.file.src_path
-        )
+        page.meta["validation_issues"] = self._service.get_issues(page.file.src_path)

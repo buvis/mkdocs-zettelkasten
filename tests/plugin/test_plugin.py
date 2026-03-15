@@ -136,7 +136,7 @@ class TestZettelkastenPlugin:
         mock_feature = MagicMock()
         mock_feature.name = "validation"
 
-        def _set_count(ctx, f, c):
+        def _set_count(_ctx, _f, c):
             c["extra"]["validation_issues_count"] = 7
 
         mock_feature.export.side_effect = _set_count
@@ -272,7 +272,7 @@ class TestZettelkastenPlugin:
         mock_feature = MagicMock()
         mock_feature.name = "graph"
 
-        def _export_graph(ctx, f, c):
+        def _export_graph(ctx, _f, _c):
             import json
 
             path = ctx.tags_folder / "graph.json"
@@ -302,7 +302,7 @@ class TestZettelkastenPlugin:
         mock_feature = MagicMock()
         mock_feature.name = "preview"
 
-        def _export_preview(ctx, f, c):
+        def _export_preview(ctx, _f, _c):
             import json
 
             path = ctx.tags_folder / "previews.json"
@@ -340,7 +340,7 @@ class TestZettelkastenPlugin:
         files = MagicMock()
 
         # Mock transform to call features like the real implementation does
-        def _mock_transform(md, pg, cfg, f, svc, features, ctx):
+        def _mock_transform(_md, pg, _cfg, _f, _svc, features, ctx):
             for feat in features:
                 feat.adapt_page(pg, ctx)
             return "md"
