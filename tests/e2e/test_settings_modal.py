@@ -92,3 +92,11 @@ def test_scheme_card_keyboard_activation(page, default_site):
     target.focus()
     target.press(" ")
     expect(target).to_have_class("scheme-card active")
+
+
+def test_scheme_grid_shows_fallback_on_fetch_failure(page, default_site):
+    page.route("**/registry.json", lambda route: route.abort())
+    page.goto(default_site)
+    _open_settings(page)
+    grid = page.locator("#scheme-grid")
+    expect(grid).to_have_text("Could not load color schemes.")

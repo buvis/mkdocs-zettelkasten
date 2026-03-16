@@ -9,7 +9,8 @@
         }).then((data) => {
             if (data) callback(data);
         }).catch(() => {
-            /* registry unavailable — keep current scheme */
+            const grid = document.getElementById('scheme-grid');
+            if (grid) grid.textContent = 'Could not load color schemes.';
         });
     };
 
