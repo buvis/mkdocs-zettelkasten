@@ -35,12 +35,16 @@ class ValidationFeature:
         )
 
     def export(self, ctx: PipelineContext, files: Files, config: MkDocsConfig) -> None:
-        self._service.output_folder = ctx.tags_folder
+        self._service.configure(ctx.tags_folder, ctx.site_dir)
         self._service.generate_report()
-        self._service.add_to_build(files, config)
+        self._service.add_to_build(files)
         config["extra"]["validation_issues_count"] = (
             self._service.total_actionable_issues()
         )
+
+    # adapt_page is intentionally non-trivial: validation issues are per-page
+    # data (including non-zettel files) that can't be pre-materialized onto
+    # Zettel entities in on_files.
 
     def adapt_page(self, page: Page, ctx: PipelineContext) -> None:  # noqa: ARG002
         page.meta["validation_issues"] = self._service.get_issues(page.file.src_path)

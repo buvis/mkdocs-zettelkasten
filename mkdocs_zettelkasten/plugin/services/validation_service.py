@@ -11,7 +11,6 @@ from zoneinfo import ZoneInfo
 from mkdocs_zettelkasten.plugin.constants import TYPE_FLEETING
 
 if TYPE_CHECKING:
-    from mkdocs.config.defaults import MkDocsConfig
     from mkdocs.structure.files import Files
 
     from mkdocs_zettelkasten.plugin.services.zettel_store import ZettelStore
@@ -36,7 +35,12 @@ class ValidationService:
         self.issues: dict[str, list[ValidationIssue]] = defaultdict(list)
         self.output_folder: Path = Path(".build")
         self.output_filename: Path = Path("validation.md")
+        self._site_dir: str | None = None
         self._timezone: ZoneInfo | None = None
+
+    def configure(self, output_folder: Path, site_dir: str) -> None:
+        self.output_folder = output_folder
+        self._site_dir = site_dir
 
     def validate(
         self,
@@ -100,14 +104,17 @@ class ValidationService:
         output_path = self.output_folder / self.output_filename
         output_path.write_text(content, encoding="utf-8")
 
-    def add_to_build(self, files: Files, config: MkDocsConfig) -> None:
+    def add_to_build(self, files: Files) -> None:
+        if self._site_dir is None:
+            msg = "configure() must be called before add_to_build()"
+            raise RuntimeError(msg)
         # deferred: avoid import-time mkdocs coupling
         from mkdocs.structure.files import File
 
         new_file = File(
             path=str(self.output_filename),
             src_dir=str(self.output_folder),
-            dest_dir=config["site_dir"],
+            dest_dir=self._site_dir,
             use_directory_urls=False,
         )
         files.append(new_file)

@@ -13,6 +13,24 @@ if TYPE_CHECKING:
 
 @runtime_checkable
 class Feature(Protocol):
+    """Uniform interface for all plugin features.
+
+    Lifecycle (called in on_files for each active feature, in dependency order):
+      1. compute(ctx) — populate ctx with computed data
+      2. export(ctx, files, config) — write artifacts; call service.configure()
+         here for file-generating services (sets output_folder, site_dir)
+      3. adapt_page(page, ctx) — per-page enrichment (most features: pass)
+
+    Services behind features fall into three categories:
+      - Static/pure (BacklinkProcessor, SequenceService, etc.) — no state
+      - Compute-only (SuggestionService, etc.) — params in, data out
+      - File-generating (OutlineService, WorkflowService, ValidationService) —
+        configure() in export(), then generate() + add_to_build()
+
+    Exception: ValidationFeature.adapt_page() sets per-page validation issues
+    (non-zettel files can't be pre-materialized onto Zettel entities).
+    """
+
     name: str
     depends_on: tuple[str, ...]
     extra_key: str | None

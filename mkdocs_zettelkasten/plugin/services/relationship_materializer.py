@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from mkdocs_zettelkasten.plugin.entities.zettel import (
         LinkRef,
         SequenceRef,
+        SequenceTreeNode,
         SuggestionRef,
         Zettel,
     )
@@ -127,16 +128,22 @@ def materialize_sequences(
         root_id = _find_sequence_root(zettel.id, store)
         _cur = zettel.id
         _sfx = file_suffix
-        tree_node = build_tree_node(
-            root_id,
-            sequence_children,
-            store.get_by_id,
-            lambda z, ch: {
+
+        def _make_tree_node(
+            z: Zettel, ch: list[SequenceTreeNode]
+        ) -> SequenceTreeNode:
+            return {
                 "url": _zettel_url(z.rel_path, _sfx),
                 "title": z.title,
                 "current": z.id == _cur,
                 "children": ch,
-            },
+            }
+
+        tree_node = build_tree_node(
+            root_id,
+            sequence_children,
+            store.get_by_id,
+            _make_tree_node,
             visited=set(),
         )
         zettel.sequence_tree = [tree_node] if tree_node else []

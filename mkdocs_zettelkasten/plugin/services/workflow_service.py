@@ -36,7 +36,6 @@ class WorkflowService:
     MAX_HOTSPOTS = 10
 
     def __init__(self) -> None:
-        self._timezone: ZoneInfo | None = None
         self.output_folder: Path | None = None
         self._site_dir: str | None = None
 
@@ -47,14 +46,15 @@ class WorkflowService:
         unlinked_mentions: dict[int, list[tuple[int, str]]],
         today: date | None = None,
         *,
+        timezone: ZoneInfo | None = None,
         fleeting_stale_days: int = 7,
         review_stale_days: int = 30,
     ) -> dict[str, Any]:
         if today is None:
-            if self._timezone is None:
-                msg = "configure() must be called before compute()"
+            if timezone is None:
+                msg = "compute() requires either today or timezone"
                 raise RuntimeError(msg)
-            today = datetime.now(tz=self._timezone).date()
+            today = datetime.now(tz=timezone).date()
         backlinked_ids, backlink_counts = self._resolve_backlinks(backlinks)
         return {
             "stats": self._stats(store, backlinks, unlinked_mentions),
@@ -67,8 +67,7 @@ class WorkflowService:
             ),
         }
 
-    def configure(self, timezone: ZoneInfo, output_folder: Path, site_dir: str) -> None:
-        self._timezone = timezone
+    def configure(self, output_folder: Path, site_dir: str) -> None:
         self.output_folder = output_folder
         self._site_dir = site_dir
 

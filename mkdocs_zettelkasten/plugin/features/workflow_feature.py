@@ -26,16 +26,17 @@ class WorkflowFeature:
         return config.workflow_enabled
 
     def compute(self, ctx: PipelineContext) -> None:
-        self._service.configure(ctx.config.timezone, ctx.tags_folder, ctx.site_dir)
         self._dashboard = self._service.compute(
             ctx.store,
             ctx.backlinks,
             ctx.unlinked_mentions,
+            timezone=ctx.config.timezone,
             fleeting_stale_days=ctx.config.fleeting_stale_days,
             review_stale_days=ctx.config.review_stale_days,
         )
 
-    def export(self, ctx: PipelineContext, files: Files, config: MkDocsConfig) -> None:  # noqa: ARG002
+    def export(self, ctx: PipelineContext, files: Files, config: MkDocsConfig) -> None:
+        self._service.configure(ctx.tags_folder, ctx.site_dir)
         self._service.generate(self._dashboard)
         self._service.add_to_build(files)
         config["extra"]["workflow_inbox_count"] = len(self._dashboard["inbox"])
