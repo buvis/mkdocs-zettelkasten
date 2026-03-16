@@ -54,6 +54,16 @@
     tooltip.className = 'graph-tooltip';
     container.appendChild(tooltip);
 
+    canvas.setAttribute('tabindex', '0');
+    canvas.setAttribute('role', 'application');
+    canvas.setAttribute('aria-label', 'Knowledge graph \u2013 use arrow keys to select nodes, Enter to navigate');
+
+    const srAnnounce = document.createElement('div');
+    srAnnounce.className = 'graph-sr-announcement';
+    srAnnounce.setAttribute('aria-live', 'polite');
+    srAnnounce.setAttribute('aria-atomic', 'true');
+    container.appendChild(srAnnounce);
+
     /* init node positions */
     for (let i = 0; i < nodes.length; i++) {
       const n = nodes[i];
@@ -86,6 +96,7 @@
     let panning = false;
     let panStart = { x: 0, y: 0, camX: 0, camY: 0 };
     let hovered = null;
+    let selected = null;
     let onFocusCb = null;
     let navTimeout = null;
 
@@ -291,9 +302,10 @@
         const p = toScreen(n.x, n.y);
         const isCurrent = currentId && n.id === currentId;
         const isHovered = n === hovered;
+        const isSelected = n === selected;
         const degScale = Math.min(1 + n._degree * 0.15, 3);
         const baseR = r * degScale;
-        const radius = isCurrent ? baseR * 1.5 : (isHovered ? baseR * 1.3 : baseR);
+        const radius = isCurrent ? baseR * 1.5 : ((isHovered || isSelected) ? baseR * 1.3 : baseR);
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
@@ -309,8 +321,19 @@
           ctx.stroke();
         }
 
-        /* label for hovered or current */
-        if (isHovered || isCurrent) {
+        /* keyboard selection ring */
+        if (isSelected) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, radius + 3, 0, Math.PI * 2);
+          ctx.strokeStyle = cssVar('--text-link') || '#0066cc';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([3, 2]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+
+        /* label for hovered, selected, or current */
+        if (isHovered || isSelected || isCurrent) {
           const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
           ctx.font = `${rootFontSize * 0.75}px sans-serif`;
           ctx.fillStyle = labelColor;
@@ -337,6 +360,7 @@
 
     /* mouse events */
     canvas.addEventListener('mousedown', (ev) => {
+      selected = null;
       const rect = canvas.getBoundingClientRect();
       const sx = ev.clientX - rect.left;
       const sy = ev.clientY - rect.top;
@@ -402,6 +426,47 @@
       const sy = ev.clientY - rect.top;
       const hit = nodeAt(sx, sy);
       if (hit && onFocusCb) onFocusCb(hit.id);
+    });
+
+    /* keyboard navigation */
+    canvas.addEventListener('keydown', (ev) => {
+      const visibleNodes = nodes.filter(n => n._visible);
+      if (visibleNodes.length === 0) return;
+
+      if (ev.key === 'ArrowRight' || ev.key === 'ArrowDown') {
+        ev.preventDefault();
+        const idx = selected ? visibleNodes.indexOf(selected) : -1;
+        selected = visibleNodes[(idx + 1) % visibleNodes.length];
+        cam.x = selected.x;
+        cam.y = selected.y;
+        srAnnounce.textContent = selected.title;
+        draw();
+      } else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowUp') {
+        ev.preventDefault();
+        const idx = selected ? visibleNodes.indexOf(selected) : 0;
+        selected = visibleNodes[(idx - 1 + visibleNodes.length) % visibleNodes.length];
+        cam.x = selected.x;
+        cam.y = selected.y;
+        srAnnounce.textContent = selected.title;
+        draw();
+      } else if (ev.key === 'Enter' && selected) {
+        ev.preventDefault();
+        const root = (typeof base_url !== 'undefined' && base_url) || '';
+        window.location.href = root + selected.url;
+      } else if (ev.key === 'Escape') {
+        ev.preventDefault();
+        selected = null;
+        srAnnounce.textContent = '';
+        draw();
+      } else if (ev.key === '+' || ev.key === '=') {
+        ev.preventDefault();
+        cam.zoom = Math.min(cam.zoom * 1.1, 10);
+        draw();
+      } else if (ev.key === '-') {
+        ev.preventDefault();
+        cam.zoom = Math.max(cam.zoom * 0.9, 0.1);
+        draw();
+      }
     });
 
     /* animation loop */
@@ -472,6 +537,7 @@
         window.removeEventListener('mouseup', onMouseUp);
         canvas.remove();
         tooltip.remove();
+        srAnnounce.remove();
       },
     };
   };
