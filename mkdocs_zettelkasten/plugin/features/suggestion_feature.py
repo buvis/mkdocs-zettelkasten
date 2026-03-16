@@ -27,7 +27,11 @@ class SuggestionFeature:
 
     def compute(self, ctx: PipelineContext) -> None:
         ctx.suggestions = self._service.compute(
-            ctx.store, ctx.tags_metadata, ctx.link_map.resolved
+            ctx.store,
+            ctx.tags_metadata,
+            ctx.link_map.resolved,
+            confidence_threshold=ctx.config.suggestion_confidence_threshold,
+            max_suggestions=ctx.config.max_suggestions,
         )
 
     def export(self, ctx: PipelineContext, files: Files, config: MkDocsConfig) -> None:

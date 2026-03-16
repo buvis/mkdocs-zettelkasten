@@ -1,7 +1,6 @@
 from unittest.mock import MagicMock
 
 from mkdocs_zettelkasten.plugin.adapters.transclusion import (
-    MAX_EMBED_DEPTH,
     _body_without_refs,
     _extract_section,
     adapt_transclusion,
@@ -207,9 +206,31 @@ class TestAdaptTransclusion:
         )
         assert "Inner content." in result
 
+    def test_custom_max_embed_depth(self) -> None:
+        """With max_embed_depth=1, a 3-level chain should only resolve 1 level deep."""
+        z1 = _make_zettel_mock(0, title="Z1", rel_path="z1.md", body="\n![[2]]\n")
+        z2 = _make_zettel_mock(0, title="Z2", rel_path="z2.md", body="\n![[3]]\n")
+        z3 = _make_zettel_mock(0, title="Z3", rel_path="z3.md", body="\nLeaf.\n")
+
+        def lookup(path: str):
+            if "1" in path:
+                return z1
+            if "2" in path:
+                return z2
+            if "3" in path:
+                return z3
+            return None
+
+        result = adapt_transclusion(
+            "![[1]]", lookup, site_url="https://example.com/", file_suffix=".md",
+            max_embed_depth=1,
+        )
+        assert "Z2" in result
+        assert "Leaf." not in result
+
     def test_max_embed_depth_stops_recursion(self) -> None:
-        # Create a chain of MAX_EMBED_DEPTH + 2 zettels
-        chain_len = MAX_EMBED_DEPTH + 2
+        # Create a chain of default max_embed_depth (5) + 2 zettels
+        chain_len = 5 + 2
         zettels = {}
         for i in range(1, chain_len + 1):
             body = f"\n![[{i + 1}]]\n" if i < chain_len else "\nLeaf content.\n"

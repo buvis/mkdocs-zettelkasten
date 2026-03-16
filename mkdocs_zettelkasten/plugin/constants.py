@@ -2,11 +2,6 @@
 
 from __future__ import annotations
 
-# -- Staleness thresholds (days) -----------------------------------------------
-
-FLEETING_STALE_DAYS = 7
-REVIEW_STALE_DAYS = 30
-
 # -- Note types ----------------------------------------------------------------
 
 TYPE_FLEETING = "fleeting"

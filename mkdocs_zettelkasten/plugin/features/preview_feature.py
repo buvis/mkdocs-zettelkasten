@@ -28,7 +28,9 @@ class PreviewFeature:
 
     def compute(self, ctx: PipelineContext) -> None:
         self._preview_data = self._exporter.export(
-            ctx.store, file_suffix=ctx.config.file_suffix
+            ctx.store,
+            file_suffix=ctx.config.file_suffix,
+            max_excerpt_length=ctx.config.max_excerpt_length,
         )
 
     def export(self, ctx: PipelineContext, files: Files, config: MkDocsConfig) -> None:

@@ -212,3 +212,41 @@ class TestSuggestionServiceWithExplicitResolvedLinks:
         result = self.service.compute(store, [], resolved)
         sugg_for_a = result.get(1, [])
         assert not any(s["target_id"] == 2 for s in sugg_for_a)
+
+
+class TestCustomThresholds:
+    def test_custom_confidence_threshold(self):
+        """Two notes share 1 link of 3 each -> Jaccard = 1/5 = 0.2.
+        Default threshold (0.3) excludes this. Lowering to 0.1 includes it."""
+        a = _make_zettel_mock(1, title="A", rel_path="a.md", links=["shared.md", "x.md", "y.md"])
+        b = _make_zettel_mock(2, title="B", rel_path="b.md", links=["shared.md", "p.md", "q.md"])
+        targets = [
+            _make_zettel_mock(i, title=f"T{i}", rel_path=f"{n}.md")
+            for i, n in enumerate(["shared", "x", "y", "p", "q"], start=10)
+        ]
+        store = ZettelStore([a, b, *targets])
+        service = SuggestionService()
+        result_default = service.compute(store, [], _resolve(store))
+        assert not any(s["target_id"] == 2 for s in result_default.get(1, []))
+        result_custom = service.compute(
+            store, [], _resolve(store), confidence_threshold=0.1
+        )
+        assert any(s["target_id"] == 2 for s in result_custom.get(1, []))
+
+    def test_custom_max_suggestions(self):
+        """With max_suggestions=2, only top 2 suggestions returned."""
+        main = _make_zettel_mock(1, title="Main", rel_path="main.md")
+        others = [
+            _make_zettel_mock(i, title=f"Other{i}", rel_path=f"other{i}.md")
+            for i in range(2, 9)
+        ]
+        store = ZettelStore([main, *others])
+        tags_meta = [{"src_path": "main.md", "tags": ["a", "b"]}]
+        tags_meta += [
+            {"src_path": f"other{i}.md", "tags": ["a", "b"]} for i in range(2, 9)
+        ]
+        service = SuggestionService()
+        result = service.compute(
+            store, tags_meta, _resolve(store), max_suggestions=2
+        )
+        assert len(result.get(1, [])) <= 2

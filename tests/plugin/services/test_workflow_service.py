@@ -435,3 +435,53 @@ class TestDstTransitionDay:
             mock_dt.side_effect = datetime
             result = svc.compute(store, {}, {})
         assert result["inbox"][0]["stale"] is True
+
+
+class TestCustomThresholds:
+    def setup_method(self):
+        self.service = WorkflowService()
+        self.service.configure(_UTC, Path(), ".")
+
+    def test_custom_fleeting_stale_days(self):
+        """With stale_days=1, a 2-day-old fleeting is stale."""
+        z = _make_zettel_mock(
+            20260225000000, title="Recent", rel_path="r.md", note_type="fleeting"
+        )
+        store = ZettelStore([z])
+        result = self.service.compute(
+            store, {}, {}, today=TODAY, fleeting_stale_days=1
+        )
+        assert result["inbox"][0]["stale"] is True
+
+    def test_custom_fleeting_stale_days_not_stale(self):
+        """With stale_days=365, a 26-day-old fleeting is not stale."""
+        z = _make_zettel_mock(
+            20260201000000, title="Old", rel_path="o.md", note_type="fleeting"
+        )
+        store = ZettelStore([z])
+        result = self.service.compute(
+            store, {}, {}, today=TODAY, fleeting_stale_days=365
+        )
+        assert result["inbox"][0]["stale"] is False
+
+    def test_custom_review_stale_days(self):
+        """With review_stale_days=5, a 10-day-old developing note is in queue."""
+        z = _make_zettel_mock(
+            20260217000000, title="Dev", rel_path="d.md", maturity="developing"
+        )
+        store = ZettelStore([z])
+        result = self.service.compute(
+            store, {}, {}, today=TODAY, review_stale_days=5
+        )
+        assert len(result["review_queue"]) == 1
+
+    def test_custom_review_stale_days_excludes_recent(self):
+        """With review_stale_days=365, a 27-day-old developing note is not in queue."""
+        z = _make_zettel_mock(
+            20260201000000, title="Dev", rel_path="d.md", maturity="developing"
+        )
+        store = ZettelStore([z])
+        result = self.service.compute(
+            store, {}, {}, today=TODAY, review_stale_days=365
+        )
+        assert len(result["review_queue"]) == 0

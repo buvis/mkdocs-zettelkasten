@@ -289,3 +289,25 @@ class TestUnlinkedMentionDetection:
             store, link_map.resolved
         )
         assert 1 in mentions
+
+    def test_custom_min_title_length(self) -> None:
+        """With min_title_len=5, a 3-char title 'API' should be skipped."""
+        target = _make_zettel_mock(1, title="API", body="Body.")
+        source = _make_zettel_mock(2, title="Other", body="The API is fast.")
+        store = _make_store([target, source])
+
+        mentions = UnlinkedMentionService().find_unlinked_mentions(
+            store, _empty_resolved([target, source]), min_title_len=5
+        )
+        assert 1 not in mentions
+
+    def test_custom_min_title_length_includes_short(self) -> None:
+        """With min_title_len=2, a 2-char title 'AI' should be matched."""
+        target = _make_zettel_mock(1, title="AI", body="Body.")
+        source = _make_zettel_mock(2, title="Other", body="AI is discussed here.")
+        store = _make_store([target, source])
+
+        mentions = UnlinkedMentionService().find_unlinked_mentions(
+            store, _empty_resolved([target, source]), min_title_len=2
+        )
+        assert 1 in mentions

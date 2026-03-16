@@ -172,3 +172,15 @@ class TestPreviewExporter:
         result = self.exporter.export(store)
 
         assert result["11"]["url"] == "notes/nested/url/"
+
+    def test_custom_excerpt_length(self) -> None:
+        paragraph = "alpha beta gamma delta epsilon zeta eta theta iota kappa"
+        store = ZettelStore(
+            [_make_zettel_mock(1, title="Short", rel_path="s.md", body=f"\n\n{paragraph}")]
+        )
+
+        result = self.exporter.export(store, max_excerpt_length=20)
+        excerpt = result["1"]["excerpt"]
+
+        assert excerpt.endswith("\u2026")
+        assert len(excerpt) <= 21

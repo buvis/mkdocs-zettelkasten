@@ -82,6 +82,7 @@ class PageTransformer:
             strip_heading=config.get("extra", {}).get(
                 "transclusion_strip_heading", True
             ),
+            max_embed_depth=ctx.config.max_embed_depth,
         )
         # Step 4 — requires: transclusions resolved (step 3)
         markdown = _run(

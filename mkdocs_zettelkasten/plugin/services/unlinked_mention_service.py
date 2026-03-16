@@ -12,7 +12,6 @@ logger = logging.getLogger(
     __name__.replace("mkdocs_zettelkasten.plugin.", "mkdocs.plugins.zettelkasten.")
 )
 
-_MIN_TITLE_LEN = 3
 _FENCED_CODE = re.compile(r"```.*?```", re.DOTALL)
 _INLINE_CODE = re.compile(r"`[^`]+`")
 
@@ -24,6 +23,8 @@ class UnlinkedMentionService:
         self,
         store,
         resolved_links: dict[int, set[int]],
+        *,
+        min_title_len: int = 3,
     ) -> dict[int, list[tuple[int, str]]]:
         """Return {target_id: [(source_id, snippet), ...]} for unlinked mentions."""
         unlinked_mentions: dict[int, list[tuple[int, str]]] = defaultdict(list)
@@ -33,7 +34,7 @@ class UnlinkedMentionService:
             id_str = str(target.id)
             title_pat = (
                 re.compile(r"\b" + re.escape(title) + r"\b", re.IGNORECASE)
-                if len(title) >= _MIN_TITLE_LEN
+                if len(title) >= min_title_len
                 else None
             )
             id_pat = re.compile(r"\b" + re.escape(id_str) + r"\b")

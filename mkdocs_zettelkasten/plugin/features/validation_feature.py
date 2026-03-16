@@ -31,6 +31,7 @@ class ValidationFeature:
             ctx.invalid_files,
             ctx.link_map.broken,
             timezone=ctx.config.timezone,
+            fleeting_stale_days=ctx.config.fleeting_stale_days,
         )
 
     def export(self, ctx: PipelineContext, files: Files, config: MkDocsConfig) -> None:

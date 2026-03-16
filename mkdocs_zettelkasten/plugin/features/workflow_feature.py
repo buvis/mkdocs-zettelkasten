@@ -28,7 +28,11 @@ class WorkflowFeature:
     def compute(self, ctx: PipelineContext) -> None:
         self._service.configure(ctx.config.timezone, ctx.tags_folder, ctx.site_dir)
         self._dashboard = self._service.compute(
-            ctx.store, ctx.backlinks, ctx.unlinked_mentions
+            ctx.store,
+            ctx.backlinks,
+            ctx.unlinked_mentions,
+            fleeting_stale_days=ctx.config.fleeting_stale_days,
+            review_stale_days=ctx.config.review_stale_days,
         )
 
     def export(self, ctx: PipelineContext, files: Files, config: MkDocsConfig) -> None:  # noqa: ARG002

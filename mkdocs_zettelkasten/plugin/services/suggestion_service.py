@@ -9,16 +9,18 @@ if TYPE_CHECKING:
 class SuggestionService:
     """Computes link suggestions based on shared links and shared tags."""
 
-    CONFIDENCE_THRESHOLD = 0.3
-    MAX_SUGGESTIONS = 5
-
     def compute(
         self,
         store: ZettelStore,
         tags_metadata: list[dict[str, Any]],
         resolved_links: dict[int, set[int]],
+        *,
+        confidence_threshold: float = 0.3,
+        max_suggestions: int = 5,
     ) -> dict[int, list[dict]]:
         """Return {zettel_id: [{target_id, reason, confidence}, ...]}."""
+        self._confidence_threshold = confidence_threshold
+        self._max_suggestions = max_suggestions
         link_sets = {
             zid: {tid for tid in targets if tid != zid}
             for zid, targets in resolved_links.items()
@@ -88,7 +90,7 @@ class SuggestionService:
                     continue
                 union = z_set | other_set
                 jaccard = len(intersection) / len(union)
-                if jaccard < self.CONFIDENCE_THRESHOLD:
+                if jaccard < self._confidence_threshold:
                     continue
                 n = len(intersection)
                 reason = f"{n} {reason_label}{'s' if n != 1 else ''}"
@@ -123,5 +125,5 @@ class SuggestionService:
             sorted_suggs = sorted(
                 best.values(), key=lambda x: x["confidence"], reverse=True
             )
-            merged[zid] = sorted_suggs[: self.MAX_SUGGESTIONS]
+            merged[zid] = sorted_suggs[: self._max_suggestions]
         return merged

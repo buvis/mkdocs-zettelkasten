@@ -236,3 +236,26 @@ class TestValidationService:
         assert report.exists()
         content = report.read_text()
         assert "Validation Report" in content
+
+    def test_custom_fleeting_stale_days(self, tmp_path: Path) -> None:
+        z1 = self._make_zettel(20200101120000, "a.md", note_type="fleeting")
+        store = self._make_store([z1])
+
+        vs = ValidationService()
+        vs.output_folder = tmp_path
+        vs.validate(store, {"a.md": [z1]}, [], [], fleeting_stale_days=9999)
+
+        stale = [i for i in vs.get_issues("a.md") if i.check == "stale_fleeting"]
+        assert len(stale) == 0
+
+    def test_stale_fleeting_message_uses_custom_days(self, tmp_path: Path) -> None:
+        z1 = self._make_zettel(20200101120000, "a.md", note_type="fleeting")
+        store = self._make_store([z1])
+
+        vs = ValidationService()
+        vs.output_folder = tmp_path
+        vs.validate(store, {"a.md": [z1]}, [], [], fleeting_stale_days=14)
+
+        stale = [i for i in vs.get_issues("a.md") if i.check == "stale_fleeting"]
+        assert len(stale) == 1
+        assert "14 days" in stale[0].message

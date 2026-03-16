@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar
 from zoneinfo import ZoneInfo
 
-from mkdocs_zettelkasten.plugin.constants import FLEETING_STALE_DAYS, TYPE_FLEETING
+from mkdocs_zettelkasten.plugin.constants import TYPE_FLEETING
 
 if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
@@ -46,8 +46,10 @@ class ValidationService:
         broken_links: list[tuple[str, str]],
         *,
         timezone: ZoneInfo | None = None,
+        fleeting_stale_days: int = 7,
     ) -> None:
         self.issues.clear()
+        self._fleeting_stale_days = fleeting_stale_days
         if timezone is not None:
             self._timezone = timezone
         self._check_invalid_files(invalid_files)
@@ -153,7 +155,7 @@ class ValidationService:
 
         tz = self._timezone or ZoneInfo("UTC")
         cutoff = datetime.datetime.now(tz=tz) - datetime.timedelta(
-            days=FLEETING_STALE_DAYS
+            days=self._fleeting_stale_days
         )
         for zettel in store.zettels:
             if zettel.note_type != TYPE_FLEETING:
@@ -165,7 +167,7 @@ class ValidationService:
                         path=zettel.rel_path,
                         check="stale_fleeting",
                         severity="info",
-                        message=f"Fleeting note older than {FLEETING_STALE_DAYS} days",
+                        message=f"Fleeting note older than {self._fleeting_stale_days} days",
                     )
                 )
 

@@ -28,7 +28,9 @@ class UnlinkedMentionFeature:
 
     def compute(self, ctx: PipelineContext) -> None:
         ctx.unlinked_mentions = self._service.find_unlinked_mentions(
-            ctx.store, ctx.link_map.resolved
+            ctx.store,
+            ctx.link_map.resolved,
+            min_title_len=ctx.config.min_mention_title_length,
         )
 
     def export(self, ctx: PipelineContext, files: Files, config: MkDocsConfig) -> None:

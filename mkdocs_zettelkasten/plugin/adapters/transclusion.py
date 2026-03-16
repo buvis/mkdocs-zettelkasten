@@ -55,8 +55,6 @@ def _extract_section(body: str, section_name: str) -> str | None:
     return None
 
 
-MAX_EMBED_DEPTH = 5
-
 _H1_RE = re.compile(r"^#\s+.+\n?", re.MULTILINE)
 
 
@@ -67,6 +65,7 @@ def adapt_transclusion(
     file_suffix: str = ".md",
     *,
     strip_heading: bool = True,
+    max_embed_depth: int = 5,
     _depth: int = 0,
     _embed_stack: frozenset[str] | None = None,
 ) -> str:
@@ -82,6 +81,7 @@ def adapt_transclusion(
                 site_url,
                 file_suffix,
                 strip_heading,
+                max_embed_depth,
                 _depth,
                 _embed_stack,
             ),
@@ -97,6 +97,7 @@ def _resolve_embed(
     site_url: str,
     file_suffix: str,
     strip_heading: bool,  # noqa: FBT001
+    max_embed_depth: int,
     depth: int,
     embed_stack: frozenset[str],
 ) -> str:
@@ -129,13 +130,14 @@ def _resolve_embed(
     elif strip_heading:
         body = _H1_RE.sub("", body, count=1)
 
-    if depth < MAX_EMBED_DEPTH:
+    if depth < max_embed_depth:
         body = adapt_transclusion(
             body,
             zettel_lookup,
             site_url,
             file_suffix,
             strip_heading=strip_heading,
+            max_embed_depth=max_embed_depth,
             _depth=depth + 1,
             _embed_stack=embed_stack | {zettel_key},
         )

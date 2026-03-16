@@ -8,11 +8,9 @@ if TYPE_CHECKING:
     from zoneinfo import ZoneInfo
 
 from mkdocs_zettelkasten.plugin.constants import (
-    FLEETING_STALE_DAYS,
     MATURITY_DEVELOPING,
     MATURITY_DRAFT,
     MATURITY_EVERGREEN,
-    REVIEW_STALE_DAYS,
     TYPE_FLEETING,
     TYPE_LITERATURE,
     TYPE_PERMANENT,
@@ -48,6 +46,9 @@ class WorkflowService:
         backlinks: dict[int, list],
         unlinked_mentions: dict[int, list[tuple[int, str]]],
         today: date | None = None,
+        *,
+        fleeting_stale_days: int = 7,
+        review_stale_days: int = 30,
     ) -> dict[str, Any]:
         if today is None:
             if self._timezone is None:
@@ -57,9 +58,9 @@ class WorkflowService:
         backlinked_ids, backlink_counts = self._resolve_backlinks(backlinks)
         return {
             "stats": self._stats(store, backlinks, unlinked_mentions),
-            "inbox": self._inbox(store, today),
+            "inbox": self._inbox(store, today, fleeting_stale_days),
             "needs_connection": self._needs_connection(store),
-            "review_queue": self._review_queue(store, today),
+            "review_queue": self._review_queue(store, today, review_stale_days),
             "orphans": self._orphans(store, backlinked_ids),
             "mention_hotspots": self._unlinked_mention_hotspots(
                 store, unlinked_mentions, backlink_counts
@@ -133,7 +134,7 @@ class WorkflowService:
             "total_unlinked_mentions": sum(len(v) for v in unlinked_mentions.values()),
         }
 
-    def _inbox(self, store, today):
+    def _inbox(self, store, today, fleeting_stale_days):
         items = []
         for z in store.zettels:
             if z.note_type != TYPE_FLEETING:
@@ -149,7 +150,7 @@ class WorkflowService:
                     "title": z.title,
                     "rel_path": z.rel_path,
                     "age_days": age,
-                    "stale": age > FLEETING_STALE_DAYS,
+                    "stale": age > fleeting_stale_days,
                 }
             )
         return sorted(items, key=lambda x: x["id"], reverse=True)
@@ -171,7 +172,7 @@ class WorkflowService:
             )
         return sorted(items, key=lambda x: x["link_count"])
 
-    def _review_queue(self, store, today):
+    def _review_queue(self, store, today, review_stale_days):
         items = []
         for z in store.zettels:
             if z.maturity != MATURITY_DEVELOPING:
@@ -181,7 +182,7 @@ class WorkflowService:
             if not created:
                 continue
             age = (today - created).days
-            if age <= REVIEW_STALE_DAYS:
+            if age <= review_stale_days:
                 continue
             items.append(
                 {
