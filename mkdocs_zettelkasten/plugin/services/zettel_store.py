@@ -33,16 +33,22 @@ class ZettelStore:
 
     def _rebuild_indexes(self) -> None:
         """Maintain internal indexes for fast lookups."""
-        self._path_index: dict[Path, Zettel] = {z.path: z for z in self._zettels}
-        self._suffix_index: dict[tuple[str, ...], Zettel] = {}
+        path_index: dict[Path, Zettel] = {}
+        id_index: dict[int, Zettel] = {}
+        suffix_index: dict[tuple[str, ...], Zettel] = {}
+
         for z in self._zettels:
-            stem = z.path.with_suffix("")
-            parts = stem.parts
+            path_index[z.path] = z
+            id_index[z.id] = z
+            parts = z.path.with_suffix("").parts
             for i in range(len(parts)):
                 key = parts[i:]
-                if key not in self._suffix_index:
-                    self._suffix_index[key] = z
-        self._id_index: dict[int, Zettel] = {z.id: z for z in self._zettels}
+                if key not in suffix_index:
+                    suffix_index[key] = z
+
+        self._path_index = path_index
+        self._id_index = id_index
+        self._suffix_index = suffix_index
 
     def get_by_path(self, path: Path) -> Zettel | None:
         """Retrieve zettel by filesystem path."""
