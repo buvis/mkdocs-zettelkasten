@@ -18,14 +18,14 @@ from mkdocs_zettelkasten.plugin.features.sequence_feature import SequenceFeature
 from mkdocs_zettelkasten.plugin.features.unlinked_mention_feature import (
     UnlinkedMentionFeature,
 )
-from mkdocs_zettelkasten.plugin.services.relationship_materializer import (
-    RelationshipMaterializer,
-)
 from mkdocs_zettelkasten.plugin.pipeline_context import PipelineContext
 from mkdocs_zettelkasten.plugin.services.backlink_processor import BacklinkProcessor
 from mkdocs_zettelkasten.plugin.services.graph_exporter import GraphExporter
 from mkdocs_zettelkasten.plugin.services.page_transformer import PageTransformer
 from mkdocs_zettelkasten.plugin.services.preview_exporter import PreviewExporter
+from mkdocs_zettelkasten.plugin.services.relationship_materializer import (
+    RelationshipMaterializer,
+)
 from mkdocs_zettelkasten.plugin.services.sequence_service import SequenceService
 from mkdocs_zettelkasten.plugin.services.suggestion_service import SuggestionService
 from mkdocs_zettelkasten.plugin.services.unlinked_mention_service import (
