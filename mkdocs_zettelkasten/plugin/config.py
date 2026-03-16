@@ -33,3 +33,10 @@ class ZettelkastenConfig:
     workflow_enabled: bool = False
     transclusion_strip_heading: bool = True
     minify_js: bool = True
+    fleeting_stale_days: int = 7
+    review_stale_days: int = 30
+    max_suggestions: int = 5
+    suggestion_confidence_threshold: float = 0.3
+    max_excerpt_length: int = 200
+    max_embed_depth: int = 5
+    min_mention_title_length: int = 3

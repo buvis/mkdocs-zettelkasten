@@ -40,6 +40,13 @@ class TestZettelkastenPlugin:
             "workflow_enabled": False,
             "transclusion_strip_heading": True,
             "minify_js": True,
+            "fleeting_stale_days": 7,
+            "review_stale_days": 30,
+            "max_suggestions": 5,
+            "suggestion_confidence_threshold": 0.3,
+            "max_excerpt_length": 200,
+            "max_embed_depth": 5,
+            "min_mention_title_length": 3,
         }
         return plugin
 

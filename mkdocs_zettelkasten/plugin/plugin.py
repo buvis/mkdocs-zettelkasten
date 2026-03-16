@@ -87,6 +87,13 @@ class ZettelkastenPlugin(BasePlugin):
         ("workflow_enabled", config_options.Type(bool, default=False)),
         ("transclusion_strip_heading", config_options.Type(bool, default=True)),
         ("minify_js", config_options.Type(bool, default=True)),
+        ("fleeting_stale_days", config_options.Type(int, default=7)),
+        ("review_stale_days", config_options.Type(int, default=30)),
+        ("max_suggestions", config_options.Type(int, default=5)),
+        ("suggestion_confidence_threshold", config_options.Type(float, default=0.3)),
+        ("max_excerpt_length", config_options.Type(int, default=200)),
+        ("max_embed_depth", config_options.Type(int, default=5)),
+        ("min_mention_title_length", config_options.Type(int, default=3)),
     )
 
     def __init__(self) -> None:
