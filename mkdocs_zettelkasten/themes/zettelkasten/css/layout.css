@@ -996,3 +996,8 @@ body .navbar.sidebar-mode .navbar-collapse {
     justify-content: flex-start;
   }
 }
+
+/* Keyboard shortcuts modal */
+#mkdocs_keyboard_modal .table th:first-child {
+  width: 20%;
+}
