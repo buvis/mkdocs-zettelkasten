@@ -19,6 +19,24 @@
   display: block;
 }
 
+#graph-container canvas:focus-visible,
+#local-graph-container canvas:focus-visible {
+  outline: 2px solid var(--text-link);
+  outline-offset: -2px;
+}
+
+.graph-sr-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .graph-tooltip {
   position: absolute;
   pointer-events: none;
