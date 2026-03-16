@@ -82,7 +82,7 @@
   const updateForgetButton = () => {
     const btn = document.getElementById('zettel-forget-token-btn');
     if (!btn) return;
-    btn.style.display = cachedToken ? 'inline-block' : 'none';
+    btn.classList.toggle('hidden', !cachedToken);
   };
 
   const showToast = (message, type) => {
@@ -170,8 +170,8 @@
         currentSha = data.sha;
         const content = base64ToUtf8(data.content);
 
-        document.querySelector('.file-body').style.display = 'none';
-        document.getElementById('zettel-editor').style.display = 'block';
+        document.querySelector('.file-body').classList.add('hidden');
+        document.getElementById('zettel-editor').classList.remove('hidden');
 
         const textarea = document.getElementById('zettel-editor-textarea');
         textarea.value = content;
@@ -197,9 +197,9 @@
           ],
         });
 
-        document.getElementById('zettel-edit-btn').style.display = 'none';
-        document.getElementById('zettel-save-btn').style.display = 'inline-block';
-        document.getElementById('zettel-cancel-btn').style.display = 'inline-block';
+        document.getElementById('zettel-edit-btn').classList.add('hidden');
+        document.getElementById('zettel-save-btn').classList.remove('hidden');
+        document.getElementById('zettel-cancel-btn').classList.remove('hidden');
       })
       .catch((err) => {
         if (err.message === 'cancelled') return;
@@ -232,11 +232,11 @@
       editor.toTextArea();
       editor = null;
     }
-    document.querySelector('.file-body').style.display = 'block';
-    document.getElementById('zettel-editor').style.display = 'none';
-    document.getElementById('zettel-edit-btn').style.display = 'inline-block';
-    document.getElementById('zettel-save-btn').style.display = 'none';
-    document.getElementById('zettel-cancel-btn').style.display = 'none';
+    document.querySelector('.file-body').classList.remove('hidden');
+    document.getElementById('zettel-editor').classList.add('hidden');
+    document.getElementById('zettel-edit-btn').classList.remove('hidden');
+    document.getElementById('zettel-save-btn').classList.add('hidden');
+    document.getElementById('zettel-cancel-btn').classList.add('hidden');
   };
 
   let onOutsideListener = null;
