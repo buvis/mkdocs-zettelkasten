@@ -777,7 +777,7 @@ pre:has(> code):hover .copy-btn {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 #zettel-editor {

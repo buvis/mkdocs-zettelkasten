@@ -26,8 +26,8 @@ def test_cancel_button_restores_body(page, editor_site):
 
     # simulate editor-open state: show cancel, hide edit
     page.evaluate("""() => {
-        document.getElementById('zettel-edit-btn').style.display = 'none';
-        document.getElementById('zettel-cancel-btn').style.display = 'inline-block';
+        document.getElementById('zettel-edit-btn').classList.add('hidden');
+        document.getElementById('zettel-cancel-btn').classList.remove('hidden');
     }""")
     page.click("#zettel-cancel-btn")
     page.locator("#zettel-edit-btn").wait_for(state="visible")
