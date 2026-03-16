@@ -113,3 +113,45 @@ class TestGraphToolbar:
         before_num = int(count_before.split("/")[0])
         after_num = int(count_after.split("/")[0])
         assert after_num < before_num
+
+
+class TestGraphKeyboardNav:
+    def test_canvas_is_focusable(self, page, graph_site):
+        page.goto(f"{graph_site}/graph.html")
+        canvas = page.locator("#graph-container canvas")
+        canvas.wait_for(state="attached", timeout=5000)
+        assert canvas.get_attribute("tabindex") == "0"
+
+    def test_arrow_right_selects_node(self, page, graph_site):
+        page.goto(f"{graph_site}/graph.html")
+        canvas = page.locator("#graph-container canvas")
+        canvas.wait_for(state="attached", timeout=5000)
+        canvas.focus()
+        canvas.press("ArrowRight")
+        announcement = page.locator(".graph-sr-announcement")
+        assert announcement.inner_text() != ""
+
+    def test_escape_deselects(self, page, graph_site):
+        page.goto(f"{graph_site}/graph.html")
+        canvas = page.locator("#graph-container canvas")
+        canvas.wait_for(state="attached", timeout=5000)
+        canvas.focus()
+        canvas.press("ArrowRight")
+        announcement = page.locator(".graph-sr-announcement")
+        assert announcement.inner_text() != ""
+        canvas.press("Escape")
+        assert announcement.inner_text() == ""
+
+    def test_canvas_has_aria_label(self, page, graph_site):
+        page.goto(f"{graph_site}/graph.html")
+        canvas = page.locator("#graph-container canvas")
+        canvas.wait_for(state="attached", timeout=5000)
+        label = canvas.get_attribute("aria-label")
+        assert label is not None
+        assert "arrow keys" in label
+
+    def test_local_graph_canvas_focusable(self, page, graph_site):
+        page.goto(f"{graph_site}/{ZETTEL_INSTALL}/")
+        canvas = page.locator("#local-graph-container canvas")
+        canvas.wait_for(state="attached", timeout=5000)
+        assert canvas.get_attribute("tabindex") == "0"
