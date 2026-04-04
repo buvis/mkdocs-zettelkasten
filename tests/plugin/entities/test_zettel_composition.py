@@ -130,9 +130,7 @@ class TestZettelFacade:
         with pytest.raises(AttributeError):
             zettel.title = "Changed"  # type: ignore[misc]
 
-    def test_relationship_properties_writable(
-        self, sample_meta: ZettelMeta
-    ) -> None:
+    def test_relationship_properties_writable(self, sample_meta: ZettelMeta) -> None:
         zettel = Zettel.from_parts(sample_meta)
 
         # List mutation via append

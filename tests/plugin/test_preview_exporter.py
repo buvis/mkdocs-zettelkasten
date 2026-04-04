@@ -176,7 +176,11 @@ class TestPreviewExporter:
     def test_custom_excerpt_length(self) -> None:
         paragraph = "alpha beta gamma delta epsilon zeta eta theta iota kappa"
         store = ZettelStore(
-            [_make_zettel_mock(1, title="Short", rel_path="s.md", body=f"\n\n{paragraph}")]
+            [
+                _make_zettel_mock(
+                    1, title="Short", rel_path="s.md", body=f"\n\n{paragraph}"
+                )
+            ]
         )
 
         result = self.exporter.export(store, max_excerpt_length=20)

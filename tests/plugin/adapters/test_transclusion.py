@@ -222,7 +222,10 @@ class TestAdaptTransclusion:
             return None
 
         result = adapt_transclusion(
-            "![[1]]", lookup, site_url="https://example.com/", file_suffix=".md",
+            "![[1]]",
+            lookup,
+            site_url="https://example.com/",
+            file_suffix=".md",
             max_embed_depth=1,
         )
         assert "Z2" in result

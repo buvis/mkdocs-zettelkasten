@@ -432,9 +432,7 @@ class TestDstTransitionDay:
         ) as mock_dt:
             mock_dt.now = _patched_now(utc_instant)
             mock_dt.side_effect = datetime
-            result = svc.compute(
-                store, {}, {}, timezone=ZoneInfo("America/New_York")
-            )
+            result = svc.compute(store, {}, {}, timezone=ZoneInfo("America/New_York"))
         assert result["inbox"][0]["stale"] is True
 
 
@@ -449,9 +447,7 @@ class TestCustomThresholds:
             20260225000000, title="Recent", rel_path="r.md", note_type="fleeting"
         )
         store = ZettelStore([z])
-        result = self.service.compute(
-            store, {}, {}, today=TODAY, fleeting_stale_days=1
-        )
+        result = self.service.compute(store, {}, {}, today=TODAY, fleeting_stale_days=1)
         assert result["inbox"][0]["stale"] is True
 
     def test_custom_fleeting_stale_days_not_stale(self):
@@ -471,9 +467,7 @@ class TestCustomThresholds:
             20260217000000, title="Dev", rel_path="d.md", maturity="developing"
         )
         store = ZettelStore([z])
-        result = self.service.compute(
-            store, {}, {}, today=TODAY, review_stale_days=5
-        )
+        result = self.service.compute(store, {}, {}, today=TODAY, review_stale_days=5)
         assert len(result["review_queue"]) == 1
 
     def test_custom_review_stale_days_excludes_recent(self):
@@ -482,7 +476,5 @@ class TestCustomThresholds:
             20260201000000, title="Dev", rel_path="d.md", maturity="developing"
         )
         store = ZettelStore([z])
-        result = self.service.compute(
-            store, {}, {}, today=TODAY, review_stale_days=365
-        )
+        result = self.service.compute(store, {}, {}, today=TODAY, review_stale_days=365)
         assert len(result["review_queue"]) == 0

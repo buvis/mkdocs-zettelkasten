@@ -25,9 +25,7 @@ def _zettel_url(rel_path: str, file_suffix: str) -> str:
     return rel_path.removesuffix(file_suffix) + "/"
 
 
-def _find_snippet(
-    source: Zettel, target: Zettel, file_suffix: str
-) -> str | None:
+def _find_snippet(source: Zettel, target: Zettel, file_suffix: str) -> str | None:
     candidates = [
         str(target.id),
         target.rel_path,
@@ -129,9 +127,7 @@ def materialize_sequences(
         _cur = zettel.id
         _sfx = file_suffix
 
-        def _make_tree_node(
-            z: Zettel, ch: list[SequenceTreeNode]
-        ) -> SequenceTreeNode:
+        def _make_tree_node(z: Zettel, ch: list[SequenceTreeNode]) -> SequenceTreeNode:
             return {
                 "url": _zettel_url(z.rel_path, _sfx),
                 "title": z.title,
@@ -221,6 +217,4 @@ class RelationshipMaterializer:
                 zettel, ctx.unlinked_mentions, store, file_suffix
             )
             materialize_suggestions(zettel, ctx.suggestions, store, file_suffix)
-        logger.info(
-            "Materialized relationships for %d zettels", len(store.zettels)
-        )
+        logger.info("Materialized relationships for %d zettels", len(store.zettels))

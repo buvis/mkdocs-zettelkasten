@@ -174,8 +174,6 @@ class TestMaterializeSuggestions:
     def test_missing_target_skipped(self) -> None:
         source = _make_zettel(1)
         store = ZettelStore([source])
-        suggestions = {
-            1: [{"target_id": 999, "reason": "r", "confidence": 0.5}]
-        }
+        suggestions = {1: [{"target_id": 999, "reason": "r", "confidence": 0.5}]}
         materialize_suggestions(source, suggestions, store, ".md")
         assert source.suggested_links == []

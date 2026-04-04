@@ -130,9 +130,7 @@ class TestParallelSafety:
             page.meta = {}
             page.previous_page = None
             page.next_page = None
-            transformer.transform(
-                content, page, config, files, svc, features, ctx
-            )
+            transformer.transform(content, page, config, files, svc, features, ctx)
 
         # Verify rels unchanged
         for z in svc.store.zettels:
@@ -145,9 +143,7 @@ class TestParallelSafety:
             assert before.sequence_parent == after.sequence_parent
             assert before.sequence_children == after.sequence_children
 
-    def test_relationships_populated_before_rendering(
-        self, tmp_path: Path
-    ) -> None:
+    def test_relationships_populated_before_rendering(self, tmp_path: Path) -> None:
         """After materialize_all, relationships must be populated."""
         file_map = {"1.md": ZETTEL_A, "2.md": ZETTEL_B}
         svc = _build_service(tmp_path, file_map)
@@ -156,7 +152,9 @@ class TestParallelSafety:
         # Zettel 2 should have a backlink from zettel 1
         z2 = svc.store.get_by_id(2)
         assert z2 is not None
-        assert len(z2.backlinks) > 0, "backlinks should be populated after materialization"
+        assert len(z2.backlinks) > 0, (
+            "backlinks should be populated after materialization"
+        )
 
     def test_meta_fields_frozen_during_transform(self) -> None:
         """ZettelMeta fields cannot be modified at any point."""

@@ -218,8 +218,12 @@ class TestCustomThresholds:
     def test_custom_confidence_threshold(self):
         """Two notes share 1 link of 3 each -> Jaccard = 1/5 = 0.2.
         Default threshold (0.3) excludes this. Lowering to 0.1 includes it."""
-        a = _make_zettel_mock(1, title="A", rel_path="a.md", links=["shared.md", "x.md", "y.md"])
-        b = _make_zettel_mock(2, title="B", rel_path="b.md", links=["shared.md", "p.md", "q.md"])
+        a = _make_zettel_mock(
+            1, title="A", rel_path="a.md", links=["shared.md", "x.md", "y.md"]
+        )
+        b = _make_zettel_mock(
+            2, title="B", rel_path="b.md", links=["shared.md", "p.md", "q.md"]
+        )
         targets = [
             _make_zettel_mock(i, title=f"T{i}", rel_path=f"{n}.md")
             for i, n in enumerate(["shared", "x", "y", "p", "q"], start=10)
@@ -246,7 +250,5 @@ class TestCustomThresholds:
             {"src_path": f"other{i}.md", "tags": ["a", "b"]} for i in range(2, 9)
         ]
         service = SuggestionService()
-        result = service.compute(
-            store, tags_meta, _resolve(store), max_suggestions=2
-        )
+        result = service.compute(store, tags_meta, _resolve(store), max_suggestions=2)
         assert len(result.get(1, [])) <= 2

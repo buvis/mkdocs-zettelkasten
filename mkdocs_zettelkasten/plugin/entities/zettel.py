@@ -293,8 +293,8 @@ class Zettel:
         last_update_date = Zettel._determine_last_update_date(
             meta, zettel_id, abs_src_path, src_path, cfg
         )
-        note_type, maturity, source, role, seq_parent = (
-            Zettel._parse_optional_metadata(meta, cfg)
+        note_type, maturity, source, role, seq_parent = Zettel._parse_optional_metadata(
+            meta, cfg
         )
 
         logger.debug(
@@ -337,9 +337,7 @@ class Zettel:
             meta = yaml.safe_load(header) or {}
 
             if not isinstance(meta, dict):
-                logger.error(
-                    "Invalid YAML structure in %s: not a dictionary", path
-                )
+                logger.error("Invalid YAML structure in %s: not a dictionary", path)
                 msg = "Invalid YAML structure"
                 raise ZettelFormatError(msg)
 
@@ -495,17 +493,13 @@ class Zettel:
         rel_path: str,
         cfg: ZettelkastenConfig,
     ) -> str:
-        candidate_date = Zettel._get_initial_candidate_date(
-            meta, zettel_id, cfg
-        )
+        candidate_date = Zettel._get_initial_candidate_date(meta, zettel_id, cfg)
         revision_date = Zettel._get_revision_date(path, cfg.timezone)
 
         if cfg.last_update_key in meta:
             final_date = candidate_date
         else:
-            final_date = max(
-                candidate_date, revision_date, key=lambda d: d.timestamp()
-            )
+            final_date = max(candidate_date, revision_date, key=lambda d: d.timestamp())
             logger.debug(
                 "Using later date between metadata (%s) and modification (%s) for %s",
                 candidate_date.strftime("%Y-%m-%d"),
