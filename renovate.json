@@ -1,4 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>tbouska/renovate-config"]
+  "extends": ["github>tbouska/renovate-config"],
+  "packageRules": [
+    {
+      "description": ".python-version must match a locally installed interpreter; bump it manually together with a mise/homebrew update",
+      "matchManagers": ["pyenv"],
+      "enabled": false
+    }
+  ]
 }
